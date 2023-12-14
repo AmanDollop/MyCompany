@@ -1,0 +1,96 @@
+name: task
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment:
+  sdk: '>=3.2.2 <4.0.0'
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  get: 4.6.6
+  flutter:
+    sdk: flutter
+  #For Change App Name In Android And Ios
+  #Android
+  #<application
+  #    android:label="App Name" ...>
+  #Ios
+  #<key>CFBundleDisplayName</key>
+  #<string>App Name</string>
+  internet_connection_checker: ^1.0.0+1
+  fluttertoast: ^8.2.4
+  shared_preferences: ^2.2.2
+  # if use intl latest then device preview is not work  intl: ^0.18.1*
+  intl: ^0.18.1
+  responsive_sizer: ^3.2.0
+  http: ^1.1.0
+  #<!-- for Image Picker -->
+  #                                       IOS Installing
+  #Add the following keys to your Info.plist file, located in <project root>/ios/Runner/Info.plist:
+  #<key>NSPhotoLibraryUsageDescription</key>
+  #<String>This app requires access to the photo library</String>
+  #<key>NSCameraUsageDescription</key>
+  #<string>This app requires access to the camera</string>
+  #<key>NSMicrophoneUsageDescription</key>
+  #<string>This app does not require access to the microphone</string>
+  image_picker: ^1.0.4
+  sqflite: ^2.3.0
+  #<!-- for Image Cropper -->
+  #                                       ANDROID Installing
+  #Add UCropActivity into your AndroidManifest.xml
+  #<activity
+  #android:name="com.yalantis.ucrop.UCropActivity"
+  #android:screenOrientation="portrait"
+  #android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+  image_cropper: ^5.0.0
+  connectivity_plus: ^5.0.2
+  device_info_plus: ^9.1.1
+  pin_code_fields: ^8.0.1
+  carousel_slider: ^4.2.1
+  carousel_indicator: ^1.0.6
+  device_preview: ^1.1.0
+  equatable: ^2.0.5
+
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+  #Add This For App Icon
+  flutter_launcher_icons: ^0.13.1
+
+#Add This For App Icon
+#Than Run:-   flutter pub run flutter_launcher_icons:main
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  #Path Of Icon
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
+
+
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/bottom_bar_icons/
+    - assets/icons/
+    - assets/fonts/
+
+  fonts:
+    - family: KumbhSans
+      fonts:
+        - asset: assets/fonts/KumbhSans-Medium.ttf
+          weight: 300
+        - asset: assets/fonts/KumbhSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/KumbhSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/KumbhSans-Bold.ttf
+          weight: 700
+
+
