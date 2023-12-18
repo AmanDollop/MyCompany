@@ -1,15 +1,20 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/common/common_packages/image_picker/ip.dart';
 
 class SignUpController extends GetxController {
-
   final count = 0.obs;
 
+  final image = Rxn<File?>();
+
+  final key = GlobalKey<FormState>();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final selectYourDepartmentController = TextEditingController();
@@ -17,20 +22,19 @@ class SignUpController extends GetxController {
   final shiftTimeController = TextEditingController();
   final joiningDateController = TextEditingController();
   final designationController = TextEditingController();
-  final  emailController = TextEditingController();
+  final emailController = TextEditingController();
   final mobileNumberController = TextEditingController();
+  final searchCountryController = TextEditingController();
 
-  final genderText= ['Male','Female'].obs;
+  final genderText = ['Male', 'Female'].obs;
   final genderIndexValue = '-1'.obs;
+  final genderType = ''.obs;
 
-  final getData = ''.obs;
-
+  final getYourBranch = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // getData.value = Get.parameters['branchIndexValue.value']??'';
-    // print('getData.value:::::  ${getData.value}');
   }
 
   @override
@@ -50,17 +54,45 @@ class SignUpController extends GetxController {
     Get.back();
   }
 
+  ImageProvider selectImage() {
+    if (image.value != null) {
+      return FileImage(image.value!);
+    } else {
+      return const AssetImage('assets/images/profile.png');
+    }
+  }
+
   void clickOnProfileButton() {
     CM.unFocusKeyBoard();
-    CBS.commonBottomSheetForImagePicker();
+    CBS.commonBottomSheetForImagePicker(
+      clickOnTakePhoto: () => clickOnTakePhoto(),
+      clickOnChooseFromLibrary: () => clickOnChooseFromLibrary(),
+      clickOnRemovePhoto: () => clickOnRemovePhoto(),
+    );
+  }
+
+  Future<void> clickOnTakePhoto() async {
+    Get.back();
+    image.value = await IP.pickImage(isCropper: true,);
+  }
+
+  Future<void> clickOnChooseFromLibrary() async {
+    Get.back();
+    image.value = await IP.pickImage(isCropper: true,pickFromGallery: true);
+  }
+
+  void clickOnRemovePhoto(){
+    Get.back();
+    image.value = null;
   }
 
   Future<void> clickOnSelectYourBranchTextField() async {
     CM.unFocusKeyBoard();
-    Get.toNamed(Routes.SELECT_BRANCE,arguments: [getData.value])?.then((value) {
-      if(value != null){
-        getData.value = value;
-        selectYourBranchController.text = getData.value;
+    Get.toNamed(Routes.SELECT_BRANCE, arguments: [getYourBranch.value])
+        ?.then((value) {
+      if (value != null) {
+        getYourBranch.value = value;
+        selectYourBranchController.text = getYourBranch.value;
       }
     });
   }
@@ -68,22 +100,36 @@ class SignUpController extends GetxController {
   Future<void> clickOnShiftTimeTextField() async {
     CM.unFocusKeyBoard();
     TimeOfDay? pickedTime = await CDT.androidTimePicker(context: Get.context!);
-    if(pickedTime != null){
-      shiftTimeController.text = '${pickedTime.hour}:${pickedTime.minute}:${pickedTime.period.name.toUpperCase()}';
+    if (pickedTime != null) {
+      shiftTimeController.text =
+          '${pickedTime.hour}:${pickedTime.minute}:${pickedTime.period.name.toUpperCase()}';
     }
   }
 
   Future<void> clickOnJoiningDateTextField() async {
     CM.unFocusKeyBoard();
-    DateTime? pickedDate = await CDT.androidDatePicker(context: Get.context!,);
-    if(pickedDate != null) {
-      joiningDateController.text = '${pickedDate.day}-${pickedDate.month}-${pickedDate.year}';
+    DateTime? pickedDate = await CDT.iosPicker(
+      context: Get.context!,
+    );
+    if (pickedDate != null) {
+      joiningDateController.text =
+          '${pickedDate.day}-${pickedDate.month}-${pickedDate.year}';
     }
+  }
+
+  void clickOnCountryCode() {
+    CM.unFocusKeyBoard();
+    CBS.commonBottomSheetForCountry(
+      child: SizedBox(height: 100.px,width: double.infinity,child: const Center(child: Text('No Data Found!.')),),
+      searchController: searchCountryController,
+      onChanged: (value) {},
+    );
   }
 
   void clickOnRegisterButton() {
     CM.unFocusKeyBoard();
-    Get.back();
+    if (key.currentState!.validate() && genderType.value != '') {
+      Get.toNamed(Routes.OTP_VERIFICATION);
+    }
   }
-
 }

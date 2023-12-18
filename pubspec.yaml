@@ -52,6 +52,7 @@ dependencies:
   equatable: ^2.0.5
 
 
+
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:

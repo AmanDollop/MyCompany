@@ -7,6 +7,7 @@ class LoginController extends GetxController {
 
   final count = 0.obs;
   final termsCheckBoxValue = false.obs;
+  final key = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
 
@@ -34,11 +35,14 @@ class LoginController extends GetxController {
 
   void clickOnContinueButton() {
     CM.unFocusKeyBoard();
-    Get.toNamed(Routes.BOTTOM_NAVIGATION);
+    if(key.currentState!.validate() && termsCheckBoxValue.value){
+      Get.toNamed(Routes.OTP_VERIFICATION);
+    }
   }
 
   void clickOnCreateAccountButton() {
     CM.unFocusKeyBoard();
+    emailController.clear();
     Get.toNamed(Routes.SIGN_UP);
   }
 

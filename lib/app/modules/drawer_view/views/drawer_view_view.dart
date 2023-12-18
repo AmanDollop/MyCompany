@@ -19,7 +19,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
         backgroundColor: Col.scaffoldBackgroundColor,
         child: SafeArea(
           child: ListView(
-            physics: const BouncingScrollPhysics(),
+            physics: const ScrollPhysics(),
             children: [
               SizedBox(height: 16.px),
               InkWell(
@@ -83,7 +83,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
                     borderRadius: BorderRadius.circular(6.px),
                     child: Column(
                       children: [
-                        SizedBox(height: 10.px),
+                        SizedBox(height: 14.px),
                         Row(
                           children: [
                             CW.commonNetworkImageView(path: controller.iconList[index], isAssetImage: true,height: 24.px,width: 24.px),
@@ -91,7 +91,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
                             titleTextView(text: controller.titleList[index])
                           ],
                         ),
-                        SizedBox(height: 10.px),
+                        SizedBox(height: 14.px),
                       ],
                     ),
                   );

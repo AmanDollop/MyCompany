@@ -88,7 +88,7 @@ class SelectBranceView extends GetView<SelectBranceController> {
               ),
               SizedBox(height: 25.px),
               Container(
-                height: 60,
+                height: 80,
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(vertical: 3.px),
                 color: Col.inverseSecondary,

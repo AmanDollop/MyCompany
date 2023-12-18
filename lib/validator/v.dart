@@ -63,7 +63,7 @@ class V {
   static String? isValid({required String? value, required String title, Function? isValid}) {
     if (value == null || value.trim().toString().isEmpty) {
       isValid?.call(true);
-      return "Please enter $title";
+      return title;
     } else {
       isValid?.call(false);
       return null;

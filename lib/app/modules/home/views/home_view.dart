@@ -1,6 +1,7 @@
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/modules/drawer_view/views/drawer_view_view.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -30,15 +31,12 @@ class HomeView extends GetView<HomeController> {
                   width: 45.px,
                   child: Center(
                     child: InkWell(
-                      onTap: () =>
-                          controller.clickOnDrawerButton(context: context),
+                      onTap: () => controller.clickOnDrawerButton(context: context),
                       borderRadius: BorderRadius.circular(14.px),
                       child: Ink(
                         height: 46.px,
                         width: 46.px,
-                        decoration: BoxDecoration(
-                            color: Col.inverseSecondary,
-                            borderRadius: BorderRadius.circular(14.px)),
+                        decoration: BoxDecoration(color: Col.inverseSecondary, borderRadius: BorderRadius.circular(14.px)),
                         child: Center(
                           child: CW.commonNetworkImageView(
                               path: 'assets/icons/drawer_menu_icon.png',
@@ -52,63 +50,72 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
             ),
-            onNotificationPressed: () =>
-                controller.clickOnNotificationButton()),
+            onNotificationPressed: () => controller.clickOnNotificationButton()),
         body: Obx(() {
           controller.count.value;
-          return ListView(
-            padding: EdgeInsets.symmetric(vertical: 16.px),
-            children: [
-              breakView(),
-              commonSwitchButtonView(),
-              SizedBox(height: 16.px),
-              bannerView(),
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        commonCon(
-                          imagePath: 'assets/icons/circulars_icon.png',
-                          titleText: 'Circulars',
-                          onTap: () => controller.clickOnCirculars(),
-                        ),
-                        commonCon(
-                          imagePath: 'assets/icons/circulars_icon.png',
-                          titleText: 'Discussion',
-                          onTap: () => controller.clickOnDiscussion(),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 14.px),
-                    upcomingCelebrationsButtonView(),
-                  ],
+          return NotificationListener(
+            onNotification: (scrollNotification) {
+              if (scrollNotification is ScrollEndNotification) {
+                 scrollPositionBottomNavigationValue.value = controller.scrollController.value.position.pixels;
+                 controller.count.value++;
+              }
+              return false;
+            },
+            child: ListView(
+              controller: controller.scrollController.value,
+              padding: EdgeInsets.symmetric(vertical: 16.px,horizontal: 0.px),
+              children: [
+                breakView(),
+                commonSwitchButtonView(),
+                SizedBox(height: 16.px),
+                bannerView(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          commonCon(
+                            imagePath: 'assets/icons/circulars_icon.png',
+                            titleText: 'Circulars',
+                            onTap: () => controller.clickOnCirculars(),
+                          ),
+                          SizedBox(width: 8.px),
+                          commonCon(
+                            imagePath: 'assets/icons/circulars_icon.png',
+                            titleText: 'Discussion',
+                            onTap: () => controller.clickOnDiscussion(),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 14.px),
+                      upcomingCelebrationsButtonView(),
+                    ],
+                  ),
                 ),
-              ),
-              headingListView(),
-              SizedBox(height: 14.px),
-              myTeamListView(),
-              SizedBox(height: 14.px),
-              yourDepartmentListView(),
-              Padding(
-                padding:
-                    EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    cardTextView(text: 'Gallery', fontSize: 18.px),
-                    viewAllTextButtonView(
-                        onPressedViewAllButton: () =>
-                            controller.clickOnGalleryViewAllButton())
-                  ],
+                headingListView(),
+                SizedBox(height: 14.px),
+                myTeamListView(),
+                SizedBox(height: 14.px),
+                yourDepartmentListView(),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      cardTextView(text: 'Gallery', fontSize: 18.px),
+                      viewAllTextButtonView(
+                          onPressedViewAllButton: () =>
+                              controller.clickOnGalleryViewAllButton())
+                    ],
+                  ),
                 ),
-              ),
-              galleryListView(),
-              SizedBox(height: 10.px),
-            ],
+                galleryListView(),
+                SizedBox(height: 10.px),
+              ],
+            ),
           );
         }),
       ),
@@ -278,9 +285,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget commonTextForTimeView(
-          {required String firstText, required String secondText}) =>
-      Column(
+  Widget commonTextForTimeView({required String firstText, required String secondText}) => Column(
         children: [
           Text(
             firstText,
@@ -308,15 +313,11 @@ class HomeView extends GetView<HomeController> {
         indicatorWidth: 8.px,
       );
 
-  Widget commonCon(
-          {required String imagePath,
-          required String titleText,
-          required GestureTapCallback onTap}) =>
-      InkWell(
+  Widget commonCon({required String imagePath, required String titleText, required GestureTapCallback onTap}) => InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(14.px),
         child: Container(
-          width: 180.px,
+          width: 160.px,
           height: 66.px,
           padding: EdgeInsets.symmetric(horizontal: 8.px),
           decoration: BoxDecoration(
@@ -348,19 +349,13 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
               SizedBox(width: 12.px),
-              cardTextView(text: titleText)
+              Flexible(child: cardTextView(text: titleText,maxLines: 2),)
             ],
           ),
         ),
       );
 
-  Widget cardTextView(
-          {required String text,
-          double? fontSize,
-          Color? color,
-          int? maxLines,
-          TextAlign? textAlign}) =>
-      Text(
+  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, TextAlign? textAlign}) => Text(
         text,
         style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.w500,
@@ -383,11 +378,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget commonCard(
-          {required Widget listWidget,
-          required String titleText,
-          bool viewAllButtonValue = false,
-          VoidCallback? onPressedViewAllButton}) =>
+  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) =>
       Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
@@ -420,16 +411,12 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget viewAllTextButtonView(
-          {required VoidCallback onPressedViewAllButton}) =>
+  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) =>
       CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',
-          style: Theme.of(Get.context!)
-              .textTheme
-              .titleLarge
-              ?.copyWith(color: Col.primary, fontWeight: FontWeight.w700),
+          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary, fontWeight: FontWeight.w700),
         ),
       );
 
@@ -439,18 +426,18 @@ class HomeView extends GetView<HomeController> {
           externalPadding: EdgeInsets.only(top: C.margin, bottom: 0.px),
           length: controller.titleList.length,
           child: (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width / 3;
+            final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
             return SizedBox(
-              width: cellWidth - 8.px,
+              width: cellWidth - 14.px,
               child: Padding(
                 padding: EdgeInsets.only(
-                    left: index % 3 == 0 ? C.margin : C.margin / 3,
-                    right: index % 3 == 3 - 1 ? C.margin : C.margin / 3,
+                    left: index % 2 == 0 ? C.margin : C.margin / 2,
+                    right: index % 2 == 0 ? C.margin / 2 : C.margin ,
                     top: 0,
-                    bottom: C.margin),
+                    bottom: C.margin
+                ),
                 child: InkWell(
-                  onTap: () =>
-                      controller.clickOnHeadingCards(headingCardIndex: index),
+                  onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
                   borderRadius: BorderRadius.circular(10.px),
                   child: Ink(
                     height: 114.px,
@@ -466,15 +453,14 @@ class HomeView extends GetView<HomeController> {
                       borderRadius: BorderRadius.circular(8.px),
                     ),
                     child: Ink(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 4.px, vertical: 8.px),
+                      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
                       decoration: BoxDecoration(
                         color: Col.inverseSecondary,
                         borderRadius: BorderRadius.circular(6.px),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
                             width: 40.px,
@@ -514,21 +500,20 @@ class HomeView extends GetView<HomeController> {
           externalPadding: EdgeInsets.only(top: C.margin, bottom: 0.px),
           length: controller.titleList.length,
           child: (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width / 3;
+            final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
             return SizedBox(
-              width: cellWidth - 8.px,
+              width: cellWidth - 14.px,
               child: Padding(
                 padding: EdgeInsets.only(
-                    left: index % 3 == 0 ? C.margin : C.margin / 3,
-                    right: index % 3 == 3 - 1 ? C.margin : C.margin / 3,
+                    left: index % 2 == 0 ? C.margin : C.margin / 2,
+                    right: index % 2 == 0 ? C.margin / 2 : C.margin ,
                     top: 0,
                     bottom: C.margin),
                 child: InkWell(
-                  onTap: () =>
-                      controller.clickOnMyTeamCards(myTeamCardIndex: index),
+                  onTap: () => controller.clickOnMyTeamCards(myTeamCardIndex: index),
                   borderRadius: BorderRadius.circular(8.px),
                   child: Ink(
-                    height: 120.px,
+                    height: 126.px,
                     padding: EdgeInsets.only(left: 3.px),
                     decoration: BoxDecoration(
                       boxShadow: [
@@ -542,9 +527,8 @@ class HomeView extends GetView<HomeController> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 6.px),
                         Stack(
                           alignment: Alignment.topRight,
                           children: [
@@ -613,12 +597,11 @@ class HomeView extends GetView<HomeController> {
                   return Padding(
                     padding: EdgeInsets.only(right: 8.px),
                     child: InkWell(
-                      onTap: () => controller.clickOnYourDepartmentCards(
-                          yourDepartmentCardIndex: index),
+                      onTap: () => controller.clickOnYourDepartmentCards(yourDepartmentCardIndex: index),
                       borderRadius: BorderRadius.circular(8.px),
                       child: Ink(
                         height: 106.px,
-                        width: 86.px,
+                        width: 100.px,
                         padding: EdgeInsets.only(left: 3.px),
                         decoration: BoxDecoration(
                           boxShadow: [

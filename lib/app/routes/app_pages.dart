@@ -12,8 +12,12 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/menu_view/bindings/menu_view_binding.dart';
 import '../modules/menu_view/views/menu_view_view.dart';
+import '../modules/my_profile/bindings/my_profile_binding.dart';
+import '../modules/my_profile/views/my_profile_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
+import '../modules/otp_verification/bindings/otp_verification_binding.dart';
+import '../modules/otp_verification/views/otp_verification_view.dart';
 import '../modules/search_company/bindings/search_company_binding.dart';
 import '../modules/search_company/views/search_company_view.dart';
 import '../modules/select_brance/bindings/select_brance_binding.dart';
@@ -92,6 +96,16 @@ class AppPages {
       name: _Paths.EDIT_PROFILE,
       page: () => const EditProfileView(),
       binding: EditProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTP_VERIFICATION,
+      page: () => const OtpVerificationView(),
+      binding: OtpVerificationBinding(),
+    ),
+    GetPage(
+      name: _Paths.MY_PROFILE,
+      page: () => const MyProfileView(),
+      binding: MyProfileBinding(),
     ),
   ];
 }

@@ -26,15 +26,15 @@ class UtilitiesView extends GetView<UtilitiesController> {
           return CW.commonGridView(
             length: controller.titleList.length,
             child: (index) {
-              final cellWidth = MediaQuery.of(Get.context!).size.width / 3;
+              final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
               return SizedBox(
-                width: cellWidth,
+                width: cellWidth.px,
                 child: Padding(
                   padding: EdgeInsets.only(
-                      left: index % 3 == 0 ? C.margin : C.margin / 3,
-                      right: index % 3 == 3-1 ? C.margin : C.margin/3 ,
-                      top: C.margin,
-                      bottom: 0.px),
+                      left: index % 2 == 0 ? C.margin : C.margin / 2,
+                      right: index % 2 == 0 ? C.margin / 2 : C.margin ,
+                      top: 0,
+                      bottom: C.margin),
                   child: InkWell(
                     onTap: () {},
                     borderRadius: BorderRadius.circular(10.px),
@@ -52,14 +52,14 @@ class UtilitiesView extends GetView<UtilitiesController> {
                         borderRadius: BorderRadius.circular(8.px),
                       ),
                       child: Ink(
-                        padding: EdgeInsets.symmetric(horizontal: 4.px,vertical: 8.px),
+                        padding: EdgeInsets.symmetric(horizontal: 8.px,vertical: 8.px),
                         decoration: BoxDecoration(
                           color: Col.inverseSecondary,
                           borderRadius: BorderRadius.circular(6.px),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
                               width: 40.px,

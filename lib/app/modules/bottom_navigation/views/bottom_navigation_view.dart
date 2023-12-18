@@ -7,6 +7,7 @@ import 'package:task/theme/colors/colors.dart';
 import '../controllers/bottom_navigation_controller.dart';
 
 final selectedBottomNavigationIndex = 0.obs;
+final scrollPositionBottomNavigationValue = 0.0.obs;
 
 class BottomNavigationView extends GetView<BottomNavigationController> {
   const BottomNavigationView({Key? key}) : super(key: key);
@@ -20,7 +21,8 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         body: controller.pageCalling(
           selectedIndex: selectedBottomNavigationIndex.value.toInt(),
         ),
-        bottomNavigationBar: Container(
+        bottomNavigationBar: scrollPositionBottomNavigationValue.value <= 100
+            ? Container(
           decoration: BoxDecoration(
             color: Col.inverseSecondary,
             borderRadius: BorderRadius.only(topLeft: Radius.circular(24.px),topRight: Radius.circular(24.px)),
@@ -62,7 +64,8 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
               },
             ),
           ),
-        ),
+        )
+            : const SizedBox(),
       );
     });
   }

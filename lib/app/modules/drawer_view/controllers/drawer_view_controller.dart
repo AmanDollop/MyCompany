@@ -48,7 +48,7 @@ class DrawerViewController extends GetxController {
 
   void clickOnUserProfileView() {
     Get.back();
-    Get.toNamed(Routes.EDIT_PROFILE);
+    Get.toNamed(Routes.MY_PROFILE);
   }
 
   Future<void> clickOnList({required int index}) async {

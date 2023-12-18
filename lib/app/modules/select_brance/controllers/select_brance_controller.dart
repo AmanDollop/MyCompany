@@ -45,7 +45,7 @@ class SelectBranceController extends GetxController {
   void increment() => count.value++;
 
   clickOnBackButton() {
-    Get.back(result: branchIndexValue.value.toString());
+    Get.back(/*result: branchIndexValue.value.toString()*/);
   }
 
   void clickOnContinueButton() {

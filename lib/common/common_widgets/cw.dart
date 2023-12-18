@@ -385,25 +385,16 @@ class CW {
       decoration: isUnderlineBorder
           ? InputDecoration(
               labelText: labelText,
-              errorStyle: errorStyle ??
-                  Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
-                        color: Col.error,
-                      ),
-              labelStyle:
-                  labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               hintText: hintText,
               fillColor: fillColor ?? Col.inverseSecondary,
               filled: filled ? true : false,
-              contentPadding: contentPadding ??
-                  EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-              hintStyle:
-                  hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               disabledBorder: UnderlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.inverseSecondary, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderSide: isBorder ? BorderSide(color: Col.inverseSecondary, width: 1.px) : BorderSide.none,
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               border: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.primary, width: 1.px)
@@ -507,19 +498,16 @@ class CW {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(width: 10.px),
-                                    Text(selectedCountryCode,
-                                        style: Theme.of(Get.context!)
-                                            .textTheme
-                                            .titleSmall),
+                                    Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
                                     SizedBox(width: 4.px),
-                                    Icon(Icons.keyboard_arrow_down,
-                                        size: 20.px, color: Col.secondary),
+                                    Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
                                     SizedBox(width: 4.px),
                                     VerticalDivider(
                                       width: 2,
-                                      indent: 8.px,
-                                      endIndent: 8.px,
+                                      indent: 10.px,
+                                      endIndent: 10.px,
                                       color: Col.secondary,
+                                      thickness: 1.px,
                                     ),
                                     SizedBox(width: 10.px),
                                   ],
@@ -538,19 +526,16 @@ class CW {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 SizedBox(width: 10.px),
-                                Text(selectedCountryCode,
-                                    style: Theme.of(Get.context!)
-                                        .textTheme
-                                        .titleSmall),
+                                Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
                                 SizedBox(width: 4.px),
-                                Icon(Icons.keyboard_arrow_down,
-                                    size: 20.px, color: Col.secondary),
+                                Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
                                 SizedBox(width: 4.px),
                                 VerticalDivider(
                                   width: 2,
-                                  indent: 8.px,
-                                  endIndent: 8.px,
+                                  indent: 10.px,
+                                  endIndent: 10.px,
                                   color: Col.secondary,
+                                  thickness: 2.px,
                                 ),
                                 SizedBox(width: 10.px),
                               ],
@@ -1117,7 +1102,7 @@ class CW {
           inactiveFillColor: inactiveFillColor ?? Col.gray.withOpacity(0.3),
           selectedColor: selectedColor ?? Col.primary,
           selectedFillColor: selectedFillColor ?? Col.inverseSecondary,
-          activeColor: activeColor ?? Colors.green,
+          activeColor: activeColor ?? Col.primary,
           activeFillColor: activeFillColor ?? Col.inverseSecondary,
           shape: shape,
           fieldWidth: width ?? 50.px,
@@ -1125,10 +1110,7 @@ class CW {
           borderWidth: borderWidth ?? 1.px,
           borderRadius: BorderRadius.circular(borderRadius ?? 10.px),
         ),
-        enableActiveFill:
-            shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle
-                ? true
-                : false,
+        enableActiveFill: shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle ? true : false,
         controller: controller,
         onChanged: onChanged,
         enablePinAutofill: enablePinAutofill,
@@ -1388,15 +1370,16 @@ class CW {
           double? borderRadius,
           double? bottomMargin,
           double? topMargin,
+          ScrollController? scrollController,
           VoidCallback? onTab}) =>
       SingleChildScrollView(
-        padding: externalPadding ??
-            EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
+        padding: externalPadding ?? EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
+        controller: scrollController,
+        physics: const ScrollPhysics(),
         child: Wrap(
           children: List.generate(
               length,
-              child ??
-                  (index) {
+              child ?? (index) {
                     final cellWidth =
                         MediaQuery.of(Get.context!).size.width / crossAxisCount;
                     return SizedBox(

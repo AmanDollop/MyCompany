@@ -34,6 +34,7 @@ void main() {
             getPages: AppPages.routes,
             theme: AppThemeData.themeData(fontFamily: C.fontKumbhSans),
             defaultTransition: Transition.rightToLeftWithFade,
+            debugShowCheckedModeBanner: false,
             scrollBehavior: ListScrollBehavior(),
           ),
         ),

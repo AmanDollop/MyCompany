@@ -114,9 +114,7 @@ class CDT {
                   border: Border.all(color: Col.secondary, width: 1.px),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 10.px,
-                      horizontal: MediaQuery.of(Get.context!).size.width / 6.5),
+                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
                   child: Center(
                     child: Text(
                       C.textCancel,
@@ -142,7 +140,7 @@ class CDT {
                   border: Border.all(color: Col.secondary, width: 1.px),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 6.5),
+                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
                   child: Center(
                     child: Text(
                       C.textSelect,

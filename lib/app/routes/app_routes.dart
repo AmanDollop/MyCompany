@@ -15,6 +15,8 @@ abstract class Routes {
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const DRAWER_VIEW = _Paths.DRAWER_VIEW;
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
+  static const OTP_VERIFICATION = _Paths.OTP_VERIFICATION;
+  static const MY_PROFILE = _Paths.MY_PROFILE;
 }
 
 abstract class _Paths {
@@ -31,4 +33,6 @@ abstract class _Paths {
   static const NOTIFICATION = '/notification';
   static const DRAWER_VIEW = '/drawer-view';
   static const EDIT_PROFILE = '/edit-profile';
+  static const OTP_VERIFICATION = '/otp-verification';
+  static const MY_PROFILE = '/my-profile';
 }

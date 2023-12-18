@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:task/validator/v.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -24,66 +25,69 @@ class LoginView extends GetView<LoginController> {
         ),
         body: Obx(() {
           controller.count.value;
-          return ListView(
-            padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 24.px),
-            children: [
-              logoView(),
-              SizedBox(height: 24.px),
-              emailTextField(),
-              SizedBox(height: 14.px),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 24.px,
-                    height: 24.px,
-                    child: CW.commonCheckBoxView(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4.px)),
-                      changeValue: controller.termsCheckBoxValue.value,
-                      onChanged: (value) {
-                        controller.termsCheckBoxValue.value = value ?? false;
-                      },
+          return Form(
+            key: controller.key,
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 24.px),
+              children: [
+                logoView(),
+                SizedBox(height: 24.px),
+                emailTextField(),
+                SizedBox(height: 14.px),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 24.px,
+                      height: 24.px,
+                      child: CW.commonCheckBoxView(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.px)),
+                        changeValue: controller.termsCheckBoxValue.value,
+                        onChanged: (value) {
+                          controller.termsCheckBoxValue.value = value ?? false;
+                        },
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 5.px),
-                  Flexible(
-                    child: RichText(
-                      text: commonTextSpanView(),
+                    SizedBox(width: 5.px),
+                    Flexible(
+                      child: RichText(
+                        text: commonTextSpanView(),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 40.px),
-              CW.commonElevatedButton(onPressed: () => controller.clickOnContinueButton(), buttonText: 'Continue'),
-               SizedBox(height: 40.px),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CW.commonOutlineButton(onPressed: (){}, child: commonIconImage(imagePath: 'assets/icons/google_icon.png',width: 20.px,height: 20.px),),
-                  SizedBox(width: 20.px),
-                  CW.commonOutlineButton(onPressed: (){}, child:  commonIconImage(imagePath: 'assets/icons/facebook_icon.png',width: 20.px,height: 20.px),),
-                  SizedBox(width: 20.px),
-                  CW.commonOutlineButton(onPressed: (){}, child:  commonIconImage(imagePath: 'assets/icons/apple_icon.png',width: 20.px,height: 20.px),),
-                ],
-              ),
-              SizedBox(height: 20.px),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'New here? ',
-                    style: Theme.of(Get.context!).textTheme.titleMedium,
-                  ),
-                  CW.commonTextButton(
-                    onPressed: () =>controller.clickOnCreateAccountButton(),
-                    child: Text(
-                      'Create Account',
-                      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(color: Col.primary),
+                  ],
+                ),
+                SizedBox(height: 40.px),
+                CW.commonElevatedButton(onPressed: () => controller.clickOnContinueButton(), buttonText: 'Continue'),
+                SizedBox(height: 40.px),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CW.commonOutlineButton(onPressed: (){}, child: commonIconImage(imagePath: 'assets/icons/google_icon.png',width: 20.px,height: 20.px),),
+                    SizedBox(width: 20.px),
+                    CW.commonOutlineButton(onPressed: (){}, child:  commonIconImage(imagePath: 'assets/icons/facebook_icon.png',width: 20.px,height: 20.px),),
+                    SizedBox(width: 20.px),
+                    CW.commonOutlineButton(onPressed: (){}, child:  commonIconImage(imagePath: 'assets/icons/apple_icon.png',width: 20.px,height: 20.px),),
+                  ],
+                ),
+                SizedBox(height: 20.px),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'New here? ',
+                      style: Theme.of(Get.context!).textTheme.titleMedium,
                     ),
-                  )
-                ],
-              )
-            ],
+                    CW.commonTextButton(
+                      onPressed: () =>controller.clickOnCreateAccountButton(),
+                      child: Text(
+                        'Create Account',
+                        style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(color: Col.primary),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           );
         }),
       ),
@@ -102,11 +106,7 @@ class LoginView extends GetView<LoginController> {
         ),
       );
 
-  Widget commonIconImage({
-    required String imagePath,
-    double? height,
-    double? width,
-  }) => SizedBox(
+  Widget commonIconImage({required String imagePath, double? height, double? width,}) => SizedBox(
         width: height??24.px,
         height: width??24.px,
         child: Center(
@@ -125,6 +125,7 @@ class LoginView extends GetView<LoginController> {
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
+        validator: (value) => V.isEmailValid(value: value),
         onChanged: (value) {
           controller.count.value++;
         },

@@ -14,6 +14,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
 
   final count = 0.obs;
 
+  final scrollController = ScrollController().obs;
+
   final breakValue = false.obs;
 
   final checkInOrCheckOutValue = true.obs;
@@ -79,6 +81,12 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   @override
   void onClose() {
     super.onClose();
+  }
+
+  @override
+  void dispose() {
+    scrollController.value.dispose();
+    super.dispose();
   }
 
   void increment() => count.value++;
