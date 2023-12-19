@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -13,10 +12,10 @@ class BreakDialog extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Obx(() {
       controller.count.value;
+      controller.breakDialogConfirmButtonValue.value = false;
       return Dialog(
         elevation: 0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
         backgroundColor: Col.inverseSecondary,
         child: SizedBox(
           height: 300.px,
@@ -36,9 +35,12 @@ class BreakDialog extends GetView<HomeController> {
                       CW.commonIconButton(
                           onPressed: () {
                             Get.back();
+                            if(!controller.breakDialogConfirmButtonValue.value) {
+                              controller.breakCheckBoxValue.value='';
+                            }
                           },
                           isAssetImage: false,
-                          icon: Icons.cancel)
+                          icon: Icons.cancel,size: 22.px)
                     ],
                   ),
                 ),
@@ -65,8 +67,8 @@ class BreakDialog extends GetView<HomeController> {
                               borderRadius: BorderRadius.circular(6.px),
                               child: controller.breakCheckBoxValue.value == controller.breakTitleList.value[index]
                                   ? Padding(
-                                    padding:  EdgeInsets.only(right: 2.px),
-                                    child: SizedBox(
+                                      padding: EdgeInsets.only(right: 2.px),
+                                      child: SizedBox(
                                         height: 16.px,
                                         width: 16.px,
                                         child: Icon(
@@ -75,13 +77,15 @@ class BreakDialog extends GetView<HomeController> {
                                           size: 22.px,
                                         ),
                                       ),
-                                  )
+                                    )
                                   : Ink(
                                       height: 16.px,
                                       width: 16.px,
                                       decoration: BoxDecoration(
-                                        border: Border.all(color: Col.gray, width: 1.px),
-                                        borderRadius: BorderRadius.circular(4.px),
+                                        border: Border.all(
+                                            color: Col.gray, width: 1.px),
+                                        borderRadius:
+                                            BorderRadius.circular(4.px),
                                       ),
                                     ),
                             ),
@@ -93,13 +97,18 @@ class BreakDialog extends GetView<HomeController> {
                 ),
                 SizedBox(height: 6.px),
                 CW.commonElevatedButton(
-                  onPressed:controller.breakCheckBoxValue.value !=''?() {
-                      controller.breakValue.value = !controller.breakValue.value;
-                      Get.back();
-                  }:() => null,
+                  onPressed: controller.breakCheckBoxValue.value != ''
+                      ? () {
+                          controller.breakValue.value = !controller.breakValue.value;
+                          controller.breakDialogConfirmButtonValue.value = true;
+                          Get.back();
+                        }
+                      : () => null,
                   width: 200.px,
                   height: 40.px,
-                  buttonText: controller.breakCheckBoxValue.value !=''?'Confirm':'Select break type',
+                  buttonText: controller.breakCheckBoxValue.value != ''
+                      ? 'Confirm'
+                      : 'Select break type',
                 )
               ],
             ),

@@ -180,23 +180,19 @@ class MyProfileView extends GetView<MyProfileController> {
             Flexible(
               child: Text(
                  text1,
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .displayLarge
-                    ?.copyWith(fontSize: 14.px),
+                style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(fontSize: 14.px),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
               ),
             ),
             if(text2Value)
+            SizedBox(height: 2.px),
+            if(text2Value)
             Flexible(
               child: Text(
                 text2 ??"",
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(fontWeight: FontWeight.w500),
+                style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -209,20 +205,20 @@ class MyProfileView extends GetView<MyProfileController> {
   Widget reportingPersonListView() => commonCardForList(
         titleText: 'Reporting Person',
         listWidget: CW.commonGridView(
-          height: 134.px,
+          height: 124.px,
           externalPadding: EdgeInsets.only(top: C.margin, bottom: 0.px),
           length: controller.titleList.length,
           child: (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width / 3;
+            final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
             return SizedBox(
-              width: cellWidth - 8.px,
+              width: cellWidth - 14.px,
               child: Padding(
                 padding: EdgeInsets.only(
-                    left: index % 3 == 0 ? C.margin : C.margin / 3,
-                    right: index % 3 == 3 - 1 ? C.margin : C.margin / 3,
+                    left: index % 2 == 0 ? C.margin : C.margin / 2,
+                    right: index % 2 == 0 ? C.margin / 2 : C.margin ,
                     top: 0,
                     bottom: C.margin),
-                child: commonCard(imagePath: 'assets/images/profile.png',text2Value: true,text1: 'Testing Dollop',text2: 'Ui/Ux Designer',cardHeight: 134.px),
+                child: commonCard(imagePath: 'assets/images/profile.png',text2Value: true,text1: 'Testing Dollop',text2: 'Ui/Ux Designer',cardHeight: 124.px),
               ),
             );
           },

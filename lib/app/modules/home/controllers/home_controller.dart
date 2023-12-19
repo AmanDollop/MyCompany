@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
+import '../../../../common/common_methods/cm.dart';
 
 class HomeController extends GetxController with GetTickerProviderStateMixin{
 
@@ -17,6 +19,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   final scrollController = ScrollController().obs;
 
   final breakValue = false.obs;
+
+  final breakDialogConfirmButtonValue = false.obs;
 
   final checkInOrCheckOutValue = true.obs;
 
@@ -65,6 +69,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
     'Personal Break',
     'Dinner Break',
   ].obs;
+
+  GetLatLong? getLatLong;
+  final isLocationDialog = true.obs;
+
 
   @override
   Future<void> onInit() async {
@@ -129,7 +137,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
                 },
                 child: const BreakDialog());
           });
-      animationController.reverse();
+      if(breakCheckBoxValue.value != '' && breakDialogConfirmButtonValue.value) {
+        print('breakCheckBoxValue.value::::::  ${breakCheckBoxValue.value}');
+        animationController.reverse();
+      }
     } else {
       breakCheckBoxValue.value = '';
       breakValue.value = false;
@@ -152,4 +163,38 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   void clickOnYourDepartmentCards({required int yourDepartmentCardIndex}) {}
 
   void clickOnGalleryViewAllButton() {}
+
+  Future<void> callingGetLatLongMethod() async {
+    try {
+      getLatLong = await CM.getUserLatLong(context: Get.context!);
+      print('getLatLong::::::   $getLatLong');
+      if (getLatLong != null) {
+        // callingApi();
+      } else {
+        isLocationDialog.value = false;
+        if(AC.isConnect.value) {
+          locationAlertDialog();
+        }
+      }
+    } catch (e) {
+      CM.showSnackBar(message: "Something went wrong",);
+    }
+  }
+
+  locationAlertDialog() async {
+    /*showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () {
+            return false;
+          },
+          child: ,
+        );
+      },
+    );*/
+    await CD.commonIosPermissionDialog(clickOnPermission: () => Get.back(),);
+  }
+
 }

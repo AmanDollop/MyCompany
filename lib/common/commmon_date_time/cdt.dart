@@ -80,19 +80,28 @@ class CDT {
             ),
             child: Column(
               children: [
-                SizedBox(
-                  height: height ?? MediaQuery.of(context).size.height / 3.5,
-                  child: CupertinoDatePicker(
-                    initialDateTime: initialDate ?? DateTime.now(),
-                    minimumDate: firstDate ?? DateTime(2000),
-                    maximumDate: lastDate ?? DateTime.now(),
-                    onDateTimeChanged: (value) {
-                      pickedDate = value;
-                    },
-                    showDayOfWeek: showDayOfWeek,
-                    use24hFormat: use24hFormat,
-                    mode: mode,
-                    dateOrder: order,
+                CupertinoTheme(
+                  data: const CupertinoThemeData(
+                    textTheme: CupertinoTextThemeData(
+                      dateTimePickerTextStyle: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    height: height ?? MediaQuery.of(context).size.height / 3.5,
+                    child: CupertinoDatePicker(
+                      initialDateTime: initialDate ?? DateTime.now(),
+                      minimumDate: firstDate ?? DateTime(2000),
+                      maximumDate: lastDate ?? DateTime.now(),
+                      onDateTimeChanged: (value) {
+                        pickedDate = value;
+                      },
+                      showDayOfWeek: showDayOfWeek,
+                      use24hFormat: use24hFormat,
+                      mode: mode,
+                      dateOrder: order,
+                    ),
                   ),
                 ),
               ],
@@ -118,10 +127,7 @@ class CDT {
                   child: Center(
                     child: Text(
                       C.textCancel,
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(color: Col.primary),
+                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
                     ),
                   ),
                 ),
@@ -152,9 +158,7 @@ class CDT {
             ),
           ],
         ),
-        SizedBox(
-          height: 20.px,
-        ),
+        SizedBox(height: 20.px),
       ],
       backGroundColor: Colors.transparent,
       showDragHandle: false,

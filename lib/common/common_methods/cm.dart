@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:location/location.dart';
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -209,7 +212,7 @@ class CM {
   }
 
   ///For Insert Data In DataBase
-/*  static Future<bool> insertDataIntoDataBase({UserData? userData}) async {
+  /*  static Future<bool> insertDataIntoDataBase({UserData? userData}) async {
     DatabaseHelper.db = await DatabaseHelper.databaseHelperInstance.openDB();
     if (await DatabaseHelper.databaseHelperInstance.isDatabaseEmpty()) {
       bool isInsert = await DatabaseHelper.databaseHelperInstance.insert(
@@ -222,4 +225,92 @@ class CM {
       return true;
     }
   }*/
+
+  static Future<GetLatLong?> getUserLatLong({required BuildContext context}) async {
+    if (await CM.internetConnectionCheckerMethod()) {
+      Location location = Location();
+      bool serviceEnabled;
+      PermissionStatus permissionGranted;
+      serviceEnabled = await location.serviceEnabled();
+      print('serviceEnabled::::::   $serviceEnabled');
+
+      if (!serviceEnabled) {
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) {
+          return null;
+        }
+      }
+      permissionGranted = await location.hasPermission();
+      print('permissionGranted::::::   $permissionGranted');
+
+      if (permissionGranted == PermissionStatus.denied) {
+        permissionGranted = await location.requestPermission();
+        if (permissionGranted == PermissionStatus.denied) {
+          return null;
+        } else if (permissionGranted == PermissionStatus.deniedForever) {
+          await OpenAppsSettings.openAppsSettings(
+              settingsCode: SettingsCode.APP_SETTINGS);
+          permissionGranted = await location.hasPermission();
+          if (permissionGranted == PermissionStatus.denied) {
+            return null;
+          } else if (permissionGranted == PermissionStatus.deniedForever) {
+            return null;
+          } else if (permissionGranted == PermissionStatus.granted) {
+            return await getLatLong();
+          }
+        } else if (permissionGranted == PermissionStatus.granted) {
+          return await getLatLong();
+        }
+      }
+      else if (permissionGranted == PermissionStatus.granted) {
+        return await getLatLong();
+      }
+    }
+    else {
+      CM.showSnackBar(message: 'Check Your Internet Connection');
+      return null;
+    }
+    return null;
+  }
+
+  static Future<GetLatLong?> getLatLong() async {
+    LocationData? myLocation;
+    Location location = Location();
+
+    /*try {
+      myLocation = await location.getLocation();
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {}
+      if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {}
+
+      return null;
+    }*/
+    print('location   ::::::   $location');
+    myLocation = await location.getLocation();
+    print('myLocation.latitude:::::::::    ${myLocation.latitude}');
+
+    if (myLocation.latitude != null && myLocation.longitude != null) {
+
+      GetLatLong getLatLongData = GetLatLong(latitude:myLocation.latitude,longitude: myLocation.longitude );
+
+
+      return getLatLongData;
+    } else {
+      return null;
+    }
+  }
+
+}
+
+class GetLatLong{
+  double? latitude;
+  double? longitude;
+
+  GetLatLong({ double? latitude, double? longitude})
+  {
+    this.latitude=latitude;
+    this.longitude=longitude;
+  }
+
+
 }

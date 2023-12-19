@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_methods/cm.dart';
 
 class OtpVerificationController extends GetxController {
 
@@ -27,6 +28,7 @@ class OtpVerificationController extends GetxController {
   }
 
   void clickOnContinueButton() {
+    CM.unFocusKeyBoard();
     Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
   }
 

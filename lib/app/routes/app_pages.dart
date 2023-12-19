@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
 import '../modules/drawer_view/bindings/drawer_view_binding.dart';
@@ -28,7 +27,6 @@ import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
-
 part 'app_routes.dart';
 
 class AppPages {

@@ -23,7 +23,7 @@ dependencies:
   # if use intl latest then device preview is not work  intl: ^0.18.1*
   intl: ^0.18.1
   responsive_sizer: ^3.2.0
-  http: ^1.1.0
+  http: ^1.1.2
   #<!-- for Image Picker -->
   #                                       IOS Installing
   #Add the following keys to your Info.plist file, located in <project root>/ios/Runner/Info.plist:
@@ -50,7 +50,9 @@ dependencies:
   carousel_indicator: ^1.0.6
   device_preview: ^1.1.0
   equatable: ^2.0.5
-
+  location: ^5.0.3
+  permission_handler: ^11.1.0
+  open_apps_settings: ^0.0.4
 
 
 dev_dependencies:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/modules/drawer_view/views/drawer_view_view.dart';
 import 'package:task/common/bottom_bar/GButton.dart';
 import 'package:task/common/bottom_bar/GnavStyle.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -17,7 +18,13 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
     return Obx(() {
       controller.count.value;
       return Scaffold(
+
+        // key: controller.scaffoldKey,
+        // drawerEdgeDragWidth: 20.w,
+        // drawer: const DrawerViewView(),
+
         backgroundColor: Col.inverseSecondary,
+        // appBar: AppBar(),
         body: controller.pageCalling(
           selectedIndex: selectedBottomNavigationIndex.value.toInt(),
         ),

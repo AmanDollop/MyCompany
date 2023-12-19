@@ -35,6 +35,7 @@ void main() {
             theme: AppThemeData.themeData(fontFamily: C.fontKumbhSans),
             defaultTransition: Transition.rightToLeftWithFade,
             debugShowCheckedModeBanner: false,
+
             scrollBehavior: ListScrollBehavior(),
           ),
         ),

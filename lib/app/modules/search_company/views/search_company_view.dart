@@ -80,7 +80,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
         hintText: 'Search your Company',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/search_icon.png'),
         suffixIcon: commonIconImage(imagePath: 'assets/icons/audio_icon.png'),
         onChanged: (value) {

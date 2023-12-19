@@ -114,7 +114,7 @@ class MenuViewView extends GetView<MenuViewController> {
       hintText: 'Search your Company',
       labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
       hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-      style: Theme.of(Get.context!).textTheme.bodyLarge,
+      // style: Theme.of(Get.context!).textTheme.bodyLarge,
       elevation: 0,
       prefixIcon: SizedBox(
         width: 24.px,

@@ -203,23 +203,34 @@ class CBS {
                   padding: EdgeInsets.symmetric(vertical: 10.px),
                   child: Text(
                     C.textSelectImageTitle,
-                    style: Theme.of(Get.context!).textTheme.displayMedium,
+                    style: Theme.of(Get.context!).textTheme.displayLarge,
                   ),
                 ),
-                CBS().dividerView(),
-                CBS().commonView(
-                    onTap: clickOnTakePhoto ?? () {}, title: C.textTakePhoto),
-                CBS().dividerView(),
-                CBS().commonView(
-                    onTap: clickOnChooseFromLibrary ?? () {},
-                    title: C.textChooseFromLibrary),
-                CBS().dividerView(),
-                CBS().commonView(
-                    onTap: clickOnRemovePhoto ?? () {},
-                    title: C.textRemovePhoto),
-                SizedBox(
-                  height: 10.px,
+                CW.commonDividerView(
+                  height: 0.px,
+                  wight: .5.px,
+                  color: Col.gray,
+                  leftPadding: 10.px,
+                  rightPadding: 10.px,
                 ),
+                CBS().commonView(onTap: clickOnTakePhoto ?? () {}, title: C.textTakePhoto),
+                CW.commonDividerView(
+                  height: 0.px,
+                  wight: .5.px,
+                  color: Col.gray,
+                  leftPadding: 10.px,
+                  rightPadding: 10.px,
+                ),
+                CBS().commonView(onTap: clickOnChooseFromLibrary ?? () {}, title: C.textChooseFromLibrary),
+                CW.commonDividerView(
+                  height: 0.px,
+                  wight: .5.px,
+                  color: Col.gray,
+                  leftPadding: 10.px,
+                  rightPadding: 10.px,
+                ),
+                CBS().commonView(onTap: clickOnRemovePhoto ?? () {}, title: C.textRemovePhoto),
+                SizedBox(height: 10.px),
               ],
             ),
           ),
@@ -280,7 +291,7 @@ class CBS {
 
   Widget textViewTitle({required String title}) => Text(
         title,
-        style: Theme.of(Get.context!).textTheme.displayLarge,
+        style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
       );
 
   ///  Calling Of Country Picker BottomSheet

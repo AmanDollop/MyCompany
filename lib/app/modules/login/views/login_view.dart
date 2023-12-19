@@ -123,7 +123,7 @@ class LoginView extends GetView<LoginController> {
         keyboardType: TextInputType.emailAddress,
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         validator: (value) => V.isEmailValid(value: value),
         onChanged: (value) {

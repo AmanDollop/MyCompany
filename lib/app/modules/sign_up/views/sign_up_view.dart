@@ -166,7 +166,7 @@ class SignUpView extends GetView<SignUpController> {
         keyboardType: TextInputType.name,
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         validator: (value) =>
             V.isValid(value: value, title: 'Please enter first name'),
@@ -183,7 +183,7 @@ class SignUpView extends GetView<SignUpController> {
         keyboardType: TextInputType.name,
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         validator: (value) =>
             V.isValid(value: value, title: 'Please enter last name'),
@@ -199,7 +199,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Select Your Branch',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon:
             commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
@@ -219,7 +219,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Select Your Department',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon:
             commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
@@ -238,7 +238,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Shift Time',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/watch_icon.png'),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
@@ -257,7 +257,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Joining Date',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon:
             commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
         onChanged: (value) {
@@ -277,7 +277,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Designation',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -294,7 +294,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Email Address',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -310,7 +310,7 @@ class SignUpView extends GetView<SignUpController> {
         hintText: 'Mobile Number',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        style: Theme.of(Get.context!).textTheme.bodyLarge,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         isCountrySelection: true,
         selectedCountryCode: '+91',

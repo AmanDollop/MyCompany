@@ -112,8 +112,7 @@ class SignUpController extends GetxController {
       context: Get.context!,
     );
     if (pickedDate != null) {
-      joiningDateController.text =
-          '${pickedDate.day}-${pickedDate.month}-${pickedDate.year}';
+      joiningDateController.text = '${pickedDate.day}-${pickedDate.month}-${pickedDate.year}';
     }
   }
 

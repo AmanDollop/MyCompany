@@ -1,7 +1,6 @@
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/modules/drawer_view/views/drawer_view_view.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -17,7 +16,7 @@ class HomeView extends GetView<HomeController> {
       onWillPop: () => controller.willPop(),
       child: Scaffold(
         key: controller.scaffoldKey,
-        drawerEdgeDragWidth: 40.w,
+        drawerEdgeDragWidth: 20.w,
         drawer: const DrawerViewView(),
         appBar: CW.commonAppBarView(
             homeAppBarValue: true,
@@ -55,10 +54,10 @@ class HomeView extends GetView<HomeController> {
           controller.count.value;
           return NotificationListener(
             onNotification: (scrollNotification) {
-              if (scrollNotification is ScrollEndNotification) {
+              /* if (scrollNotification is ScrollEndNotification) {
                  scrollPositionBottomNavigationValue.value = controller.scrollController.value.position.pixels;
-                 controller.count.value++;
-              }
+                   controller.count.value++;
+              }*/
               return false;
             },
             child: ListView(
@@ -81,7 +80,7 @@ class HomeView extends GetView<HomeController> {
                             titleText: 'Circulars',
                             onTap: () => controller.clickOnCirculars(),
                           ),
-                          SizedBox(width: 8.px),
+                          // SizedBox(width: 5.px),
                           commonCon(
                             imagePath: 'assets/icons/circulars_icon.png',
                             titleText: 'Discussion',
@@ -100,15 +99,12 @@ class HomeView extends GetView<HomeController> {
                 SizedBox(height: 14.px),
                 yourDepartmentListView(),
                 Padding(
-                  padding:
-                      EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
+                  padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       cardTextView(text: 'Gallery', fontSize: 18.px),
-                      viewAllTextButtonView(
-                          onPressedViewAllButton: () =>
-                              controller.clickOnGalleryViewAllButton())
+                      viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
                     ],
                   ),
                 ),
@@ -186,29 +182,23 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                     SizedBox(
-                      height: 130.px,
-                      width: 130.px,
+                      height: 150.px,
+                      width: 150.px,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              commonTextForTimeView(
-                                  firstText: '10', secondText: 'hours'),
-                              commonTextForTimeView(
-                                  firstText: ':00:', secondText: 'min'),
-                              commonTextForTimeView(
-                                  firstText: '00', secondText: 'sec'),
+                              commonTextForTimeView(firstText: '10', secondText: 'hours'),
+                              commonTextForTimeView(firstText: ':00:', secondText: 'min'),
+                              commonTextForTimeView(firstText: '00', secondText: 'sec'),
                             ],
                           ),
                           SizedBox(height: 5.px),
                           Text(
                             'Check In - 09:30am',
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                           ),
@@ -234,9 +224,11 @@ class HomeView extends GetView<HomeController> {
       );
 
   Widget commonSwitchButtonView() => Center(
-        child: InkWell(
+        child: GestureDetector(
+          onHorizontalDragStart: (details) {
+            controller.clickOnSwitchButton();
+          },
           onTap: () => controller.clickOnSwitchButton(),
-          borderRadius: BorderRadius.circular(27.px),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 500),
             width: 192.px,
@@ -252,30 +244,32 @@ class HomeView extends GetView<HomeController> {
               width: 124.px,
               height: 46.px,
               margin: EdgeInsets.all(4.px),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(23.px),
-                  color: Col.inverseSecondary),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(23.px), color: Col.inverseSecondary),
               duration: const Duration(milliseconds: 500),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 6.px),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (!controller.checkInOrCheckOutValue.value)
                       Icon(
-                        Icons.keyboard_double_arrow_left,
+                        Icons.keyboard_double_arrow_left_rounded,
                         color: Col.primary,
-                        size: 28.px,
+                        size: 22.px,
                       ),
-                    cardTextView(
-                        text: controller.checkInOrCheckOutValue.value
-                            ? 'Check In'
-                            : 'Check Out',
-                        color: Col.primary),
+                    Flexible(
+                      child: cardTextView(
+                          text: controller.checkInOrCheckOutValue.value
+                              ? 'Check In'
+                              : 'Check Out',
+                          color: Col.primary),
+                    ),
+                    SizedBox(width: 6.px),
                     if (controller.checkInOrCheckOutValue.value)
                       Icon(
-                        Icons.keyboard_double_arrow_right,
+                        Icons.keyboard_double_arrow_right_rounded,
                         color: Col.primary,
-                        size: 28.px,
+                        size: 22.px,
                       )
                   ],
                 ),
@@ -317,8 +311,8 @@ class HomeView extends GetView<HomeController> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(14.px),
         child: Container(
-          width: 160.px,
-          height: 66.px,
+          width: 164.px,
+          height: 62.px,
           padding: EdgeInsets.symmetric(horizontal: 8.px),
           decoration: BoxDecoration(
             color: Col.inverseSecondary,
@@ -378,8 +372,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) =>
-      Card(
+  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
         shadowColor: Col.secondary.withOpacity(.1),
@@ -689,4 +682,5 @@ class HomeView extends GetView<HomeController> {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal),
       );
+
 }

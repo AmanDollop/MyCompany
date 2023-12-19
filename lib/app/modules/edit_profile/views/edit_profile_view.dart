@@ -23,7 +23,7 @@ class EditProfileView extends GetView<EditProfileController> {
                   CW.commonNetworkImageView(
                     path: 'assets/images/edit_profile_back_image.png',
                     isAssetImage: true,
-                    height: 346.px,),
+                    height: 346.px,width: double.infinity),
                   Expanded(
                     child: ListView(
                       padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 30.px),
