@@ -53,6 +53,7 @@ dependencies:
   location: ^5.0.3
   permission_handler: ^11.1.0
   open_apps_settings: ^0.0.4
+  timer_count_down: 2.2.2
 
 
 dev_dependencies:

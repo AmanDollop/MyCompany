@@ -75,7 +75,7 @@ class DrawerViewController extends GetxController {
           Get.back();
         },
         clickOnLogout: () {
-          Get.offAllNamed(Routes.LOGIN);
+          Get.offAllNamed(Routes.SEARCH_COMPANY);
         },
       );
 

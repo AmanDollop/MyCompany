@@ -67,7 +67,7 @@ class CW {
                       style: Theme.of(Get.context!)
                           .textTheme
                           .bodySmall
-                          ?.copyWith(fontWeight: FontWeight.w700,color:Col.inverseSecondary)),
+                          ?.copyWith(fontWeight: FontWeight.w600, color: Col.inverseSecondary),),
             ),
     );
   }
@@ -82,8 +82,8 @@ class CW {
       Color? borderColor,
       double? elevation,
       bool isContentSizeButton = true,
-      required VoidCallback onPressed,
-      required Widget child,
+      required VoidCallback onPressed, Widget? child,
+        String? buttonText,
       bool isLoading = false}) {
     return Container(
       height: isContentSizeButton ? height : 54.px,
@@ -94,8 +94,7 @@ class CW {
       decoration: BoxDecoration(
           borderRadius: isLoading
               ? null
-              : BorderRadius.circular(
-                  isContentSizeButton ? 20.px : borderRadius ?? C.buttonRadius),
+              : BorderRadius.circular(borderRadius ?? C.buttonRadius),
           border: Border.all(
             width: borderWidth ?? 1.px,
             color: borderColor ?? Colors.transparent,
@@ -110,9 +109,7 @@ class CW {
                   padding: padding ?? EdgeInsets.all(3.5.px),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(isContentSizeButton
-                        ? 20.px
-                        : borderRadius ?? C.outlineButtonRadius),
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.outlineButtonRadius),
                   ),
                   side: BorderSide(
                     color: borderColor ?? Col.text,
@@ -122,7 +119,12 @@ class CW {
                   shadowColor: Colors.transparent,
                   foregroundColor: Col.text,
                   minimumSize: Size(56.px, 56.px)),
-              child: child,
+              child: child??
+                  Text(buttonText ?? '',
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontWeight: FontWeight.w600,),),
             ),
     );
   }
@@ -317,7 +319,7 @@ class CW {
       );
 
   static commonProgressBarView({Color? color}) => CircularProgressIndicator(
-        backgroundColor: color ?? const Color(0xff7C7C7C).withOpacity(.5),
+        backgroundColor: color ?? Col.darkGray,
         color: Col.inverseSecondary,
         strokeWidth: 3,
       );
@@ -385,16 +387,26 @@ class CW {
       decoration: isUnderlineBorder
           ? InputDecoration(
               labelText: labelText,
-              errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              errorStyle: errorStyle ??
+                  Theme.of(Get.context!)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(color: Col.error),
+              labelStyle:
+                  labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               hintText: hintText,
               fillColor: fillColor ?? Col.inverseSecondary,
               filled: filled ? true : false,
-              contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              contentPadding: contentPadding ??
+                  EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+              hintStyle:
+                  hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               disabledBorder: UnderlineInputBorder(
-                  borderSide: isBorder ? BorderSide(color: Col.inverseSecondary, width: 1.px) : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderSide: isBorder
+                      ? BorderSide(color: Col.inverseSecondary, width: 1.px)
+                      : BorderSide.none,
+                  borderRadius:
+                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               border: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.primary, width: 1.px)
@@ -498,9 +510,13 @@ class CW {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(width: 10.px),
-                                    Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
+                                    Text(selectedCountryCode,
+                                        style: Theme.of(Get.context!)
+                                            .textTheme
+                                            .titleSmall),
                                     SizedBox(width: 4.px),
-                                    Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
+                                    Icon(Icons.keyboard_arrow_down,
+                                        size: 20.px, color: Col.secondary),
                                     SizedBox(width: 4.px),
                                     VerticalDivider(
                                       width: 2,
@@ -526,9 +542,13 @@ class CW {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 SizedBox(width: 10.px),
-                                Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
+                                Text(selectedCountryCode,
+                                    style: Theme.of(Get.context!)
+                                        .textTheme
+                                        .titleSmall),
                                 SizedBox(width: 4.px),
-                                Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
+                                Icon(Icons.keyboard_arrow_down,
+                                    size: 20.px, color: Col.secondary),
                                 SizedBox(width: 4.px),
                                 VerticalDivider(
                                   width: 2,
@@ -674,50 +694,59 @@ class CW {
           ? AppBar(
               title: Row(
                 children: [
-                  commonNetworkImageView(path: 'assets/images/logo.png', isAssetImage: true,height: 24.px,width: 24.px),
+                  commonNetworkImageView(
+                      path: 'assets/images/logo.png',
+                      isAssetImage: true,
+                      height: 24.px,
+                      width: 24.px),
                   SizedBox(width: 5.px),
                   Text(
                     title,
-                    style: titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall,
+                    style: titleStyle ??
+                        Theme.of(Get.context!).textTheme.displaySmall,
                   ),
                 ],
               ),
               bottom: tabBar,
               elevation: elevation,
               centerTitle: centerTitle,
-              leading:  leading,
-              actions: actions ?? [
-                Center(
-                  child: SizedBox(
-                  height: 44.px,
-                  width: 44.px,
-                  child: Center(
-                    child: InkWell(
-                          onTap: onNotificationPressed,
-                          borderRadius: BorderRadius.circular(22.px),
-                          child: Center(
-                            child: commonNetworkImageView(
-                                path: 'assets/icons/notification_iocn.png',
-                                isAssetImage: true,
-                                width: 44.px,
-                                height: 44.px),
+              leading: leading,
+              actions: actions ??
+                  [
+                    Center(
+                      child: SizedBox(
+                        height: 44.px,
+                        width: 44.px,
+                        child: Center(
+                          child: InkWell(
+                            onTap: onNotificationPressed,
+                            borderRadius: BorderRadius.circular(22.px),
+                            child: Center(
+                              child: commonNetworkImageView(
+                                  path: 'assets/icons/notification_iocn.png',
+                                  isAssetImage: true,
+                                  width: 44.px,
+                                  height: 44.px),
+                            ),
                           ),
                         ),
-                     ),
-                   ),
-                ),
-                SizedBox(width: 10.px)
-              ],
+                      ),
+                    ),
+                    SizedBox(width: 10.px)
+                  ],
               leadingWidth: leadingWidth ?? 70.px,
               backgroundColor: backgroundColor ?? Col.primary,
-              flexibleSpace: Container(height: CM.getToolBarSize(),color: toolBarColor ?? backgroundColor ?? Col.primary),
+              flexibleSpace: Container(
+                  height: CM.getToolBarSize(),
+                  color: toolBarColor ?? backgroundColor ?? Col.primary),
               titleSpacing: leading != null ? 0 ?? 0.px : 0,
               shadowColor: shadowColor ?? Col.secondary,
             )
           : AppBar(
               title: Text(
                 title,
-                style: titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall,
+                style:
+                    titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall,
               ),
               bottom: tabBar,
               elevation: elevation,
@@ -894,7 +923,9 @@ class CW {
               items: imageList.isNotEmpty
                   ? imageList.map((image) {
                       return Padding(
-                        padding: padding ?? EdgeInsets.symmetric(horizontal: C.outlineButtonRadius),
+                        padding: padding ??
+                            EdgeInsets.symmetric(
+                                horizontal: C.outlineButtonRadius),
                         child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(borderRadius ?? 12.px),
@@ -1110,7 +1141,10 @@ class CW {
           borderWidth: borderWidth ?? 1.px,
           borderRadius: BorderRadius.circular(borderRadius ?? 10.px),
         ),
-        enableActiveFill: shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle ? true : false,
+        enableActiveFill:
+            shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle
+                ? true
+                : false,
         controller: controller,
         onChanged: onChanged,
         enablePinAutofill: enablePinAutofill,
@@ -1233,8 +1267,7 @@ class CW {
                   width: width,
                   color: color,
                   fit: fit,
-                  loadingBuilder: loadingBuilder ??
-                      (context, child, loadingProgress) {
+                  loadingBuilder: loadingBuilder ?? (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return CW.commonShimmerViewForImage(
                             height: height,
@@ -1244,6 +1277,7 @@ class CW {
                             duration: shimmerDuration,
                             movementColor: shimmerMovementColor);
                       },
+                  errorBuilder: (context, error, stackTrace) => Image.asset('assets/images/default_image.jpg', height: height, width: width, color: color, fit: fit,),
                 ),
         ),
       );
@@ -1373,13 +1407,15 @@ class CW {
           ScrollController? scrollController,
           VoidCallback? onTab}) =>
       SingleChildScrollView(
-        padding: externalPadding ?? EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
+        padding: externalPadding ??
+            EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
         controller: scrollController,
         physics: const ScrollPhysics(),
         child: Wrap(
           children: List.generate(
               length,
-              child ?? (index) {
+              child ??
+                  (index) {
                     final cellWidth =
                         MediaQuery.of(Get.context!).size.width / crossAxisCount;
                     return SizedBox(
@@ -1411,6 +1447,17 @@ class CW {
                   }),
         ),
       );
+
+  static commonNoDataFoundText({String? text}) => Center(
+    child: Text(
+          text ?? 'No Data Found!',
+          style: Theme.of(Get.context!)
+              .textTheme
+              .displayLarge
+              ?.copyWith(color: Col.primary),
+      textAlign: TextAlign.center,
+        ),
+  );
 
 //image:- error builder / VideoPlayer
 // Dower  TextFieldDropdown/Timer

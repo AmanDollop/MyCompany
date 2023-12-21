@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -26,15 +26,26 @@ class SignUpController extends GetxController {
   final mobileNumberController = TextEditingController();
   final searchCountryController = TextEditingController();
 
+
   final genderText = ['Male', 'Female'].obs;
   final genderIndexValue = '-1'.obs;
   final genderType = ''.obs;
 
   final getYourBranch = ''.obs;
+  final getYourBranchId = ''.obs;
+
+  final getYourDepartment = ''.obs;
+  final getYourDepartmentId = ''.obs;
+
+  final getYourShiftTime = ''.obs;
+  final getYourShiftTimeId = ''.obs;
+
+  String companyId = '1';
 
   @override
   void onInit() {
     super.onInit();
+    companyId = Get.arguments[0];
   }
 
   @override
@@ -73,37 +84,69 @@ class SignUpController extends GetxController {
 
   Future<void> clickOnTakePhoto() async {
     Get.back();
-    image.value = await IP.pickImage(isCropper: true,);
+    image.value = await IP.pickImage(
+      isCropper: true,
+    );
   }
 
   Future<void> clickOnChooseFromLibrary() async {
     Get.back();
-    image.value = await IP.pickImage(isCropper: true,pickFromGallery: true);
+    image.value = await IP.pickImage(isCropper: true, pickFromGallery: true);
   }
 
-  void clickOnRemovePhoto(){
+  void clickOnRemovePhoto() {
     Get.back();
     image.value = null;
   }
 
   Future<void> clickOnSelectYourBranchTextField() async {
     CM.unFocusKeyBoard();
-    Get.toNamed(Routes.SELECT_BRANCE, arguments: [getYourBranch.value])
+    Get.toNamed(Routes.SELECT_BRANCE,
+            arguments: [getYourBranch.value, companyId, getYourBranchId.value])
         ?.then((value) {
       if (value != null) {
-        getYourBranch.value = value;
+        getYourBranch.value = value[0];
+        getYourBranchId.value = value[1];
         selectYourBranchController.text = getYourBranch.value;
+        selectYourDepartmentController.clear();
+        getYourDepartment.value = '';
+        shiftTimeController.clear();
+        getYourShiftTime.value = '';
+        count.value++;
+      }
+    });
+  }
+
+  Future<void> clickOnSelectYourDepartmentTextField() async {
+    CM.unFocusKeyBoard();
+    Get.toNamed(Routes.SELECT_DEPARTMENT, arguments: [
+      companyId,
+      getYourBranchId.value,
+      getYourDepartment.value,
+      getYourDepartmentId.value
+    ])?.then((value) {
+      if (value != null) {
+        getYourDepartment.value = value[0];
+        getYourDepartmentId.value = value[1];
+        selectYourDepartmentController.text = getYourDepartment.value;
+        count.value++;
       }
     });
   }
 
   Future<void> clickOnShiftTimeTextField() async {
     CM.unFocusKeyBoard();
-    TimeOfDay? pickedTime = await CDT.androidTimePicker(context: Get.context!);
-    if (pickedTime != null) {
-      shiftTimeController.text =
-          '${pickedTime.hour}:${pickedTime.minute}:${pickedTime.period.name.toUpperCase()}';
-    }
+    Get.toNamed(Routes.SELECT_SHIFT_TIME, arguments: [
+      companyId,
+      getYourShiftTime.value,
+      getYourShiftTimeId.value
+    ])?.then((value) {
+      if (value != null) {
+        getYourShiftTime.value = value[0];
+        getYourShiftTimeId.value = value[1];
+        shiftTimeController.text = getYourShiftTime.value;
+      }
+    });
   }
 
   Future<void> clickOnJoiningDateTextField() async {
@@ -112,23 +155,32 @@ class SignUpController extends GetxController {
       context: Get.context!,
     );
     if (pickedDate != null) {
-      joiningDateController.text = '${pickedDate.day}-${pickedDate.month}-${pickedDate.year}';
+      joiningDateController.text =
+          '${pickedDate.day}-${pickedDate.month}-${pickedDate.year}';
     }
   }
 
   void clickOnCountryCode() {
     CM.unFocusKeyBoard();
     CBS.commonBottomSheetForCountry(
-      child: SizedBox(height: 100.px,width: double.infinity,child: const Center(child: Text('No Data Found!.')),),
+      child: SizedBox(
+        height: 100.px,
+        width: double.infinity,
+        child: const Center(
+          child: Text('No Data Found!.'),
+        ),
+      ),
       searchController: searchCountryController,
       onChanged: (value) {},
     );
   }
 
-  void clickOnRegisterButton() {
+  Future<void> clickOnRegisterButton() async {
     CM.unFocusKeyBoard();
     if (key.currentState!.validate() && genderType.value != '') {
-      Get.toNamed(Routes.OTP_VERIFICATION);
+      BottomSheetForOTP.commonBottomSheetForVerifyOtp(
+        otp: '123123',
+      );
     }
   }
 }

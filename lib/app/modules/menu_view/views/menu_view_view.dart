@@ -15,11 +15,11 @@ class MenuViewView extends GetView<MenuViewController> {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
       child: Scaffold(
-        appBar: CW.commonAppBarView(
-          title: 'Menu',
-          isLeading: true,
-          onBackPressed: () =>controller.willPop(),
-        ),
+        // appBar: CW.commonAppBarView(
+        //   title: 'Menu',
+        //   isLeading: true,
+        //   onBackPressed: () =>controller.willPop(),
+        // ),
         body: Obx(() {
           controller.count.value;
           return Column(

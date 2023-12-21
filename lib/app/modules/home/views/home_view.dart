@@ -15,41 +15,38 @@ class HomeView extends GetView<HomeController> {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
       child: Scaffold(
-        key: controller.scaffoldKey,
-        drawerEdgeDragWidth: 20.w,
-        drawer: const DrawerViewView(),
-        appBar: CW.commonAppBarView(
-            homeAppBarValue: true,
-            title: 'Hello, Dollop',
-            leadingWidth: 60.px,
-            isLeading: true,
-            leading: Builder(
-              builder: (context) => Center(
-                child: SizedBox(
-                  height: 45.px,
-                  width: 45.px,
-                  child: Center(
-                    child: InkWell(
-                      onTap: () => controller.clickOnDrawerButton(context: context),
-                      borderRadius: BorderRadius.circular(14.px),
-                      child: Ink(
-                        height: 46.px,
-                        width: 46.px,
-                        decoration: BoxDecoration(color: Col.inverseSecondary, borderRadius: BorderRadius.circular(14.px)),
-                        child: Center(
-                          child: CW.commonNetworkImageView(
-                              path: 'assets/icons/drawer_menu_icon.png',
-                              isAssetImage: true,
-                              width: 24.px,
-                              height: 24.px),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            onNotificationPressed: () => controller.clickOnNotificationButton()),
+        // appBar: CW.commonAppBarView(
+        //     homeAppBarValue: true,
+        //     title: 'Hello, Dollop',
+        //     leadingWidth: 60.px,
+        //     isLeading: true,
+        //     leading: Builder(
+        //       builder: (context) => Center(
+        //         child: SizedBox(
+        //           height: 45.px,
+        //           width: 45.px,
+        //           child: Center(
+        //             child: InkWell(
+        //               onTap: () => controller.clickOnDrawerButton(context: context),
+        //               borderRadius: BorderRadius.circular(14.px),
+        //               child: Ink(
+        //                 height: 46.px,
+        //                 width: 46.px,
+        //                 decoration: BoxDecoration(color: Col.inverseSecondary, borderRadius: BorderRadius.circular(14.px)),
+        //                 child: Center(
+        //                   child: CW.commonNetworkImageView(
+        //                       path: 'assets/icons/drawer_menu_icon.png',
+        //                       isAssetImage: true,
+        //                       width: 24.px,
+        //                       height: 24.px),
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //     onNotificationPressed: () => controller.clickOnNotificationButton()),
         body: Obx(() {
           controller.count.value;
           return NotificationListener(

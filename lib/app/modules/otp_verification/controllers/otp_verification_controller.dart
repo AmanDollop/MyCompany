@@ -32,4 +32,6 @@ class OtpVerificationController extends GetxController {
     Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
   }
 
+  void clickOnResendButton() {}
+
 }

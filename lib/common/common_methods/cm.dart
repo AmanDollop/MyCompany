@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:location/location.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/common/my_http/status_code_constant.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/constants/constants.dart';
+import 'package:http/http.dart' as http;
 
 class CM {
   ///  flutter pub add internet_connection_checker -- For Check Internet
@@ -297,6 +301,32 @@ class CM {
       return getLatLongData;
     } else {
       return null;
+    }
+  }
+
+  static Future<bool> checkResponse({required http.Response response, bool wantShowSuccessResponse = false, bool wantShowFailResponse = false, bool wantInternetFailResponse = false}) async {
+    Map<String, dynamic> responseMap = jsonDecode(response.body);
+    if (await CM.internetConnectionCheckerMethod()) {
+      if (response.statusCode == StatusCodeConstant.OK) {
+        if (wantShowSuccessResponse) {
+          CM.showSnackBar(message: responseMap[AK.message]);
+        }
+        return true;
+      } else if (response.statusCode == StatusCodeConstant.BAD_REQUEST) {
+        if (wantShowFailResponse) {
+          CM.showSnackBar(message: responseMap[AK.message]);
+        }
+        return false;
+      } else if (response.statusCode == StatusCodeConstant.BAD_GATEWAY) {
+        return false;
+      } else if (response.statusCode == StatusCodeConstant.REQUEST_TIMEOUT) {
+        return false;
+      } else {
+        return false;
+      }
+    } else {
+
+      return false;
     }
   }
 

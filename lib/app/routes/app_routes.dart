@@ -17,6 +17,8 @@ abstract class Routes {
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
   static const OTP_VERIFICATION = _Paths.OTP_VERIFICATION;
   static const MY_PROFILE = _Paths.MY_PROFILE;
+  static const SELECT_DEPARTMENT = _Paths.SELECT_DEPARTMENT;
+  static const SELECT_SHIFT_TIME = _Paths.SELECT_SHIFT_TIME;
 }
 
 abstract class _Paths {
@@ -35,4 +37,6 @@ abstract class _Paths {
   static const EDIT_PROFILE = '/edit-profile';
   static const OTP_VERIFICATION = '/otp-verification';
   static const MY_PROFILE = '/my-profile';
+  static const SELECT_DEPARTMENT = '/select-department';
+  static const SELECT_SHIFT_TIME = '/select-shift-time';
 }

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
 import '../modules/drawer_view/bindings/drawer_view_binding.dart';
@@ -21,12 +22,17 @@ import '../modules/search_company/bindings/search_company_binding.dart';
 import '../modules/search_company/views/search_company_view.dart';
 import '../modules/select_brance/bindings/select_brance_binding.dart';
 import '../modules/select_brance/views/select_brance_view.dart';
+import '../modules/select_department/bindings/select_department_binding.dart';
+import '../modules/select_department/views/select_department_view.dart';
+import '../modules/select_shift_time/bindings/select_shift_time_binding.dart';
+import '../modules/select_shift_time/views/select_shift_time_view.dart';
 import '../modules/sign_up/bindings/sign_up_binding.dart';
 import '../modules/sign_up/views/sign_up_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
+
 part 'app_routes.dart';
 
 class AppPages {
@@ -104,6 +110,16 @@ class AppPages {
       name: _Paths.MY_PROFILE,
       page: () => const MyProfileView(),
       binding: MyProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELECT_DEPARTMENT,
+      page: () => const SelectDepartmentView(),
+      binding: SelectDepartmentBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELECT_SHIFT_TIME,
+      page: () => const SelectShiftTimeView(),
+      binding: SelectShiftTimeBinding(),
     ),
   ];
 }

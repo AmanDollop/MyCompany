@@ -41,40 +41,24 @@ class SignUpView extends GetView<SignUpController> {
                   ],
                 ),
                 SizedBox(height: 20.px),
-                // textFiledLabelTextView(text: 'First Name'),
-                // SizedBox(height: 6.px),
                 firstNameTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Last Name'),
-                // SizedBox(height: 6.px),
                 lastNameTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Email ID'),
-                // SizedBox(height: 6.px),
                 emailTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Mobile Number'),
-                // SizedBox(height: 6.px),
                 mobileNumberTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Select Your Branch'),
-                // SizedBox(height: 6.px),
                 selectYourBranchTextField(),
+                if(controller.selectYourBranchController.text.isNotEmpty)
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Select Your Department'),
-                // SizedBox(height: 6.px),
+                if(controller.selectYourBranchController.text.isNotEmpty)
                 selectYourDepartmentTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Shift Time'),
-                // SizedBox(height: 6.px),
                 shiftTimeTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Joining Date'),
-                // SizedBox(height: 6.px),
                 joiningDateTextField(),
                 SizedBox(height: 16.px),
-                // textFiledLabelTextView(text: 'Designation'),
-                // SizedBox(height: 6.px),
                 designationTextField(),
                 SizedBox(height: 16.px),
                 textFiledLabelTextView(text: 'Gender'),
@@ -111,6 +95,7 @@ class SignUpView extends GetView<SignUpController> {
                 CW.commonElevatedButton(
                     onPressed: () => controller.clickOnRegisterButton(),
                     buttonText: 'Register'),
+
               ],
             ),
           );
@@ -200,16 +185,14 @@ class SignUpView extends GetView<SignUpController> {
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
-        prefixIcon:
-            commonIconImage(imagePath: 'assets/icons/department_icon.png'),
+        prefixIcon: commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
         onChanged: (value) {
           controller.count.value++;
         },
         onTap: () => controller.clickOnSelectYourBranchTextField(),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please select your branch'),
+        validator: (value) => V.isValid(value: value, title: 'Please select your branch'),
       );
 
   Widget selectYourDepartmentTextField() => CW.commonTextField(
@@ -224,11 +207,11 @@ class SignUpView extends GetView<SignUpController> {
             commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+        onTap: () => controller.clickOnSelectYourDepartmentTextField(),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please select your department'),
+        validator: (value) => V.isValid(value: value, title: 'Please select your department'),
       );
 
   Widget shiftTimeTextField() => CW.commonTextField(
@@ -343,4 +326,5 @@ class SignUpView extends GetView<SignUpController> {
             .titleSmall
             ?.copyWith(fontWeight: FontWeight.w500),
       );
+
 }

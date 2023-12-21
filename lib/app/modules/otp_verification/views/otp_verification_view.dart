@@ -40,6 +40,14 @@ class OtpVerificationView extends GetView<OtpVerificationController> {
                       width: 60.px,
                     ),
                   ),
+                  SizedBox(height: 12.px),
+                  CW.commonTextButton(
+                    onPressed: () => controller.clickOnResendButton(),
+                    child: Text(
+                      'Resend',
+                      style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700, color: Col.primary),
+                    ),
+                  ),
                 ],
               ),
               CW.commonElevatedButton(

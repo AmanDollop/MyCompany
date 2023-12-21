@@ -10,7 +10,6 @@ import '../../../../common/common_methods/cm.dart';
 
 class HomeController extends GetxController with GetTickerProviderStateMixin{
 
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   late AnimationController animationController;
 

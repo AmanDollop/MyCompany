@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/modules/home/controllers/home_controller.dart';
 import 'package:task/app/modules/home/views/home_view.dart';
 import 'package:task/app/modules/menu_view/controllers/menu_view_controller.dart';
 import 'package:task/app/modules/menu_view/views/menu_view_view.dart';
 import 'package:task/app/modules/utilities/controllers/utilities_controller.dart';
 import 'package:task/app/modules/utilities/views/utilities_view.dart';
+import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_dialog/cd.dart';
 
 class BottomNavigationController extends GetxController {
 
@@ -55,4 +60,29 @@ class BottomNavigationController extends GetxController {
         return const SizedBox();
     }
   }
+
+  willPop({required int pageIndex}) {
+    if(pageIndex==0){
+     /* CD.commonIosExitAppDialog(
+        clickOnCancel: () {
+          Get.back();
+        },
+        clickOnExit: () {
+          exit(0);
+        },
+      );*/
+    }else{
+      selectedBottomNavigationIndex.value=0;
+    }
+  }
+
+  void clickOnDrawerButton({required BuildContext context}) {
+    Scaffold.of(context).openDrawer();
+  }
+
+  void clickOnNotificationButton() {
+    Get.toNamed(Routes.NOTIFICATION);
+  }
+
+
 }
