@@ -330,12 +330,11 @@ class SignUpController extends GetxController {
         AK.action :'getCountryCode',
       });
       if (countryCodeModal.value != null) {
-        countryCodeList = countryCodeModal.value?.data ?? [];
+        countryCodeList = countryCodeModal.value?.countryCode ?? [];
         countryCodeList?.forEach((element) {
           if(element.phonecode == '+91'){
             countryCode = element.phonecode ??'';
             countryImagePath.value = "${AU.baseUrlForImage1}${element.flag}";
-            print('${AU.baseUrlForImage1}${element.flag}');
           }
         });
       }

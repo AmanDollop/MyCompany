@@ -1,15 +1,15 @@
 class CountryCodeModal {
   String? message;
-  List<CountryCodeList>? data;
+  List<CountryCodeList>? countryCode;
 
-  CountryCodeModal({this.message, this.data});
+  CountryCodeModal({this.message, this.countryCode});
 
   CountryCodeModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    if (json['data'] != null) {
-      data = <CountryCodeList>[];
-      json['data'].forEach((v) {
-        data!.add(CountryCodeList.fromJson(v));
+    if (json['Country Code'] != null) {
+      countryCode = <CountryCodeList>[];
+      json['Country Code'].forEach((v) {
+        countryCode!.add(CountryCodeList.fromJson(v));
       });
     }
   }
@@ -17,8 +17,8 @@ class CountryCodeModal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    if (countryCode != null) {
+      data['Country Code'] = countryCode!.map((v) => v.toJson()).toList();
     }
     return data;
   }
