@@ -1,5 +1,5 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -36,13 +36,18 @@ class MyHttp {
       {required String url,
       required Map<String, dynamic> bodyParams,
       Map<String, String>? token,
-      required BuildContext context}) async {
+      required BuildContext context,bool showSnackBar = true}) async {
     if (kDebugMode) print("CALLING:: $url");
     if (kDebugMode) print("BODYPARAMS:: $bodyParams");
     if (await CM.internetConnectionCheckerMethod()) {
       try {
         http.Response? response = await http.post(Uri.parse(url), body: bodyParams, headers: token);
         if (kDebugMode) print("CALLING:: ${response.body}");
+        if(showSnackBar) {
+          Map<String,dynamic> mapRes = {};
+          mapRes = jsonDecode(response.body);
+          CM.showSnackBar(message: mapRes['message']);
+        }
         return response;
       } catch (e) {
         if (kDebugMode) print("ERROR:: $e");
@@ -176,18 +181,16 @@ class MyHttp {
     if (kDebugMode) print("imageMap:: $imageMap");
     http.Response? res;
     if (await CM.internetConnectionCheckerMethod()) {
-      if (imageMap != null) {
+      if (imageMap.isNotEmpty) {
         try {
           http.MultipartRequest multipartRequest =
               http.MultipartRequest(multipartRequestType, Uri.parse(url));
           bodyParams.forEach((key, value) {
             multipartRequest.fields[key] = value;
-            if (kDebugMode) print("value:: $value");
-            if (kDebugMode) print("key:: $key");
+            if (kDebugMode) print("key::::::            $key          value::::::          $value");
           });
           imageMap.forEach((key, value) {
-            multipartRequest.files.add(getUserProfileImageFile(
-                image: value, userProfileImageKey: key));
+            multipartRequest.files.add(getUserProfileImageFile(image: value, userProfileImageKey: key));
           });
           if (kDebugMode) print("multipartRequest:: ${multipartRequest.files}");
           http.StreamedResponse response = await multipartRequest.send();
@@ -203,6 +206,10 @@ class MyHttp {
         // ignore: unnecessary_null_comparison
         if (res != null) {
           if (kDebugMode) print("CALLING:: ${res.body}");
+          Map<String,dynamic> mapRes = {};
+          mapRes = jsonDecode(res.body);
+          CM.showSnackBar(message: mapRes['message']);
+
           return res;
         } else {
           return null;

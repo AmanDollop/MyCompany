@@ -13,7 +13,7 @@ class SearchCompanyController extends GetxController {
 
   Map<String, dynamic> bodyParams = {};
   final searchCompanyModel = Rxn<SearchCompanyModal?>();
-  final searchCompanyList =<SearchCompanyList>[].obs;
+  List<SearchCompanyList>? searchCompanyList;
 
   final apiResponseValue = false.obs;
 
@@ -37,12 +37,10 @@ class SearchCompanyController extends GetxController {
 
   void clickOnCompany({required int index}) {
     CM.unFocusKeyBoard();
-    if(searchCompanyList.value[index].companyId != null && searchCompanyList.value[index].companyId!.isNotEmpty && searchCompanyList.value[index].baseUrl != null && searchCompanyList.value[index].baseUrl!.isNotEmpty) {
+    if(searchCompanyList?[index].companyId != null && searchCompanyList![index].companyId!.isNotEmpty && searchCompanyList?[index].baseUrl != null && searchCompanyList![index].baseUrl!.isNotEmpty) {
 
-      String apiBaseUrl = searchCompanyList.value[index].baseUrl.toString();
-      print('apiBaseUrl::::::   $apiBaseUrl');
-      String companyId = searchCompanyList.value[index].companyId.toString();
-      print('companyId:::::::   $companyId');
+      String apiBaseUrl = searchCompanyList?[index].baseUrl.toString()??'';
+      String companyId = searchCompanyList?[index].companyId.toString()??'';
       Get.toNamed(Routes.LOGIN,arguments: [apiBaseUrl,companyId]);
     }else{
       CM.showSnackBar(message: 'Something went wrong!');
@@ -54,7 +52,7 @@ class SearchCompanyController extends GetxController {
     try{
       apiResponseValue.value = true;
       if (value.length >= 3) {
-        searchCompanyList.value.clear();
+        searchCompanyList?.clear();
         await searchCompanyApiCalling();
         count.value++;
       } else if(value.isEmpty){
@@ -65,7 +63,7 @@ class SearchCompanyController extends GetxController {
         return;
       }
     } catch(e){
-      CM.showSnackBar(message: 'Something went wrong!');
+      CM.error();
       apiResponseValue.value = false;
     }
     apiResponseValue.value = false;
@@ -78,7 +76,7 @@ class SearchCompanyController extends GetxController {
     };
     searchCompanyModel.value = await CAI.searchCompanyApi(bodyParams: bodyParams);
     if (searchCompanyModel.value != null) {
-      searchCompanyList.value = searchCompanyModel.value?.data ?? [];
+      searchCompanyList = searchCompanyModel.value?.data ?? [];
     }
   }
 

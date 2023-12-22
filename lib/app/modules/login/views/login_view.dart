@@ -57,7 +57,9 @@ class LoginView extends GetView<LoginController> {
                   ],
                 ),
                 SizedBox(height: 40.px),
-                CW.commonElevatedButton(onPressed: () => controller.clickOnContinueButton(), buttonText: 'Continue'),
+                CW.commonElevatedButton(onPressed: controller.loginButtonValue.value
+                    ?() => null
+                    :() => controller.clickOnContinueButton(), buttonText: 'Continue',isLoading: controller.loginButtonValue.value),
                 SizedBox(height: 40.px),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

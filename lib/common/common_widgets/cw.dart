@@ -35,40 +35,33 @@ class CW {
       Widget? child,
       String? buttonText,
       bool isLoading = false}) {
-    return Container(
-      height: isContentSizeButton ? height : 54.px,
-      width: isContentSizeButton ? width : double.infinity,
-      margin: margin,
-      alignment: isLoading ? Alignment.center : null,
-      decoration: BoxDecoration(
-          borderRadius: isLoading
-              ? null
-              : BorderRadius.circular(borderRadius ?? C.outlineButtonRadius),
-          color: isLoading ? Col.primary : null,
-          shape: isLoading ? BoxShape.circle : BoxShape.rectangle),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        elevation: elevation ?? 0.px,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        padding: padding,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius ?? C.radius),
+        ),
+        backgroundColor: buttonColor ?? Col.primary,
+        foregroundColor: splashColor ?? Colors.white,
+        minimumSize: Size(width ?? double.infinity, height ?? 46.px),
+        shadowColor: Colors.transparent,
+      ),
       child: isLoading
-          ? CW.commonProgressBarView(color: Col.primary)
-          : ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                elevation: elevation ?? 0.px,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: padding,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      borderRadius ?? C.outlineButtonRadius),
-                ),
-                backgroundColor: buttonColor ?? Col.primary,
-                foregroundColor: splashColor ?? Colors.white,
-                shadowColor: Colors.transparent,
+          ? Center(
+              child: SizedBox(
+                height: 24.px,
+                width: 24.px,
+                child: CW.commonProgressBarView(color: Col.primary),
               ),
-              child: child ??
-                  Text(buttonText ?? '',
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontWeight: FontWeight.w600, color: Col.inverseSecondary),),
-            ),
+            )
+          : child ?? Text(
+                buttonText ?? '',
+                style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w600, color: Col.inverseSecondary),
+              ),
     );
   }
 
@@ -82,8 +75,9 @@ class CW {
       Color? borderColor,
       double? elevation,
       bool isContentSizeButton = true,
-      required VoidCallback onPressed, Widget? child,
-        String? buttonText,
+      required VoidCallback onPressed,
+      Widget? child,
+      String? buttonText,
       bool isLoading = false}) {
     return Container(
       height: isContentSizeButton ? height : 54.px,
@@ -109,7 +103,8 @@ class CW {
                   padding: padding ?? EdgeInsets.all(3.5.px),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.outlineButtonRadius),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.outlineButtonRadius),
                   ),
                   side: BorderSide(
                     color: borderColor ?? Col.text,
@@ -119,12 +114,13 @@ class CW {
                   shadowColor: Colors.transparent,
                   foregroundColor: Col.text,
                   minimumSize: Size(56.px, 56.px)),
-              child: child??
-                  Text(buttonText ?? '',
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(fontWeight: FontWeight.w600,),),
+              child: child ??
+                  Text(
+                    buttonText ?? '',
+                    style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
             ),
     );
   }
@@ -325,41 +321,41 @@ class CW {
       );
 
   /// --------------------------Common TextField Collection--------------------------
-  static Widget commonTextField({
-    String? hintText,
-    TextStyle? hintStyle,
-    TextStyle? errorStyle,
-    String? labelText,
-    String? hideTextCharacter,
-    TextStyle? labelStyle,
-    TextStyle? style,
-    TextEditingController? controller,
-    ValueChanged<String>? onChanged,
-    FormFieldValidator<String>? validator,
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-    TextCapitalization textCapitalization = TextCapitalization.sentences,
-    GestureTapCallback? onTap,
-    Widget? prefixIcon,
-    Widget? suffixIcon,
-    EdgeInsetsGeometry? contentPadding,
-    EdgeInsetsGeometry? suffixPadding,
-    EdgeInsetsGeometry? prefixPadding,
-    Color? fillColor,
-    Color? initialBorderColor,
-    double? initialBorderWidth,
-    double? borderRadius,
-    double? cursorHeight,
-    bool isBorder = true,
-    bool autofocus = false,
-    bool readOnly = false,
-    bool filled = true,
-    bool isUnderlineBorder = false,
-    bool isHideText = false,
-    bool isCountrySelection = false,
-    VoidCallback? clickOnArrowDown,
-    String selectedCountryCode = "",
-  }) {
+  static Widget commonTextField(
+      {String? hintText,
+      TextStyle? hintStyle,
+      TextStyle? errorStyle,
+      String? labelText,
+      String? hideTextCharacter,
+      TextStyle? labelStyle,
+      TextStyle? style,
+      TextEditingController? controller,
+      ValueChanged<String>? onChanged,
+      FormFieldValidator<String>? validator,
+      TextInputType keyboardType = TextInputType.text,
+      List<TextInputFormatter>? inputFormatters,
+      TextCapitalization textCapitalization = TextCapitalization.sentences,
+      GestureTapCallback? onTap,
+      Widget? prefixIcon,
+      Widget? suffixIcon,
+      EdgeInsetsGeometry? contentPadding,
+      EdgeInsetsGeometry? suffixPadding,
+      EdgeInsetsGeometry? prefixPadding,
+      Color? fillColor,
+      Color? initialBorderColor,
+      double? initialBorderWidth,
+      double? borderRadius,
+      double? cursorHeight,
+      bool isBorder = true,
+      bool autofocus = false,
+      bool readOnly = false,
+      bool filled = true,
+      bool isUnderlineBorder = false,
+      bool isHideText = false,
+      bool isCountrySelection = false,
+      VoidCallback? clickOnArrowDown,
+      String selectedCountryCode = "",
+      String countryFlagPath = "",}) {
     return TextFormField(
       cursorHeight: cursorHeight,
       onTap: onTap,
@@ -384,45 +380,34 @@ class CW {
           : inputFormatters,
       textCapitalization: textCapitalization,
       style: style ?? Theme.of(Get.context!).textTheme.bodySmall,
+
       decoration: isUnderlineBorder
           ? InputDecoration(
               labelText: labelText,
-              errorStyle: errorStyle ??
-                  Theme.of(Get.context!)
-                      .textTheme
-                      .labelMedium
-                      ?.copyWith(color: Col.error),
-              labelStyle:
-                  labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               hintText: hintText,
               fillColor: fillColor ?? Col.inverseSecondary,
               filled: filled ? true : false,
-              contentPadding: contentPadding ??
-                  EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-              hintStyle:
-                  hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               disabledBorder: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.inverseSecondary, width: 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               border: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.primary, width: 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               enabledBorder: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(
-                          color: filled
-                              ? initialBorderColor ?? Col.inverseSecondary
-                              : Col.secondary,
+                          color: filled ? initialBorderColor ?? Col.inverseSecondary : Col.secondary,
                           width: initialBorderWidth ?? 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               errorBorder: UnderlineInputBorder(
                 borderSide: isBorder
                     ? BorderSide(color: Col.error, width: 1.px)
@@ -433,10 +418,10 @@ class CW {
               constraints: labelText != null && labelText.isNotEmpty
                   ? null
                   : BoxConstraints(maxHeight: 38.px),
-              /* suffixIconConstraints: BoxConstraints(maxHeight: 45.px),*/
-              /*
-                prefixIconConstraints: BoxConstraints(maxHeight: 80.px,minHeight: 80.px),
-  */
+              /* suffixIconConstraints: BoxConstraints(maxHeight: 45.px),
+
+                prefixIconConstraints: BoxConstraints(maxHeight: 80.px,minHeight: 80.px),*/
+
               suffixIcon: Padding(
                 padding: suffixPadding ?? EdgeInsets.zero,
                 child: suffixIcon,
@@ -450,31 +435,23 @@ class CW {
             )
           : InputDecoration(
               labelText: labelText,
-              labelStyle:
-                  labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
-              errorStyle: errorStyle ??
-                  Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
-                        color: Col.error,
-                      ),
+              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
+              errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
               hintText: hintText,
               fillColor: fillColor ?? Col.inverseSecondary,
               filled: filled,
-              contentPadding:
-                  contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
-              hintStyle:
-                  hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
+              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               disabledBorder: OutlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.gray, width: 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               border: OutlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.primary, width: 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               enabledBorder: OutlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(
@@ -483,8 +460,7 @@ class CW {
                               : Col.secondary,
                           width: initialBorderWidth ?? 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
               errorBorder: OutlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.error, width: 1.px)
@@ -510,14 +486,17 @@ class CW {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(width: 10.px),
-                                    Text(selectedCountryCode,
-                                        style: Theme.of(Get.context!)
-                                            .textTheme
-                                            .titleSmall),
+                                    Icon(Icons.arrow_drop_down,size: 26.px,color: Col.gray),
+                                    Center(
+                                      child: CW.commonNetworkImageView(
+                                          path: countryFlagPath,
+                                          isAssetImage: false,
+                                          height: 14.px,
+                                          width: 20.px),
+                                    ),
                                     SizedBox(width: 4.px),
-                                    Icon(Icons.keyboard_arrow_down,
-                                        size: 20.px, color: Col.secondary),
-                                    SizedBox(width: 4.px),
+                                    Text(selectedCountryCode,style: Theme.of(Get.context!).textTheme.titleSmall),
+                                    SizedBox(width: 6.px),
                                     VerticalDivider(
                                       width: 2,
                                       indent: 10.px,
@@ -1119,8 +1098,7 @@ class CW {
         cursorColor: cursorColor ?? Col.secondary,
         autoFocus: autoFocus,
         keyboardType: keyboardType,
-        inputFormatters: inputFormatters ??
-            <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+        inputFormatters: inputFormatters ?? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
         readOnly: readOnly,
         textStyle: textStyle ?? Theme.of(Get.context!).textTheme.headlineMedium,
         autoDisposeControllers: false,
@@ -1128,7 +1106,9 @@ class CW {
         animationType: AnimationType.fade,
         hintCharacter: hintCharacter ?? "-",
         hintStyle: textStyle ?? Theme.of(Get.context!).textTheme.headlineMedium,
+        scrollPadding: EdgeInsets.zero,
         pinTheme: PinTheme(
+          fieldOuterPadding: EdgeInsets.zero,
           inactiveColor: inactiveColor ?? Col.gray.withOpacity(0.3),
           inactiveFillColor: inactiveFillColor ?? Col.gray.withOpacity(0.3),
           selectedColor: selectedColor ?? Col.primary,
@@ -1137,14 +1117,11 @@ class CW {
           activeFillColor: activeFillColor ?? Col.inverseSecondary,
           shape: shape,
           fieldWidth: width ?? 50.px,
-          fieldHeight: height ?? 60.px,
+          fieldHeight: height ?? 50.px,
           borderWidth: borderWidth ?? 1.px,
           borderRadius: BorderRadius.circular(borderRadius ?? 10.px),
         ),
-        enableActiveFill:
-            shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle
-                ? true
-                : false,
+        enableActiveFill: shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle ? true : false,
         controller: controller,
         onChanged: onChanged,
         enablePinAutofill: enablePinAutofill,
@@ -1267,7 +1244,8 @@ class CW {
                   width: width,
                   color: color,
                   fit: fit,
-                  loadingBuilder: loadingBuilder ?? (context, child, loadingProgress) {
+                  loadingBuilder: loadingBuilder ??
+                      (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return CW.commonShimmerViewForImage(
                             height: height,
@@ -1277,7 +1255,13 @@ class CW {
                             duration: shimmerDuration,
                             movementColor: shimmerMovementColor);
                       },
-                  errorBuilder: (context, error, stackTrace) => Image.asset('assets/images/default_image.jpg', height: height, width: width, color: color, fit: fit,),
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    'assets/images/default_image.jpg',
+                    height: height,
+                    width: width,
+                    color: color,
+                    fit: fit,
+                  ),
                 ),
         ),
       );
@@ -1449,15 +1433,15 @@ class CW {
       );
 
   static commonNoDataFoundText({String? text}) => Center(
-    child: Text(
+        child: Text(
           text ?? 'No Data Found!',
           style: Theme.of(Get.context!)
               .textTheme
               .displayLarge
               ?.copyWith(color: Col.primary),
-      textAlign: TextAlign.center,
+          textAlign: TextAlign.center,
         ),
-  );
+      );
 
 //image:- error builder / VideoPlayer
 // Dower  TextFieldDropdown/Timer

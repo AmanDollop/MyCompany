@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
 
@@ -13,6 +17,12 @@ class LoginController extends GetxController {
 
   String apiBaseUrl = '';
   String companyId = '';
+
+  final loginButtonValue = false.obs;
+
+  Map<String, dynamic> bodyParamsSendOtp = {};
+  Map<String, dynamic> otpApiResponseMap = {};
+
 
   @override
   void onInit() {
@@ -38,12 +48,11 @@ class LoginController extends GetxController {
     Get.back();
   }
 
-  void clickOnContinueButton() {
+  Future<void> clickOnContinueButton() async {
     CM.unFocusKeyBoard();
     if(key.currentState!.validate() && termsCheckBoxValue.value){
-      BottomSheetForOTP.commonBottomSheetForVerifyOtp(
-        otp: '124512'
-      );
+      loginButtonValue.value = true;
+      await sendOtpApiCalling();
     }
   }
 
@@ -54,9 +63,36 @@ class LoginController extends GetxController {
     Get.toNamed(Routes.SIGN_UP,arguments: [companyId]);
   }
 
+  Future<void> sendOtpApiCalling() async {
+    try{
+      bodyParamsSendOtp = {
+        AK.action: 'userSentOtp',
+        AK.userEmail: emailController.text.trim().toString(),
+      };
 
-  void callingLogInApi(){
+      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+
+      if (response != null && response.statusCode == 200) {
+
+        otpApiResponseMap = jsonDecode(response.body);
+
+        loginButtonValue.value = false;
+
+        await BottomSheetForOTP.commonBottomSheetForVerifyOtp(otp: otpApiResponseMap["otp"].toString(),email: emailController.text.trim().toString());
+
+      }
+
+      else {
+        loginButtonValue.value = false;
+        CM.error();
+      }
+
+    }catch(e){
+      loginButtonValue.value = false;
+      CM.error();
+    }
 
   }
+
 
 }

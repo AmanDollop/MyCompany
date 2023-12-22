@@ -12,7 +12,7 @@ class C {
 
   /*   Margins     */
   static double margin = 16.px;
-  static double radius = 7.px;
+  static double radius = 6.px;
   static double buttonRadius = 18.px;
   static double textButtonRadius = 10.px;
   static double outlineButtonRadius = 12.px;

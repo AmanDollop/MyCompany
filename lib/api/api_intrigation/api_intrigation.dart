@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_model/branch_modal.dart';
 import 'package:task/api/api_model/branch_modal.dart';
 import 'package:task/api/api_model/branch_modal.dart';
+import 'package:task/api/api_model/country_code_modal.dart';
 import 'package:task/api/api_model/department_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
+import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/my_http/my_http.dart';
 
@@ -21,6 +24,7 @@ class CAI{
       url: AU.endPointCompanyControllerApi,
       bodyParams: bodyParams,
       context: Get.context!,
+      showSnackBar: false
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
@@ -34,17 +38,58 @@ class CAI{
     }
   }
 
-  static Future<http.Response?> logInApi({
+  static Future<http.Response?> registrationApi({
+    required Map<String, dynamic> bodyParams,
+    required Map<String, File> imageMap,
+  }) async {
+    http.Response? response = await MyHttp.multipartRequestForSignUp(
+      url: AU.endPointRegistrationApi,
+      bodyParams: bodyParams,
+      context: Get.context!, imageMap: imageMap, multipartRequestType: 'POST',
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> sendOtpApi({
     required Map<String, dynamic> bodyParams,
   }) async {
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointLogInApi,
+      url: AU.endPointSendOTPApi,
       bodyParams: bodyParams,
       context: Get.context!,
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<UserDataModal?> matchOtpApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    UserDataModal? userDataModal;
+    http.Response? response = await MyHttp.postMethod(
+      url: AU.endPointMatchOTPApi,
+      bodyParams: bodyParams,
+      context: Get.context!,
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        userDataModal = UserDataModal.fromJson(jsonDecode(response.body));
+        return userDataModal;
       } else {
         return null;
       }
@@ -116,6 +161,45 @@ class CAI{
     }
   }
 
+  static Future<CountryCodeModal?> getCountryCodeApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    CountryCodeModal? countryCodeModal;
+    http.Response? response = await MyHttp.postMethod(
+      url: AU.endPointGetCountryCodeApi,
+      bodyParams: bodyParams,
+      context: Get.context!,
+      showSnackBar: false
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        countryCodeModal = CountryCodeModal.fromJson(jsonDecode(response.body));
+        return countryCodeModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
+  static Future<http.Response?> loginApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    http.Response? response = await MyHttp.postMethod(
+      url: AU.endPointLogInApi,
+      bodyParams: bodyParams,
+      context: Get.context!,
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
 }

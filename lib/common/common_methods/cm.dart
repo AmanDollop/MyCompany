@@ -66,8 +66,7 @@ class CM {
         elevation: .4,
         showCloseIcon: showCloseIcon,
         closeIconColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(C.radius)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(C.radius)),
         content: Text(
           message,
           style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
@@ -75,7 +74,7 @@ class CM {
               ),
         ),
         backgroundColor: backgroundColor,
-        margin: EdgeInsets.symmetric(horizontal: C.margin, vertical: C.margin),
+        margin: EdgeInsets.symmetric(horizontal: C.margin, vertical: C.margin*6),
         behavior: SnackBarBehavior.floating,
         duration: duration ?? const Duration(seconds: 2),
       );
@@ -99,7 +98,7 @@ class CM {
   }
 
   static void error() {
-    showSnackBar(message: 'Something went wrong');
+    showSnackBar(message: 'Something went wrong!');
   }
 
   static void noInternet() {

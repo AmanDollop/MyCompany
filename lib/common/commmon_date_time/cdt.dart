@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -53,10 +54,12 @@ class CDT {
     return pickedTime;
   }
 
-  static Future<DateTime?> iosPicker({
+  static Future<String> iosPicker({
     DateTime? lastDate,
     DateTime? firstDate,
     DateTime? initialDate,
+    int? minimumYear,
+    int? maximumYear,
     required BuildContext context,
     VoidCallback? clickOnSelect,
     double? height,
@@ -66,8 +69,10 @@ class CDT {
     bool showDayOfWeek = false,
     CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
     DatePickerDateOrder order = DatePickerDateOrder.dmy,
+    TextEditingController? dateController
   }) async {
-    DateTime? pickedDate;
+    String formattedDate = DateFormat('dd MMM yyyy').format(DateTime.now());
+
     CBS.commonBottomSheet(
       children: [
         Padding(
@@ -91,12 +96,17 @@ class CDT {
                   child: SizedBox(
                     height: height ?? MediaQuery.of(context).size.height / 3.5,
                     child: CupertinoDatePicker(
-                      initialDateTime: initialDate ?? DateTime.now(),
-                      minimumDate: firstDate ?? DateTime(2000),
+                      initialDateTime:  initialDate ?? DateTime(DateTime.now().year - 18),
+                      minimumDate: firstDate ?? DateTime(1900),
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
-                        pickedDate = value;
+                        formattedDate = DateFormat('dd MMM yyyy').format(value);
+                        dateController?.text = formattedDate;
+                        print('val::::::::::   $formattedDate');
                       },
+                      minimumYear: minimumYear ?? DateTime.now().year - 123,
+                      maximumYear: maximumYear ?? DateTime.now().year,
+
                       showDayOfWeek: showDayOfWeek,
                       use24hFormat: use24hFormat,
                       mode: mode,
@@ -136,6 +146,7 @@ class CDT {
             InkWell(
               onTap: clickOnSelect ??
                   () {
+                    dateController?.text = formattedDate;
                     Get.back();
                   },
               borderRadius: BorderRadius.circular(10.px),
@@ -164,6 +175,7 @@ class CDT {
       showDragHandle: false,
       isDismissible: false,
     );
-    return pickedDate;
+
+    return formattedDate;
   }
 }

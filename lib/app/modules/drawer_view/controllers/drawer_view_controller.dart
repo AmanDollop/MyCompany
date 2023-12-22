@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class DrawerViewController extends GetxController {
   final count = 0.obs;
@@ -74,7 +75,8 @@ class DrawerViewController extends GetxController {
         clickOnCancel: () {
           Get.back();
         },
-        clickOnLogout: () {
+        clickOnLogout: () async {
+          await DataBaseHelper().deleteDataBase();
           Get.offAllNamed(Routes.SEARCH_COMPANY);
         },
       );

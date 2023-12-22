@@ -1,15 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/scroll_behavior/scroll_behavior.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+import 'package:http/http.dart' as http;
 
 class CBS {
   static Future<void> commonBottomSheet({
@@ -343,12 +350,78 @@ class CBS {
 
 class BottomSheetForOTP extends GetxController {
 
+  static final verifyButtonValue = false.obs;
+  static final otpController = TextEditingController();
+  static final timer = false.obs;
+  static final count = 0.obs;
+  static final userDataModal = Rxn<UserDataModal?>();
+  static UserData? userData;
+
+  static Map<String, dynamic> bodyParamsSendOtp = {};
+  static Map<String, dynamic> otpApiResponseMap = {};
+
+  static Map<String, dynamic> bodyParamsMatchOtp = {};
+
+  static Future<void> sendOtpApiCalling({required String email}) async {
+    timer.value = !timer.value;
+    try{
+      otpController.text = '';
+      otpController.clear();
+      bodyParamsSendOtp = {
+        AK.action: 'userSentOtp',
+        AK.userEmail: email,
+      };
+      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+      if (response != null && response.statusCode == 200) {
+
+        otpApiResponseMap = jsonDecode(response.body);
+        Future.delayed(const Duration(seconds: 2),() => otpController.text = otpApiResponseMap['otp'].toString(),);
+
+      }
+      else {
+        CM.error();
+      }
+
+    }catch(e){
+      CM.error();
+    }
+
+  }
+
+  static Future<void> matchOtpApiCalling({required String email,required String otp}) async {
+    try{
+      bodyParamsMatchOtp = {
+        AK.action: 'matchOtp',
+        AK.otp: otp,
+        AK.userEmail: email,
+      };
+      userDataModal.value = await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
+      if (userDataModal.value != null) {
+        userData=userDataModal.value?.data;
+        if(userData?.token != null && userData!.token!.isNotEmpty) {
+          CM.showSnackBar(message: 'LogIn Successfully');
+          await DataBaseHelper().insertInDataBase(data: userData!.toJson());
+          Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
+        }
+
+      }
+      else {
+        verifyButtonValue.value=false;
+        CM.error();
+      }
+    }catch(e){
+      verifyButtonValue.value=false;
+      CM.error();
+    }
+    verifyButtonValue.value=false;
+
+  }
+
   static Future<void> commonBottomSheetForVerifyOtp({
     required String otp,
+    required String email
   }) async {
-    final timer = false.obs;
-    final count = 0.obs;
-    final otpController = TextEditingController();
+
     await showModalBottomSheet(
       context: Get.context!,
       showDragHandle: true,
@@ -367,7 +440,9 @@ class BottomSheetForOTP extends GetxController {
           builder: (context, setState) {
             return Obx(() {
               count.value;
-              otpController.text = otp;
+              if(otp.isNotEmpty) {
+                otpController.text = otp;
+              }
               return WillPopScope(
                 onWillPop: () async {
                   return false;
@@ -409,8 +484,6 @@ class BottomSheetForOTP extends GetxController {
                             controller: otpController,
                             shape: PinCodeFieldShape.box,
                             length: 6,
-                            width: 50.px,
-                            height: 50.px,
                             readOnly: true),
                       ),
                       Row(
@@ -423,20 +496,15 @@ class BottomSheetForOTP extends GetxController {
                                   child: Text("Resend OTP", style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
                                 )
                               : TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      otpController.text = '';
-                                      otpController.clear();
-                                      otp = '';
-                                      count.value++;
-                                      timer.value = !timer.value;
-                                    });
+                                  onPressed: () async {
+                                    otp = '';
+                                    await  sendOtpApiCalling(email: email);
                                   },
                                   child: Text("Resend OTP", style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
                                 ),
                           timer.value
                               ? Countdown(
-                                  seconds: 15,
+                                  seconds: 10,
                                   build: (_, double time) {
                                     return Text(
                                       " in 00:${time.toInt()}",
@@ -447,34 +515,39 @@ class BottomSheetForOTP extends GetxController {
                                   onFinished: () {
                                     setState(() {
                                       timer.value = !timer.value;
-                                      // otpController.text='123456';
                                     });
                                   },
                                 )
                               : const SizedBox(),
                         ],
                       ),
-                      SizedBox(height: 20.px),
+                      SizedBox(height: 12.px),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CW.commonOutlineButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              buttonText: 'Back',
-                              width: 158.px,
-                              height: 44.px,
-                              borderRadius: C.outlineButtonRadius),
-                          CW.commonElevatedButton(
-                              onPressed: () {
-                                if (otpController.text.isNotEmpty) {
-                                  Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
-                                }
-                              },
-                              buttonText: 'Verify',
-                              width: 158.px,
-                              height: 44.px),
+                          Expanded(
+                            child: CW.commonOutlineButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                buttonText: 'Back',
+                                // width: 174.px,
+                                height: 42.px,
+                                borderRadius: C.radius),
+                          ),
+                          SizedBox(width: 10.px),
+                          Expanded(
+                            child: CW.commonElevatedButton(
+                                onPressed: () async {
+                                  if (otpController.text.isNotEmpty) {
+                                    verifyButtonValue.value = true;
+                                    await matchOtpApiCalling(email: email,otp: otpController.text.trim().toString());
+                                  }
+                                },
+                                isLoading: verifyButtonValue.value,
+                                buttonText: 'Verify',
+                                height: 42.px),
+                          ),
                         ],
                       ),
                     ],
@@ -486,8 +559,10 @@ class BottomSheetForOTP extends GetxController {
         );
       },
     ).whenComplete(() {
+      CM.unFocusKeyBoard();
       otpController.clear();
       timer.value=false;
     });
   }
+
 }

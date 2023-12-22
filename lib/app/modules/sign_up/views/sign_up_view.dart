@@ -73,16 +73,13 @@ class SignUpView extends GetView<SignUpController> {
                               onChanged: (value) {
                                 CM.unFocusKeyBoard();
                                 controller.genderIndexValue.value = value;
-                                controller.genderType.value =
-                                    controller.genderText.value[index];
+                                controller.genderType.value = controller.genderText.value[index];
                                 controller.count.value++;
                               },
                               index: index.toString(),
-                              selectedIndex:
-                                  controller.genderIndexValue.value.toString(),
+                              selectedIndex: controller.genderIndexValue.value.toString(),
                             ),
-                            genderLabelTextView(
-                                text: controller.genderText[index])
+                            genderLabelTextView(text: controller.genderText[index])
                           ],
                         );
                       },
@@ -92,9 +89,10 @@ class SignUpView extends GetView<SignUpController> {
                       scrollDirection: Axis.horizontal),
                 ),
                 SizedBox(height: 25.px),
-                CW.commonElevatedButton(
-                    onPressed: () => controller.clickOnRegisterButton(),
-                    buttonText: 'Register'),
+                CW.commonElevatedButton(onPressed:controller.registerButtonValue.value
+                    ? () => null
+                    :() => controller.clickOnRegisterButton(),
+                    buttonText: 'Register',isLoading: controller.registerButtonValue.value),
 
               ],
             ),
@@ -187,7 +185,7 @@ class SignUpView extends GetView<SignUpController> {
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -206,7 +204,7 @@ class SignUpView extends GetView<SignUpController> {
         prefixIcon:
             commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
         onTap: () => controller.clickOnSelectYourDepartmentTextField(),
         onChanged: (value) {
           controller.count.value++;
@@ -224,7 +222,7 @@ class SignUpView extends GetView<SignUpController> {
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/watch_icon.png'),
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -296,7 +294,8 @@ class SignUpView extends GetView<SignUpController> {
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         isCountrySelection: true,
-        selectedCountryCode: '+91',
+        selectedCountryCode: controller.countryCode,
+        countryFlagPath: controller.countryImagePath.value,
         clickOnArrowDown: () => controller.clickOnCountryCode(),
         onChanged: (value) {
           controller.count.value++;
@@ -306,8 +305,7 @@ class SignUpView extends GetView<SignUpController> {
         ),
       );
 
-  Widget commonIconImage({required String imagePath, double? height, double? width}) =>
-      SizedBox(
+  Widget commonIconImage({required String imagePath, double? height, double? width}) => SizedBox(
         width: height ?? 24.px,
         height: width ?? 24.px,
         child: Center(
@@ -321,10 +319,7 @@ class SignUpView extends GetView<SignUpController> {
 
   Widget genderLabelTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .titleSmall
-            ?.copyWith(fontWeight: FontWeight.w500),
+        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
       );
 
 }

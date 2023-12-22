@@ -100,7 +100,7 @@ class SelectDepartmentView extends GetView<SelectDepartmentController> {
                 Container(
                   height: 80,
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 3.px),
+                  padding: EdgeInsets.symmetric(vertical: 4.px,horizontal: 12.px,),
                   color: Col.inverseSecondary,
                   child: Center(
                     child: CW.commonElevatedButton(
