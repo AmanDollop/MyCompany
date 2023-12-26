@@ -63,7 +63,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
                                 },
                               ),
                             )
-                            : CW.commonNoDataFoundText(),
+                            : controller.searchController.text.length >= 3? CW.commonNoDataFoundText() : commonSearchImageView(),
                 const SizedBox()
               ],
             ),
@@ -115,8 +115,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
           borderRadius: BorderRadius.circular(8.px),
         ),
         child: commonIconImage(
-            imagePath:
-                '${AU.baseUrlForImage}${controller.searchCompanyList?[index].companyLogo}',
+            imagePath: '${AU.baseUrlForSearchCompanyImage}${controller.searchCompanyList?[index].companyLogo}',
             isAssetImage: false,
             height: 44.px,
             width: 44.px),

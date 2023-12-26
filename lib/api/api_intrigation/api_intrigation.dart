@@ -16,6 +16,11 @@ import 'package:task/common/my_http/my_http.dart';
 
 class CAI{
 
+  static Future<String> baseUrlRe() async {
+    String baseUrlAll = await CM.getString(key: AK.baseUrl)??'';
+    return baseUrlAll;
+  }
+
   static Future<SearchCompanyModal?> searchCompanyApi({
     required Map<String, dynamic> bodyParams,
   }) async {
@@ -24,7 +29,7 @@ class CAI{
       url: AU.endPointCompanyControllerApi,
       bodyParams: bodyParams,
       context: Get.context!,
-      showSnackBar: false
+      showSnackBar: false,
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {

@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
+import '../modules/contact_detail/bindings/contact_detail_binding.dart';
+import '../modules/contact_detail/views/contact_detail_view.dart';
 import '../modules/drawer_view/bindings/drawer_view_binding.dart';
 import '../modules/drawer_view/views/drawer_view_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
@@ -18,6 +20,8 @@ import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/otp_verification/bindings/otp_verification_binding.dart';
 import '../modules/otp_verification/views/otp_verification_view.dart';
+import '../modules/personal_info/bindings/personal_info_binding.dart';
+import '../modules/personal_info/views/personal_info_view.dart';
 import '../modules/search_company/bindings/search_company_binding.dart';
 import '../modules/search_company/views/search_company_view.dart';
 import '../modules/select_brance/bindings/select_brance_binding.dart';
@@ -38,7 +42,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH;
+  static const INITIAL = Routes.CONTACT_DETAIL;
 
   static final routes = [
     GetPage(
@@ -120,6 +124,16 @@ class AppPages {
       name: _Paths.SELECT_SHIFT_TIME,
       page: () => const SelectShiftTimeView(),
       binding: SelectShiftTimeBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONTACT_DETAIL,
+      page: () => const ContactDetailView(),
+      binding: ContactDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.PERSONAL_INFO,
+      page: () => const PersonalInfoView(),
+      binding: PersonalInfoBinding(),
     ),
   ];
 }

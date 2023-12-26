@@ -35,23 +35,27 @@ class SearchCompanyController extends GetxController {
 
   void increment() => count.value++;
 
-  void clickOnCompany({required int index}) {
+  Future<void> clickOnCompany({required int index}) async {
     CM.unFocusKeyBoard();
     if(searchCompanyList?[index].companyId != null && searchCompanyList![index].companyId!.isNotEmpty && searchCompanyList?[index].baseUrl != null && searchCompanyList![index].baseUrl!.isNotEmpty) {
 
       String apiBaseUrl = searchCompanyList?[index].baseUrl.toString()??'';
+      String companyLogo = searchCompanyList?[index].companyLogo.toString()??'';
       String companyId = searchCompanyList?[index].companyId.toString()??'';
-      Get.toNamed(Routes.LOGIN,arguments: [apiBaseUrl,companyId]);
+
+      await CM.setString(key: AK.baseUrl, value: apiBaseUrl.toString());
+      Get.toNamed(Routes.LOGIN,arguments: [companyId,companyLogo]);
+
     }else{
-      CM.showSnackBar(message: 'Something went wrong!');
+      CM.error();
     }
 
   }
 
   Future<void> searchOnChanged({required String value}) async {
     try{
-      apiResponseValue.value = true;
       if (value.length >= 3) {
+        apiResponseValue.value = true;
         searchCompanyList?.clear();
         await searchCompanyApiCalling();
         count.value++;

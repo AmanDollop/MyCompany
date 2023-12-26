@@ -228,8 +228,8 @@ class SignUpController extends GetxController {
                           padding: EdgeInsets.all(5.px),
                           child: CW.commonNetworkImageView(
                             path: searchCountryController.text.isNotEmpty
-                                ? '${AU.baseUrlForImage1}${countryCodeListSearch[index].flag}'
-                                : '${AU.baseUrlForImage1}${countryCodeList?[index].flag}',
+                                ? '${AU.baseUrlAllApisImage}${countryCodeListSearch[index].flag}'
+                                : '${AU.baseUrlAllApisImage}${countryCodeList?[index].flag}',
                             isAssetImage: false,
                             height: 18.px,
                             width: 28.px,
@@ -272,11 +272,11 @@ class SignUpController extends GetxController {
   void clickOnCountryDropDownValue({required int index}) {
     if(searchCountryController.text.isNotEmpty){
       countryCode =  countryCodeListSearch[index].phonecode??'';
-      countryImagePath.value =  '${AU.baseUrlForImage1}${countryCodeListSearch[index].flag}';
+      countryImagePath.value =  '${AU.baseUrlAllApisImage}${countryCodeListSearch[index].flag}';
       Get.back();
     }else{
       countryCode =  countryCodeList?[index].phonecode??'';
-      countryImagePath.value =  '${AU.baseUrlForImage1}${countryCodeList?[index].flag}';
+      countryImagePath.value =  '${AU.baseUrlAllApisImage}${countryCodeList?[index].flag}';
       Get.back();
     }
   }
@@ -334,7 +334,7 @@ class SignUpController extends GetxController {
         countryCodeList?.forEach((element) {
           if(element.phonecode == '+91'){
             countryCode = element.phonecode ??'';
-            countryImagePath.value = "${AU.baseUrlForImage1}${element.flag}";
+            countryImagePath.value = "${AU.baseUrlAllApisImage}${element.flag}";
           }
         });
       }

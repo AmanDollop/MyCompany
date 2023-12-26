@@ -2,6 +2,8 @@
 
 class AK {
   ///COMMON Api Key
+  static const baseUrl = "baseUrl";
+
   static const limit="limit";
 
   static const offset="offset";
@@ -56,33 +58,31 @@ class AK {
 class AU {
 
   //BASEURL
-  static const baseUrl = "http://192.168.1.246/Projects/GitLabProjects/company_master/api/";
+  static const baseUrlForSearchCompany = "http://192.168.1.229/Projects/GitLabProjects/company_master/api/";
 
-  static const baseUrlForImage = "http://192.168.1.246/Projects/GitLabProjects/company_master/";
+  static const baseUrlForSearchCompanyImage = "http://192.168.1.229/Projects/GitLabProjects/company_master/";
 
-  static const baseUrlFor1 = "http://192.168.1.229/Projects/GitLabProjects/co-manage/api/";
+  static const baseUrlAllApis = "http://192.168.1.229/Projects/GitLabProjects/co-manage/api/";
 
-  static const baseUrlForImage1 = "http://192.168.1.229/Projects/GitLabProjects/co-manage/";
+  static const baseUrlAllApisImage = "http://192.168.1.229/Projects/GitLabProjects/co-manage/";
 
-  static const baseUrlForGet = "http://192.168.1.246/Projects/GitLabProjects/co-manage/api/";
+  static const endPointCompanyControllerApi = "${baseUrlForSearchCompany}CompanyController.php";
 
-  static const endPointCompanyControllerApi = "${baseUrl}CompanyController.php";
+  static const endPointLogInApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointLogInApi = "${baseUrlFor1}AuthController.php";
+  static const endPointRegistrationApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointRegistrationApi = "${baseUrlFor1}AuthController.php";
+  static const endPointSendOTPApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointSendOTPApi = "${baseUrlFor1}AuthController.php";
+  static const endPointMatchOTPApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointMatchOTPApi = "${baseUrlFor1}AuthController.php";
+  static const endPointBranchApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointBranchApi = "${baseUrlForGet}AuthController.php";
+  static const endPointDepartmentApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointDepartmentApi = "${baseUrlForGet}AuthController.php";
+  static const endPointShiftTimeApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointShiftTimeApi = "${baseUrlForGet}AuthController.php";
-
-  static const endPointGetCountryCodeApi = "${baseUrlFor1}AuthController.php";
+  static const endPointGetCountryCodeApi = "${baseUrlAllApis}AuthController.php";
 
 
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
@@ -294,8 +293,7 @@ class CBS {
         rightPadding: 10.px,
       );
 
-  Widget commonView({required VoidCallback onTap, required String title}) =>
-      InkWell(
+  Widget commonView({required VoidCallback onTap, required String title}) => InkWell(
         onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -376,12 +374,10 @@ class BottomSheetForOTP extends GetxController {
 
         otpApiResponseMap = jsonDecode(response.body);
         Future.delayed(const Duration(seconds: 2),() => otpController.text = otpApiResponseMap['otp'].toString(),);
-
       }
       else {
         CM.error();
       }
-
     }catch(e){
       CM.error();
     }
@@ -441,7 +437,7 @@ class BottomSheetForOTP extends GetxController {
             return Obx(() {
               count.value;
               if(otp.isNotEmpty) {
-                otpController.text = otp;
+                Future.delayed(const Duration(seconds: 2),() => otpController.text = otp,);
               }
               return WillPopScope(
                 onWillPop: () async {

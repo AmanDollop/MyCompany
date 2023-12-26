@@ -19,6 +19,8 @@ abstract class Routes {
   static const MY_PROFILE = _Paths.MY_PROFILE;
   static const SELECT_DEPARTMENT = _Paths.SELECT_DEPARTMENT;
   static const SELECT_SHIFT_TIME = _Paths.SELECT_SHIFT_TIME;
+  static const CONTACT_DETAIL = _Paths.CONTACT_DETAIL;
+  static const PERSONAL_INFO = _Paths.PERSONAL_INFO;
 }
 
 abstract class _Paths {
@@ -39,4 +41,6 @@ abstract class _Paths {
   static const MY_PROFILE = '/my-profile';
   static const SELECT_DEPARTMENT = '/select-department';
   static const SELECT_SHIFT_TIME = '/select-shift-time';
+  static const CONTACT_DETAIL = '/contact-detail';
+  static const PERSONAL_INFO = '/personal-info';
 }

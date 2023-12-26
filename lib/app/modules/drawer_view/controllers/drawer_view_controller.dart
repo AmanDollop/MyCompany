@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
+import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class DrawerViewController extends GetxController {
@@ -77,6 +79,7 @@ class DrawerViewController extends GetxController {
         },
         clickOnLogout: () async {
           await DataBaseHelper().deleteDataBase();
+          await CM.setString(key: AK.baseUrl, value: '');
           Get.offAllNamed(Routes.SEARCH_COMPANY);
         },
       );

@@ -189,8 +189,7 @@ class CW {
                 color: color ?? Col.gray,
               ),
         padding: padding,
-        constraints: BoxConstraints(
-            maxHeight: size ?? 20.px, minWidth: width ?? size ?? 20.px),
+        // constraints: BoxConstraints(maxHeight: size ?? 20.px, minWidth: width ?? size ?? 20.px),
         splashColor: splashColor,
       );
 

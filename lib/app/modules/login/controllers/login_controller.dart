@@ -16,6 +16,7 @@ class LoginController extends GetxController {
   final emailController = TextEditingController();
 
   String apiBaseUrl = '';
+  String companyLogo = '';
   String companyId = '';
 
   final loginButtonValue = false.obs;
@@ -25,10 +26,12 @@ class LoginController extends GetxController {
 
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    apiBaseUrl = Get.arguments[0];
-    companyId = Get.arguments[1];
+    companyId = Get.arguments[0];
+    companyLogo = Get.arguments[1];
+    apiBaseUrl = await CM.getString(key: AK.baseUrl)??'';
+    print('apiBaseUrl::::::::::::::     $apiBaseUrl');
   }
 
   @override
@@ -69,24 +72,17 @@ class LoginController extends GetxController {
         AK.action: 'userSentOtp',
         AK.userEmail: emailController.text.trim().toString(),
       };
-
       http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
-
       if (response != null && response.statusCode == 200) {
-
         otpApiResponseMap = jsonDecode(response.body);
-
         loginButtonValue.value = false;
-
+        print('otpApiResponseMap["otp"]:::::::   ${otpApiResponseMap["otp"].toString()}');
         await BottomSheetForOTP.commonBottomSheetForVerifyOtp(otp: otpApiResponseMap["otp"].toString(),email: emailController.text.trim().toString());
-
       }
-
       else {
         loginButtonValue.value = false;
         CM.error();
       }
-
     }catch(e){
       loginButtonValue.value = false;
       CM.error();

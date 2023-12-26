@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -19,7 +20,7 @@ class LoginView extends GetView<LoginController> {
       },
       child: Scaffold(
         appBar: CW.commonAppBarView(
-          title: 'Welcome to Developer',
+          title: 'Welcome Developer',
           isLeading: true,
           onBackPressed: () => controller.clickOnBackButton(),
         ),
@@ -28,7 +29,7 @@ class LoginView extends GetView<LoginController> {
           return Form(
             key: controller.key,
             child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 24.px),
+              padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
               children: [
                 logoView(),
                 SizedBox(height: 24.px),
@@ -57,20 +58,41 @@ class LoginView extends GetView<LoginController> {
                   ],
                 ),
                 SizedBox(height: 40.px),
-                CW.commonElevatedButton(onPressed: controller.loginButtonValue.value
-                    ?() => null
-                    :() => controller.clickOnContinueButton(), buttonText: 'Continue',isLoading: controller.loginButtonValue.value),
-                SizedBox(height: 40.px),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CW.commonOutlineButton(onPressed: (){}, child: commonIconImage(imagePath: 'assets/icons/google_icon.png',width: 20.px,height: 20.px),),
-                    SizedBox(width: 20.px),
-                    CW.commonOutlineButton(onPressed: (){}, child:  commonIconImage(imagePath: 'assets/icons/facebook_icon.png',width: 20.px,height: 20.px),),
-                    SizedBox(width: 20.px),
-                    CW.commonOutlineButton(onPressed: (){}, child:  commonIconImage(imagePath: 'assets/icons/apple_icon.png',width: 20.px,height: 20.px),),
-                  ],
-                ),
+                CW.commonElevatedButton(
+                    onPressed: controller.loginButtonValue.value
+                        ? () => null
+                        : () => controller.clickOnContinueButton(),
+                    buttonText: 'Continue',
+                    isLoading: controller.loginButtonValue.value),
+                //  SizedBox(height: 40.px),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     CW.commonOutlineButton(
+                //       onPressed: () {},
+                //       child: commonIconImage(
+                //           imagePath: 'assets/icons/google_icon.png',
+                //           width: 20.px,
+                //           height: 20.px),
+                //     ),
+                //     SizedBox(width: 20.px),
+                //     CW.commonOutlineButton(
+                //       onPressed: () {},
+                //       child: commonIconImage(
+                //           imagePath: 'assets/icons/facebook_icon.png',
+                //           width: 20.px,
+                //           height: 20.px),
+                //     ),
+                //     SizedBox(width: 20.px),
+                //     CW.commonOutlineButton(
+                //       onPressed: () {},
+                //       child: commonIconImage(
+                //           imagePath: 'assets/icons/apple_icon.png',
+                //           width: 20.px,
+                //           height: 20.px),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: 20.px),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -80,10 +102,13 @@ class LoginView extends GetView<LoginController> {
                       style: Theme.of(Get.context!).textTheme.titleMedium,
                     ),
                     CW.commonTextButton(
-                      onPressed: () =>controller.clickOnCreateAccountButton(),
+                      onPressed: () => controller.clickOnCreateAccountButton(),
                       child: Text(
                         'Create Account',
-                        style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(color: Col.primary),
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: Col.primary),
                       ),
                     )
                   ],
@@ -104,16 +129,34 @@ class LoginView extends GetView<LoginController> {
             color: Col.primary,
             borderRadius: BorderRadius.circular(8.px),
           ),
-          child: commonIconImage(imagePath: 'assets/images/logo.png', height: 44.px, width: 44.px),
+          child: commonIconImage(
+            imagePath: controller.companyLogo.isNotEmpty
+                ? '${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}'
+                : 'assets/images/logo.png',
+            height: controller.companyLogo.isNotEmpty
+                ? 64.px:44.px,
+            width: controller.companyLogo.isNotEmpty
+                ? 64.px:44.px,
+            isAssetImage:  controller.companyLogo.isNotEmpty
+                ? false
+                : true
+          ),
         ),
       );
 
-  Widget commonIconImage({required String imagePath, double? height, double? width,}) => SizedBox(
-        width: height??24.px,
-        height: width??24.px,
+  Widget commonIconImage(
+          {required String imagePath,
+          double? height,
+          double? width,
+          bool isAssetImage = true}) => SizedBox(
+        width: height ?? 24.px,
+        height: width ?? 24.px,
         child: Center(
           child: CW.commonNetworkImageView(
-              path: imagePath, isAssetImage: true, width:  width??24.px, height: height??24.px),
+              path: imagePath,
+              isAssetImage: isAssetImage,
+              width: width ?? 24.px,
+              height: height ?? 24.px),
         ),
       );
 
@@ -133,27 +176,32 @@ class LoginView extends GetView<LoginController> {
         },
       );
 
-  TextSpan commonTextSpanView() =>TextSpan(
-    text: 'Accept all ',
-    style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontSize: 12.px),
-    children: [
-      TextSpan(
-        text: 'Terms of Service',
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary, fontWeight: FontWeight.w700, fontSize: 12.px),
-      ),
-      TextSpan(
-          text: ' and',
-          style: Theme.of(Get.context!)
-              .textTheme
-              .titleLarge
-              ?.copyWith(fontSize: 12.px)),
-      TextSpan(
-          text: ' Privacy Policy',
-          style: Theme.of(Get.context!)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: Col.primary, fontWeight: FontWeight.w700, fontSize: 12.px)),
-    ],
-  );
-
+  TextSpan commonTextSpanView() => TextSpan(
+        text: 'Accept all ',
+        style: Theme.of(Get.context!)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontSize: 12.px),
+        children: [
+          TextSpan(
+            text: 'Terms of Service',
+            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
+                color: Col.primary,
+                fontWeight: FontWeight.w700,
+                fontSize: 12.px),
+          ),
+          TextSpan(
+              text: ' and',
+              style: Theme.of(Get.context!)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontSize: 12.px)),
+          TextSpan(
+              text: ' Privacy Policy',
+              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+                  color: Col.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.px)),
+        ],
+      );
 }
