@@ -14,7 +14,6 @@ class AppThemeData {
         backgroundColor: Col.primary,
         elevation: 1,
       ),
-
       // Scroll Bar Theme
       /*scrollbarTheme: ScrollbarThemeData(
           thumbVisibility: MaterialStateProperty.all(true),

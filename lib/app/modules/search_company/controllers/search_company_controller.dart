@@ -55,6 +55,7 @@ class SearchCompanyController extends GetxController {
   Future<void> searchOnChanged({required String value}) async {
     try{
       if (value.length >= 3) {
+        print('value.length::::   ${value.length}');
         apiResponseValue.value = true;
         searchCompanyList?.clear();
         await searchCompanyApiCalling();

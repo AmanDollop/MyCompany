@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
@@ -14,11 +15,13 @@ class MyProfileView extends GetView<MyProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CW.commonAppBarView(
-            title: 'My Profile',
-            isLeading: true,
-            onBackPressed: () => controller.clickOnBackButton()),
-        body: ListView(
+      appBar: CW.commonAppBarView(
+          title: 'My Profile',
+          isLeading: true,
+          onBackPressed: () => controller.clickOnBackButton()),
+      body: Obx(() {
+        controller.count.value;
+        return ListView(
           padding: EdgeInsets.zero,
           children: [
             Padding(
@@ -42,9 +45,18 @@ class MyProfileView extends GetView<MyProfileController> {
                     ],
                   ),
                   SizedBox(height: 20.px),
-                  commonRowForEmailAndNumber(title: 'Mobile Number', name: '+91 1234567890'),
+                  commonRowForEmailAndNumber(
+                      title: 'Mobile Number',
+                      name:controller.mobileNumber.value!='null'&& controller.mobileNumber.isNotEmpty &&
+                          controller.countryCode.value!='null'&& controller.countryCode.isNotEmpty
+                          ? '${controller.countryCode} ${controller.mobileNumber}'
+                          : '+91 1234567890'),
                   SizedBox(height: 6.px),
-                  commonRowForEmailAndNumber(title: 'Email', name: 'testing.dollop@gmai.com'),
+                  commonRowForEmailAndNumber(
+                      title: 'Email',
+                      name: controller.email.value!='null'&&controller.email.isNotEmpty
+                          ? '${controller.email}'
+                          : 'test@gmai.com'),
                 ],
               ),
             ),
@@ -53,7 +65,8 @@ class MyProfileView extends GetView<MyProfileController> {
             listView(),
             SizedBox(height: 30.px),
           ],
-        ),
+        );
+      }),
     );
   }
 
@@ -66,20 +79,32 @@ class MyProfileView extends GetView<MyProfileController> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(31.px),
             child: CW.commonNetworkImageView(
-                path: 'assets/images/profile.png',
-                isAssetImage: true,
+                path: controller.userPic.value.isNotEmpty
+                    ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
+                    : 'assets/images/profile.png',
+                isAssetImage:
+                    controller.userPic.value.isNotEmpty ? false : true,
                 width: 62.px,
                 height: 62.px),
           ),
         ),
       );
 
-  Widget nameTextView() => Text('Testing Dollop',
+  Widget nameTextView() => Text(
+      controller.firstName.value != 'null' &&
+              controller.firstName.isNotEmpty &&
+              controller.lastName.value != 'null' &&
+              controller.lastName.isNotEmpty
+          ? '${controller.firstName}${controller.lastName}'
+          : 'User Name',
       style: Theme.of(Get.context!).textTheme.displayLarge,
       maxLines: 1,
       overflow: TextOverflow.ellipsis);
 
-  Widget userDetailTextView() => Text('Ui/Ux Designer',
+  Widget userDetailTextView() => Text(
+      controller.developerType.value!='null'&& controller.developerType.isNotEmpty
+          ? '${controller.developerType}'
+          : 'Developer',
       style: Theme.of(Get.context!).textTheme.titleMedium,
       maxLines: 1,
       overflow: TextOverflow.ellipsis);
@@ -91,7 +116,8 @@ class MyProfileView extends GetView<MyProfileController> {
       width: 40.px,
       size: 40.px);
 
-  Widget commonRowForEmailAndNumber({required String title, required String name}) => Row(
+  Widget commonRowForEmailAndNumber({required String title, required String name}) =>
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
@@ -133,25 +159,30 @@ class MyProfileView extends GetView<MyProfileController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if(titleText != '')
-            Padding(
-              padding: EdgeInsets.only(left: 12.px, right: 12.px, top: viewAllButtonValue ? 8.px : 16.px),
-              child: Row(
-                mainAxisAlignment: viewAllButtonValue ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
-                children: [
-                  Text(
-                    titleText,
-                    style: Theme.of(Get.context!).textTheme.displayLarge,
-                  ),
-                ],
+            if (titleText != '')
+              Padding(
+                padding: EdgeInsets.only(
+                    left: 12.px,
+                    right: 12.px,
+                    top: viewAllButtonValue ? 8.px : 16.px),
+                child: Row(
+                  mainAxisAlignment: viewAllButtonValue
+                      ? MainAxisAlignment.spaceBetween
+                      : MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      titleText,
+                      style: Theme.of(Get.context!).textTheme.displayLarge,
+                    ),
+                  ],
+                ),
               ),
-            ),
             listWidget
           ],
         ),
       );
 
-  Widget commonCard({required String imagePath,required String text1,String? text2,bool text2Value = false,double? imageWidth, double? imageHeight,double? cardHeight}) => Ink(
+  Widget commonCard({required String imagePath, required String text1, String? text2, bool text2Value = false, double? imageWidth, double? imageHeight, double? cardHeight}) => Ink(
         height: cardHeight ?? 134.px,
         padding: EdgeInsets.only(left: 3.px),
         decoration: BoxDecoration(
@@ -172,32 +203,37 @@ class MyProfileView extends GetView<MyProfileController> {
               borderRadius: BorderRadius.circular(27.px),
               child: Image.asset(
                 imagePath,
-                width: imageWidth??54.px,
-                height: imageHeight??54.px,
+                width: imageWidth ?? 54.px,
+                height: imageHeight ?? 54.px,
               ),
             ),
             SizedBox(height: 6.px),
             Flexible(
               child: Text(
-                 text1,
-                style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(fontSize: 14.px),
+                text1,
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .displayLarge
+                    ?.copyWith(fontSize: 14.px),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
               ),
             ),
-            if(text2Value)
-            SizedBox(height: 2.px),
-            if(text2Value)
-            Flexible(
-              child: Text(
-                text2 ??"",
-                style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+            if (text2Value) SizedBox(height: 2.px),
+            if (text2Value)
+              Flexible(
+                child: Text(
+                  text2 ?? "",
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(fontWeight: FontWeight.w500),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
           ],
         ),
       );
@@ -215,10 +251,19 @@ class MyProfileView extends GetView<MyProfileController> {
               child: Padding(
                 padding: EdgeInsets.only(
                     left: index % 2 == 0 ? C.margin : C.margin / 2,
-                    right: index % 2 == 0 ? C.margin / 2 : C.margin ,
+                    right: index % 2 == 0 ? C.margin / 2 : C.margin,
                     top: 0,
                     bottom: C.margin),
-                child: commonCard(imagePath: 'assets/images/profile.png',text2Value: true,text1: 'Testing Dollop',text2: 'Ui/Ux Designer',cardHeight: 124.px),
+                child: InkWell(
+                    onTap: () => controller.clickOnReportingPerson(
+                        reportingPersonIndex: index),
+                    borderRadius: BorderRadius.circular(6.px),
+                    child: commonCard(
+                        imagePath: 'assets/images/profile.png',
+                        text2Value: true,
+                        text1: 'Testing Dollop',
+                        text2: 'Ui/Ux Designer',
+                        cardHeight: 124.px)),
               ),
             );
           },
@@ -241,11 +286,15 @@ class MyProfileView extends GetView<MyProfileController> {
                     right: index % 3 == 3 - 1 ? C.margin : C.margin / 3,
                     top: 0,
                     bottom: C.margin),
-                child: commonCard(imageHeight: 30.px,imageWidth: 30.px,imagePath: 'assets/images/shoping_dark.png',text1: 'Testing Dollop',cardHeight: 100.px),
+                child: commonCard(
+                    imageHeight: 30.px,
+                    imageWidth: 30.px,
+                    imagePath: 'assets/images/shoping_dark.png',
+                    text1: 'Testing Dollop',
+                    cardHeight: 100.px),
               ),
             );
           },
         ),
       );
-
 }

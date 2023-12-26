@@ -42,7 +42,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.CONTACT_DETAIL;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -136,4 +136,28 @@ class AppPages {
       binding: PersonalInfoBinding(),
     ),
   ];
+}
+
+class InitialBinding extends Bindings{
+  @override
+  void dependencies() {
+    HomeBinding();
+    SplashBinding();
+    LoginBinding();
+    SignUpBinding();
+    SearchCompanyBinding();
+    SelectBranceBinding();
+    UtilitiesBinding();
+    BottomNavigationBinding();
+    MenuViewBinding();
+    NotificationBinding();
+    DrawerViewBinding();
+    EditProfileBinding();
+    OtpVerificationBinding();
+    MyProfileBinding();
+    SelectDepartmentBinding();
+    SelectShiftTimeBinding();
+    ContactDetailBinding();
+    PersonalInfoBinding();
+  }
 }

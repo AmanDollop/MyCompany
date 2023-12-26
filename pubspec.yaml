@@ -54,6 +54,7 @@ dependencies:
   permission_handler: ^11.1.0
   open_apps_settings: ^0.0.4
   timer_count_down: 2.2.2
+  geolocator: ^10.1.0
 
 
 dev_dependencies:

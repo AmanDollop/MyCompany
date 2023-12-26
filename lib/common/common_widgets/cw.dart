@@ -520,13 +520,9 @@ class CW {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 SizedBox(width: 10.px),
-                                Text(selectedCountryCode,
-                                    style: Theme.of(Get.context!)
-                                        .textTheme
-                                        .titleSmall),
+                                Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
                                 SizedBox(width: 4.px),
-                                Icon(Icons.keyboard_arrow_down,
-                                    size: 20.px, color: Col.secondary),
+                                Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
                                 SizedBox(width: 4.px),
                                 VerticalDivider(
                                   width: 2,
@@ -902,17 +898,16 @@ class CW {
                   ? imageList.map((image) {
                       return Padding(
                         padding: padding ??
-                            EdgeInsets.symmetric(
-                                horizontal: C.outlineButtonRadius),
+                            EdgeInsets.symmetric(horizontal: C.outlineButtonRadius),
                         child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(borderRadius ?? 12.px),
                           child: Material(
-                            color: Colors.transparent,
+                            color: Col.gray.withOpacity(.1),
                             child: CW.commonNetworkImageView(
                                 path: image,
                                 isAssetImage: false,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: height ?? 145.px),
                           ),
@@ -1223,7 +1218,7 @@ class CW {
           ImageLoadingBuilder? loadingBuilder,
           Duration? shimmerDuration,
           Color? shimmerBackgroundColor,
-          Color? shimmerMovementColor}) =>
+          Color? shimmerMovementColor,String? errorImage}) =>
       InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
@@ -1255,7 +1250,7 @@ class CW {
                             movementColor: shimmerMovementColor);
                       },
                   errorBuilder: (context, error, stackTrace) => Image.asset(
-                    'assets/images/default_image.jpg',
+                    errorImage ?? 'assets/images/default_image.jpg',
                     height: height,
                     width: width,
                     color: color,

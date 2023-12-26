@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 
@@ -17,8 +18,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
       return Drawer(
         width: 75.w,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(bottomRight: Radius.circular(20.px))
-        ),
+            borderRadius:
+                BorderRadius.only(bottomRight: Radius.circular(20.px))),
         backgroundColor: Col.scaffoldBackgroundColor,
         child: ListView(
           physics: const ScrollPhysics(),
@@ -28,9 +29,13 @@ class DrawerViewView extends GetView<DrawerViewController> {
             Stack(
               alignment: Alignment.center,
               children: [
-                CW.commonNetworkImageView(path: 'assets/images/drawer_view_back_image.png', isAssetImage: true,height: 142.px,width: double.infinity),
+                CW.commonNetworkImageView(
+                    path: 'assets/images/drawer_view_back_image.png',
+                    isAssetImage: true,
+                    height: 142.px,
+                    width: double.infinity),
                 Padding(
-                  padding:  EdgeInsets.only(top: 24.px),
+                  padding: EdgeInsets.only(top: 24.px),
                   child: InkWell(
                     onTap: () => controller.clickOnUserProfileView(),
                     borderRadius: BorderRadius.circular(8.px),
@@ -46,9 +51,20 @@ class DrawerViewView extends GetView<DrawerViewController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                userNameTextView(text: 'Testing Dollop',color: Col.inverseSecondary,fontSize: 18.px),
+                                userNameTextView(
+                                    text: controller.firstName.value!='null'&&controller.firstName.value.isNotEmpty &&
+                                        controller.lastName.value!='null'&&controller.lastName.value.isNotEmpty
+                                        ? '${controller.firstName.value}${controller.lastName.value}'
+                                        : 'User Name',
+                                    color: Col.inverseSecondary,
+                                    fontSize: 18.px),
                                 SizedBox(height: 4.px),
-                                userDetailTextView(text: 'Flutter Developer ',),
+                                userDetailTextView(
+                                  text:
+                                  controller.developerType.value!='null'&&controller.developerType.value.isNotEmpty
+                                          ? controller.developerType.value
+                                          : 'Developer',
+                                ),
                               ],
                             ),
                           ),
@@ -75,7 +91,9 @@ class DrawerViewView extends GetView<DrawerViewController> {
                   SizedBox(width: 10.px),
                   Flexible(
                     child: userNameTextView(
-                        text: 'Dollop Info-tech',
+                        text: controller.companyName.value!='null'&&controller.companyName.value.isNotEmpty
+                            ? controller.companyName.value
+                            : 'Company Name',
                         color: Col.primary,
                         maxLines: 2,
                         textAlign: TextAlign.end),
@@ -91,13 +109,17 @@ class DrawerViewView extends GetView<DrawerViewController> {
               itemCount: controller.iconList.length,
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: () => controller.clickOnList(index:index),
+                  onTap: () => controller.clickOnList(index: index),
                   borderRadius: BorderRadius.circular(6.px),
                   child: Padding(
-                    padding:  EdgeInsets.symmetric(vertical: 12.px,horizontal: 12.px),
+                    padding: EdgeInsets.symmetric(vertical: 12.px, horizontal: 12.px),
                     child: Row(
                       children: [
-                        CW.commonNetworkImageView(path: controller.iconList[index], isAssetImage: true,height: 24.px,width: 24.px),
+                        CW.commonNetworkImageView(
+                            path: controller.iconList[index],
+                            isAssetImage: true,
+                            height: 24.px,
+                            width: 24.px),
                         SizedBox(width: 12.px),
                         titleTextView(text: controller.titleList[index])
                       ],
@@ -113,21 +135,38 @@ class DrawerViewView extends GetView<DrawerViewController> {
   }
 
   Widget userProfileView() => Container(
-        width: 72.px,
-        height: 72.px,
-        decoration: BoxDecoration(
-          color: Col.scaffoldBackgroundColor,
-          shape: BoxShape.circle,
-          image: const DecorationImage(
-              image: AssetImage('assets/images/profile.png'),
-              fit: BoxFit.cover),
-        ),
-      );
+            width: 72.px,
+            height: 72.px,
+            margin: EdgeInsets.only(right: 12.px),
+            decoration: BoxDecoration(
+                color: Col.inverseSecondary, shape: BoxShape.circle),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(31.px),
+                child: CW.commonNetworkImageView(
+                    path: controller.userPic.value.isNotEmpty
+                        ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
+                        : 'assets/images/profile.png',
+                    isAssetImage:
+                        controller.userPic.value.isNotEmpty ? false : true,
+                    width: 66.px,
+                    height: 66.px),
+              ),
+            ),
+          );
 
-  Widget userNameTextView({required String text, Color? color, int? maxLines, TextAlign? textAlign,double? fontSize}) =>
+  Widget userNameTextView(
+          {required String text,
+          Color? color,
+          int? maxLines,
+          TextAlign? textAlign,
+          double? fontSize}) =>
       Text(
         text,
-        style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(color: color,fontSize: fontSize),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(color: color, fontSize: fontSize),
         maxLines: maxLines ?? 1,
         textAlign: textAlign ?? TextAlign.start,
         overflow: TextOverflow.ellipsis,
@@ -135,7 +174,10 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   Widget userDetailTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .titleLarge
+            ?.copyWith(color: Col.inverseSecondary),
         maxLines: 2,
         textAlign: TextAlign.start,
         overflow: TextOverflow.ellipsis,
@@ -150,7 +192,10 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   Widget titleTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(fontWeight: FontWeight.w600),
         maxLines: 1,
         textAlign: TextAlign.start,
       );

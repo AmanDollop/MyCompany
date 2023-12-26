@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
@@ -8,9 +11,7 @@ import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import '../../../../common/common_methods/cm.dart';
 
-class HomeController extends GetxController with GetTickerProviderStateMixin{
-
-
+class HomeController extends GetxController with GetTickerProviderStateMixin {
   late AnimationController animationController;
 
   final count = 0.obs;
@@ -70,14 +71,13 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   ].obs;
 
   GetLatLong? getLatLong;
-  final isLocationDialog = true.obs;
-
 
   @override
   Future<void> onInit() async {
     super.onInit();
     Get.put(DrawerViewController());
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    await callingGetLatLongMethod();
   }
 
   @override
@@ -97,6 +97,29 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   }
 
   void increment() => count.value++;
+  Location location = Location();
+  Future<void> callingGetLatLongMethod() async {
+    try {
+      getLatLong = await CM.getUserLatLong(context: Get.context!);
+      print('getLatLong::::::   $getLatLong');
+      if (getLatLong != null) {
+        // await callingApi();
+      } else {
+        if (AC.isConnect.value) {
+          locationAlertDialog();
+        }
+      }
+    } catch (e) {
+      CM.error();
+    }
+  }
+
+  locationAlertDialog() async {
+    await CD.commonIosPermissionDialog(clickOnPermission: () async {
+      Get.back();
+      await onInit();
+    });
+  }
 
   willPop() {
     CD.commonIosExitAppDialog(
@@ -136,7 +159,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
                 },
                 child: const BreakDialog());
           });
-      if(breakCheckBoxValue.value != '' && breakDialogConfirmButtonValue.value) {
+      if (breakCheckBoxValue.value != '' &&
+          breakDialogConfirmButtonValue.value) {
         print('breakCheckBoxValue.value::::::  ${breakCheckBoxValue.value}');
         animationController.reverse();
       }
@@ -162,38 +186,5 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   void clickOnYourDepartmentCards({required int yourDepartmentCardIndex}) {}
 
   void clickOnGalleryViewAllButton() {}
-
-  Future<void> callingGetLatLongMethod() async {
-    try {
-      getLatLong = await CM.getUserLatLong(context: Get.context!);
-      print('getLatLong::::::   $getLatLong');
-      if (getLatLong != null) {
-        // callingApi();
-      } else {
-        isLocationDialog.value = false;
-        if(AC.isConnect.value) {
-          locationAlertDialog();
-        }
-      }
-    } catch (e) {
-      CM.showSnackBar(message: "Something went wrong",);
-    }
-  }
-
-  locationAlertDialog() async {
-    /*showDialog(
-      context: Get.context!,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () {
-            return false;
-          },
-          child: ,
-        );
-      },
-    );*/
-    await CD.commonIosPermissionDialog(clickOnPermission: () => Get.back(),);
-  }
 
 }

@@ -1,7 +1,6 @@
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task/app/modules/drawer_view/views/drawer_view_view.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
@@ -72,16 +71,20 @@ class HomeView extends GetView<HomeController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          commonCon(
-                            imagePath: 'assets/icons/circulars_icon.png',
-                            titleText: 'Circulars',
-                            onTap: () => controller.clickOnCirculars(),
+                          Expanded(
+                            child: commonCon(
+                              imagePath: 'assets/icons/circulars_icon.png',
+                              titleText: 'Circulars',
+                              onTap: () => controller.clickOnCirculars(),
+                            ),
                           ),
-                          // SizedBox(width: 5.px),
-                          commonCon(
-                            imagePath: 'assets/icons/circulars_icon.png',
-                            titleText: 'Discussion',
-                            onTap: () => controller.clickOnDiscussion(),
+                          SizedBox(width: 12.px),
+                          Expanded(
+                            child: commonCon(
+                              imagePath: 'assets/icons/circulars_icon.png',
+                              titleText: 'Discussion',
+                              onTap: () => controller.clickOnDiscussion(),
+                            ),
                           )
                         ],
                       ),
@@ -201,10 +204,7 @@ class HomeView extends GetView<HomeController> {
                           ),
                           Text(
                             'Thursday, Oct 13',
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                            style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                           ),
@@ -249,7 +249,7 @@ class HomeView extends GetView<HomeController> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (!controller.checkInOrCheckOutValue.value)
-                      Icon(
+                    Icon(
                         Icons.keyboard_double_arrow_left_rounded,
                         color: Col.primary,
                         size: 22.px,
@@ -263,7 +263,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                     SizedBox(width: 6.px),
                     if (controller.checkInOrCheckOutValue.value)
-                      Icon(
+                    Icon(
                         Icons.keyboard_double_arrow_right_rounded,
                         color: Col.primary,
                         size: 22.px,
@@ -292,8 +292,9 @@ class HomeView extends GetView<HomeController> {
 
   Widget bannerView() => CW.commonBannerView(
         imageList: [
-          'https://img.freepik.com/free-vector/stylish-glowing-digital-red-lines-banner_1017-23964.jpg',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvpgi1ekB_ytPbg9jwzJbfPVyN1ThFJsMYb5NwAbyeE3j79YVZvBFrcTTSwi1AyxE-Sis&usqp=CAU'
+          'https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYRNamIIDEJN4sHp3UuQVpYfwhrsNUZEld0aTCqAs4qMG-X9Wb3IGmvN3CbeSnvDzl_4c&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g3P5972LeN4_5J9Dua6oCYn3cBzjSUGys5dhj4qerMbHQY5-TRyMzrmuRe3m6SPz4WU&usqp=CAU'
         ],
         selectedIndex: controller.bannerIndex.value,
         onPageChanged: (index, reason) {
@@ -401,8 +402,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) =>
-      CW.commonTextButton(
+  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) => CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',

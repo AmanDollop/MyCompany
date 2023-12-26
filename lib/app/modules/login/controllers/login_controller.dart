@@ -17,7 +17,7 @@ class LoginController extends GetxController {
 
   String apiBaseUrl = '';
   String companyLogo = '';
-  String companyId = '';
+  String companyId = '1';
 
   final loginButtonValue = false.obs;
 
@@ -28,8 +28,8 @@ class LoginController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    companyId = Get.arguments[0];
-    companyLogo = Get.arguments[1];
+    // companyId = Get.arguments[0];
+    // companyLogo = Get.arguments[1];
     apiBaseUrl = await CM.getString(key: AK.baseUrl)??'';
     print('apiBaseUrl::::::::::::::     $apiBaseUrl');
   }
@@ -63,6 +63,7 @@ class LoginController extends GetxController {
     CM.unFocusKeyBoard();
     emailController.clear();
     termsCheckBoxValue.value=false;
+    loginButtonValue.value=false;
     Get.toNamed(Routes.SIGN_UP,arguments: [companyId]);
   }
 

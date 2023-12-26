@@ -14,6 +14,7 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
+    print('ima:::::::::   ${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}');
     return GestureDetector(
       onTap: () {
         CM.unFocusKeyBoard();
@@ -57,7 +58,7 @@ class LoginView extends GetView<LoginController> {
                     ),
                   ],
                 ),
-                SizedBox(height: 40.px),
+                SizedBox(height: 30.px),
                 CW.commonElevatedButton(
                     onPressed: controller.loginButtonValue.value
                         ? () => null
@@ -93,7 +94,7 @@ class LoginView extends GetView<LoginController> {
                 //     ),
                 //   ],
                 // ),
-                SizedBox(height: 20.px),
+                SizedBox(height: 10.px),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -134,9 +135,9 @@ class LoginView extends GetView<LoginController> {
                 ? '${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}'
                 : 'assets/images/logo.png',
             height: controller.companyLogo.isNotEmpty
-                ? 64.px:44.px,
+                ? 66.px:44.px,
             width: controller.companyLogo.isNotEmpty
-                ? 64.px:44.px,
+                ? 66.px:44.px,
             isAssetImage:  controller.companyLogo.isNotEmpty
                 ? false
                 : true

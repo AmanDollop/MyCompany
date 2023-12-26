@@ -90,6 +90,7 @@ class CAI{
       url: AU.endPointMatchOTPApi,
       bodyParams: bodyParams,
       context: Get.context!,
+      showSnackBar: false
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
@@ -111,6 +112,7 @@ class CAI{
       url: AU.endPointBranchApi,
       bodyParams: bodyParams,
       context: Get.context!,
+        showSnackBar: false
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
@@ -132,6 +134,7 @@ class CAI{
       url: AU.endPointDepartmentApi,
       bodyParams: bodyParams,
       context: Get.context!,
+        showSnackBar: false
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
@@ -153,6 +156,7 @@ class CAI{
       url: AU.endPointShiftTimeApi,
       bodyParams: bodyParams,
       context: Get.context!,
+        showSnackBar: false
     );
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {

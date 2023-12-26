@@ -3,6 +3,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class DrawerViewController extends GetxController {
@@ -32,9 +33,16 @@ class DrawerViewController extends GetxController {
     'Log out',
   ].obs;
 
+  final userPic = ''.obs;
+  final firstName = ''.obs;
+  final lastName = ''.obs;
+  final companyName = ''.obs;
+  final developerType = ''.obs;
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    await setDefaultData();
   }
 
   @override
@@ -78,13 +86,27 @@ class DrawerViewController extends GetxController {
           Get.back();
         },
         clickOnLogout: () async {
-          await DataBaseHelper().deleteDataBase();
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
           await CM.setString(key: AK.baseUrl, value: '');
           Get.offAllNamed(Routes.SEARCH_COMPANY);
         },
       );
 
     }
+  }
+
+  Future<void> setDefaultData() async {
+
+    firstName.value = await DataBaseHelper().getParticularData(key: 'user_first_name',tableName: DataBaseConstant.tableNameForPersonalInfo);
+    lastName.value = await DataBaseHelper().getParticularData(key: 'user_last_name',tableName: DataBaseConstant.tableNameForPersonalInfo);
+    userPic.value = await DataBaseHelper().getParticularData(key: 'user_profile_pic',tableName: DataBaseConstant.tableNameForPersonalInfo);
+    companyName.value = await DataBaseHelper().getParticularData(key: 'user_email',tableName: DataBaseConstant.tableNameForContactInfo);
+    developerType.value = await DataBaseHelper().getParticularData(key: 'user_designation',tableName: DataBaseConstant.tableNameForJobInfo);
+
   }
 
 }
