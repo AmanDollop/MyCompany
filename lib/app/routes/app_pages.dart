@@ -1,15 +1,25 @@
 import 'package:get/get.dart';
 
+import '../modules/bank_detail/bindings/bank_detail_binding.dart';
+import '../modules/bank_detail/views/bank_detail_view.dart';
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
 import '../modules/contact_detail/bindings/contact_detail_binding.dart';
 import '../modules/contact_detail/views/contact_detail_view.dart';
+import '../modules/document/bindings/document_binding.dart';
+import '../modules/document/views/document_view.dart';
 import '../modules/drawer_view/bindings/drawer_view_binding.dart';
 import '../modules/drawer_view/views/drawer_view_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
+import '../modules/education/bindings/education_binding.dart';
+import '../modules/education/views/education_view.dart';
+import '../modules/experience/bindings/experience_binding.dart';
+import '../modules/experience/views/experience_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/job_info/bindings/job_info_binding.dart';
+import '../modules/job_info/views/job_info_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/menu_view/bindings/menu_view_binding.dart';
@@ -22,6 +32,8 @@ import '../modules/otp_verification/bindings/otp_verification_binding.dart';
 import '../modules/otp_verification/views/otp_verification_view.dart';
 import '../modules/personal_info/bindings/personal_info_binding.dart';
 import '../modules/personal_info/views/personal_info_view.dart';
+import '../modules/promotion/bindings/promotion_binding.dart';
+import '../modules/promotion/views/promotion_view.dart';
 import '../modules/search_company/bindings/search_company_binding.dart';
 import '../modules/search_company/views/search_company_view.dart';
 import '../modules/select_brance/bindings/select_brance_binding.dart';
@@ -32,6 +44,8 @@ import '../modules/select_shift_time/bindings/select_shift_time_binding.dart';
 import '../modules/select_shift_time/views/select_shift_time_view.dart';
 import '../modules/sign_up/bindings/sign_up_binding.dart';
 import '../modules/sign_up/views/sign_up_view.dart';
+import '../modules/social_info/bindings/social_info_binding.dart';
+import '../modules/social_info/views/social_info_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
@@ -135,10 +149,45 @@ class AppPages {
       page: () => const PersonalInfoView(),
       binding: PersonalInfoBinding(),
     ),
+    GetPage(
+      name: _Paths.SOCIAL_INFO,
+      page: () => const SocialInfoView(),
+      binding: SocialInfoBinding(),
+    ),
+    GetPage(
+      name: _Paths.BANK_DETAIL,
+      page: () => const BankDetailView(),
+      binding: BankDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.EDUCATION,
+      page: () => const EducationView(),
+      binding: EducationBinding(),
+    ),
+    GetPage(
+      name: _Paths.EXPERIENCE,
+      page: () => const ExperienceView(),
+      binding: ExperienceBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROMOTION,
+      page: () => const PromotionView(),
+      binding: PromotionBinding(),
+    ),
+    GetPage(
+      name: _Paths.DOCUMENT,
+      page: () => const DocumentView(),
+      binding: DocumentBinding(),
+    ),
+    GetPage(
+      name: _Paths.JOB_INFO,
+      page: () => const JobInfoView(),
+      binding: JobInfoBinding(),
+    ),
   ];
 }
 
-class InitialBinding extends Bindings{
+class InitialBinding extends Bindings {
   @override
   void dependencies() {
     HomeBinding();

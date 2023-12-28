@@ -160,9 +160,9 @@ class TextThemeStyle {
 
   static TextStyle headlineSmall(Color color, {String? fontFamily}) {
     return TextStyle(
-      fontSize: 24.px,
+      fontSize: 22.px,
       fontFamily: fontFamily,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       inherit: true,
       color: color,
       decoration: TextDecoration.none,

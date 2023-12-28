@@ -28,6 +28,12 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   final bannerIndex = 0.obs;
 
+  final bannerList = [
+    'https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYRNamIIDEJN4sHp3UuQVpYfwhrsNUZEld0aTCqAs4qMG-X9Wb3IGmvN3CbeSnvDzl_4c&usqp=CAU',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g3P5972LeN4_5J9Dua6oCYn3cBzjSUGys5dhj4qerMbHQY5-TRyMzrmuRe3m6SPz4WU&usqp=CAU'
+  ];
+
   final colorList = [
     const Color(0xff5FE079),
     const Color(0xffF36155),
@@ -97,12 +103,21 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void increment() => count.value++;
+
   Location location = Location();
+
   Future<void> callingGetLatLongMethod() async {
     try {
       getLatLong = await CM.getUserLatLong(context: Get.context!);
       print('getLatLong::::::   $getLatLong');
+
       if (getLatLong != null) {
+        // location.onLocationChanged.listen((event) {
+        //   getLatLong?.latitude = event.latitude;
+        //   print('getLatLong?.latitude::::::  ${getLatLong?.latitude}');
+        //   getLatLong?.longitude = event.longitude;
+        //   print('getLatLong?.longitude::::::::  ${getLatLong?.longitude}');
+        // });
         // await callingApi();
       } else {
         if (AC.isConnect.value) {

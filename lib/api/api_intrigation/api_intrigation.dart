@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/api/api_constants/ac.dart';
@@ -8,16 +9,19 @@ import 'package:task/api/api_model/branch_modal.dart';
 import 'package:task/api/api_model/branch_modal.dart';
 import 'package:task/api/api_model/country_code_modal.dart';
 import 'package:task/api/api_model/department_modal.dart';
+import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/my_http/my_http.dart';
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
-class CAI{
+class CAI {
 
   static Future<String> baseUrlRe() async {
-    String baseUrlAll = await CM.getString(key: AK.baseUrl)??'';
+    String baseUrlAll = await CM.getString(key: AK.baseUrl) ?? '';
     return baseUrlAll;
   }
 
@@ -32,8 +36,12 @@ class CAI{
       showSnackBar: false,
     );
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
-        searchCompanyModal = SearchCompanyModal.fromJson(jsonDecode(response.body));
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        searchCompanyModal =
+            SearchCompanyModal.fromJson(jsonDecode(response.body));
         return searchCompanyModal;
       } else {
         return null;
@@ -50,10 +58,15 @@ class CAI{
     http.Response? response = await MyHttp.multipartRequestForSignUp(
       url: AU.endPointRegistrationApi,
       bodyParams: bodyParams,
-      context: Get.context!, imageMap: imageMap, multipartRequestType: 'POST',
+      context: Get.context!,
+      imageMap: imageMap,
+      multipartRequestType: 'POST',
     );
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         return response;
       } else {
         return null;
@@ -72,7 +85,10 @@ class CAI{
       context: Get.context!,
     );
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         return response;
       } else {
         return null;
@@ -87,13 +103,15 @@ class CAI{
   }) async {
     UserDataModal? userDataModal;
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointMatchOTPApi,
-      bodyParams: bodyParams,
-      context: Get.context!,
-      showSnackBar: false
-    );
+        url: AU.endPointMatchOTPApi,
+        bodyParams: bodyParams,
+        context: Get.context!,
+        showSnackBar: false);
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         userDataModal = UserDataModal.fromJson(jsonDecode(response.body));
         return userDataModal;
       } else {
@@ -109,13 +127,15 @@ class CAI{
   }) async {
     BranchModal? branchModal;
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointBranchApi,
-      bodyParams: bodyParams,
-      context: Get.context!,
-        showSnackBar: false
-    );
+        url: AU.endPointBranchApi,
+        bodyParams: bodyParams,
+        context: Get.context!,
+        showSnackBar: false);
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         branchModal = BranchModal.fromJson(jsonDecode(response.body));
         return branchModal;
       } else {
@@ -131,13 +151,15 @@ class CAI{
   }) async {
     DepartmentModal? departmentModal;
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointDepartmentApi,
-      bodyParams: bodyParams,
-      context: Get.context!,
-        showSnackBar: false
-    );
+        url: AU.endPointDepartmentApi,
+        bodyParams: bodyParams,
+        context: Get.context!,
+        showSnackBar: false);
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         departmentModal = DepartmentModal.fromJson(jsonDecode(response.body));
         return departmentModal;
       } else {
@@ -153,13 +175,15 @@ class CAI{
   }) async {
     ShiftTimeModal? shiftTimeApi;
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointShiftTimeApi,
-      bodyParams: bodyParams,
-      context: Get.context!,
-        showSnackBar: false
-    );
+        url: AU.endPointShiftTimeApi,
+        bodyParams: bodyParams,
+        context: Get.context!,
+        showSnackBar: false);
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         shiftTimeApi = ShiftTimeModal.fromJson(jsonDecode(response.body));
         return shiftTimeApi;
       } else {
@@ -175,13 +199,15 @@ class CAI{
   }) async {
     CountryCodeModal? countryCodeModal;
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointGetCountryCodeApi,
-      bodyParams: bodyParams,
-      context: Get.context!,
-      showSnackBar: false
-    );
+        url: AU.endPointGetCountryCodeApi,
+        bodyParams: bodyParams,
+        context: Get.context!,
+        showSnackBar: false);
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         countryCodeModal = CountryCodeModal.fromJson(jsonDecode(response.body));
         return countryCodeModal;
       } else {
@@ -201,7 +227,10 @@ class CAI{
       context: Get.context!,
     );
     if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
         return response;
       } else {
         return null;
@@ -211,4 +240,32 @@ class CAI{
     }
   }
 
+  static Future<GetEmployeeDetailsModal?> getEmployeeDetailsApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    GetEmployeeDetailsModal? getEmployeeDetailsModal;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+      http.Response? response = await MyHttp.postMethod(
+        url: AU.endPointGetEmployeeDetailsApi,
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+       if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getEmployeeDetailsModal = GetEmployeeDetailsModal.fromJson(jsonDecode(response.body));
+        return getEmployeeDetailsModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 }

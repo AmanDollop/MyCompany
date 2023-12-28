@@ -21,6 +21,13 @@ abstract class Routes {
   static const SELECT_SHIFT_TIME = _Paths.SELECT_SHIFT_TIME;
   static const CONTACT_DETAIL = _Paths.CONTACT_DETAIL;
   static const PERSONAL_INFO = _Paths.PERSONAL_INFO;
+  static const SOCIAL_INFO = _Paths.SOCIAL_INFO;
+  static const BANK_DETAIL = _Paths.BANK_DETAIL;
+  static const EDUCATION = _Paths.EDUCATION;
+  static const EXPERIENCE = _Paths.EXPERIENCE;
+  static const PROMOTION = _Paths.PROMOTION;
+  static const DOCUMENT = _Paths.DOCUMENT;
+  static const JOB_INFO = _Paths.JOB_INFO;
 }
 
 abstract class _Paths {
@@ -43,4 +50,11 @@ abstract class _Paths {
   static const SELECT_SHIFT_TIME = '/select-shift-time';
   static const CONTACT_DETAIL = '/contact-detail';
   static const PERSONAL_INFO = '/personal-info';
+  static const SOCIAL_INFO = '/social-info';
+  static const BANK_DETAIL = '/bank-detail';
+  static const EDUCATION = '/education';
+  static const EXPERIENCE = '/experience';
+  static const PROMOTION = '/promotion';
+  static const DOCUMENT = '/document';
+  static const JOB_INFO = '/job-info';
 }

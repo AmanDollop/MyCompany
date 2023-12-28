@@ -34,10 +34,10 @@ class NotificationView extends GetView<NotificationController> {
                       color: Col.gray.withOpacity(.5),
                     ),
                     borderRadius: BorderRadius.circular(8.px)),
-                margin: EdgeInsets.symmetric(horizontal: 16.px),
+                margin: EdgeInsets.symmetric(horizontal: 12.px),
                 child: ListTile(
                   // contentPadding: EdgeInsets.zero,
-                  visualDensity: VisualDensity(vertical: -1.px),
+                  // visualDensity: VisualDensity(vertical: -2.px),
                   leading: Container(
                     height: 45,
                     width: 42,
@@ -53,9 +53,9 @@ class NotificationView extends GetView<NotificationController> {
                     ),
                   ),
                   horizontalTitleGap: 10.px,
+                  dense: true,
                   title: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                         Expanded(
                           flex: 4,
@@ -63,14 +63,14 @@ class NotificationView extends GetView<NotificationController> {
                             'Notification Title',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(Get.context!).textTheme.bodyLarge,
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(
-                              'Date Time',
-                              style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px),
+                              '25 Jan 2024',
+                              style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px,fontWeight: FontWeight.w500),
                               maxLines: 1,
                               textAlign: TextAlign.end),
                         ),
@@ -78,7 +78,7 @@ class NotificationView extends GetView<NotificationController> {
                   ),
                   subtitle: Text('Notification Detail',
                     maxLines: 2,
-                    style: Theme.of(Get.context!).textTheme.labelMedium,
+                    style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px,fontWeight: FontWeight.w500),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

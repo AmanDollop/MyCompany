@@ -28,10 +28,9 @@ class LoginController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    // companyId = Get.arguments[0];
-    // companyLogo = Get.arguments[1];
+    companyId = Get.arguments[0];
+    companyLogo = Get.arguments[1];
     apiBaseUrl = await CM.getString(key: AK.baseUrl)??'';
-    print('apiBaseUrl::::::::::::::     $apiBaseUrl');
   }
 
   @override
@@ -64,7 +63,10 @@ class LoginController extends GetxController {
     emailController.clear();
     termsCheckBoxValue.value=false;
     loginButtonValue.value=false;
-    Get.toNamed(Routes.SIGN_UP,arguments: [companyId]);
+    Get.toNamed(Routes.SIGN_UP,arguments: [companyId])?.then((value) {
+      emailController.text = value;
+      return value;
+    });
   }
 
   Future<void> sendOtpApiCalling() async {

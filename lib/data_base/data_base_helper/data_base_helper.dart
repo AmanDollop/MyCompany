@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';

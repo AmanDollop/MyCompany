@@ -59,8 +59,7 @@ class CBS {
             return isCloseOnBack;
           },
           child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: ClipRRect(
               borderRadius: showDragHandle
                   ? BorderRadius.zero
@@ -105,6 +104,7 @@ class CBS {
 
   static Future<void> commonDraggableBottomSheet(
       {required List<Widget> children,
+        Widget? list,
       bool enableDrag = true,
       bool isDismissible = true,
       bool useSafeArea = true,
@@ -167,6 +167,7 @@ class CBS {
                               bottom: horizontalPadding ?? C.margin / 2),
                           child: unScrollWidget,
                         ),
+                      if(children.isNotEmpty)
                       Flexible(
                         child: ListView(
                           controller: isDragOn ? scrollController : null,
@@ -179,6 +180,7 @@ class CBS {
                           children: children,
                         ),
                       ),
+                      list ??const SizedBox()
                     ],
                   ),
                 ),
@@ -295,7 +297,8 @@ class CBS {
         rightPadding: 10.px,
       );
 
-  Widget commonView({required VoidCallback onTap, required String title}) => InkWell(
+  Widget commonView({required VoidCallback onTap, required String title}) =>
+      InkWell(
         onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -309,7 +312,10 @@ class CBS {
 
   Widget textViewTitle({required String title}) => Text(
         title,
-        style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(fontWeight: FontWeight.w600),
       );
 
   ///  Calling Of Country Picker BottomSheet
@@ -320,7 +326,7 @@ class CBS {
     bool isSearchEnable = true,
     Widget? unScrollableWidget,
   }) async {
-    await CBS.commonBottomSheet(
+    await CBS.commonDraggableBottomSheet(
       unScrollWidget: unScrollableWidget ??
           (isSearchEnable
               ? CW.commonTextField(
@@ -387,7 +393,8 @@ class BottomSheetForOTP extends GetxController {
     }
   }
 
-  static Future<void> matchOtpApiCalling({required String email, required String otp}) async {
+  static Future<void> matchOtpApiCalling(
+      {required String email, required String otp}) async {
     try {
       bodyParamsMatchOtp = {
         AK.action: 'matchOtp',
@@ -397,28 +404,39 @@ class BottomSheetForOTP extends GetxController {
       userDataModal.value =
           await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
       if (userDataModal.value != null) {
-          userData = userDataModal.value?.userDetails;
+        userData = userDataModal.value?.userDetails;
         if (userData?.token != null && userData!.token!.isNotEmpty ||
-            userData?.personalInfo != null || userData?.contactInfo != null || userData?.jobInfo != null || userData?.socialInfo != null) {
-
+            userData?.personalInfo != null ||
+            userData?.contactInfo != null ||
+            userData?.jobInfo != null ||
+            userData?.socialInfo != null) {
           personalInfo = userData?.personalInfo;
           contactInfo = userData?.contactInfo;
           jobInfo = userData?.jobInfo;
           socialInfo = userData?.socialInfo;
 
-            DataBaseHelper().insertInDataBase(data: personalInfo!.toJson(),tableName: DataBaseConstant.tableNameForPersonalInfo);
+          DataBaseHelper().insertInDataBase(
+              data: personalInfo!.toJson(),
+              tableName: DataBaseConstant.tableNameForPersonalInfo);
 
-            DataBaseHelper().insertInDataBase(data: contactInfo!.toJson(),tableName: DataBaseConstant.tableNameForContactInfo);
+          DataBaseHelper().insertInDataBase(
+              data: contactInfo!.toJson(),
+              tableName: DataBaseConstant.tableNameForContactInfo);
 
-            DataBaseHelper().insertInDataBase(data: jobInfo!.toJson(),tableName: DataBaseConstant.tableNameForJobInfo);
+          DataBaseHelper().insertInDataBase(
+              data: jobInfo!.toJson(),
+              tableName: DataBaseConstant.tableNameForJobInfo);
 
-            DataBaseHelper().insertInDataBase(data: socialInfo!.toJson(),tableName: DataBaseConstant.tableNameForSocialInfo);
+          DataBaseHelper().insertInDataBase(
+              data: socialInfo!.toJson(),
+              tableName: DataBaseConstant.tableNameForSocialInfo);
 
-            DataBaseHelper().insertInDataBase(data: {'token':userData?.token},tableName: DataBaseConstant.tableNameForUserToken);
+          DataBaseHelper().insertInDataBase(
+              data: {DataBaseConstant.userToken: userData?.token},
+              tableName: DataBaseConstant.tableNameForUserToken);
 
           Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
           CM.showSnackBar(message: 'LogIn Successfully');
-
         }
       } else {
         verifyButtonValue.value = false;
@@ -431,7 +449,8 @@ class BottomSheetForOTP extends GetxController {
     verifyButtonValue.value = false;
   }
 
-  static Future<void> commonBottomSheetForVerifyOtp({required String otp, required String email}) async {
+  static Future<void> commonBottomSheetForVerifyOtp(
+      {required String otp, required String email}) async {
     await showModalBottomSheet(
       context: Get.context!,
       showDragHandle: true,
@@ -451,10 +470,7 @@ class BottomSheetForOTP extends GetxController {
             return Obx(() {
               count.value;
               if (otp.isNotEmpty) {
-                Future.delayed(
-                  const Duration(seconds: 2),
-                  () => otpController.text = otp,
-                );
+                otpController.text = otp;
               }
               return WillPopScope(
                 onWillPop: () async {
@@ -470,10 +486,7 @@ class BottomSheetForOTP extends GetxController {
                     children: [
                       Text(
                         'OTP Verification',
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .displaySmall
-                            ?.copyWith(color: Col.text),
+                        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.text),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 12.px),
@@ -498,11 +511,12 @@ class BottomSheetForOTP extends GetxController {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(6.px),
                         child: CW.commonOtpView(
-                            autoFocus: false,
-                            controller: otpController,
-                            shape: PinCodeFieldShape.box,
-                            length: 6,
-                            readOnly: true),
+                          autoFocus: false,
+                          controller: otpController,
+                          shape: PinCodeFieldShape.box,
+                          length: 6,
+                          readOnly: true,
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -515,11 +529,7 @@ class BottomSheetForOTP extends GetxController {
                                           .background),
                                   onPressed: () {},
                                   child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600)),
+                                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                                 )
                               : TextButton(
                                   onPressed: () async {
@@ -535,7 +545,7 @@ class BottomSheetForOTP extends GetxController {
                                 ),
                           timer.value
                               ? Countdown(
-                                  seconds: 10,
+                                  seconds: 30,
                                   build: (_, double time) {
                                     return Text(
                                       " in 00:${time.toInt()}",

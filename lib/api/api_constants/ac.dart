@@ -12,6 +12,8 @@ class AK {
 
   static const applicationJson="application/json";
 
+  static const bearer = "Bearer";
+
   static const authorization="Authorization";
 
   static const message="message";
@@ -83,6 +85,8 @@ class AU {
   static const endPointShiftTimeApi = "${baseUrlAllApis}AuthController.php";
 
   static const endPointGetCountryCodeApi = "${baseUrlAllApis}AuthController.php";
+
+  static const endPointGetEmployeeDetailsApi = "${baseUrlAllApis}UserController.php";
 
 
 

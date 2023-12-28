@@ -59,8 +59,7 @@ class CW {
             )
           : child ?? Text(
                 buttonText ?? '',
-                style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600, color: Col.inverseSecondary),
+                style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
               ),
     );
   }
@@ -73,6 +72,7 @@ class CW {
       double? borderRadius,
       double? borderWidth,
       Color? borderColor,
+      Color? backgroundColor,
       double? elevation,
       bool isContentSizeButton = true,
       required VoidCallback onPressed,
@@ -110,7 +110,7 @@ class CW {
                     color: borderColor ?? Col.text,
                     width: borderWidth ?? 1.5.px,
                   ),
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: backgroundColor ?? Colors.transparent,
                   shadowColor: Colors.transparent,
                   foregroundColor: Col.text,
                   minimumSize: Size(56.px, 56.px)),
@@ -171,8 +171,7 @@ class CW {
     IconData? icon,
     Color? color,
     Color? splashColor,
-  }) =>
-      IconButton(
+  }) => IconButton(
         onPressed: onPressed,
         splashRadius: size != null ? size + 4.px : 24.px,
         icon: imagePath != null && imagePath.isNotEmpty
@@ -296,13 +295,11 @@ class CW {
   }
 
   /// --------------------------Common Refresh Indicator/Progress Bar Collection--------------------------
-  static Widget commonRefreshIndicator(
-      {required Widget child, required RefreshCallback onRefresh}) {
+  static Widget commonRefreshIndicator({required Widget child, required RefreshCallback onRefresh}) {
     return RefreshIndicator(onRefresh: onRefresh, child: child);
   }
 
-  static Widget commonLinearProgressBar(
-          {required double value, double? height}) =>
+  static Widget commonLinearProgressBar({required double value, double? height}) =>
       ClipRRect(
         borderRadius: BorderRadius.circular(20.px),
         child: LinearProgressIndicator(
@@ -378,7 +375,7 @@ class CW {
           ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
           : inputFormatters,
       textCapitalization: textCapitalization,
-      style: style ?? Theme.of(Get.context!).textTheme.bodySmall,
+      style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
 
       decoration: isUnderlineBorder
           ? InputDecoration(
@@ -663,8 +660,7 @@ class CW {
     bool centerTitle = false,
     bool isLeading = false,
     bool homeAppBarValue = false,
-  }) =>
-      homeAppBarValue
+  }) => homeAppBarValue
           ? AppBar(
               title: Row(
                 children: [
@@ -676,8 +672,7 @@ class CW {
                   SizedBox(width: 5.px),
                   Text(
                     title,
-                    style: titleStyle ??
-                        Theme.of(Get.context!).textTheme.displaySmall,
+                    style: titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
                   ),
                 ],
               ),
@@ -685,8 +680,7 @@ class CW {
               elevation: elevation,
               centerTitle: centerTitle,
               leading: leading,
-              actions: actions ??
-                  [
+              actions: actions ?? [
                     Center(
                       child: SizedBox(
                         height: 44.px,
@@ -713,14 +707,13 @@ class CW {
               flexibleSpace: Container(
                   height: CM.getToolBarSize(),
                   color: toolBarColor ?? backgroundColor ?? Col.primary),
-              titleSpacing: leading != null ? 0 ?? 0.px : 0,
+              titleSpacing: leading != null ? 0 : 0,
               shadowColor: shadowColor ?? Col.secondary,
             )
           : AppBar(
               title: Text(
                 title,
-                style:
-                    titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall,
+                style: titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
               ),
               bottom: tabBar,
               elevation: elevation,
@@ -732,8 +725,7 @@ class CW {
                         height: 45.px,
                         width: 45.px,
                         child: Center(
-                          child: leading ??
-                              IconButton(
+                          child: leading ?? IconButton(
                                 onPressed: onBackPressed,
                                 style: IconButton.styleFrom(
                                   backgroundColor: Col.inverseSecondary,
@@ -872,8 +864,7 @@ class CW {
     required List<String> imageList,
     required int selectedIndex,
     EdgeInsetsGeometry? padding,
-    required Function(int index, CarouselPageChangedReason reason)?
-        onPageChanged,
+    required Function(int index, CarouselPageChangedReason reason)?onPageChanged,
     CarouselController? carouselController,
     double? height,
     double? borderRadius,
@@ -897,11 +888,9 @@ class CW {
               items: imageList.isNotEmpty
                   ? imageList.map((image) {
                       return Padding(
-                        padding: padding ??
-                            EdgeInsets.symmetric(horizontal: C.outlineButtonRadius),
+                        padding: padding ?? EdgeInsets.symmetric(horizontal: C.outlineButtonRadius),
                         child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(borderRadius ?? 12.px),
+                          borderRadius: BorderRadius.circular(borderRadius ?? 12.px),
                           child: Material(
                             color: Col.gray.withOpacity(.1),
                             child: CW.commonNetworkImageView(
@@ -952,9 +941,8 @@ class CW {
     double? cornerRadius,
     Color? activeColor,
     Color? inactiveColor,
-  }) =>
-      Padding(
-        padding: EdgeInsets.only(bottom: bottomPadding ?? 15.px),
+  }) => Padding(
+        padding: EdgeInsets.only(bottom: bottomPadding ?? 12.px),
         child: CarouselIndicator(
           count: length,
           index: selectedIndex,
@@ -1084,8 +1072,7 @@ class CW {
     Color? activeFillColor,
     Color? selectedColor,
     Color? selectedFillColor,
-  }) =>
-      PinCodeTextField(
+  }) => PinCodeTextField(
         length: length,
         mainAxisAlignment: mainAxisAlignment,
         appContext: Get.context!,
@@ -1149,8 +1136,7 @@ class CW {
     required String index,
     required String selectedIndex,
     Color? radioColor,
-  }) =>
-      Radio(
+  }) => Radio(
         toggleable: true,
         // fillColor: MaterialStateProperty.all(radioColor ?? Col.primary),
         focusColor: Col.gray,
@@ -1178,8 +1164,7 @@ class CW {
     Color? activeFillColor,
     Color? checkColor,
     Color? borderColor,
-  }) =>
-      Checkbox(
+  }) => Checkbox(
         value: changeValue,
         onChanged: onChanged,
         activeColor: activeFillColor ?? Col.primary,
@@ -1195,8 +1180,7 @@ class CW {
     double? wight,
     double? leftPadding,
     double? rightPadding,
-  }) =>
-      Divider(
+  }) => Divider(
         color: color ?? Col.gray,
         height: height ?? 10.px,
         thickness: wight ?? .5.px,
@@ -1218,8 +1202,7 @@ class CW {
           ImageLoadingBuilder? loadingBuilder,
           Duration? shimmerDuration,
           Color? shimmerBackgroundColor,
-          Color? shimmerMovementColor,String? errorImage}) =>
-      InkWell(
+          Color? shimmerMovementColor,String? errorImage}) => InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
         child: ClipRRect(
@@ -1320,8 +1303,7 @@ class CW {
           Color? color,
           int rattingCount = 5,
           EdgeInsets itemPadding = EdgeInsets.zero,
-          Axis direction = Axis.horizontal}) =>
-      RatingBarIndicator(
+          Axis direction = Axis.horizontal}) => RatingBarIndicator(
         rating: rating,
         itemBuilder: itemBuilder ??
             (context, index) => Icon(
@@ -1348,8 +1330,7 @@ class CW {
     Color? color,
     Color? glowColor,
     Color? unratedColor,
-  }) =>
-      RatingBar.builder(
+  }) => RatingBar.builder(
         initialRating: rating,
         minRating: minRating,
         direction: direction,
@@ -1383,17 +1364,14 @@ class CW {
           double? bottomMargin,
           double? topMargin,
           ScrollController? scrollController,
-          VoidCallback? onTab}) =>
-      SingleChildScrollView(
-        padding: externalPadding ??
-            EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
+          VoidCallback? onTab}) => SingleChildScrollView(
+        padding: externalPadding ?? EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
         controller: scrollController,
         physics: const ScrollPhysics(),
         child: Wrap(
           children: List.generate(
               length,
-              child ??
-                  (index) {
+              child ?? (index) {
                     final cellWidth =
                         MediaQuery.of(Get.context!).size.width / crossAxisCount;
                     return SizedBox(
@@ -1437,11 +1415,4 @@ class CW {
         ),
       );
 
-//image:- error builder / VideoPlayer
-// Dower  TextFieldDropdown/Timer
-
-//Firebase
-//Location
-//Notification
-//Cache Management
 }

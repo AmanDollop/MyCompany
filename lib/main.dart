@@ -17,8 +17,7 @@ void main() {
   AC().getNetworkConnectionType();
   streamSubscription = AC().checkNetworkConnection();
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) async {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) async {
     runApp(
       DevicePreview(
         enabled: false,
@@ -27,8 +26,7 @@ void main() {
             buildContext,
             orientation,
             screenType,
-          ) =>
-              GetMaterialApp(
+          ) => GetMaterialApp(
             title: "Application",
             initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,

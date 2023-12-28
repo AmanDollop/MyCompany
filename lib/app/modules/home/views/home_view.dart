@@ -14,38 +14,6 @@ class HomeView extends GetView<HomeController> {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
       child: Scaffold(
-        // appBar: CW.commonAppBarView(
-        //     homeAppBarValue: true,
-        //     title: 'Hello, Dollop',
-        //     leadingWidth: 60.px,
-        //     isLeading: true,
-        //     leading: Builder(
-        //       builder: (context) => Center(
-        //         child: SizedBox(
-        //           height: 45.px,
-        //           width: 45.px,
-        //           child: Center(
-        //             child: InkWell(
-        //               onTap: () => controller.clickOnDrawerButton(context: context),
-        //               borderRadius: BorderRadius.circular(14.px),
-        //               child: Ink(
-        //                 height: 46.px,
-        //                 width: 46.px,
-        //                 decoration: BoxDecoration(color: Col.inverseSecondary, borderRadius: BorderRadius.circular(14.px)),
-        //                 child: Center(
-        //                   child: CW.commonNetworkImageView(
-        //                       path: 'assets/icons/drawer_menu_icon.png',
-        //                       isAssetImage: true,
-        //                       width: 24.px,
-        //                       height: 24.px),
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //     onNotificationPressed: () => controller.clickOnNotificationButton()),
         body: Obx(() {
           controller.count.value;
           return NotificationListener(
@@ -78,7 +46,7 @@ class HomeView extends GetView<HomeController> {
                               onTap: () => controller.clickOnCirculars(),
                             ),
                           ),
-                          SizedBox(width: 12.px),
+                          SizedBox(width: 8.px),
                           Expanded(
                             child: commonCon(
                               imagePath: 'assets/icons/circulars_icon.png',
@@ -103,7 +71,7 @@ class HomeView extends GetView<HomeController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      cardTextView(text: 'Gallery', fontSize: 18.px),
+                      cardTextView(text: 'Gallery', fontSize: 16.px),
                       viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
                     ],
                   ),
@@ -291,18 +259,16 @@ class HomeView extends GetView<HomeController> {
       );
 
   Widget bannerView() => CW.commonBannerView(
-        imageList: [
-          'https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYRNamIIDEJN4sHp3UuQVpYfwhrsNUZEld0aTCqAs4qMG-X9Wb3IGmvN3CbeSnvDzl_4c&usqp=CAU',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g3P5972LeN4_5J9Dua6oCYn3cBzjSUGys5dhj4qerMbHQY5-TRyMzrmuRe3m6SPz4WU&usqp=CAU'
-        ],
+        imageList: controller.bannerList,
         selectedIndex: controller.bannerIndex.value,
         onPageChanged: (index, reason) {
           controller.bannerIndex.value = index;
+          // print('index::::$index');
+          // print('controller.bannerIndex.value::::${controller.bannerIndex.value}');
           controller.count.value++;
         },
-        indicatorHeight: 8.px,
-        indicatorWidth: 8.px,
+        indicatorHeight: 4.px,
+        indicatorWidth: 12.px,
       );
 
   Widget commonCon({required String imagePath, required String titleText, required GestureTapCallback onTap}) => InkWell(
@@ -347,12 +313,9 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, TextAlign? textAlign}) => Text(
+  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight?fontWeight,TextAlign? textAlign}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: fontSize ?? 14.px,
-            color: color),
+        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: fontWeight??FontWeight.w500, fontSize: fontSize ?? 14.px, color: color),
         maxLines: maxLines ?? 1,
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign,
@@ -374,26 +337,20 @@ class HomeView extends GetView<HomeController> {
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
         shadowColor: Col.secondary.withOpacity(.1),
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Col.gray.withOpacity(.5)),
-            borderRadius: BorderRadius.circular(12.px)),
+        shape: RoundedRectangleBorder(side: BorderSide(color: Col.gray.withOpacity(.5)), borderRadius: BorderRadius.circular(12.px)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                  left: 12.px,
-                  right: 12.px,
-                  top: viewAllButtonValue ? 8.px : 16.px),
+              padding: EdgeInsets.only(left: 12.px, right: 12.px, top: viewAllButtonValue ? 8.px : 10.px),
               child: Row(
                 mainAxisAlignment: viewAllButtonValue
                     ? MainAxisAlignment.spaceBetween
                     : MainAxisAlignment.start,
                 children: [
-                  cardTextView(text: titleText, fontSize: 18.px),
+                  cardTextView(text: titleText, fontSize: 16.px),
                   if (viewAllButtonValue)
-                    viewAllTextButtonView(
-                        onPressedViewAllButton: onPressedViewAllButton ?? () {})
+                  viewAllTextButtonView(onPressedViewAllButton: onPressedViewAllButton ?? () {})
                 ],
               ),
             ),
@@ -412,164 +369,151 @@ class HomeView extends GetView<HomeController> {
 
   Widget headingListView() => commonCard(
         titleText: 'Heading',
-        listWidget: CW.commonGridView(
-          externalPadding: EdgeInsets.only(top: C.margin, bottom: 0.px),
-          length: controller.titleList.length,
-          child: (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
-            return SizedBox(
-              width: cellWidth - 14.px,
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: index % 2 == 0 ? C.margin : C.margin / 2,
-                    right: index % 2 == 0 ? C.margin / 2 : C.margin ,
-                    top: 0,
-                    bottom: C.margin
+        listWidget: GridView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(10.px),
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.titleList.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10.px,
+            mainAxisSpacing: 10.px,
+          ),
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
+              borderRadius: BorderRadius.circular(10.px),
+              child: Ink(
+                height: 100.px,
+                padding: EdgeInsets.only(left: 3.px),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 24.px,
+                      color: Col.secondary.withOpacity(.05),
+                    )
+                  ],
+                  color: controller.colorList[index],
+                  borderRadius: BorderRadius.circular(8.px),
                 ),
-                child: InkWell(
-                  onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
-                  borderRadius: BorderRadius.circular(10.px),
-                  child: Ink(
-                    height: 114.px,
-                    padding: EdgeInsets.only(left: 3.px),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 24.px,
-                          color: Col.secondary.withOpacity(.05),
-                        )
-                      ],
-                      color: controller.colorList[index],
-                      borderRadius: BorderRadius.circular(8.px),
-                    ),
-                    child: Ink(
-                      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
-                      decoration: BoxDecoration(
-                        color: Col.inverseSecondary,
-                        borderRadius: BorderRadius.circular(6.px),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40.px,
-                            height: 40.px,
-                            decoration: BoxDecoration(
-                              color: controller.colorList[index],
-                              borderRadius: BorderRadius.circular(6.px),
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                'assets/images/shoping_light.png',
-                                width: 24.px,
-                                height: 24.px,
-                              ),
-                            ),
+                child: Ink(
+                  padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
+                  decoration: BoxDecoration(
+                    color: Col.inverseSecondary,
+                    borderRadius: BorderRadius.circular(6.px),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 40.px,
+                        height: 40.px,
+                        decoration: BoxDecoration(
+                          color: controller.colorList[index],
+                          borderRadius: BorderRadius.circular(6.px),
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/shoping_light.png',
+                            width: 24.px,
+                            height: 24.px,
                           ),
-                          SizedBox(height: 10.px),
-                          Flexible(
-                            child: cardTextView(
-                                text: controller.titleList[index], maxLines: 2),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 10.px),
+                      Flexible(
+                        child: Text(
+                          controller.titleList[index],
+                          style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700,fontSize: 10.px),
+                          maxLines:  2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             );
           },
-          height: 114.px,
         ),
       );
 
   Widget myTeamListView() => commonCard(
         titleText: 'My Team',
-        listWidget: CW.commonGridView(
-          externalPadding: EdgeInsets.only(top: C.margin, bottom: 0.px),
-          length: controller.titleList.length,
-          child: (index) {
-            final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
-            return SizedBox(
-              width: cellWidth - 14.px,
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: index % 2 == 0 ? C.margin : C.margin / 2,
-                    right: index % 2 == 0 ? C.margin / 2 : C.margin ,
-                    top: 0,
-                    bottom: C.margin),
-                child: InkWell(
-                  onTap: () => controller.clickOnMyTeamCards(myTeamCardIndex: index),
+        listWidget: GridView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(10.px),
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.titleList.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10.px,
+            mainAxisSpacing: 10.px,
+          ),
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () => controller.clickOnMyTeamCards(myTeamCardIndex: index),
+              borderRadius: BorderRadius.circular(8.px),
+              child: Ink(
+                height: 132.px,
+                padding: EdgeInsets.only(left: 3.px),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 24.px,
+                      color: Col.secondary.withOpacity(.05),
+                    )
+                  ],
+                  color: Col.inverseSecondary,
                   borderRadius: BorderRadius.circular(8.px),
-                  child: Ink(
-                    height: 126.px,
-                    padding: EdgeInsets.only(left: 3.px),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 24.px,
-                          color: Col.secondary.withOpacity(.05),
-                        )
-                      ],
-                      color: Col.inverseSecondary,
-                      borderRadius: BorderRadius.circular(8.px),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Stack(
+                      alignment: Alignment.topRight,
                       children: [
-                        Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Container(
-                              width: 54.px,
-                              height: 54.px,
-                              decoration: BoxDecoration(
-                                  color: Col.inverseSecondary,
-                                  borderRadius: BorderRadius.circular(8.px)),
-                              child: Center(
-                                  child: CW.commonNetworkImageView(
+                        Container(
+                          width: 44.px,
+                          height: 44.px,
+                          decoration: BoxDecoration(
+                              color: Col.inverseSecondary,
+                              borderRadius: BorderRadius.circular(8.px)),
+                          child: Center(
+                              child: CW.commonNetworkImageView(
                                 path: 'assets/images/profile.png',
                                 isAssetImage: true,
                                 fit: BoxFit.fill,
-                                width: 50.px,
-                                height: 50.px,
-                              )),
-                            ),
-                            Container(
-                              width: 10.px,
-                              height: 10.px,
-                              decoration: BoxDecoration(
-                                color: Col.success,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ],
+                                width: 40.px,
+                                height: 40.px,
+                              ),),
                         ),
-                        SizedBox(height: 6.px),
-                        Flexible(
-                          child: cardTextView(
-                              text: 'Testing Dollop',
-                              maxLines: 1,
-                              fontSize: 14.px),
-                        ),
-                        SizedBox(height: 2.px),
-                        Flexible(
-                          child: cardTextView(
-                              text: 'Testing',
-                              maxLines: 1,
-                              fontSize: 12.px,
-                              color: Col.gray),
+                        Container(
+                          width: 8.px,
+                          height: 8.px,
+                          decoration: BoxDecoration(
+                            color: Col.success,
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ],
                     ),
-                  ),
+                    SizedBox(height: 6.px),
+                    Flexible(
+                      child: cardTextView(text: 'Testing Dollop', maxLines: 2, fontSize: 10.px,textAlign: TextAlign.center,fontWeight: FontWeight.w700),
+                    ),
+                    // SizedBox(height: 2.px),
+                    Flexible(
+                      child: cardTextView(text: 'Testing', maxLines: 2, fontSize: 10.px, color: Col.darkGray,textAlign: TextAlign.center),
+                    ),
+                  ],
                 ),
               ),
             );
           },
-          height: 120.px,
         ),
       );
 
@@ -579,7 +523,7 @@ class HomeView extends GetView<HomeController> {
         onPressedViewAllButton: () =>
             controller.clickOnYourDepartmentViewAllButton(),
         listWidget: SizedBox(
-          height: 140.px,
+          height: 120.px,
           child: Padding(
             padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 16.px),
             child: ListView.builder(
@@ -605,8 +549,9 @@ class HomeView extends GetView<HomeController> {
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 6.px),
+                            // SizedBox(height: 6.px),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(27.px),
                               child: CW.commonNetworkImageView(
@@ -620,8 +565,9 @@ class HomeView extends GetView<HomeController> {
                             Flexible(
                               child: cardTextView(
                                   text: 'Testing Dollop',
+                                  fontWeight: FontWeight.w700,
                                   maxLines: 2,
-                                  fontSize: 14.px,
+                                  fontSize: 10.px,
                                   textAlign: TextAlign.center),
                             ),
                           ],

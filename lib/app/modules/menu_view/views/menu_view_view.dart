@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
-import 'package:task/theme/constants/constants.dart';
-
 import '../controllers/menu_view_controller.dart';
 
 class MenuViewView extends GetView<MenuViewController> {
@@ -15,11 +13,6 @@ class MenuViewView extends GetView<MenuViewController> {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
       child: Scaffold(
-        // appBar: CW.commonAppBarView(
-        //   title: 'Menu',
-        //   isLeading: true,
-        //   onBackPressed: () =>controller.willPop(),
-        // ),
         body: Obx(() {
           controller.count.value;
           return Column(
@@ -37,66 +30,62 @@ class MenuViewView extends GetView<MenuViewController> {
                 ],
               ),),
               Expanded(
-                child: CW.commonGridView(
-                  length: controller.titleList.length,
-                  child: (index) {
-                    final cellWidth = MediaQuery.of(Get.context!).size.width / 3;
-                    return SizedBox(
-                      width: cellWidth,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: index % 3 == 0 ? C.margin : C.margin / 3,
-                            right: index % 3 == 3-1 ? C.margin : C.margin/3 ,
-                            top: C.margin / 2,),
-                        child: InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(10.px),
-                          child: Ink(
-                            height: 100.px,
-                            padding: EdgeInsets.only(bottom: 12.px),
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 24.px,
-                                  color: Col.secondary.withOpacity(.05),
-                                )
-                              ],
-                              color: Col.inverseSecondary,
-                              borderRadius: BorderRadius.circular(8.px),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 40.px,
-                                  height: 40.px,
-                                  decoration: BoxDecoration(
-                                    color: Col.inverseSecondary,
-                                    borderRadius: BorderRadius.circular(6.px),
-                                  ),
-                                  child: Center(
-                                    child: Image.asset(
-                                      'assets/images/shoping_dark.png',
-                                      width: 24.px,
-                                      height: 24.px,
-                                    ),
-                                  ),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(10.px),
+                  physics: const ScrollPhysics(),
+                  itemCount: controller.titleList.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10.px,
+                    mainAxisSpacing: 10.px,
+                  ),
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(10.px),
+                      child: Ink(
+                        height: 100.px,
+                        padding: EdgeInsets.all(2.px),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 24.px,
+                              color: Col.secondary.withOpacity(.05),
+                            )
+                          ],
+                          color: Col.inverseSecondary,
+                          borderRadius: BorderRadius.circular(8.px),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60.px,
+                              height: 60.px,
+                              decoration: BoxDecoration(
+                                color: Col.inverseSecondary,
+                                borderRadius: BorderRadius.circular(6.px),
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/shoping_dark.png',
+                                  width: 34.px,
+                                  height: 34.px,
                                 ),
-                                SizedBox(height: 10.px),
-                                Flexible(
-                                  child: cardTextView(
-                                    text: controller.titleList[index],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            Flexible(
+                              child: cardTextView(
+                                text: controller.titleList[index],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
                   },
-                  height: 100.px,
                 ),
               ),
             ],
@@ -106,7 +95,7 @@ class MenuViewView extends GetView<MenuViewController> {
     );
   }
 
-  Widget titleTextView() => Text('What are you looking for?',style: Theme.of(Get.context!).textTheme.displayLarge);
+  Widget titleTextView() => Text('What are you looking for?',style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(fontSize: 16.px));
 
   Widget textFieldView() => CW.commonTextFieldForMultiline(
       isBorder: true,
@@ -132,10 +121,7 @@ class MenuViewView extends GetView<MenuViewController> {
 
   Widget cardTextView({required String text}) => Text(
     text,
-    style: Theme.of(Get.context!)
-        .textTheme
-        .bodyLarge
-        ?.copyWith(fontWeight: FontWeight.w500,fontSize: 14.px),
+    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700,fontSize: 10.px),
     textAlign: TextAlign.center,
     maxLines: 2,
     overflow: TextOverflow.ellipsis,

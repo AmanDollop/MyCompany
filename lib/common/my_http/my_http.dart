@@ -34,14 +34,15 @@ class MyHttp {
 
   static Future<http.Response?> postMethod(
       {required String url,
-      required Map<String, dynamic> bodyParams,
-      Map<String, String>? token,
+      required Object bodyParams,
+          Map<String, String>? token,
       required BuildContext context,bool showSnackBar = true}) async {
     if (kDebugMode) print("CALLING:: $url");
     if (kDebugMode) print("BODYPARAMS:: $bodyParams");
     if (await CM.internetConnectionCheckerMethod()) {
       try {
-        http.Response? response = await http.post(Uri.parse(url), body: bodyParams, headers: token);
+        http.Response? response = await http.post(Uri.parse(url), body: bodyParams, headers: token,);
+        print('headers::token::::  $token');
         if (kDebugMode) print("CALLING:: ${response.body}");
         if(showSnackBar) {
           Map<String,dynamic> mapRes = {};
@@ -61,6 +62,8 @@ class MyHttp {
       return null;
     }
   }
+
+
 
   static Future<http.Response?> multipartRequest(
       {File? image,

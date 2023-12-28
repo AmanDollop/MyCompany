@@ -66,4 +66,6 @@ class UtilitiesController extends GetxController {
     selectedBottomNavigationIndex.value=0;
   }
 
+  void clickOnCards({required int headingCardIndex}) {}
+
 }

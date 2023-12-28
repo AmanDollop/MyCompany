@@ -36,7 +36,7 @@ class BottomNavigationController extends GetxController {
   Widget pageCalling({int? selectedIndex}){
     switch (selectedIndex) {
       case 0:
-        Get.delete<HomeController>();
+        // Get.delete<HomeController>();
         Get.lazyPut<HomeController>(
               () => HomeController(),
         );

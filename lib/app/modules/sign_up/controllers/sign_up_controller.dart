@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -61,12 +59,14 @@ class SignUpController extends GetxController {
   Map<String, dynamic> bodyParamsRegistration = {};
   final registerButtonValue = false.obs;
 
+  String deviceType = "";
 
 
   @override
   Future<void> onInit() async {
     super.onInit();
     companyId = Get.arguments[0];
+    deviceType = CM.getDeviceType();
     await callingCountryCodeApi();
   }
 
@@ -186,6 +186,7 @@ class SignUpController extends GetxController {
     CM.unFocusKeyBoard();
     await CBS.commonBottomSheetForCountry(
       searchController: searchCountryController,
+
       onChanged: (value) {
         countryCodeListSearch.clear();
         if (value.isEmpty) {
@@ -283,7 +284,7 @@ class SignUpController extends GetxController {
 
   Future<void> clickOnRegisterButton() async {
     CM.unFocusKeyBoard();
-    if (key.currentState!.validate() && genderType.value != '' && image.value != null) {
+    if (key.currentState!.validate() && genderType.value != '') {
       registerButtonValue.value = true;
       await registrationApiCalling();
     }
@@ -298,7 +299,7 @@ class SignUpController extends GetxController {
         AK.departmentId: getYourDepartmentId.toString(),
         AK.shiftId: getYourShiftTimeId.toString(),
         AK.countryCode: countryCode.toString(),
-        AK.deviceType: 'android',
+        AK.deviceType: deviceType,
         AK.userFirstName: firstNameController.text.trim().toString(),
         AK.userLastName: lastNameController.text.trim().toString(),
         AK.dateOfJoining: joiningDateController.text.trim().toString(),
@@ -310,10 +311,10 @@ class SignUpController extends GetxController {
       };
       http.Response? response = await CAI.registrationApi(
         bodyParams: bodyParamsRegistration,
-        imageMap: {AK.userProfilePic:image.value ?? File('')}
+        imageMap: image.value!= null?{AK.userProfilePic:image.value ?? File('')}:{}
       );
       if (response != null && response.statusCode == 200) {
-        Get.back();
+        Get.back(result: emailController.text.trim().toString());
       }
       else {
         registerButtonValue.value = false;

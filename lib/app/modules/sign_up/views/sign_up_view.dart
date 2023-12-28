@@ -292,7 +292,7 @@ class SignUpView extends GetView<SignUpController> {
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
+        prefixIcon: commonIconImage(imagePath: 'assets/icons/contact_phone_icon.png'),
         isCountrySelection: true,
         selectedCountryCode: controller.countryCode,
         countryFlagPath: controller.countryImagePath.value,

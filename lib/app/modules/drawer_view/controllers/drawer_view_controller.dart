@@ -101,11 +101,11 @@ class DrawerViewController extends GetxController {
 
   Future<void> setDefaultData() async {
 
-    firstName.value = await DataBaseHelper().getParticularData(key: 'user_first_name',tableName: DataBaseConstant.tableNameForPersonalInfo);
-    lastName.value = await DataBaseHelper().getParticularData(key: 'user_last_name',tableName: DataBaseConstant.tableNameForPersonalInfo);
-    userPic.value = await DataBaseHelper().getParticularData(key: 'user_profile_pic',tableName: DataBaseConstant.tableNameForPersonalInfo);
-    companyName.value = await DataBaseHelper().getParticularData(key: 'user_email',tableName: DataBaseConstant.tableNameForContactInfo);
-    developerType.value = await DataBaseHelper().getParticularData(key: 'user_designation',tableName: DataBaseConstant.tableNameForJobInfo);
+    firstName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName,tableName: DataBaseConstant.tableNameForPersonalInfo);
+    lastName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName,tableName: DataBaseConstant.tableNameForPersonalInfo);
+    userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic,tableName: DataBaseConstant.tableNameForPersonalInfo);
+    companyName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail,tableName: DataBaseConstant.tableNameForContactInfo);
+    developerType.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo);
 
   }
 

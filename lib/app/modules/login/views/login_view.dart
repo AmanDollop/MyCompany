@@ -100,16 +100,13 @@ class LoginView extends GetView<LoginController> {
                   children: [
                     Text(
                       'New here? ',
-                      style: Theme.of(Get.context!).textTheme.titleMedium,
+                      style: Theme.of(Get.context!).textTheme.labelMedium,
                     ),
                     CW.commonTextButton(
                       onPressed: () => controller.clickOnCreateAccountButton(),
                       child: Text(
                         'Create Account',
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(color: Col.primary),
+                        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary,fontWeight: FontWeight.w600),
                       ),
                     )
                   ],
@@ -145,11 +142,7 @@ class LoginView extends GetView<LoginController> {
         ),
       );
 
-  Widget commonIconImage(
-          {required String imagePath,
-          double? height,
-          double? width,
-          bool isAssetImage = true}) => SizedBox(
+  Widget commonIconImage({required String imagePath, double? height, double? width, bool isAssetImage = true}) => SizedBox(
         width: height ?? 24.px,
         height: width ?? 24.px,
         child: Center(
