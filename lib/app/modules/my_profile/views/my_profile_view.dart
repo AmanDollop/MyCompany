@@ -7,8 +7,6 @@ import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/model_progress_bar/model_progress_bar.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
-import 'package:task/theme/constants/constants.dart';
-
 import '../controllers/my_profile_controller.dart';
 
 class MyProfileView extends GetView<MyProfileController> {
@@ -88,8 +86,8 @@ class MyProfileView extends GetView<MyProfileController> {
                 path: controller.userPic.value.isNotEmpty
                     ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
                     : 'assets/images/profile.png',
-                isAssetImage:
-                    controller.userPic.value.isNotEmpty ? false : true,
+                isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
+                errorImage: 'assets/images/profile.png',
                 width: 62.px,
                 height: 62.px),
           ),
@@ -97,11 +95,8 @@ class MyProfileView extends GetView<MyProfileController> {
       );
 
   Widget nameTextView() => Text(
-      controller.firstName.value != 'null' &&
-              controller.firstName.isNotEmpty &&
-              controller.lastName.value != 'null' &&
-              controller.lastName.isNotEmpty
-          ? '${controller.firstName}${controller.lastName}'
+      controller.firstName.value != 'null' && controller.firstName.isNotEmpty && controller.lastName.value != 'null' && controller.lastName.isNotEmpty
+          ? '${controller.firstName} ${controller.lastName}'
           : 'User Name',
       style: Theme.of(Get.context!)
           .textTheme
@@ -111,9 +106,9 @@ class MyProfileView extends GetView<MyProfileController> {
       overflow: TextOverflow.ellipsis);
 
   Widget userDetailTextView() => Text(
-      controller.developerType.value != 'null' &&
-              controller.developerType.isNotEmpty
-          ? '${controller.developerType}'
+      controller.developer.value != 'null' &&
+              controller.developer.isNotEmpty
+          ? '${controller.developer} Developer'
           : 'Developer',
       style: Theme.of(Get.context!)
           .textTheme
@@ -129,9 +124,7 @@ class MyProfileView extends GetView<MyProfileController> {
       width: 40.px,
       size: 40.px);
 
-  Widget commonRowForEmailAndNumber(
-          {required String title, required String name}) =>
-      Row(
+  Widget commonRowForEmailAndNumber({required String title, required String name}) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(

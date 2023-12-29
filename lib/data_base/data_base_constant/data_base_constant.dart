@@ -12,6 +12,7 @@ class DataBaseConstant {
   static String tableNameForContactInfo = 'CONTACT_INFO';
   static String tableNameForJobInfo = 'JOB_INFO';
   static String tableNameForSocialInfo = 'SOCIAL_INFO';
+  static String tableNameForCompanyDetail = 'COMPANY_DETAIL';
 
 
   ///TODO Table Name User_Token for key
@@ -55,6 +56,7 @@ class DataBaseConstant {
   static String dateOfJoining = 'date_of_joining';
   static String employeeId = 'employee_id';
   static String employeeType = 'employee_type';
+  static String employeeTypeView = 'employee_type_view';
   static String branchName = 'branch_name';
   static String departmentName = 'department_name';
   static String branchId = 'branch_id';
@@ -71,26 +73,14 @@ class DataBaseConstant {
 
 
 
-  ///TODO This kay's are not use in data base
-  static String userPassword = 'user_password';
-  static String userIdProof = 'user_id_proof';
-  static String userStatus = 'user_status';
-  static String statusChangeByType = 'status_change_by_type';
-  static String statusChangeBy = 'status_change_by';
-  static String statusChangeByName = 'status_change_by_name';
-  static String statusChangeDate = 'status_change_date';
-  static String userMacAddress = 'user_mac_address';
-  static String registerDate = 'register_date';
-  static String activeStatus = 'active_status';
-  static String deleteStatus = 'delete_status';
-  static String maritalStatus = 'marital_status';
-  static String nationality = 'nationality';
-  static String userLatitude = 'user_latitude';
-  static String userSort = 'user_sort';
-  static String userLongitude = 'user_longitude';
-  static String shiftId = 'shift_id';
-  static String deviceType = 'deviceType';
-
+  ///TODO Table Name COMPANY_DETAIL for key
+  static String companyIdFormCompanyDetail = 'company_id';
+  static String countryId = 'country_id';
+  static String companyName = 'company_name';
+  static String companyAddress = 'company_address';
+  static String companyLatitude = 'company_latitude';
+  static String companyLongitude = 'company_longitude';
+  static String companyLogo = 'company_logo';
 
 }
 

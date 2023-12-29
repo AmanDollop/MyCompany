@@ -8,6 +8,7 @@ class PersonalInfoController extends GetxController {
 
   final count = 0.obs;
 
+  final userPic = ''.obs;
   final userFirstName = ''.obs;
   final userLastName = ''.obs;
   final email = ''.obs;
@@ -43,6 +44,10 @@ class PersonalInfoController extends GetxController {
 
   Future<void> setDefaultData() async {
 
+    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+      userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo);
+    }
+
     if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
       userFirstName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo);
     }
@@ -58,7 +63,6 @@ class PersonalInfoController extends GetxController {
     if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
       mobileNumber.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo);
     }
-
 
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
       dob.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo);

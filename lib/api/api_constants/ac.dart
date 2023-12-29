@@ -1,5 +1,7 @@
 
 
+import 'package:task/common/common_methods/cm.dart';
+
 class AK {
   ///COMMON Api Key
   static const baseUrl = "baseUrl";
@@ -36,6 +38,14 @@ class AK {
 
   static const userProfilePic="user_profile_pic";
 
+  static const memberDateOfBirth = "member_date_of_birth";
+
+  static const hobbiesAndInterest = "hobbies_and_interest";
+
+  static const skills = "skills";
+
+  static const languageKnown = "language_known";
+
   static const departmentId="department_id";
 
   static const shiftId="shift_id";
@@ -48,11 +58,24 @@ class AK {
 
   static const gender="gender";
 
+  static const bloodGroup="blood_group";
+
   static const deviceType="deviceType";
 
   static const countryCode="country_code";
 
   static const otp="otp";
+
+
+  static const whatsappCountryCode="whatsapp_country_code";
+
+  static const whatsappNumber="whatsapp_number";
+
+  static const personalEmail="personal_email";
+
+  static const currentAddress="current_address";
+
+  static const permanentAddress="permanent_address";
 
 
 }
@@ -70,23 +93,14 @@ class AU {
 
   static const endPointCompanyControllerApi = "${baseUrlForSearchCompany}CompanyController.php";
 
-  static const endPointLogInApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointRegistrationApi = "${baseUrlAllApis}AuthController.php";
 
-  static const endPointSendOTPApi = "${baseUrlAllApis}AuthController.php";
+  static const endPointAuthControllerPhpApi = "api/AuthController.php";
 
-  static const endPointMatchOTPApi = "${baseUrlAllApis}AuthController.php";
+  static const endPointCompanyControllerDetailPhpApi = "api/companyController.php";
 
-  static const endPointBranchApi = "${baseUrlAllApis}AuthController.php";
+  static const endPointUserControllerApi = "api/UserController.php";
 
-  static const endPointDepartmentApi = "${baseUrlAllApis}AuthController.php";
-
-  static const endPointShiftTimeApi = "${baseUrlAllApis}AuthController.php";
-
-  static const endPointGetCountryCodeApi = "${baseUrlAllApis}AuthController.php";
-
-  static const endPointGetEmployeeDetailsApi = "${baseUrlAllApis}UserController.php";
 
 
 

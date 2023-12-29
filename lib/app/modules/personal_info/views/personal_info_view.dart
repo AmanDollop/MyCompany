@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -21,8 +22,19 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
         resizeToAvoidBottomInset: false,
         appBar: appBarView(),
         floatingActionButton: Padding(
-          padding:  EdgeInsets.only(bottom: 10.px),
-          child: CW.commonOutlineButton(onPressed: () => controller.clickOnEditViewButton(),child: Icon(Icons.edit,color: Col.inverseSecondary,size: 22.px,),height: 50.px,width: 50.px,backgroundColor: Col.primary,borderColor: Colors.transparent,borderRadius: 25.px),
+          padding: EdgeInsets.only(bottom: 10.px),
+          child: CW.commonOutlineButton(
+              onPressed: () => controller.clickOnEditViewButton(),
+              child: Icon(
+                Icons.edit,
+                color: Col.inverseSecondary,
+                size: 22.px,
+              ),
+              height: 50.px,
+              width: 50.px,
+              backgroundColor: Col.primary,
+              borderColor: Colors.transparent,
+              borderRadius: 25.px),
         ),
         body: Obx(() {
           controller.count.value;
@@ -30,13 +42,13 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
             return Center(
               child: CW.commonProgressBarView(color: Col.primary),
             );
-          }
-          else {
+          } else {
             return Stack(
               alignment: Alignment.bottomCenter,
               children: [
                 ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
                   children: [
                     profileView(),
                     SizedBox(height: 25.px),
@@ -52,13 +64,15 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
                         imagePath: 'assets/icons/email_icon.png',
                         title: 'Email Address',
                         subTitle: controller.email.value.isNotEmpty
-                            ?controller.email.value:'No Data Available!'),
+                            ? controller.email.value
+                            : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/contact_phone_icon.png',
                         title: 'Mobile Number',
                         subTitle: controller.mobileNumber.value.isNotEmpty
-                            ?controller.mobileNumber.value:'No Data Available!'),
+                            ? controller.mobileNumber.value
+                            : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/dob_icon.png',
@@ -71,31 +85,36 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
                         imagePath: 'assets/icons/blood_group_icon.png',
                         title: 'Blood Group',
                         subTitle: controller.bloodGroup.value.isNotEmpty
-                            ?controller.bloodGroup.value:'No Data Available!'),
+                            ? controller.bloodGroup.value
+                            : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/gender_icon.png',
                         title: 'Gender',
                         subTitle: controller.gender.value.isNotEmpty
-                            ?controller.gender.value:'No Data Available!'),
+                            ? controller.gender.value
+                            : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/interest_hobbies_icon.png',
                         title: 'Interest/Hobbies',
                         subTitle: controller.interestHobbies.value.isNotEmpty
-                            ?controller.interestHobbies.value:'No Data Available!'),
+                            ? controller.interestHobbies.value
+                            : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/location_icon.png',
                         title: 'Special Skills',
                         subTitle: controller.specialSkills.value.isNotEmpty
-                            ?controller.specialSkills.value:'No Data Available!'),
+                            ? controller.specialSkills.value
+                            : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/languages_known_icon.png',
                         title: 'Languages Known',
                         subTitle: controller.languagesKnown.value.isNotEmpty
-                            ?controller.languagesKnown.value:'No Data Available!'),
+                            ? controller.languagesKnown.value
+                            : 'No Data Available!'),
                     SizedBox(height: 20.px),
                   ],
                 ),
@@ -123,24 +142,36 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
       );
 
   Widget profileView() => Center(
-    child: Container(
-      height: 116.px,
-      width: 116.px,
-      padding: EdgeInsets.all(2.px),
-      decoration: BoxDecoration(
-        color: Col.primary,
-        borderRadius: BorderRadius.circular(58.px),
-      ),
-      child: Center(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(55.px),
-          child: CW.commonNetworkImageView(path: 'assets/images/profile.png', isAssetImage: true),
+        child: Container(
+          height: 116.px,
+          width: 116.px,
+          padding: EdgeInsets.all(2.px),
+          decoration: BoxDecoration(
+            color: Col.primary,
+            borderRadius: BorderRadius.circular(58.px),
+          ),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(55.px),
+              child: CW.commonNetworkImageView(
+                  height: 110.px,
+                  width: 110.px,
+                  path: controller.userPic.isNotEmpty
+                      ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
+                      : 'assets/images/profile.png',
+                  isAssetImage: controller.userPic.isNotEmpty ? false : true),
+            ),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
-  Widget commonIconImageForTextField({required String imagePath, double? height, double? width, bool isAssetImage = true, Color? imageColor}) => SizedBox(
+  Widget commonIconImageForTextField(
+          {required String imagePath,
+          double? height,
+          double? width,
+          bool isAssetImage = true,
+          Color? imageColor}) =>
+      SizedBox(
         width: height ?? 24.px,
         height: width ?? 24.px,
         child: Center(
@@ -153,7 +184,11 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
         ),
       );
 
-  Widget commonRowForContactDetailView({required String imagePath, required String title, required String subTitle,}) {
+  Widget commonRowForContactDetailView({
+    required String imagePath,
+    required String title,
+    required String subTitle,
+  }) {
     return Column(
       children: [
         Row(
@@ -187,7 +222,12 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
     );
   }
 
-  Widget commonTitleTextView({required String title, TextAlign? textAlign, int? maxLines, Color? color, FontWeight? fontWeight}) =>
+  Widget commonTitleTextView(
+          {required String title,
+          TextAlign? textAlign,
+          int? maxLines,
+          Color? color,
+          FontWeight? fontWeight}) =>
       Text(
         title,
         style: Theme.of(Get.context!)
@@ -198,5 +238,4 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign ?? TextAlign.start,
       );
-
 }

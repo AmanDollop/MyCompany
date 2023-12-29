@@ -34,14 +34,20 @@ class SplashController extends GetxController {
 
   void increment() => count.value++;
 
+
+  Future<void> createDataBaseTables() async {
+    await DataBaseHelper().createTableInDataBaseForToken(db: database!);
+    await DataBaseHelper().createTableInDataBaseForPersonalInfo(db: database!,);
+    await DataBaseHelper().createTableInDataBaseForContactInfo(db: database!);
+    await DataBaseHelper().createTableInDataBaseForJobInfo(db: database!);
+    await DataBaseHelper().createTableInDataBaseForSocialInfo(db: database!);
+    await DataBaseHelper().createTableInDataBaseForCompanyDetail(db: database!);
+  }
+
   Future<void> dataBaseCalling() async {
     database = await DataBaseHelper().openDataBase();
     if (database != null) {
-      await DataBaseHelper().createTableInDataBaseForToken(db: database!);
-      await DataBaseHelper().createTableInDataBaseForPersonalInfo(db: database!,);
-      await DataBaseHelper().createTableInDataBaseForContactInfo(db: database!);
-      await DataBaseHelper().createTableInDataBaseForJobInfo(db: database!);
-      await DataBaseHelper().createTableInDataBaseForSocialInfo(db: database!);
+      await createDataBaseTables();
       token = await DataBaseHelper().getParticularData(key: 'token',tableName: DataBaseConstant.tableNameForUserToken);
     }
   }
@@ -51,13 +57,19 @@ class SplashController extends GetxController {
     if (token != 'null' && token!.isNotEmpty) {
       Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
     } else {
-      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
-      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
-      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
-      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
-      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
+      await dataBaseDeleteMethod();
       await CM.setString(key: AK.baseUrl, value: '');
       Get.offAllNamed(Routes.SEARCH_COMPANY);
     }
   }
+
+  Future<void> dataBaseDeleteMethod() async {
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
+  }
+
 }

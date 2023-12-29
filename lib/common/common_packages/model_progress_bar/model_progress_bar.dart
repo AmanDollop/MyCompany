@@ -51,7 +51,7 @@ class ModalProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       progressIndicator ??= CircularProgressIndicator(
-          backgroundColor: const Color(0xff7C7C7C).withOpacity(.5),
+          backgroundColor: const Color(0xff7C7C7C).withOpacity(.9),
           strokeWidth: 3,
         );
     if (!inAsyncCall) return child;

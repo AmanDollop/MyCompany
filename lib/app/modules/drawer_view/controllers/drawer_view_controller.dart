@@ -37,7 +37,7 @@ class DrawerViewController extends GetxController {
   final firstName = ''.obs;
   final lastName = ''.obs;
   final companyName = ''.obs;
-  final developerType = ''.obs;
+  final developer = ''.obs;
 
   @override
   Future<void> onInit() async {
@@ -91,6 +91,7 @@ class DrawerViewController extends GetxController {
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
           await CM.setString(key: AK.baseUrl, value: '');
           Get.offAllNamed(Routes.SEARCH_COMPANY);
         },
@@ -104,8 +105,8 @@ class DrawerViewController extends GetxController {
     firstName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName,tableName: DataBaseConstant.tableNameForPersonalInfo);
     lastName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName,tableName: DataBaseConstant.tableNameForPersonalInfo);
     userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    companyName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail,tableName: DataBaseConstant.tableNameForContactInfo);
-    developerType.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo);
+    companyName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyName,tableName: DataBaseConstant.tableNameForCompanyDetail);
+    developer.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo);
 
   }
 

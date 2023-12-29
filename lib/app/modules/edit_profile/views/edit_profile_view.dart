@@ -22,7 +22,8 @@ class EditProfileView extends GetView<EditProfileController> {
             return Center(
               child: CW.commonProgressBarView(color: Col.primary),
             );
-          }else{
+          }
+          else{
             return Stack(
               children: [
                 Column(
@@ -33,50 +34,57 @@ class EditProfileView extends GetView<EditProfileController> {
                         height: 290.px,
                         width: double.infinity),
                     Expanded(
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 18.px),
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        children: [
-                          firstNameTextField(),
-                          SizedBox(height: 16.px),
-                          lastNameTextField(),
-                          SizedBox(height: 16.px),
-                          emailTextField(),
-                          SizedBox(height: 16.px),
-                          mobileTextField(),
-                          SizedBox(height: 16.px),
-                          dobTextField(),
-                          SizedBox(height: 16.px),
-                          bloodGroupTextField(),
-                          SizedBox(height: 16.px),
-                          SizedBox(
-                            height: 30.px,
-                            child: ListView.builder(
-                                itemBuilder: (context, index) {
-                                  return Row(
-                                    children: [
-                                      CW.commonRadioView(
-                                        onChanged: (value) {
-                                          CM.unFocusKeyBoard();
-                                          controller.genderIndexValue.value = value;
-                                          controller.genderType.value = controller.genderText[index];
-                                          controller.count.value++;
-                                        },
-                                        index: index.toString(),
-                                        selectedIndex: controller.genderIndexValue.value.toString(),
-                                      ),
-                                      genderLabelTextView(text: controller.genderText[index])
-                                    ],
-                                  );
-                                },
-                                itemCount: 2,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                scrollDirection: Axis.horizontal),
-                          ),
-                          SizedBox(height: 30.px),
-                        ],
+                      child: Form(
+                        key: controller.key,
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 18.px),
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          children: [
+                            firstNameTextField(),
+                            SizedBox(height: 16.px),
+                            lastNameTextField(),
+                            SizedBox(height: 16.px),
+                            emailTextField(),
+                            SizedBox(height: 16.px),
+                            hobbiesAndInterestTextField(),
+                            SizedBox(height: 16.px),
+                            skillsTextField(),
+                            SizedBox(height: 16.px),
+                            languageKnownTextField(),
+                            SizedBox(height: 16.px),
+                            dobTextField(),
+                            SizedBox(height: 16.px),
+                            bloodGroupTextField(),
+                            SizedBox(height: 16.px),
+                            SizedBox(
+                              height: 30.px,
+                              child: ListView.builder(
+                                  itemBuilder: (context, index) {
+                                    return Row(
+                                      children: [
+                                        CW.commonRadioView(
+                                          onChanged: (value) {
+                                            CM.unFocusKeyBoard();
+                                            controller.genderIndexValue.value = value;
+                                            controller.genderType.value = controller.genderText[index];
+                                            controller.count.value++;
+                                          },
+                                          index: index.toString(),
+                                          selectedIndex: controller.genderIndexValue.value.toString(),
+                                        ),
+                                        genderLabelTextView(text: controller.genderText[index])
+                                      ],
+                                    );
+                                  },
+                                  itemCount: 2,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.horizontal),
+                            ),
+                            SizedBox(height: 30.px),
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -147,7 +155,12 @@ class EditProfileView extends GetView<EditProfileController> {
         style: Theme.of(Get.context!).textTheme.displaySmall,
       );
 
-  Widget saveButtonView() => CW.commonTextButton(
+  Widget saveButtonView() => controller.saveButtonValue.value
+      ? Padding(
+        padding:  EdgeInsets.only(right: 20.px),
+        child: SizedBox(height: 20.px,width: 20.px,child: CW.commonProgressBarView(color: Col.inverseSecondary),),
+      )
+      : CW.commonTextButton(
         onPressed: () => controller.clickOnSaveButton(),
         child: Text(
           'Save',
@@ -194,8 +207,8 @@ class EditProfileView extends GetView<EditProfileController> {
       );
 
   Widget userNameTextView() => Text(
-        controller.firstNameController.text.isNotEmpty || controller.lastNameController.text.isNotEmpty
-            ? '${controller.firstNameController.text} ${controller.lastNameController.text}'
+        controller.userFirstName.value.isNotEmpty || controller.userLastName.value.isNotEmpty
+            ? '${controller.userFirstName.value} ${controller.userLastName.value}'
             : 'User Name',
         style: Theme.of(Get.context!).textTheme.displaySmall,
         maxLines: 2,
@@ -204,7 +217,7 @@ class EditProfileView extends GetView<EditProfileController> {
       );
 
   Widget userDetailTextView() => Text(
-    controller.developerType.value.isNotEmpty?controller.developerType.value:'Developer Type',
+    controller.skill.value.isNotEmpty?'${controller.skill.value} Developer':'Developer',
         style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px),
         maxLines: 2,
         textAlign: TextAlign.center,
@@ -233,6 +246,7 @@ class EditProfileView extends GetView<EditProfileController> {
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter first name'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -248,6 +262,7 @@ class EditProfileView extends GetView<EditProfileController> {
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
+    validator: (value) => V.isValid(value: value, title: 'Please enter last name'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -261,6 +276,7 @@ class EditProfileView extends GetView<EditProfileController> {
         keyboardType: TextInputType.emailAddress,
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
+    validator: (value) => V.isValid(value: value, title: 'Please enter email address'),
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         onChanged: (value) {
@@ -268,16 +284,43 @@ class EditProfileView extends GetView<EditProfileController> {
         },
       );
 
-  Widget mobileTextField() => CW.commonTextField(
+  Widget hobbiesAndInterestTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
-        controller: controller.mobileNumberController,
-        labelText: 'Mobile Number',
-        hintText: 'Mobile Number',
-        keyboardType: TextInputType.number,
+        controller: controller.hobbiesAndInterestController,
+        labelText: 'Hobbies/Interest',
+        hintText: 'Hobbies/Interest',
         labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
         hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         // style: Theme.of(Get.context!).textTheme.bodyLarge,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImage(imagePath: 'assets/icons/interest_hobbies_icon.png'),
+        onChanged: (value) {
+          controller.count.value++;
+        },
+      );
+
+  Widget skillsTextField() => CW.commonTextField(
+        fillColor: Colors.transparent,
+        controller: controller.skillsController,
+        labelText: 'Skills',
+        hintText: 'Skills',
+        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
+        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+        prefixIcon: commonIconImage(imagePath: 'assets/icons/location_icon.png'),
+        onChanged: (value) {
+          controller.count.value++;
+        },
+      );
+
+  Widget languageKnownTextField() => CW.commonTextField(
+        fillColor: Colors.transparent,
+        controller: controller.languageKnownController,
+        labelText: 'Language Known',
+        hintText: 'Language Known',
+        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
+        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
+        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+        prefixIcon: commonIconImage(imagePath: 'assets/icons/languages_known_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -299,7 +342,7 @@ class EditProfileView extends GetView<EditProfileController> {
     onTap: () => controller.clickOnDOBTextField(),
     readOnly: true,
     suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
-    validator: (value) => V.isValid(value: value, title: 'Please enter DOB'),
+    // validator: (value) => V.isValid(value: value, title: 'Please enter DOB'),
   );
 
   Widget bloodGroupTextField() => CW.commonTextField(
@@ -318,7 +361,7 @@ class EditProfileView extends GetView<EditProfileController> {
     onTap: () => controller.clickOnBloodGroupTextField(),
     readOnly: true,
     suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
-    validator: (value) => V.isValid(value: value, title: 'Please enter Blood Group'),
+    // validator: (value) => V.isValid(value: value, title: 'Please enter Blood Group'),
   );
 
   Widget genderLabelTextView({required String text}) => Text(

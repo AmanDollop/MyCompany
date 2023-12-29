@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
@@ -108,7 +107,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingGetLatLongMethod() async {
     try {
-      getLatLong = await CM.getUserLatLong(context: Get.context!);
+      getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
       print('getLatLong::::::   $getLatLong');
 
       if (getLatLong != null) {

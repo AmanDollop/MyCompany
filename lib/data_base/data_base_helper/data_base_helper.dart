@@ -34,6 +34,20 @@ class DataBaseHelper {
         )''');
   }
 
+  createTableInDataBaseForCompanyDetail({required Database db}) async {
+    print('CREATE TABLE IF NOT EXISTS:::::::::: ');
+    await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForCompanyDetail}  
+        (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
+        , ${DataBaseConstant.companyIdFormCompanyDetail} ${DataBaseType.textType}
+        , ${DataBaseConstant.countryId} ${DataBaseType.textType}
+        , ${DataBaseConstant.companyName} ${DataBaseType.textType}
+        , ${DataBaseConstant.companyAddress} ${DataBaseType.textType}
+        , ${DataBaseConstant.companyLatitude} ${DataBaseType.textType}
+        , ${DataBaseConstant.companyLongitude} ${DataBaseType.textType}
+        , ${DataBaseConstant.companyLogo} ${DataBaseType.textType}
+        )''');
+  }
+
   createTableInDataBaseForPersonalInfo({required Database db}) async {
     await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForPersonalInfo}  
         (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
@@ -79,6 +93,7 @@ class DataBaseHelper {
         , ${DataBaseConstant.dateOfJoining} ${DataBaseType.textType}
         , ${DataBaseConstant.employeeId} ${DataBaseType.textType}
         , ${DataBaseConstant.employeeType} ${DataBaseType.textType}
+        , ${DataBaseConstant.employeeTypeView} ${DataBaseType.textType}
         , ${DataBaseConstant.branchName} ${DataBaseType.textType}
         , ${DataBaseConstant.departmentName} ${DataBaseType.textType}
         , ${DataBaseConstant.branchId} ${DataBaseType.textType}

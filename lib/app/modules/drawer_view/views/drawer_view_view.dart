@@ -58,8 +58,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
                                     fontSize: 16.px),
                                 SizedBox(height: 2.px),
                                 userDetailTextView(
-                                  text: controller.developerType.value!='null'&&controller.developerType.value.isNotEmpty
-                                          ? controller.developerType.value
+                                  text: controller.developer.value!='null'&&controller.developer.value.isNotEmpty
+                                          ? '${controller.developer.value} Developers'
                                           : 'Developer',
                                 ),
                               ],
@@ -89,7 +89,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
                   Flexible(
                     child: userNameTextView(
                         text: controller.companyName.value !='null'&&controller.companyName.value.isNotEmpty
-                            ? 'Dollop Info-tech'
+                            ? controller.companyName.value.toString()
                             : 'Company Name',
                         fontSize: 14.px,
                         color: Col.primary,
@@ -141,8 +141,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
                     path: controller.userPic.value.isNotEmpty
                         ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
                         : 'assets/images/profile.png',
-                    isAssetImage:
-                        controller.userPic.value.isNotEmpty ? false : true,
+                    isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
+                    errorImage: 'assets/images/profile.png',
                     width: 66.px,
                     height: 66.px),
               ),

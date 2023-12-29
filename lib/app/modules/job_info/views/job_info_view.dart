@@ -31,39 +31,27 @@ class JobInfoView extends GetView<JobInfoController> {
                 commonRowForContactDetailView(
                     imagePath: 'assets/icons/dob_icon.png',
                     title: 'Designation',
-                    subTitle: controller.designationController.text.isNotEmpty
-                        ?controller.designationController.text:'No Data Available!'),
+                    subTitle: controller.designation.value.isNotEmpty
+                        ?controller.designation.value:'No Data Available!'),
                 SizedBox(height: 5.px),
                 commonRowForContactDetailView(
                     imagePath: 'assets/icons/dob_icon.png',
                     title: 'Employee Id',
-                    subTitle: controller.employeeIDController.text.isNotEmpty
-                        ?controller.employeeIDController.text:'No Data Available!'),
+                    subTitle: controller.employeeID.value.isNotEmpty
+                        ?controller.employeeID.value:'No Data Available!'),
                 SizedBox(height: 5.px),
                 commonRowForContactDetailView(
                     imagePath: 'assets/icons/dob_icon.png',
                     title: 'Employee Type',
-                    subTitle: controller.employeeTypeController.text.isNotEmpty
-                        ?controller.employeeTypeController.text:'No Data Available!'),
+                    subTitle: controller.employeeType.value.isNotEmpty
+                        ?controller.employeeType.value:'No Data Available!'),
                 SizedBox(height: 5.px),
                 commonRowForContactDetailView(
                     imagePath: 'assets/icons/dob_icon.png',
                     title: 'Joining Date',
-                    subTitle: controller.joiningDateController.text.isNotEmpty
-                        ?controller.joiningDateController.text:'No Data Available!'),
-                SizedBox(height: 5.px),
-                commonRowForContactDetailView(
-                    imagePath: 'assets/icons/dob_icon.png',
-                    title: 'Experience',
-                    subTitle: controller.experienceController.text.isNotEmpty
-                        ?controller.experienceController.text:'No Data Available!'),
-                SizedBox(height: 5.px),
-                SizedBox(height: 5.px),
-                commonRowForContactDetailView(
-                    imagePath: 'assets/icons/dob_icon.png',
-                    title: 'Total Experience',
-                    subTitle: controller.totalExperienceController.text.isNotEmpty
-                        ?controller.totalExperienceController.text:'No Data Available!'),
+                    subTitle: controller.joiningDate.value.isNotEmpty
+                        ?controller.joiningDate.value:'No Data Available!'),
+
                 SizedBox(height: 5.px),
               ],
             );

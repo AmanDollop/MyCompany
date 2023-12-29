@@ -40,7 +40,7 @@ class Col {
 
   /* --------------------------Success Colors Collection--------------------------*/
 
-  static Color  success=const Color(0xff00FF00);
+  static Color  success = const Color(0xff00FF00);
 
 /* --------------------------Text Colors Collection--------------------------*/
 

@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_model/branch_modal.dart';
-import 'package:task/api/api_model/branch_modal.dart';
-import 'package:task/api/api_model/branch_modal.dart';
+import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/country_code_modal.dart';
 import 'package:task/api/api_model/department_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
@@ -20,7 +18,8 @@ import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class CAI {
 
-  static Future<String> baseUrlRe() async {
+
+  static Future<String> baseUrlReturn() async {
     String baseUrlAll = await CM.getString(key: AK.baseUrl) ?? '';
     return baseUrlAll;
   }
@@ -55,8 +54,9 @@ class CAI {
     required Map<String, dynamic> bodyParams,
     required Map<String, File> imageMap,
   }) async {
+    String baseUrl = await baseUrlReturn();
     http.Response? response = await MyHttp.multipartRequestForSignUp(
-      url: AU.endPointRegistrationApi,
+      url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
       bodyParams: bodyParams,
       context: Get.context!,
       imageMap: imageMap,
@@ -79,8 +79,9 @@ class CAI {
   static Future<http.Response?> sendOtpApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointSendOTPApi,
+      url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
       bodyParams: bodyParams,
       context: Get.context!,
     );
@@ -101,9 +102,10 @@ class CAI {
   static Future<UserDataModal?> matchOtpApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
     UserDataModal? userDataModal;
     http.Response? response = await MyHttp.postMethod(
-        url: AU.endPointMatchOTPApi,
+        url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         showSnackBar: false);
@@ -125,9 +127,10 @@ class CAI {
   static Future<BranchModal?> branchApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
     BranchModal? branchModal;
     http.Response? response = await MyHttp.postMethod(
-        url: AU.endPointBranchApi,
+        url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         showSnackBar: false);
@@ -149,9 +152,10 @@ class CAI {
   static Future<DepartmentModal?> departmentApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
     DepartmentModal? departmentModal;
     http.Response? response = await MyHttp.postMethod(
-        url: AU.endPointDepartmentApi,
+        url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         showSnackBar: false);
@@ -173,9 +177,10 @@ class CAI {
   static Future<ShiftTimeModal?> shiftTimeApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
     ShiftTimeModal? shiftTimeApi;
     http.Response? response = await MyHttp.postMethod(
-        url: AU.endPointShiftTimeApi,
+        url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         showSnackBar: false);
@@ -197,9 +202,10 @@ class CAI {
   static Future<CountryCodeModal?> getCountryCodeApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
     CountryCodeModal? countryCodeModal;
     http.Response? response = await MyHttp.postMethod(
-        url: AU.endPointGetCountryCodeApi,
+        url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         showSnackBar: false);
@@ -218,20 +224,32 @@ class CAI {
     }
   }
 
-  static Future<http.Response?> loginApi({
+  static Future<CompanyDetailsModal?> getCompanyDetailsApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+    String baseUrl = await baseUrlReturn();
+
+    CompanyDetailsModal? companyDetailsModal;
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+
     http.Response? response = await MyHttp.postMethod(
-      url: AU.endPointLogInApi,
-      bodyParams: bodyParams,
-      context: Get.context!,
-    );
+        url: '$baseUrl${AU.endPointCompanyControllerDetailPhpApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
     if (response != null) {
       if (await CM.checkResponse(
           response: response,
           wantInternetFailResponse: true,
           wantShowFailResponse: true)) {
-        return response;
+        companyDetailsModal = CompanyDetailsModal.fromJson(jsonDecode(response.body));
+        return companyDetailsModal;
       } else {
         return null;
       }
@@ -243,6 +261,9 @@ class CAI {
   static Future<GetEmployeeDetailsModal?> getEmployeeDetailsApi({
     required Map<String, dynamic> bodyParams,
   }) async {
+
+    String baseUrl = await baseUrlReturn();
+
     GetEmployeeDetailsModal? getEmployeeDetailsModal;
 
     String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
@@ -252,7 +273,7 @@ class CAI {
       AK.authorization: '${AK.bearer} $token',
     };
       http.Response? response = await MyHttp.postMethod(
-        url: AU.endPointGetEmployeeDetailsApi,
+          url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         token: authorization,
@@ -268,4 +289,101 @@ class CAI {
       return null;
     }
   }
+
+
+  static Future<UserDataModal?> getUserDataApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    UserDataModal? getUserData;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+      http.Response? response = await MyHttp.postMethod(
+          url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+       if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getUserData = UserDataModal.fromJson(jsonDecode(response.body));
+        return getUserData;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+
+  static Future<http.Response?> updateProfileApi({
+    required Map<String, dynamic> bodyParams,
+    File? image
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    http.Response? response = await MyHttp.multipartRequest(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+      bodyParams: bodyParams,
+      context: Get.context!,
+      userProfileImageKey: AK.userProfilePic,
+      image: image,
+      multipartRequestType: 'POST',
+      token: '${AK.bearer} $token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> updateContactInfoApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+      bodyParams: bodyParams,
+      context: Get.context!,
+      token: authorization
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }

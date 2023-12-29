@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -356,12 +357,17 @@ class BottomSheetForOTP extends GetxController {
   static final otpController = TextEditingController();
   static final timer = false.obs;
   static final count = 0.obs;
+
   static final userDataModal = Rxn<UserDataModal?>();
   static UserDetails? userData;
   static PersonalInfo? personalInfo;
   static ContactInfo? contactInfo;
   static JobInfo? jobInfo;
   static SocialInfo? socialInfo;
+
+  static final companyDetailsModal = Rxn<CompanyDetailsModal?>();
+  static GetCompanyDetails? getCompanyDetails;
+
 
   static Map<String, dynamic> bodyParamsSendOtp = {};
   static Map<String, dynamic> otpApiResponseMap = {};
@@ -393,47 +399,37 @@ class BottomSheetForOTP extends GetxController {
     }
   }
 
-  static Future<void> matchOtpApiCalling(
-      {required String email, required String otp}) async {
+  static Future<void> matchOtpApiCalling({required String email, required String otp}) async {
     try {
+
       bodyParamsMatchOtp = {
         AK.action: 'matchOtp',
         AK.otp: otp,
         AK.userEmail: email,
       };
-      userDataModal.value =
-          await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
+
+      userDataModal.value = await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
+
       if (userDataModal.value != null) {
+
         userData = userDataModal.value?.userDetails;
-        if (userData?.token != null && userData!.token!.isNotEmpty ||
-            userData?.personalInfo != null ||
-            userData?.contactInfo != null ||
-            userData?.jobInfo != null ||
-            userData?.socialInfo != null) {
+
+        if (userData?.token != null && userData!.token!.isNotEmpty || userData?.personalInfo != null || userData?.contactInfo != null || userData?.jobInfo != null || userData?.socialInfo != null) {
+
           personalInfo = userData?.personalInfo;
           contactInfo = userData?.contactInfo;
           jobInfo = userData?.jobInfo;
           socialInfo = userData?.socialInfo;
 
-          DataBaseHelper().insertInDataBase(
-              data: personalInfo!.toJson(),
-              tableName: DataBaseConstant.tableNameForPersonalInfo);
+          DataBaseHelper().insertInDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
 
-          DataBaseHelper().insertInDataBase(
-              data: contactInfo!.toJson(),
-              tableName: DataBaseConstant.tableNameForContactInfo);
+          DataBaseHelper().insertInDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
 
-          DataBaseHelper().insertInDataBase(
-              data: jobInfo!.toJson(),
-              tableName: DataBaseConstant.tableNameForJobInfo);
+          DataBaseHelper().insertInDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
 
-          DataBaseHelper().insertInDataBase(
-              data: socialInfo!.toJson(),
-              tableName: DataBaseConstant.tableNameForSocialInfo);
+          DataBaseHelper().insertInDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
 
-          DataBaseHelper().insertInDataBase(
-              data: {DataBaseConstant.userToken: userData?.token},
-              tableName: DataBaseConstant.tableNameForUserToken);
+          DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userToken: userData?.token}, tableName: DataBaseConstant.tableNameForUserToken);
 
           Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
           CM.showSnackBar(message: 'LogIn Successfully');
@@ -449,8 +445,7 @@ class BottomSheetForOTP extends GetxController {
     verifyButtonValue.value = false;
   }
 
-  static Future<void> commonBottomSheetForVerifyOtp(
-      {required String otp, required String email}) async {
+  static Future<void> commonBottomSheetForVerifyOtp({required String otp, required String email}) async {
     await showModalBottomSheet(
       context: Get.context!,
       showDragHandle: true,
@@ -477,12 +472,10 @@ class BottomSheetForOTP extends GetxController {
                   return false;
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: ListView(
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                        bottom: 34.px, left: 18.px, right: 18.px),
+                    padding: EdgeInsets.only(bottom: 34.px, left: 18.px, right: 18.px),
                     children: [
                       Text(
                         'OTP Verification',
@@ -584,11 +577,8 @@ class BottomSheetForOTP extends GetxController {
                                 onPressed: () async {
                                   if (otpController.text.isNotEmpty) {
                                     verifyButtonValue.value = true;
-                                    await matchOtpApiCalling(
-                                        email: email,
-                                        otp: otpController.text
-                                            .trim()
-                                            .toString());
+                                    await matchOtpApiCalling(email: email, otp: otpController.text.trim().toString());
+                                    await callingGetCompanyDetailApi();
                                   }
                                 },
                                 isLoading: verifyButtonValue.value,
@@ -612,5 +602,54 @@ class BottomSheetForOTP extends GetxController {
       timer.value = false;
       verifyButtonValue.value = false;
     });
+  }
+
+  static Future<void> callingGetCompanyDetailApi() async {
+    try{
+      companyDetailsModal.value = await CAI.getCompanyDetailsApi(bodyParams: {AK.action:'getCompanyDetail'});
+      if(companyDetailsModal.value != null){
+       getCompanyDetails = companyDetailsModal.value?.getCompanyDetails;
+       if(getCompanyDetails != null){
+         DataBaseHelper().insertInDataBase(data: getCompanyDetails!.toJson(), tableName: DataBaseConstant.tableNameForCompanyDetail);
+       }
+      }
+    }catch(e){
+      CM.error();
+    }
+  }
+
+  static Future<void> callingGetUserDataApi() async {
+    try{
+
+      userDataModal.value= await CAI.getUserDataApi(bodyParams: {AK.action:'getUserDetails'});
+      if(userDataModal.value != null){
+        userData = userDataModal.value?.userDetails;
+
+        if(userData?.personalInfo != null){
+          personalInfo = userData?.personalInfo;
+          print('personalInfo::::::  $personalInfo');
+          DataBaseHelper().upDateDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
+        }
+
+        if(userData?.contactInfo != null){
+          contactInfo = userData?.contactInfo;
+          DataBaseHelper().upDateDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
+        }
+
+        if(userData?.jobInfo != null){
+          jobInfo = userData?.jobInfo;
+          print('jobInfo:::::  ${jobInfo?.employeeTypeView}');
+          DataBaseHelper().upDateDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
+        }
+
+        if(userData?.socialInfo != null){
+          socialInfo = userData?.socialInfo;
+          DataBaseHelper().upDateDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
+        }
+
+      }
+    }catch(e){
+      CM.error();
+    }
   }
 }

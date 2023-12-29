@@ -56,6 +56,7 @@ dependencies:
   timer_count_down: 2.2.2
   geolocator: ^10.1.0
   flutter_dash: ^1.0.0
+  location_geocoder: ^1.0.5
 
 
 dev_dependencies:

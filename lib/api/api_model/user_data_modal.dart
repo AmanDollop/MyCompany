@@ -201,6 +201,7 @@ class JobInfo {
   String? dateOfJoining;
   String? employeeId;
   String? employeeType;
+  String? employeeTypeView;
   String? branchName;
   String? departmentName;
   String? branchId;
@@ -211,6 +212,7 @@ class JobInfo {
         this.dateOfJoining,
         this.employeeId,
         this.employeeType,
+        this.employeeTypeView,
         this.branchName,
         this.departmentName,
         this.branchId,
@@ -221,6 +223,7 @@ class JobInfo {
     dateOfJoining = json['date_of_joining'];
     employeeId = json['employee_id'];
     employeeType = json['employee_type'];
+    employeeTypeView = json['employee_type_view'];
     branchName = json['branch_name'];
     departmentName = json['department_name'];
     branchId = json['branch_id'];
@@ -233,6 +236,7 @@ class JobInfo {
     data['date_of_joining'] = dateOfJoining;
     data['employee_id'] = employeeId;
     data['employee_type'] = employeeType;
+    data['employee_type_view'] = employeeTypeView;
     data['branch_name'] = branchName;
     data['department_name'] = departmentName;
     data['branch_id'] = branchId;

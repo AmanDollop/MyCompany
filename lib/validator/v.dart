@@ -2,9 +2,7 @@ class V {
   static String? isEmailValid({required String? value}) {
     if (value == null || value.trim().isEmpty) {
       return "Please enter email";
-    } else if (!RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(value)) {
+    } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
       return "Please enter valid email";
     } else {
       return null;

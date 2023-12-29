@@ -16,7 +16,7 @@ class MyProfileController extends GetxController {
   final email = ''.obs;
   final mobileNumber = ''.obs;
   final countryCode = ''.obs;
-  final developerType = ''.obs;
+  final developer = ''.obs;
 
   final titleList = [
     'Take Order',
@@ -119,6 +119,10 @@ class MyProfileController extends GetxController {
       countryCode.value = await DataBaseHelper().getParticularData(
           key: DataBaseConstant.countryCode,
           tableName: DataBaseConstant.tableNameForContactInfo);
+
+      if(await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+        developer.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo);
+      }
     }
   }
 

@@ -24,6 +24,8 @@ class CW {
   static Widget commonElevatedButton(
       {double? height,
       double? width,
+        double? progressBarHeight,
+      double? progressBarWidth,
       EdgeInsetsGeometry? margin,
       EdgeInsetsGeometry? padding,
       double? borderRadius,
@@ -52,8 +54,8 @@ class CW {
       child: isLoading
           ? Center(
               child: SizedBox(
-                height: 24.px,
-                width: 24.px,
+                height: progressBarHeight??24.px,
+                width: progressBarWidth??24.px,
                 child: CW.commonProgressBarView(color: Col.primary),
               ),
             )
@@ -377,6 +379,7 @@ class CW {
       textCapitalization: textCapitalization,
       style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
 
+
       decoration: isUnderlineBorder
           ? InputDecoration(
               labelText: labelText,
@@ -429,7 +432,7 @@ class CW {
                     )
                   : null,
             )
-          : InputDecoration(
+          : InputDecoration(focusColor: Colors.red,hoverColor: Colors.yellow,
               labelText: labelText,
               labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
               errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
@@ -567,14 +570,15 @@ class CW {
     bool isBorder = true,
     bool autofocus = false,
     bool readOnly = false,
+    bool filled = true,
   }) {
     return SizedBox(
       height: maxHeight,
       child: Card(
-        elevation: elevation ?? 2.px,
+        elevation: elevation ?? 0.px,
+        color: Col.inverseSecondary,
         shape: OutlineInputBorder(
-            borderRadius:
-                BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+            borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
             borderSide: BorderSide.none),
         child: TextFormField(
           cursorHeight: cursorHeight,
@@ -586,56 +590,48 @@ class CW {
           autofocus: autofocus,
           inputFormatters: inputFormatters,
           textCapitalization: textCapitalization,
-          style: style ??
-              Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
-                  fontFamily: C.fontKumbhSans, color: Col.onSecondary),
+          style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
           decoration: InputDecoration(
             labelText: labelText,
-            labelStyle: labelStyle,
+            labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
+            errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
             hintText: hintText,
             fillColor: fillColor ?? Col.inverseSecondary,
-            filled: true,
-            contentPadding:
-                contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
+            filled: filled,
+            contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px,vertical: 10.px),
             hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
             disabledBorder: OutlineInputBorder(
                 borderSide: isBorder
                     ? BorderSide(color: Col.gray, width: 1.px)
                     : BorderSide.none,
-                borderRadius:
-                    BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
             border: OutlineInputBorder(
                 borderSide: isBorder
                     ? BorderSide(color: Col.primary, width: 1.px)
                     : BorderSide.none,
-                borderRadius:
-                    BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
             enabledBorder: OutlineInputBorder(
                 borderSide: isBorder
                     ? BorderSide(
-                        color: initialBorderColor ?? Col.gray,
-                        width: initialBorderWidth ?? 1.px)
+                    color: filled
+                        ? initialBorderColor ?? Col.gray
+                        : Col.secondary,
+                    width: initialBorderWidth ?? 1.px)
                     : BorderSide.none,
-                borderRadius:
-                    BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
             errorBorder: OutlineInputBorder(
                 borderSide: isBorder
                     ? BorderSide(color: Col.error, width: 1.px)
                     : BorderSide.none,
                 borderRadius:
-                    BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
             suffixIcon: suffixIcon != null
                 ? Padding(
-                    padding: suffixPadding ?? EdgeInsets.zero,
-                    child: suffixIcon,
-                  )
+              padding: suffixPadding ?? EdgeInsets.zero,
+              child: suffixIcon,
+            )
                 : null,
-            prefixIcon: prefixIcon != null
-                ? Padding(
-                    padding: prefixPadding ?? EdgeInsets.zero,
-                    child: prefixIcon,
-                  )
-                : null,
+              prefixIcon: prefixIcon
           ),
         ),
       ),

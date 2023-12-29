@@ -75,18 +75,18 @@ class MyHttp {
       required BuildContext context}) async {
     if (kDebugMode) print("CALLING:: $url");
     if (kDebugMode) print("BODYPARAMS:: $bodyParams");
+    if (kDebugMode) print("image:: $image");
+    if (kDebugMode) print("userProfileImageKey:: $userProfileImageKey");
     http.Response? res;
     if (await CM.internetConnectionCheckerMethod()) {
       if (image != null) {
         try {
-          http.MultipartRequest multipartRequest =
-              http.MultipartRequest(multipartRequestType, Uri.parse(url));
+          http.MultipartRequest multipartRequest = http.MultipartRequest(multipartRequestType, Uri.parse(url));
           bodyParams.forEach((key, value) {
             multipartRequest.fields[key] = value;
           });
           multipartRequest.headers['Authorization'] = token;
-          multipartRequest.files.add(getUserProfileImageFile(
-              image: image, userProfileImageKey: userProfileImageKey));
+          multipartRequest.files.add(getUserProfileImageFile(image: image, userProfileImageKey: userProfileImageKey));
           http.StreamedResponse response = await multipartRequest.send();
           res = await http.Response.fromStream(response);
         } catch (e) {
