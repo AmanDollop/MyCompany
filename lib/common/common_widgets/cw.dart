@@ -61,7 +61,7 @@ class CW {
             )
           : child ?? Text(
                 buttonText ?? '',
-                style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
+                style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px),
               ),
     );
   }

@@ -233,7 +233,7 @@ class CommonTextTheme {
         fontFamily: fontFamily,
       ),
       //Label-12.px w400
-      labelSmall: TextThemeStyle.labelLarge(
+        labelSmall: TextThemeStyle.labelLarge(
         Col.text,
         fontFamily: fontFamily,
       ),

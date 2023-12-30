@@ -158,7 +158,7 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget saveButtonView() => controller.saveButtonValue.value
       ? Padding(
         padding:  EdgeInsets.only(right: 20.px),
-        child: SizedBox(height: 20.px,width: 20.px,child: CW.commonProgressBarView(color: Col.inverseSecondary),),
+        child: SizedBox(height: 20.px,width: 20.px,child: CW.commonProgressBarView(),),
       )
       : CW.commonTextButton(
         onPressed: () => controller.clickOnSaveButton(),

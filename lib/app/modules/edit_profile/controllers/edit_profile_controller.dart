@@ -313,7 +313,7 @@ class EditProfileController extends GetxController {
     );
   }
 
-  void clickOnBloodGroup({required int index}) {
+  void clickOnBloodGroup({required int index})  {
     bloodGroupValue.value = bloodGroupList[index];
     bloodGroupController.text = bloodGroupValue.value;
     Get.back();

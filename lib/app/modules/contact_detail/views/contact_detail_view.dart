@@ -38,8 +38,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: ListView(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.px, vertical: 20.px),
+                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                         children: [
                           AnimatedCrossFade(
                             crossFadeState: controller.valueForEditFiled.value

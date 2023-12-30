@@ -28,6 +28,7 @@ abstract class Routes {
   static const PROMOTION = _Paths.PROMOTION;
   static const DOCUMENT = _Paths.DOCUMENT;
   static const JOB_INFO = _Paths.JOB_INFO;
+  static const ADD_BANK = _Paths.ADD_BANK;
 }
 
 abstract class _Paths {
@@ -57,4 +58,5 @@ abstract class _Paths {
   static const PROMOTION = '/promotion';
   static const DOCUMENT = '/document';
   static const JOB_INFO = '/job-info';
+  static const ADD_BANK = '/add-bank';
 }
