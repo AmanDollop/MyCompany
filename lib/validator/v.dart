@@ -21,18 +21,21 @@ class V {
     }
   }
 
-  static String? isNumberValid({required String? value}) {
+  static String? isNumberValid({required String? value,bool countryCodeValue = false, String? countyCode,}) {
     if (value == null || value.trim().toString().isEmpty) {
       return "Please enter number";
     } else if (value.trim().length < 10 || value.trim().length > 12) {
       return "Please enter valid number";
+    } else if (countryCodeValue) {
+      if(countyCode == null || countyCode.isEmpty) {
+        return "Please enter country code";
+      }
     } else {
       return null;
     }
   }
 
-  static String? isPasswordValid(
-      {required String? value, String? password = "Not"}) {
+  static String? isPasswordValid({required String? value, String? password = "Not"}) {
     if (value == null || value.trim().toString().isEmpty) {
       return "Please enter password";
     } else if (value.trim().length < 6) {
@@ -67,4 +70,27 @@ class V {
       return null;
     }
   }
+
+  static String isPanCardValid(String value) {
+    String pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$';
+    RegExp regExp = RegExp(pattern);
+    if (value.isEmpty) {
+      return 'Please Enter Pan Card Number';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Please Enter Valid Pan Card Number';
+    }
+    return "";
+  }
+
+  static String isIFSCValid(String value) {
+    String pattern = '^[A-Z]{4}0[A-Z0-9]{6}\$';
+    RegExp regExp = RegExp(pattern);
+    if (value.isEmpty) {
+      return 'Please Enter IFSC';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Please Enter valid IFSC';
+    }
+    return "";
+  }
+
 }

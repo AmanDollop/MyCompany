@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
-import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
 import '../controllers/contact_detail_controller.dart';
@@ -34,9 +33,8 @@ class ContactDetailView extends GetView<ContactDetailController> {
                 return Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                     Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: ListView(
                         padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                         children: [
@@ -81,12 +79,10 @@ class ContactDetailView extends GetView<ContactDetailController> {
                               physics: const ScrollPhysics(),
                               children: [
                                 commonRowForContactDetailView(
-                                    imagePath:
-                                        'assets/icons/contact_phone_icon.png',
+                                    imagePath: 'assets/icons/contact_phone_icon.png',
                                     title: 'Contact',
-                                    subTitle: controller.countryCode.value.isNotEmpty ||
-                                            controller.mobileNumber.value.isNotEmpty
-                                        ? '${controller.countryCode} ${controller.mobileNumber}'
+                                    subTitle: controller.countryCode.value.isNotEmpty || controller.mobileNumber.value.isNotEmpty
+                                        ? '${controller.countryCode.value} ${controller.mobileNumber}'
                                         : 'No Data Available!'),
                                 SizedBox(height: 5.px),
                                 commonRowForContactDetailView(
@@ -150,7 +146,8 @@ class ContactDetailView extends GetView<ContactDetailController> {
                 );
               }
             }),
-            floatingActionButton: controller.valueForEditFiled.value
+            floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
+                ? controller.valueForEditFiled.value
                 ? const SizedBox()
                 : Padding(
                     padding: EdgeInsets.only(bottom: 10.px),
@@ -166,7 +163,8 @@ class ContactDetailView extends GetView<ContactDetailController> {
                         backgroundColor: Col.primary,
                         borderColor: Colors.transparent,
                         borderRadius: 25.px),
-                  ),
+                  )
+                : const SizedBox(),
           ),
         ),
       );
@@ -200,10 +198,8 @@ class ContactDetailView extends GetView<ContactDetailController> {
         labelText: 'Contact',
         hintText: 'Contact',
         readOnly: true,
+        maxLength: 10,
         suffixIcon: Icon(Icons.lock, color: Col.gray, size: 20.px),
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImageForTextField(
             imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
@@ -217,9 +213,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         keyboardType: TextInputType.number,
         labelText: 'Whatsapp Number',
         hintText: 'Whatsapp Number',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+        maxLength: 10,
         prefixIcon: commonIconImageForTextField(
             imagePath: 'assets/icons/emergency_phone_icon.png'),
         validator: (value) =>
@@ -241,9 +235,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         readOnly: true,
         suffixIcon: Icon(Icons.lock, color: Col.gray, size: 20.px),
         keyboardType: TextInputType.emailAddress,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+       textCapitalization: TextCapitalization.none,
         prefixIcon: commonIconImageForTextField(
             imagePath: 'assets/icons/email_icon.png'),
         validator: (value) => V.isEmailValid(value: value),
@@ -258,9 +250,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         labelText: 'Personal Email',
         hintText: 'Personal Email',
         keyboardType: TextInputType.emailAddress,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+        textCapitalization: TextCapitalization.none,
         prefixIcon: commonIconImageForTextField(
             imagePath: 'assets/icons/email_icon.png'),
         validator: (value) => V.isEmailValid(value: value),
@@ -280,8 +270,6 @@ class ContactDetailView extends GetView<ContactDetailController> {
         controller: controller.currentAddressController,
         labelText: 'Current Address',
         hintText: 'Current Address',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
         prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/current_location_icon.png'),
         validator: (value) => V.isValid(value: value, title: 'Please enter current address'),
         onChanged: (value) {
@@ -326,9 +314,6 @@ class ContactDetailView extends GetView<ContactDetailController> {
         controller: controller.permanentAddressController,
         labelText: 'Permanent Address',
         hintText: 'Permanent Address',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/location_icon.png'),
         validator: (value) => V.isValid(value: value, title: 'Please enter permanent address'),
         onChanged: (value) {

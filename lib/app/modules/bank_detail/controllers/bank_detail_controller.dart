@@ -1,27 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/bank_detail_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:http/http.dart' as http;
 
-class BankDetailController extends GetxController
-    with GetTickerProviderStateMixin {
+class BankDetailController extends GetxController with GetTickerProviderStateMixin {
+  final apiResValue = true.obs;
+
   final count = 0.obs;
+  final downAndUpValue = [];
 
-  final downAndUpValue = true.obs;
   final aNumber = '123456789999'.obs;
-
   late AnimationController rotationController;
+
   final rotationValue = false.obs;
+  final getBankDetailModal = Rxn<BankDetailModal>();
+  List<GetBankDetails>? getBankList;
+  GetBankDetails? getBankDetailsForUpDate;
+
+  Map<String, dynamic> bodyParamsForGetBanks = {};
+  Map<String, dynamic> bodyParamsForSelectPrimaryBanks = {};
+  Map<String, dynamic> bodyParamsForRemoveBanks = {};
+
+
+  final accessType = ''.obs;
+  final isChangeable = ''.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    rotationController = AnimationController(duration: const Duration(milliseconds: 30000), vsync: this);
-    rotationController.forward(from: 0.0); // it starts the animation
-    await Future.delayed(const Duration(seconds: 1));
-    rotationController.stop();
+    apiResValue.value = true;
+    try {
+      accessType.value = Get.arguments[0];
+      isChangeable.value = Get.arguments[1];
+      rotationController = AnimationController(duration: const Duration(milliseconds: 30000), vsync: this);
+      rotationController.forward(from: 0.0); // it starts the animation
+      await Future.delayed(const Duration(seconds: 1));
+      rotationController.stop();
+      await callingGetBankDetailApi();
+    } catch (e) {
+      apiResValue.value = false;
+    }
+    apiResValue.value = false;
   }
 
   @override
@@ -40,71 +66,102 @@ class BankDetailController extends GetxController
     Get.back();
   }
 
-  void clickOnMenuButton() {
-    CBS.commonBottomSheet(
+  void clickOnMenuButton({required int index}) {
+    if(accessType.value != '1' && isChangeable.value != '1') {
+      CBS.commonBottomSheet(
       children: [
-        Text('Choose Action',
-            style: Theme.of(Get.context!).textTheme.displayLarge),
+        Text('Choose Action', style: Theme.of(Get.context!).textTheme.displayLarge),
         SizedBox(height: 16.px),
         commonRowForBottomSheet(
           imagePath: 'assets/icons/edit_pen_icon.png',
           text: 'Edit',
-          onTap: () {},
+          onTap: () => clickOnEditButton(index: index),
         ),
-        Obx(() {
-          count.value;
-          return SizedBox(
-            height: 35.px,
-            child: InkWell(
-              onTap: !rotationValue.value?() async {
-                rotationValue.value = true;
-                count.value++;
-                rotationController.forward(
-                    from: 0.0); // it starts the animation
-                await Future.delayed(const Duration(seconds: 2));
-                rotationController.stop();
-                rotationValue.value = false;
-              }:() => null,
-              borderRadius: BorderRadius.circular(6.px),
-              child: Row(
-                children: [
-                  RotationTransition(
-                    turns: Tween(begin: 0.0, end: 30.0)
-                        .animate(rotationController),
-                    child: CW.commonNetworkImageView(
-                        path: 'assets/icons/sync_icon.png',
-                        isAssetImage: true,
-                        width: 20.px,
-                        height: 20.px),
-                  ),
-                  SizedBox(width: 12.px),
-                  Text(
-                    'Set as Primary',
-                    style: Theme.of(Get.context!)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ],
+        if (getBankList?[index].isPrimary == '0')
+          Obx(() {
+            count.value;
+            return SizedBox(
+              height: 35.px,
+              child: InkWell(
+                onTap: !rotationValue.value
+                    ? () => clickOnSetPrimary(index: index)
+                    : () => null,
+                borderRadius: BorderRadius.circular(6.px),
+                child: Row(
+                  children: [
+                    RotationTransition(
+                      turns: Tween(begin: 0.0, end: 30.0)
+                          .animate(rotationController),
+                      child: CW.commonNetworkImageView(
+                          path: 'assets/icons/sync_icon.png',
+                          isAssetImage: true,
+                          width: 20.px,
+                          height: 20.px),
+                    ),
+                    SizedBox(width: 12.px),
+                    Text(
+                      'Set as Primary',
+                      style: Theme.of(Get.context!)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
-        commonRowForBottomSheet(
-          imagePath: 'assets/icons/delete_icon.png',
-          text: 'Remove',
-          onTap: () {},
-        ),
+            );
+          }),
+        if (getBankList?[index].isPrimary == '0')
+          commonRowForBottomSheet(
+            imagePath: 'assets/icons/delete_icon.png',
+            text: 'Remove',
+            onTap: () => clickOnRemove(index: index),
+          ),
         SizedBox(height: 25.px),
       ],
     );
+    }
   }
 
-  Widget commonRowForBottomSheet(
-          {required String imagePath,
-          required String text,
-          required GestureTapCallback onTap}) =>
-      SizedBox(
+  Future<void> clickOnEditButton({required int index}) async {
+    if (getBankList?[index] != null) {
+      getBankDetailsForUpDate = getBankList?[index];
+      Get.back();
+      await Get.toNamed(Routes.ADD_BANK, arguments: ['UpDate Bank Detail', getBankDetailsForUpDate]);
+      onInit();
+    } else {
+      CM.error();
+      Get.back();
+    }
+  }
+
+  Future<void> clickOnSetPrimary({required int index}) async {
+    if(getBankList?[index].bankId !=null && getBankList![index].bankId!.isNotEmpty){
+      rotationValue.value = true;
+      rotationController.forward(from: 0.0);
+      await Future.delayed(const Duration(seconds: 2),() async {
+        await callingBankRemoveOrSetPrimaryApi(apiActionType: 'primaryKeySet',bankId: getBankList?[index].bankId ?? '',index:index);
+      },);
+      rotationController.stop();
+      rotationValue.value = false;
+    }
+    else{
+      CM.error();
+      Get.back();
+    }
+  }
+
+  Future<void> clickOnRemove({required int index}) async {
+    if(getBankList?[index].bankId !=null && getBankList![index].bankId!.isNotEmpty) {
+      await callingBankRemoveOrSetPrimaryApi(apiActionType: 'deleteBankDetail',bankId: getBankList?[index].bankId ?? '',index:index);
+    }
+    else{
+      CM.error();
+      Get.back();
+    }
+  }
+
+  Widget commonRowForBottomSheet({required String imagePath, required String text, required GestureTapCallback onTap}) => SizedBox(
         height: 35.px,
         child: InkWell(
           onTap: onTap,
@@ -118,16 +175,69 @@ class BankDetailController extends GetxController
                   height: 20.px),
               SizedBox(width: 12.px),
               Text(text,
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w600)),
+                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
             ],
           ),
         ),
       );
 
-  void clickOnAddNewBankAccountButton() {
-    Get.toNamed(Routes.ADD_BANK);
+  void clickOnDropDownButton({required int index}) {
+    if (downAndUpValue[index] != index.toString()) {
+      downAndUpValue[index] = index.toString();
+    } else {
+      downAndUpValue[index] = '-1';
+    }
+    count.value++;
   }
+
+  Future<void> clickOnAddNewBankAccountButton() async {
+    await Get.toNamed(Routes.ADD_BANK, arguments: ['Add Bank']);
+    onInit();
+  }
+
+  Future<void> callingGetBankDetailApi() async {
+    bodyParamsForGetBanks = {AK.action: "getBankDetails"};
+    getBankDetailModal.value =
+        await CAI.getBankDetailApi(bodyParams: bodyParamsForGetBanks);
+    if (getBankDetailModal.value != null) {
+      getBankList = getBankDetailModal.value?.getBankDetails;
+      print('getBankList::::: ${getBankList?.length}');
+      getBankList?.forEach((element) {
+        downAndUpValue.add('-1');
+      });
+    }
+  }
+
+  Future<void> callingBankRemoveOrSetPrimaryApi({required String bankId,required String apiActionType, required int index}) async {
+    apiResValue.value = true;
+    try {
+      bodyParamsForRemoveBanks = {AK.action: apiActionType, AK.bankId: bankId};
+      http.Response? response = await CAI.updateUserControllerApi(bodyParams: bodyParamsForRemoveBanks);
+      if (response != null) {
+        if (response.statusCode == 200) {
+          Get.back();
+          if(apiActionType == 'deleteBankDetail') {
+            getBankList?.removeAt(index);
+          }
+          else{
+            onInit();
+          }
+          apiResValue.value = false;
+        } else {
+          CM.error();
+          Get.back();
+          apiResValue.value = false;
+        }
+      } else {
+        apiResValue.value = false;
+        CM.error();
+        Get.back();
+      }
+    } catch (e) {
+      apiResValue.value = false;
+      CM.error();
+      Get.back();
+    }
+  }
+
 }

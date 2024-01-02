@@ -35,7 +35,6 @@ class DataBaseHelper {
   }
 
   createTableInDataBaseForCompanyDetail({required Database db}) async {
-    print('CREATE TABLE IF NOT EXISTS:::::::::: ');
     await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForCompanyDetail}  
         (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
         , ${DataBaseConstant.companyIdFormCompanyDetail} ${DataBaseType.textType}

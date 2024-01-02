@@ -89,7 +89,7 @@ class EditProfileView extends GetView<EditProfileController> {
                     )
                   ],
                 ),
-                profileView()
+                profileView(),
               ],
             );
           }
@@ -242,9 +242,7 @@ class EditProfileView extends GetView<EditProfileController> {
         labelText: 'First Name',
         hintText: 'First Name',
         keyboardType: TextInputType.name,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         validator: (value) => V.isValid(value: value, title: 'Please enter first name'),
         onChanged: (value) {
@@ -258,9 +256,7 @@ class EditProfileView extends GetView<EditProfileController> {
         labelText: 'Last Name',
         hintText: 'Last Name',
         keyboardType: TextInputType.name,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
     validator: (value) => V.isValid(value: value, title: 'Please enter last name'),
         onChanged: (value) {
@@ -274,10 +270,8 @@ class EditProfileView extends GetView<EditProfileController> {
         labelText: 'Email Address',
         hintText: 'Email Address',
         keyboardType: TextInputType.emailAddress,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-    validator: (value) => V.isValid(value: value, title: 'Please enter email address'),
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+       textCapitalization: TextCapitalization.none,
+        validator: (value) => V.isValid(value: value, title: 'Please enter email address'),
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -289,9 +283,7 @@ class EditProfileView extends GetView<EditProfileController> {
         controller: controller.hobbiesAndInterestController,
         labelText: 'Hobbies/Interest',
         hintText: 'Hobbies/Interest',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+
         prefixIcon: commonIconImage(imagePath: 'assets/icons/interest_hobbies_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -303,9 +295,7 @@ class EditProfileView extends GetView<EditProfileController> {
         controller: controller.skillsController,
         labelText: 'Skills',
         hintText: 'Skills',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+
         prefixIcon: commonIconImage(imagePath: 'assets/icons/location_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -317,9 +307,7 @@ class EditProfileView extends GetView<EditProfileController> {
         controller: controller.languageKnownController,
         labelText: 'Language Known',
         hintText: 'Language Known',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
+
         prefixIcon: commonIconImage(imagePath: 'assets/icons/languages_known_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -333,7 +321,6 @@ class EditProfileView extends GetView<EditProfileController> {
     hintText: 'Date Of Birth',
     labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
     hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-    // style: Theme.of(Get.context!).textTheme.bodyLarge,
     prefixIcon:
     commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
     onChanged: (value) {
@@ -352,7 +339,6 @@ class EditProfileView extends GetView<EditProfileController> {
     hintText: 'Blood Group',
     labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
     hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-    // style: Theme.of(Get.context!).textTheme.bodyLarge,
     prefixIcon:
     commonIconImage(imagePath: 'assets/icons/blood_group_icon.png'),
     onChanged: (value) {

@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:task/validator/v.dart';
 
 import '../controllers/experience_controller.dart';
 
@@ -28,22 +29,25 @@ class ExperienceView extends GetView<ExperienceController> {
           return Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              ListView(
-                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                children: [
-                  SizedBox(height: 8.px),
-                  designationTextField(),
-                  SizedBox(height: 20.px),
-                  companyNameTextField(),
-                  SizedBox(height: 20.px),
-                  workFromTextField(),
-                  SizedBox(height: 20.px),
-                  workToTextField(),
-                  SizedBox(height: 20.px),
-                  locationTextField(),
-                  SizedBox(height: 20.px),
+              Form(
+                key: controller.key,
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                  children: [
+                    SizedBox(height: 8.px),
+                    designationTextField(),
+                    SizedBox(height: 20.px),
+                    companyNameTextField(),
+                    SizedBox(height: 20.px),
+                    joiningDateTextField(),
+                    SizedBox(height: 20.px),
+                    releaseDateTextField(),
+                    SizedBox(height: 20.px),
+                    locationTextField(),
+                    SizedBox(height: 20.px),
 
-                ],
+                  ],
+                ),
               ),
               Container(
                 height: 80.px,
@@ -88,6 +92,7 @@ class ExperienceView extends GetView<ExperienceController> {
     onChanged: (value) {
       controller.count.value++;
     },
+    validator: (value) => V.isValid(value: value, title: 'Please enter designation'),
   );
 
   Widget companyNameTextField() => CW.commonTextField(
@@ -101,45 +106,55 @@ class ExperienceView extends GetView<ExperienceController> {
     onChanged: (value) {
       controller.count.value++;
     },
+    validator: (value) => V.isValid(value: value, title: 'Please enter company name'),
   );
 
-  Widget workFromTextField() => CW.commonTextField(
+  Widget joiningDateTextField() => CW.commonTextField(
     fillColor: Colors.transparent,
-    controller: controller.workFromController,
-    labelText: 'Work From',
-    hintText: 'Work From',
+    controller: controller.joiningDateController,
+    labelText: 'Joining Date',
+    hintText: 'Joining Date',
     labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
     hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
     prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
     onChanged: (value) {
       controller.count.value++;
     },
+    onTap: () => controller.clickOnJoiningDateTextField(),
+    readOnly: true,
+    suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+    validator: (value) => V.isValid(value: value, title: 'Please enter joining date'),
   );
 
-  Widget workToTextField() => CW.commonTextField(
+  Widget releaseDateTextField() => CW.commonTextField(
     fillColor: Colors.transparent,
-    controller: controller.workToController,
-    labelText: 'Work To',
-    hintText: 'Work To',
+    controller: controller.releaseDateController,
+    labelText: 'Release Date',
+    hintText: 'Release Date',
     labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
     hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
     prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
     onChanged: (value) {
       controller.count.value++;
     },
+    onTap: () => controller.clickOnReleaseDateTextField(),
+    readOnly: true,
+    suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+    validator: (value) => V.isValid(value: value, title: 'Please enter release date'),
   );
 
   Widget locationTextField() => CW.commonTextField(
     fillColor: Colors.transparent,
     controller: controller.locationController,
-    labelText: 'Location',
-    hintText: 'Location',
+    labelText: 'Company Location',
+    hintText: 'Company Location',
     labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
     hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
     prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
     onChanged: (value) {
       controller.count.value++;
     },
+    validator: (value) => V.isValid(value: value, title: 'Please enter company location'),
   );
 
 }

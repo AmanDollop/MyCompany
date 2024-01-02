@@ -24,7 +24,7 @@ class ContactDetailController extends GetxController {
   final permanentAddressController = TextEditingController();
 
   final mobileNumber = ''.obs;
-  final countryCode = ''.obs;
+  final countryCode = '+91'.obs;
   final countryId = ''.obs;
   final countryCodeWhatsapp = ''.obs;
 
@@ -51,9 +51,15 @@ class ContactDetailController extends GetxController {
   final saveButtonValue = false.obs;
 
 
+  final accessType = ''.obs;
+  final isChangeable = ''.obs;
+
+
   @override
   Future<void> onInit() async {
     super.onInit();
+    accessType.value = Get.arguments[0];
+    isChangeable.value = Get.arguments[1];
     await setDefaultData();
     await callingCountryCodeApi();
     apiResponseValue.value = false;
@@ -300,7 +306,7 @@ class ContactDetailController extends GetxController {
         AK.currentAddress : currentAddressController.text.trim().toString(),
         AK.permanentAddress : permanentAddressController.text.trim().toString(),
       };
-      http.Response? response =  await CAI.updateContactInfoApi(bodyParams: bodyParamsForContactInfo);
+      http.Response? response =  await CAI.updateUserControllerApi(bodyParams: bodyParamsForContactInfo);
       if(response != null){
         if(response.statusCode ==200){
           await BottomSheetForOTP.callingGetUserDataApi();

@@ -27,8 +27,7 @@ class MyProfileView extends GetView<MyProfileController> {
             padding: EdgeInsets.zero,
             children: [
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                 child: Column(
                   children: [
                     Row(
@@ -203,8 +202,7 @@ class MyProfileView extends GetView<MyProfileController> {
           double? imageWidth,
           double? imageHeight,
           double? cardHeight,
-          Gradient? gradient}) =>
-      Ink(
+          Gradient? gradient}) => Ink(
         height: cardHeight ?? 134.px,
         padding: EdgeInsets.only(left: 3.px),
         decoration: BoxDecoration(
@@ -222,13 +220,11 @@ class MyProfileView extends GetView<MyProfileController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 44.px,
-              height: 44.px,
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, gradient: gradient),
+              // width: 44.px,
+              // height: 44.px,
+              decoration: BoxDecoration(shape: BoxShape.circle, gradient: gradient),
               child: Center(
                 child: CW.commonNetworkImageView(
-                  color: Colors.white,
                   path: imagePath,
                   isAssetImage: isAssetImage,
                   width: imageWidth ?? 34.px,
@@ -240,10 +236,7 @@ class MyProfileView extends GetView<MyProfileController> {
             Flexible(
               child: Text(
                 text1,
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
+                style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -292,14 +285,11 @@ class MyProfileView extends GetView<MyProfileController> {
                         : CM.error(),
                 borderRadius: BorderRadius.circular(8.px),
                 child: commonCard(
-                    gradient: LinearGradient(colors: controller.cList[index]),
-                    imageHeight: 24.px,
-                    imageWidth: 24.px,
-                    imagePath: controller.getEmployeeDetails?[index]
-                                    .profileMenuPhoto !=
-                                null &&
-                            controller.getEmployeeDetails![index]
-                                .profileMenuPhoto!.isNotEmpty
+                    // gradient: LinearGradient(colors: controller.cList[index]),
+                    // imageHeight: 24.px,
+                    // imageWidth: 24.px,
+                    imagePath: controller.getEmployeeDetails?[index].profileMenuPhoto != null &&
+                            controller.getEmployeeDetails![index].profileMenuPhoto!.isNotEmpty
                         ? '${AU.baseUrlAllApisImage}${controller.getEmployeeDetails![index].profileMenuPhoto}'
                         : 'assets/images/shoping_dark.png',
                     isAssetImage: controller.getEmployeeDetails?[index]
@@ -322,9 +312,7 @@ class MyProfileView extends GetView<MyProfileController> {
           ),
         );
       } else {
-        return controller.apiResponseValue.value
-            ? const SizedBox()
-            : CW.commonNoDataFoundText();
+        return controller.apiResponseValue.value ? const SizedBox() : CW.commonNoDataFoundText();
       }
     } else {
       return CW.commonNoDataFoundText(

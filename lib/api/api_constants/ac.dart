@@ -78,6 +78,30 @@ class AK {
   static const permanentAddress="permanent_address";
 
 
+  static const accountHoldersName="account_holders_name";
+  static const bankName="bank_name";
+  static const bankId="bank_id";
+  static const bankBranchName="bank_branch_name";
+  static const accountNo="account_no";
+  static const accountType="account_type";
+  static const ifscCode="ifsc_code";
+  static const crnNo="crn_no";
+  static const panCardNo="pan_card_no";
+  static const esicNo="esic_no";
+  static const pfNo="pf_no";
+
+
+
+  static const experienceId="experience_id";
+  static const companyName="company_name";
+  static const designation="designation";
+  static const joiningDate="joining_date";
+  static const releaseDate="release_date";
+  static const companyLocation="company_location";
+
+
+
+
 }
 
 class AU {

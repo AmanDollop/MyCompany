@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/add_bank/bindings/add_bank_binding.dart';
 import '../modules/add_bank/views/add_bank_view.dart';
+import '../modules/add_social_info/bindings/add_social_info_binding.dart';
+import '../modules/add_social_info/views/add_social_info_view.dart';
 import '../modules/bank_detail/bindings/bank_detail_binding.dart';
 import '../modules/bank_detail/views/bank_detail_view.dart';
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
@@ -190,6 +192,11 @@ class AppPages {
       name: _Paths.ADD_BANK,
       page: () => const AddBankView(),
       binding: AddBankBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_SOCIAL_INFO,
+      page: () => const AddSocialInfoView(),
+      binding: AddSocialInfoBinding(),
     ),
   ];
 }

@@ -147,9 +147,6 @@ class SignUpView extends GetView<SignUpController> {
         labelText: 'First Name',
         hintText: 'First Name',
         keyboardType: TextInputType.name,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         validator: (value) =>
             V.isValid(value: value, title: 'Please enter first name'),
@@ -164,9 +161,6 @@ class SignUpView extends GetView<SignUpController> {
         labelText: 'Last Name',
         hintText: 'Last Name',
         keyboardType: TextInputType.name,
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         validator: (value) =>
             V.isValid(value: value, title: 'Please enter last name'),
@@ -180,9 +174,6 @@ class SignUpView extends GetView<SignUpController> {
         controller: controller.selectYourBranchController,
         labelText: 'Select Your Branch',
         hintText: 'Select Your Branch',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
@@ -198,9 +189,6 @@ class SignUpView extends GetView<SignUpController> {
         controller: controller.selectYourDepartmentController,
         labelText: 'Select Your Department',
         hintText: 'Select Your Department',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon:
             commonIconImage(imagePath: 'assets/icons/department_icon.png'),
         readOnly: true,
@@ -217,9 +205,6 @@ class SignUpView extends GetView<SignUpController> {
         controller: controller.shiftTimeController,
         labelText: 'Shift Time',
         hintText: 'Shift Time',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/watch_icon.png'),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
@@ -236,9 +221,6 @@ class SignUpView extends GetView<SignUpController> {
         controller: controller.joiningDateController,
         labelText: 'Joining Date',
         hintText: 'Joining Date',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon:
             commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
         onChanged: (value) {
@@ -247,8 +229,7 @@ class SignUpView extends GetView<SignUpController> {
         onTap: () => controller.clickOnJoiningDateTextField(),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter joining date'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter joining date'),
       );
 
   Widget designationTextField() => CW.commonTextField(
@@ -256,9 +237,6 @@ class SignUpView extends GetView<SignUpController> {
         controller: controller.designationController,
         labelText: 'Designation',
         hintText: 'Designation',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         onChanged: (value) {
           controller.count.value++;
@@ -273,13 +251,11 @@ class SignUpView extends GetView<SignUpController> {
         keyboardType: TextInputType.emailAddress,
         labelText: 'Email Address',
         hintText: 'Email Address',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
+    textCapitalization: TextCapitalization.none,
         validator: (value) => V.isEmailValid(value: value),
       );
 
@@ -289,20 +265,16 @@ class SignUpView extends GetView<SignUpController> {
         keyboardType: TextInputType.number,
         labelText: 'Mobile Number',
         hintText: 'Mobile Number',
-        labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-        // style: Theme.of(Get.context!).textTheme.bodyLarge,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/contact_phone_icon.png'),
         isCountrySelection: true,
         selectedCountryCode: controller.countryCode,
         countryFlagPath: controller.countryImagePath.value,
+        maxLength: 10,
         clickOnArrowDown: () => controller.clickOnCountryCode(),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) => V.isNumberValid(
-          value: value,
-        ),
+        validator: (value) => V.isNumberValid(value: value,countyCode: controller.countryCode,countryCodeValue: true),
       );
 
   Widget commonIconImage({required String imagePath, double? height, double? width}) => SizedBox(

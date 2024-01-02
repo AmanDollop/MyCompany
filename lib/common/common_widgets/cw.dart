@@ -75,56 +75,42 @@ class CW {
       double? borderWidth,
       Color? borderColor,
       Color? backgroundColor,
+      Color? buttonTextColor,
       double? elevation,
       bool isContentSizeButton = true,
       required VoidCallback onPressed,
       Widget? child,
       String? buttonText,
       bool isLoading = false}) {
-    return Container(
-      height: isContentSizeButton ? height : 54.px,
-      width: isContentSizeButton ? width : double.infinity,
-      margin: margin ?? EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      alignment: isLoading ? Alignment.center : null,
-      decoration: BoxDecoration(
-          borderRadius: isLoading
-              ? null
-              : BorderRadius.circular(borderRadius ?? C.buttonRadius),
-          border: Border.all(
-            width: borderWidth ?? 1.px,
-            color: borderColor ?? Colors.transparent,
-          ),
-          shape: isLoading ? BoxShape.circle : BoxShape.rectangle),
-      child: isLoading
-          ? CW.commonProgressBarView(color: borderColor ?? Col.primary)
-          : OutlinedButton(
-              onPressed: onPressed,
-              style: OutlinedButton.styleFrom(
-                  elevation: elevation ?? 0.px,
-                  padding: padding ?? EdgeInsets.all(3.5.px),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.outlineButtonRadius),
-                  ),
-                  side: BorderSide(
-                    color: borderColor ?? Col.text,
-                    width: borderWidth ?? 1.5.px,
-                  ),
-                  backgroundColor: backgroundColor ?? Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  foregroundColor: Col.text,
-                  minimumSize: Size(56.px, 56.px)),
-              child: child ??
-                  Text(
-                    buttonText ?? '',
-                    style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-            ),
-    );
+    return isLoading
+        ? CW.commonProgressBarView(color: borderColor ?? Col.primary)
+        : OutlinedButton(
+            onPressed: onPressed,
+            style: OutlinedButton.styleFrom(
+                elevation: elevation ?? 0.px,
+                padding: padding ?? EdgeInsets.all(3.5.px),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      borderRadius ?? C.outlineButtonRadius),
+                ),
+                side: BorderSide(
+                  color: borderColor ?? Col.text,
+                  width: borderWidth ?? 1.5.px,
+                ),
+                backgroundColor: backgroundColor ?? Colors.transparent,
+                shadowColor: Colors.transparent,
+                foregroundColor: Col.text,
+                minimumSize: Size(width??56.px, height??56.px)),
+            child: child ??
+                Text(
+                  buttonText ?? '',
+                  style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: buttonTextColor
+                      ),
+                ),
+          );
   }
 
   static Widget commonTextButton(
@@ -353,191 +339,195 @@ class CW {
       bool isCountrySelection = false,
       VoidCallback? clickOnArrowDown,
       String selectedCountryCode = "",
-      String countryFlagPath = "",}) {
-    return TextFormField(
-      cursorHeight: cursorHeight,
-      onTap: onTap,
-      controller: controller,
-      onChanged: keyboardType == TextInputType.number
-          ? (value) {}
-          : onChanged ??
-              (value) {
-                value = value.trim();
-                if (value.isEmpty || value.replaceAll(" ", "").isEmpty) {
-                  controller?.text = "";
-                }
-              },
-      obscureText: isHideText,
-      obscuringCharacter: hideTextCharacter ?? '•',
-      validator: validator,
-      keyboardType: keyboardType,
-      readOnly: readOnly,
-      autofocus: autofocus,
-      inputFormatters: keyboardType == TextInputType.number
-          ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
-          : inputFormatters,
-      textCapitalization: textCapitalization,
-      style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
+      String countryFlagPath = "", int? maxLength}) {
+    return Theme(
+      data: ThemeData(
 
-
-      decoration: isUnderlineBorder
-          ? InputDecoration(
-              labelText: labelText,
-              errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-              hintText: hintText,
-              fillColor: fillColor ?? Col.inverseSecondary,
-              filled: filled ? true : false,
-              contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-              disabledBorder: UnderlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.inverseSecondary, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              border: UnderlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.primary, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              enabledBorder: UnderlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(
-                          color: filled ? initialBorderColor ?? Col.inverseSecondary : Col.secondary,
-                          width: initialBorderWidth ?? 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              errorBorder: UnderlineInputBorder(
-                borderSide: isBorder
-                    ? BorderSide(color: Col.error, width: 1.px)
-                    : BorderSide.none,
-                borderRadius:
-                    BorderRadius.circular(borderRadius ?? C.textFieldRadius),
-              ),
-              constraints: labelText != null && labelText.isNotEmpty
-                  ? null
-                  : BoxConstraints(maxHeight: 38.px),
-              /* suffixIconConstraints: BoxConstraints(maxHeight: 45.px),
-
-                prefixIconConstraints: BoxConstraints(maxHeight: 80.px,minHeight: 80.px),*/
-
-              suffixIcon: Padding(
-                padding: suffixPadding ?? EdgeInsets.zero,
-                child: suffixIcon,
-              ),
-              prefixIcon: prefixIcon != null
-                  ? Padding(
-                      padding: prefixPadding ?? EdgeInsets.zero,
-                      child: prefixIcon,
-                    )
-                  : null,
-            )
-          : InputDecoration(focusColor: Colors.red,hoverColor: Colors.yellow,
-              labelText: labelText,
-              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
-              errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-              hintText: hintText,
-              fillColor: fillColor ?? Col.inverseSecondary,
-              filled: filled,
-              contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
-              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-              disabledBorder: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.gray, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              border: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.primary, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(
-                          color: filled
-                              ? initialBorderColor ?? Col.gray
-                              : Col.secondary,
-                          width: initialBorderWidth ?? 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              errorBorder: OutlineInputBorder(
+      ),
+      child: TextFormField(
+        cursorHeight: cursorHeight,
+        onTap: onTap,
+        controller: controller,
+        onChanged: keyboardType == TextInputType.number
+            ? (value) {}
+            : onChanged ?? (value) {
+                  value = value.trim();
+                  if (value.isEmpty || value.replaceAll(" ", "").isEmpty) {
+                    controller?.text = "";
+                  }
+                },
+        obscureText: isHideText,
+        obscuringCharacter: hideTextCharacter ?? '•',
+        validator: validator,
+        keyboardType: keyboardType,
+        readOnly: readOnly,
+        autofocus: autofocus,
+        inputFormatters: keyboardType == TextInputType.number
+            ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+            : inputFormatters,
+        textCapitalization: textCapitalization,
+        style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
+        maxLength: maxLength,
+        decoration: isUnderlineBorder
+            ? InputDecoration(
+                labelText: labelText,
+                errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                hintText: hintText,
+                fillColor: fillColor ?? Col.inverseSecondary,
+                filled: filled ? true : false,
+                contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                disabledBorder: UnderlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.inverseSecondary, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                border: UnderlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.primary, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                enabledBorder: UnderlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(
+                            color: filled ? initialBorderColor ?? Col.inverseSecondary : Col.secondary,
+                            width: initialBorderWidth ?? 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                errorBorder: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.error, width: 1.px)
                       : BorderSide.none,
                   borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              suffixIcon: suffixIcon != null
-                  ? Padding(
-                      padding: suffixPadding ?? EdgeInsets.zero,
-                      child: suffixIcon,
-                    )
-                  : null,
-              prefixIcon: prefixIcon != null
-                  ? Padding(
-                      padding: prefixPadding ?? EdgeInsets.zero,
-                      child: isCountrySelection
-                          ? InkWell(
-                              onTap: clickOnArrowDown,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              child: IntrinsicHeight(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(width: 10.px),
-                                    Icon(Icons.arrow_drop_down,size: 26.px,color: Col.gray),
-                                    Center(
-                                      child: CW.commonNetworkImageView(
-                                          path: countryFlagPath,
-                                          isAssetImage: false,
-                                          height: 14.px,
-                                          width: 20.px),
-                                    ),
-                                    SizedBox(width: 4.px),
-                                    Text(selectedCountryCode,style: Theme.of(Get.context!).textTheme.titleSmall),
-                                    SizedBox(width: 6.px),
-                                    VerticalDivider(
-                                      width: 2,
-                                      indent: 10.px,
-                                      endIndent: 10.px,
-                                      color: Col.secondary,
-                                      thickness: 1.px,
-                                    ),
-                                    SizedBox(width: 10.px),
-                                  ],
+                      BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+                ),
+                constraints: labelText != null && labelText.isNotEmpty
+                    ? null
+                    : BoxConstraints(maxHeight: 38.px),
+                /* suffixIconConstraints: BoxConstraints(maxHeight: 45.px),
+
+                  prefixIconConstraints: BoxConstraints(maxHeight: 80.px,minHeight: 80.px),*/
+
+                suffixIcon: Padding(
+                  padding: suffixPadding ?? EdgeInsets.zero,
+                  child: suffixIcon,
+                ),
+                prefixIcon: prefixIcon != null
+                    ? Padding(
+                        padding: prefixPadding ?? EdgeInsets.zero,
+                        child: prefixIcon,
+                      )
+                    : null,
+              )
+            : InputDecoration(
+                counterText: '',
+                labelText: labelText,
+                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                hintText: hintText,
+                fillColor: fillColor ?? Col.inverseSecondary,
+                filled: filled,
+                contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
+                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                disabledBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.gray, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                border: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.primary, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(
+                            color: filled
+                                ? initialBorderColor ?? Col.gray
+                                : Col.secondary,
+                            width: initialBorderWidth ?? 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                errorBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.error, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius:
+                        BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                suffixIcon: suffixIcon != null
+                    ? Padding(
+                        padding: suffixPadding ?? EdgeInsets.zero,
+                        child: suffixIcon,
+                      )
+                    : null,
+                prefixIcon: prefixIcon != null
+                    ? Padding(
+                        padding: prefixPadding ?? EdgeInsets.zero,
+                        child: isCountrySelection
+                            ? InkWell(
+                                onTap: clickOnArrowDown,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: IntrinsicHeight(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(width: 10.px),
+                                      Icon(Icons.arrow_drop_down,size: 26.px,color: Col.gray),
+                                      Center(
+                                        child: CW.commonNetworkImageView(
+                                            path: countryFlagPath,
+                                            isAssetImage: false,
+                                            height: 14.px,
+                                            width: 20.px),
+                                      ),
+                                      SizedBox(width: 4.px),
+                                      Text(selectedCountryCode,style: Theme.of(Get.context!).textTheme.titleSmall),
+                                      SizedBox(width: 6.px),
+                                      VerticalDivider(
+                                        width: 2,
+                                        indent: 10.px,
+                                        endIndent: 10.px,
+                                        color: Col.secondary,
+                                        thickness: 1.px,
+                                      ),
+                                      SizedBox(width: 10.px),
+                                    ],
+                                  ),
                                 ),
+                              )
+                            : prefixIcon,
+                      )
+                    : isCountrySelection
+                        ? InkWell(
+                            onTap: clickOnArrowDown,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: IntrinsicHeight(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(width: 10.px),
+                                  Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
+                                  SizedBox(width: 4.px),
+                                  Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
+                                  SizedBox(width: 4.px),
+                                  VerticalDivider(
+                                    width: 2,
+                                    indent: 10.px,
+                                    endIndent: 10.px,
+                                    color: Col.secondary,
+                                    thickness: 2.px,
+                                  ),
+                                  SizedBox(width: 10.px),
+                                ],
                               ),
-                            )
-                          : prefixIcon,
-                    )
-                  : isCountrySelection
-                      ? InkWell(
-                          onTap: clickOnArrowDown,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          child: IntrinsicHeight(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(width: 10.px),
-                                Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
-                                SizedBox(width: 4.px),
-                                Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
-                                SizedBox(width: 4.px),
-                                VerticalDivider(
-                                  width: 2,
-                                  indent: 10.px,
-                                  endIndent: 10.px,
-                                  color: Col.secondary,
-                                  thickness: 2.px,
-                                ),
-                                SizedBox(width: 10.px),
-                              ],
                             ),
-                          ),
-                        )
-                      : null,
-            ),
+                          )
+                        : null,
+              ),
+      ),
     );
   }
 

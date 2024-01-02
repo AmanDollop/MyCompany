@@ -14,7 +14,8 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    print('ima:::::::::   ${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}');
+    print(
+        'ima:::::::::   ${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}');
     return GestureDetector(
       onTap: () {
         CM.unFocusKeyBoard();
@@ -60,11 +61,13 @@ class LoginView extends GetView<LoginController> {
                 ),
                 SizedBox(height: 30.px),
                 CW.commonElevatedButton(
-                    onPressed: controller.loginButtonValue.value
-                        ? () => null
-                        : () => controller.clickOnContinueButton(),
-                    buttonText: 'Continue',
-                    isLoading: controller.loginButtonValue.value),
+                  onPressed: controller.loginButtonValue.value
+                      ? () => null
+                      : () => controller.clickOnContinueButton(),
+                  buttonText: 'Continue',
+                  isLoading: controller.loginButtonValue.value,
+                  buttonColor: controller.emailController.text.isNotEmpty&&controller.termsCheckBoxValue.value ? Col.primary : Col.primary.withOpacity(.8)
+                ),
                 //  SizedBox(height: 40.px),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +109,12 @@ class LoginView extends GetView<LoginController> {
                       onPressed: () => controller.clickOnCreateAccountButton(),
                       child: Text(
                         'Create Account',
-                        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary,fontWeight: FontWeight.w600),
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(
+                                color: Col.primary,
+                                fontWeight: FontWeight.w600),
                       ),
                     )
                   ],
@@ -128,21 +136,17 @@ class LoginView extends GetView<LoginController> {
             borderRadius: BorderRadius.circular(8.px),
           ),
           child: commonIconImage(
-            imagePath: controller.companyLogo.isNotEmpty
-                ? '${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}'
-                : 'assets/images/logo.png',
-            height: controller.companyLogo.isNotEmpty
-                ? 66.px:44.px,
-            width: controller.companyLogo.isNotEmpty
-                ? 66.px:44.px,
-            isAssetImage:  controller.companyLogo.isNotEmpty
-                ? false
-                : true
-          ),
+              imagePath: controller.companyLogo.isNotEmpty
+                  ? '${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}'
+                  : 'assets/images/logo.png',
+              height: controller.companyLogo.isNotEmpty ? 66.px : 44.px,
+              width: controller.companyLogo.isNotEmpty ? 66.px : 44.px,
+              isAssetImage: controller.companyLogo.isNotEmpty ? false : true),
         ),
       );
 
-  Widget commonIconImage({required String imagePath, double? height, double? width, bool isAssetImage = true}) => SizedBox(
+  Widget commonIconImage({required String imagePath, double? height, double? width, bool isAssetImage = true}) =>
+      SizedBox(
         width: height ?? 24.px,
         height: width ?? 24.px,
         child: Center(
@@ -155,6 +159,7 @@ class LoginView extends GetView<LoginController> {
       );
 
   Widget emailTextField() => CW.commonTextField(
+        textCapitalization: TextCapitalization.none,
         fillColor: Colors.transparent,
         controller: controller.emailController,
         labelText: 'Email Address',

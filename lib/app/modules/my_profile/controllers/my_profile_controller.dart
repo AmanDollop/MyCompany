@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
@@ -26,18 +26,6 @@ class MyProfileController extends GetxController {
     'My Expense',
   ].obs;
 
-  final cList = [
-    [Colors.red, Colors.orange],
-    [Colors.blue, Colors.black],
-    [Colors.red, Colors.orange],
-    [Colors.blue, Colors.black],
-    [Colors.red, Colors.orange],
-    [Colors.red, Colors.orange],
-    [Colors.blue, Colors.black],
-    [Colors.red, Colors.orange],
-    [Colors.blue, Colors.black],
-  ];
-
   final getEmployeeDetailsModal = Rxn<GetEmployeeDetailsModal>();
   List<GetEmployeeDetails>? getEmployeeDetails;
 
@@ -47,6 +35,7 @@ class MyProfileController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     try {
+      await BottomSheetForOTP.callingGetUserDataApi();
       await setDefaultData();
       await callingGetEmployeeDetailsApi();
     } catch (e) {
@@ -140,19 +129,19 @@ class MyProfileController extends GetxController {
 
   void clickOnList({required int listIndex}) {
     if (getEmployeeDetails?[listIndex].menuClick == 'personal') {
-      Get.toNamed(Routes.PERSONAL_INFO);
+      Get.toNamed(Routes.PERSONAL_INFO,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     } else if (getEmployeeDetails?[listIndex].menuClick == 'contact') {
-      Get.toNamed(Routes.CONTACT_DETAIL);
+      Get.toNamed(Routes.CONTACT_DETAIL,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     } else if (getEmployeeDetails?[listIndex].menuClick == 'job') {
-      Get.toNamed(Routes.JOB_INFO);
+      Get.toNamed(Routes.JOB_INFO,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     }else if (getEmployeeDetails?[listIndex].menuClick == 'social') {
-      Get.toNamed(Routes.SOCIAL_INFO);
+      Get.toNamed(Routes.SOCIAL_INFO,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     }else if (getEmployeeDetails?[listIndex].menuClick == 'bank') {
-      Get.toNamed(Routes.BANK_DETAIL);
+      Get.toNamed(Routes.BANK_DETAIL,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     }else if (getEmployeeDetails?[listIndex].menuClick == 'education') {
-      Get.toNamed(Routes.EDUCATION);
+      Get.toNamed(Routes.EDUCATION,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     }else if (getEmployeeDetails?[listIndex].menuClick == 'experience') {
-      Get.toNamed(Routes.EXPERIENCE);
+      Get.toNamed(Routes.EXPERIENCE,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable]);
     }else if (getEmployeeDetails?[listIndex].menuClick == 'promotion') {
       Get.toNamed(Routes.PROMOTION);
     } else {
@@ -162,8 +151,7 @@ class MyProfileController extends GetxController {
 
   Future<void> callingGetEmployeeDetailsApi() async {
     try {
-      getEmployeeDetailsModal.value = await CAI.getEmployeeDetailsApi(
-          bodyParams: {AK.action: 'getEmployeeProfileMenu'});
+      getEmployeeDetailsModal.value = await CAI.getEmployeeDetailsApi(bodyParams: {AK.action: 'getEmployeeProfileMenu'});
       if (getEmployeeDetailsModal.value != null) {
         getEmployeeDetails = getEmployeeDetailsModal.value?.getEmployeeDetails;
       }

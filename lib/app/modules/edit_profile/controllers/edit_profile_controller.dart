@@ -112,9 +112,9 @@ class EditProfileController extends GetxController {
 
     if (await DataBaseHelper().getParticularData(key: DataBaseConstant.gender, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
       genderType.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.gender, tableName: DataBaseConstant.tableNameForPersonalInfo);
-      if (genderType.value == 'male') {
+      if (genderType.value == 'Male') {
         genderIndexValue.value = '0';
-      } else if (genderType.value == 'female') {
+      } else if (genderType.value == 'Female') {
         genderIndexValue.value = '1';
       } else {
         genderIndexValue.value = '-1';
@@ -330,7 +330,7 @@ class EditProfileController extends GetxController {
        AK.skills : skillsController.text.trim(),
        AK.languageKnown : languageKnownController.text.trim(),
        AK.bloodGroup : bloodGroupController.text.trim(),
-       AK.gender : genderType.value.toLowerCase(),
+       AK.gender : genderType.value,
      };
      http.Response? response = await CAI.updateProfileApi(
        bodyParams: bodyParamsForUpdateProfile,

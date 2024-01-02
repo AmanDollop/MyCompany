@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -13,13 +14,21 @@ class SplashController extends GetxController {
   String? token;
 
   @override
-   void onInit()  {
+   Future<void> onInit()  async {
     super.onInit();
-    dataBaseCalling();
-    Timer(
-      const Duration(seconds: 3),
-      () => callingNextScreen(),
-    );
+    try{
+      dataBaseCalling();
+      // await BottomSheetForOTP.callingGetCompanyDetailApi();
+      Timer(
+        const Duration(seconds: 3),
+            () => callingNextScreen(),
+      );
+    }catch(e){
+      Timer(
+        const Duration(seconds: 3),
+            () => callingNextScreen(),
+      );
+    }
   }
 
   @override
@@ -53,7 +62,6 @@ class SplashController extends GetxController {
   }
 
   Future<void> callingNextScreen() async {
-    print('userToken   :::::::::   $token');
     if (token != 'null' && token!.isNotEmpty) {
       Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
     } else {

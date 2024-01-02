@@ -29,6 +29,7 @@ abstract class Routes {
   static const DOCUMENT = _Paths.DOCUMENT;
   static const JOB_INFO = _Paths.JOB_INFO;
   static const ADD_BANK = _Paths.ADD_BANK;
+  static const ADD_SOCIAL_INFO = _Paths.ADD_SOCIAL_INFO;
 }
 
 abstract class _Paths {
@@ -59,4 +60,5 @@ abstract class _Paths {
   static const DOCUMENT = '/document';
   static const JOB_INFO = '/job-info';
   static const ADD_BANK = '/add-bank';
+  static const ADD_SOCIAL_INFO = '/add-social-info';
 }

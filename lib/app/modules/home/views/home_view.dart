@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
-import 'package:task/theme/constants/constants.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -13,9 +12,16 @@ class JobInfoController extends GetxController {
 
   final apiResponseValue = true.obs;
 
+
+  final accessType = ''.obs;
+  final isChangeable = ''.obs;
+
+
   @override
   Future<void> onInit() async {
     super.onInit();
+    accessType.value = Get.arguments[0];
+    isChangeable.value = Get.arguments[1];
     await setDefaultData();
     apiResponseValue.value = false;
   }

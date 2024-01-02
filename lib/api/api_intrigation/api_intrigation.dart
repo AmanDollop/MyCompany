@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_model/bank_detail_modal.dart';
 import 'package:task/api/api_model/branch_modal.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/country_code_modal.dart';
@@ -355,7 +356,7 @@ class CAI {
     }
   }
 
-  static Future<http.Response?> updateContactInfoApi({
+  static Future<http.Response?> updateUserControllerApi({
     required Map<String, dynamic> bodyParams,
   }) async {
     String baseUrl = await baseUrlReturn();
@@ -378,6 +379,38 @@ class CAI {
           wantInternetFailResponse: true,
           wantShowFailResponse: true)) {
         return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<BankDetailModal?> getBankDetailApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    BankDetailModal? bankDetail;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        bankDetail = BankDetailModal.fromJson(jsonDecode(response.body));
+        return bankDetail;
       } else {
         return null;
       }

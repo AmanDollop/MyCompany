@@ -306,7 +306,7 @@ class SignUpController extends GetxController {
         AK.userEmail: emailController.text.trim().toString(),
         AK.userDesignation: designationController.text.trim().toString(),
         AK.useMobile: mobileNumberController.text.trim().toString(),
-        AK.gender: genderType.toLowerCase().toString(),
+        AK.gender: genderType.toString(),
         AK.userPassword: '123456',
       };
       http.Response? response = await CAI.registrationApi(

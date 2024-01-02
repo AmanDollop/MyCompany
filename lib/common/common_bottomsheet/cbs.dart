@@ -627,18 +627,17 @@ class BottomSheetForOTP extends GetxController {
 
         if(userData?.personalInfo != null){
           personalInfo = userData?.personalInfo;
-          print('personalInfo::::::  $personalInfo');
           DataBaseHelper().upDateDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
         }
 
         if(userData?.contactInfo != null){
           contactInfo = userData?.contactInfo;
+          print('contactInfo:::::  ${contactInfo?.countryCode}');
           DataBaseHelper().upDateDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
         }
 
         if(userData?.jobInfo != null){
           jobInfo = userData?.jobInfo;
-          print('jobInfo:::::  ${jobInfo?.employeeTypeView}');
           DataBaseHelper().upDateDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
         }
 

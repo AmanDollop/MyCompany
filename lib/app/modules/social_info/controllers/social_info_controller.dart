@@ -1,11 +1,25 @@
 import 'package:get/get.dart';
+import 'package:task/app/routes/app_pages.dart';
 
 class SocialInfoController extends GetxController {
 
   final count = 0.obs;
+
+  List title  = [
+    'Twitter',
+    'Facebook',
+    'Instagram',
+    'Linkedin',
+  ];
+
+  final accessType = ''.obs;
+  final isChangeable = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
+    accessType.value = Get.arguments[0];
+    isChangeable.value = Get.arguments[1];
   }
 
   @override
@@ -22,5 +36,9 @@ class SocialInfoController extends GetxController {
 
   void clickOnBackButton() {
     Get.back();
+  }
+
+  void clickOnEditViewButton() {
+    Get.toNamed(Routes.ADD_SOCIAL_INFO);
   }
 }

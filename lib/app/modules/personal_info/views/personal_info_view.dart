@@ -21,7 +21,7 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: appBarView(),
-        floatingActionButton: Padding(
+        floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'?Padding(
           padding: EdgeInsets.only(bottom: 10.px),
           child: CW.commonOutlineButton(
               onPressed: () => controller.clickOnEditViewButton(),
@@ -35,7 +35,7 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
               backgroundColor: Col.primary,
               borderColor: Colors.transparent,
               borderRadius: 25.px),
-        ),
+        ):const SizedBox(),
         body: Obx(() {
           controller.count.value;
           if (controller.apiResponseValue.value) {
