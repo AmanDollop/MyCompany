@@ -62,6 +62,7 @@ class DataBaseHelper {
         , ${DataBaseConstant.hobbiesAndInterest} ${DataBaseType.textType}
         , ${DataBaseConstant.skills} ${DataBaseType.textType}
         , ${DataBaseConstant.languageKnown} ${DataBaseType.textType}
+        , ${DataBaseConstant.shortName} ${DataBaseType.textType}
         )''');
   }
 
@@ -113,7 +114,6 @@ class DataBaseHelper {
 
   insertInDataBase({required Map<String, dynamic> data,required String tableName}) async {
     int id = await dataBaseHelper?.insert(tableName, data) ?? -1;
-    print('id::::insertInDataBase::::::  $id');
     if (id != -1) {
       return true;
     } else {
@@ -123,7 +123,6 @@ class DataBaseHelper {
 
   upDateDataBase({required Map<String, dynamic> data,required String tableName}) async {
      int id = await dataBaseHelper?.update(tableName, data,where:DataBaseConstant.columnId) ?? -1;
-     print('id:::::upDateDataBase:::::  $id');
      if (id != -1) {
        return true;
      } else {

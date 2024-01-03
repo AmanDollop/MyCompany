@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dash/flutter_dash.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -27,7 +28,8 @@ class MyProfileView extends GetView<MyProfileController> {
             padding: EdgeInsets.zero,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                 child: Column(
                   children: [
                     Row(
@@ -64,6 +66,48 @@ class MyProfileView extends GetView<MyProfileController> {
                   ],
                 ),
               ),
+              commonDividerView(),
+              SizedBox(height: 6.px),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.px),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        commonContainerForSocialButton(
+                          imagePath: controller.twitterUrl.isNotEmpty?'assets/images/twitter_dark_image.png':'assets/images/twitter_light_image.png',
+                          onTap: () => controller.clickOnTwitterButton(),
+                        ),
+                        SizedBox(width: 10.px),
+                        commonContainerForSocialButton(
+                        imagePath: controller.linkedinUrl.isNotEmpty?'assets/images/linkdin_dark_image.png':'assets/images/linkdin_light_image.png',
+                          onTap: () => controller.clickOnLinkedinButton(),
+                        ),
+                        SizedBox(width: 10.px),
+                        commonContainerForSocialButton(
+                         imagePath: controller.instagramUrl.isNotEmpty?'assets/images/instagram_dark_image.png':'assets/images/instagram_light_image.png',
+                          onTap: () => controller.clickOnInstagramButton(),
+                        ),
+                        SizedBox(width: 10.px),
+                        commonContainerForSocialButton(
+                         imagePath: controller.facebookUrl.isNotEmpty?'assets/images/facebook_dark_image.png':'assets/images/facebook_light_image.png',
+                          onTap: () => controller.clickOnFacebookButton(),
+                        ),
+                      ],
+                    ),
+                    commonContainerForSocialButton(
+                      imagePath: 'assets/icons/edit_icon.png',
+                      onTap: () => controller.clickOnEditSocialInfoButton(),
+                      width: 36.px,
+                      height: 36.px
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 6.px),
+              commonDividerView(),
+              SizedBox(height: 16.px),
               listView(),
               SizedBox(height: 30.px),
             ],
@@ -79,23 +123,38 @@ class MyProfileView extends GetView<MyProfileController> {
         margin: EdgeInsets.only(right: 12.px),
         decoration: BoxDecoration(color: Col.primary, shape: BoxShape.circle),
         child: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(31.px),
-            child: CW.commonNetworkImageView(
-                path: controller.userPic.value.isNotEmpty
-                    ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                    : 'assets/images/profile.png',
-                isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
-                errorImage: 'assets/images/profile.png',
-                width: 62.px,
-                height: 62.px),
-          ),
+          child: controller.userPic.value != 'null' &&
+                  controller.userPic.isNotEmpty
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(31.px),
+                  child: CW.commonNetworkImageView(
+                      path: controller.userPic.value.isNotEmpty
+                          ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
+                          : 'assets/images/profile.png',
+                      isAssetImage:
+                          controller.userPic.value.isNotEmpty ? false : true,
+                      errorImage: 'assets/images/profile.png',
+                      width: 62.px,
+                      height: 62.px),
+                )
+              : Text(
+                  controller.userShortName.value != 'null' &&
+                          controller.userShortName.value.isNotEmpty
+                      ? controller.userShortName.value
+                      : '?',
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: Col.inverseSecondary)),
         ),
       );
 
   Widget nameTextView() => Text(
-      controller.firstName.value != 'null' && controller.firstName.isNotEmpty && controller.lastName.value != 'null' && controller.lastName.isNotEmpty
-          ? '${controller.firstName} ${controller.lastName}'
+      controller.userFullName.value != 'null' &&
+              controller.userFullName.isNotEmpty
+          ? controller.userFullName.value
           : 'User Name',
       style: Theme.of(Get.context!)
           .textTheme
@@ -105,10 +164,9 @@ class MyProfileView extends GetView<MyProfileController> {
       overflow: TextOverflow.ellipsis);
 
   Widget userDetailTextView() => Text(
-      controller.developer.value != 'null' &&
-              controller.developer.isNotEmpty
-          ? '${controller.developer} Developer'
-          : 'Developer',
+      controller.developer.value != 'null' && controller.developer.isNotEmpty
+          ? '${controller.developer}'
+          : 'Designation',
       style: Theme.of(Get.context!)
           .textTheme
           .titleMedium
@@ -155,12 +213,33 @@ class MyProfileView extends GetView<MyProfileController> {
         ],
       );
 
-  Widget commonCardForList(
-          {required Widget listWidget,
-          required String titleText,
-          bool viewAllButtonValue = false,
-          VoidCallback? onPressedViewAllButton}) =>
-      Card(
+  Widget commonDividerView() => Center(
+        child: Dash(
+            direction: Axis.horizontal,
+            length: 99.w,
+            dashLength: 5.px,
+            dashThickness: .5.px,
+            dashColor: Col.secondary),
+      );
+
+  Widget commonContainerForSocialButton({required String imagePath, GestureTapCallback? onTap,double? height,double? width}) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18.px),
+        child: Ink(
+          height: height ?? 24.px,
+          width:width?? 24.px,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: AssetImage(
+                imagePath,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget commonCardForList({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
         shadowColor: Col.secondary.withOpacity(.1),
@@ -193,16 +272,7 @@ class MyProfileView extends GetView<MyProfileController> {
         ),
       );
 
-  Widget commonCard(
-          {required String imagePath,
-          required String text1,
-          String? text2,
-          bool text2Value = false,
-          bool isAssetImage = true,
-          double? imageWidth,
-          double? imageHeight,
-          double? cardHeight,
-          Gradient? gradient}) => Ink(
+  Widget commonCard({required String imagePath, required String text1, String? text2, bool text2Value = false, bool isAssetImage = true, double? imageWidth, double? imageHeight, double? cardHeight, Gradient? gradient}) => Ink(
         height: cardHeight ?? 134.px,
         padding: EdgeInsets.only(left: 3.px),
         decoration: BoxDecoration(
@@ -217,18 +287,20 @@ class MyProfileView extends GetView<MyProfileController> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               // width: 44.px,
               // height: 44.px,
-              decoration: BoxDecoration(shape: BoxShape.circle, gradient: gradient),
+              margin: EdgeInsets.only(top: 12.px),
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, gradient: gradient),
               child: Center(
                 child: CW.commonNetworkImageView(
                   path: imagePath,
                   isAssetImage: isAssetImage,
-                  width: imageWidth ?? 34.px,
-                  height: imageHeight ?? 34.px,
+                  width: imageWidth ?? 44.px,
+                  height: imageHeight ?? 44.px,
                 ),
               ),
             ),
@@ -236,7 +308,10 @@ class MyProfileView extends GetView<MyProfileController> {
             Flexible(
               child: Text(
                 text1,
-                style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -263,7 +338,8 @@ class MyProfileView extends GetView<MyProfileController> {
 
   Widget listView() {
     if (controller.getEmployeeDetailsModal.value != null) {
-      if (controller.getEmployeeDetails != null && controller.getEmployeeDetails!.isNotEmpty) {
+      if (controller.getEmployeeDetails != null &&
+          controller.getEmployeeDetails!.isNotEmpty) {
         return commonCardForList(
           titleText: '',
           listWidget: GridView.builder(
@@ -280,7 +356,8 @@ class MyProfileView extends GetView<MyProfileController> {
               return InkWell(
                 onTap: () =>
                     controller.getEmployeeDetails?[index].menuClick != null &&
-                            controller.getEmployeeDetails![index].menuClick!.isNotEmpty
+                            controller.getEmployeeDetails![index].menuClick!
+                                .isNotEmpty
                         ? controller.clickOnList(listIndex: index)
                         : CM.error(),
                 borderRadius: BorderRadius.circular(8.px),
@@ -288,8 +365,11 @@ class MyProfileView extends GetView<MyProfileController> {
                     // gradient: LinearGradient(colors: controller.cList[index]),
                     // imageHeight: 24.px,
                     // imageWidth: 24.px,
-                    imagePath: controller.getEmployeeDetails?[index].profileMenuPhoto != null &&
-                            controller.getEmployeeDetails![index].profileMenuPhoto!.isNotEmpty
+                    imagePath: controller.getEmployeeDetails?[index]
+                                    .profileMenuPhoto !=
+                                null &&
+                            controller.getEmployeeDetails![index]
+                                .profileMenuPhoto!.isNotEmpty
                         ? '${AU.baseUrlAllApisImage}${controller.getEmployeeDetails![index].profileMenuPhoto}'
                         : 'assets/images/shoping_dark.png',
                     isAssetImage: controller.getEmployeeDetails?[index]
@@ -312,7 +392,9 @@ class MyProfileView extends GetView<MyProfileController> {
           ),
         );
       } else {
-        return controller.apiResponseValue.value ? const SizedBox() : CW.commonNoDataFoundText();
+        return controller.apiResponseValue.value
+            ? const SizedBox()
+            : CW.commonNoDataFoundText();
       }
     } else {
       return CW.commonNoDataFoundText(

@@ -24,9 +24,8 @@ class ContactDetailController extends GetxController {
   final permanentAddressController = TextEditingController();
 
   final mobileNumber = ''.obs;
-  final countryCode = '+91'.obs;
   final countryId = ''.obs;
-  final countryCodeWhatsapp = ''.obs;
+  final countryCode = ''.obs;
 
   final countryCodeModal = Rxn<CountryCodeModal?>();
   List<CountryCodeList>? countryCodeList;
@@ -53,6 +52,7 @@ class ContactDetailController extends GetxController {
 
   final accessType = ''.obs;
   final isChangeable = ''.obs;
+  final profileMenuName = ''.obs;
 
 
   @override
@@ -60,6 +60,7 @@ class ContactDetailController extends GetxController {
     super.onInit();
     accessType.value = Get.arguments[0];
     isChangeable.value = Get.arguments[1];
+    profileMenuName.value = Get.arguments[2];
     await setDefaultData();
     await callingCountryCodeApi();
     apiResponseValue.value = false;
@@ -80,25 +81,13 @@ class ContactDetailController extends GetxController {
   Future<void> setDefaultData() async {
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
       mobileNumber.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile,tableName: DataBaseConstant.tableNameForContactInfo);
+      contactController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile,tableName: DataBaseConstant.tableNameForContactInfo);
     }
-
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.countryCode,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      countryCode.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.countryCode,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
-
-    contactController.text = '${countryCode.value} ${mobileNumber.value}';
 
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.whatsappNumber,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
       whatsappController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.whatsappNumber,tableName: DataBaseConstant.tableNameForContactInfo);
     }
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.whatsappCountryCode,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      countryCodeWhatsapp.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.whatsappCountryCode,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
-
-    if(countryCodeWhatsapp.value == '' && countryCodeWhatsapp.value.isEmpty){
-      countryId.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.countryId,tableName: DataBaseConstant.tableNameForCompanyDetail);
-    }
 
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
       companyEmailController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail,tableName: DataBaseConstant.tableNameForContactInfo);
@@ -114,6 +103,11 @@ class ContactDetailController extends GetxController {
 
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.permanentAddress,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
       permanentAddressController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.permanentAddress,tableName: DataBaseConstant.tableNameForContactInfo);
+    }
+
+    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.countryId,tableName: DataBaseConstant.tableNameForCompanyDetail) != 'null') {
+      countryId.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.countryId,tableName: DataBaseConstant.tableNameForCompanyDetail);
+      print('countryId.value:::::  ${countryId.value}');
     }
 
   }
@@ -142,9 +136,10 @@ class ContactDetailController extends GetxController {
       if (countryCodeModal.value != null) {
         countryCodeList = countryCodeModal.value?.countryCode ?? [];
         countryCodeList?.forEach((element) {
-          if(element.countryId == countryId.value || element.phonecode == countryCodeWhatsapp.value){
-            countryCodeWhatsapp.value = element.phonecode ??'';
+          if(element.countryId == countryId.value){
+            countryCode.value = element.phonecode ??'';
             countryImagePath.value = "${AU.baseUrlAllApisImage}${element.flag}";
+            print('countryImagePath.value::::::  ${countryImagePath.value}');
           }
         });
       }
@@ -156,88 +151,88 @@ class ContactDetailController extends GetxController {
 
   Future<void> clickOnCountryCode() async {
     CM.unFocusKeyBoard();
-    await CBS.commonBottomSheetForCountry(
-      searchController: searchCountryController,
-      onChanged: (value) {
-        countryCodeListSearch.clear();
-        if (value.isEmpty) {
-          return;
-        } else {
-          countryCodeList?.forEach((countryCodeAllData) {
-            if (countryCodeAllData.countryName!.toLowerCase().contains(value.toLowerCase().trim())) {
-              if (countryCodeAllData.countryName?.toLowerCase().trim().contains(value.toLowerCase().trim()) != null) {
-                countryCodeListSearch.add(countryCodeAllData);
-              } else {
-                countryCodeListSearch = [];
-              }
-            }
-          });
-          count.value++;
-        }
-      },
-      child: Obx(() {
-        count.value;
-        return ListView.builder(
-          physics: const ScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 20.px),
-          shrinkWrap: true,
-          itemCount: searchCountryController.text.isNotEmpty
-              ? countryCodeListSearch.length
-              : countryCodeList?.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () => clickOnCountryDropDownValue(index: index),
-              borderRadius: BorderRadius.circular(2.px),
-              splashColor: Col.primary.withOpacity(.2),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.px),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(5.px),
-                          child: CW.commonNetworkImageView(
-                            path: searchCountryController.text.isNotEmpty
-                                ? '${AU.baseUrlAllApisImage}${countryCodeListSearch[index].flag}'
-                                : '${AU.baseUrlAllApisImage}${countryCodeList?[index].flag}',
-                            isAssetImage: false,
-                            height: 18.px,
-                            width: 28.px,
-                          ),
-                        ),
-                        SizedBox(width: 6.px),
-                        Text(
-                          searchCountryController.text.isNotEmpty
-                              ?'${countryCodeListSearch[index].phonecode}'
-                              :'${countryCodeList?[index].phonecode}',
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                        SizedBox(width: 10.px),
-                        Flexible(
-                          child: Text(
-                            searchCountryController.text.isNotEmpty
-                                ?'${countryCodeListSearch[index].countryName}'
-                                :'${countryCodeList?[index].countryName}',
-                            style: Theme.of(context).textTheme.titleSmall,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  CW.commonDividerView(height: 0.px),
-                ],
-              ),
-            );
-          },
-        );
-      }),
-    ).whenComplete(() {
-      searchCountryController.clear();
-      countryCodeListSearch.clear();
-    });
+    // await CBS.commonBottomSheetForCountry(
+    //   searchController: searchCountryController,
+    //   onChanged: (value) {
+    //     countryCodeListSearch.clear();
+    //     if (value.isEmpty) {
+    //       return;
+    //     } else {
+    //       countryCodeList?.forEach((countryCodeAllData) {
+    //         if (countryCodeAllData.countryName!.toLowerCase().contains(value.toLowerCase().trim())) {
+    //           if (countryCodeAllData.countryName?.toLowerCase().trim().contains(value.toLowerCase().trim()) != null) {
+    //             countryCodeListSearch.add(countryCodeAllData);
+    //           } else {
+    //             countryCodeListSearch = [];
+    //           }
+    //         }
+    //       });
+    //       count.value++;
+    //     }
+    //   },
+    //   child: Obx(() {
+    //     count.value;
+    //     return ListView.builder(
+    //       physics: const ScrollPhysics(),
+    //       padding: EdgeInsets.only(bottom: 20.px),
+    //       shrinkWrap: true,
+    //       itemCount: searchCountryController.text.isNotEmpty
+    //           ? countryCodeListSearch.length
+    //           : countryCodeList?.length,
+    //       itemBuilder: (context, index) {
+    //         return InkWell(
+    //           onTap: () => clickOnCountryDropDownValue(index: index),
+    //           borderRadius: BorderRadius.circular(2.px),
+    //           splashColor: Col.primary.withOpacity(.2),
+    //           child: Column(
+    //             children: [
+    //               Padding(
+    //                 padding: EdgeInsets.symmetric(vertical: 5.px),
+    //                 child: Row(
+    //                   children: [
+    //                     Padding(
+    //                       padding: EdgeInsets.all(5.px),
+    //                       child: CW.commonNetworkImageView(
+    //                         path: searchCountryController.text.isNotEmpty
+    //                             ? '${AU.baseUrlAllApisImage}${countryCodeListSearch[index].flag}'
+    //                             : '${AU.baseUrlAllApisImage}${countryCodeList?[index].flag}',
+    //                         isAssetImage: false,
+    //                         height: 18.px,
+    //                         width: 28.px,
+    //                       ),
+    //                     ),
+    //                     SizedBox(width: 6.px),
+    //                     Text(
+    //                       searchCountryController.text.isNotEmpty
+    //                           ?'${countryCodeListSearch[index].phonecode}'
+    //                           :'${countryCodeList?[index].phonecode}',
+    //                       style: Theme.of(context).textTheme.labelSmall,
+    //                     ),
+    //                     SizedBox(width: 10.px),
+    //                     Flexible(
+    //                       child: Text(
+    //                         searchCountryController.text.isNotEmpty
+    //                             ?'${countryCodeListSearch[index].countryName}'
+    //                             :'${countryCodeList?[index].countryName}',
+    //                         style: Theme.of(context).textTheme.titleSmall,
+    //                         maxLines: 2,
+    //                         overflow: TextOverflow.ellipsis,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //               CW.commonDividerView(height: 0.px),
+    //             ],
+    //           ),
+    //         );
+    //       },
+    //     );
+    //   }),
+    // ).whenComplete(() {
+    //   searchCountryController.clear();
+    //   countryCodeListSearch.clear();
+    // });
   }
 
   void clickOnCountryDropDownValue({required int index}) {
@@ -300,7 +295,7 @@ class ContactDetailController extends GetxController {
     try{
       bodyParamsForContactInfo={
         AK.action:'updateContactInfo',
-        AK.whatsappCountryCode : countryCodeWhatsapp.value,
+        AK.whatsappCountryCode : countryCode.value,
         AK.whatsappNumber : whatsappController.text.trim().toString(),
         AK.personalEmail : personalEmailController.text.trim().toString(),
         AK.currentAddress : currentAddressController.text.trim().toString(),

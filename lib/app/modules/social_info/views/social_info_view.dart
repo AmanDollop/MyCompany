@@ -12,7 +12,7 @@ class SocialInfoView extends GetView<SocialInfoController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CW.commonAppBarView(
-            title: 'Social Info',
+            title: controller.profileMenuName.value,
             isLeading: true,
             onBackPressed: () => controller.clickOnBackButton()),
         body: GridView.builder(

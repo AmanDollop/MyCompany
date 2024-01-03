@@ -17,7 +17,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
       return Drawer(
         width: 75.w,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(bottomRight: Radius.circular(20.px))),
+            borderRadius:
+                BorderRadius.only(bottomRight: Radius.circular(20.px))),
         backgroundColor: Col.scaffoldBackgroundColor,
         child: ListView(
           physics: const ScrollPhysics(),
@@ -50,17 +51,20 @@ class DrawerViewView extends GetView<DrawerViewController> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 userNameTextView(
-                                    text: controller.firstName.value!='null'&&controller.firstName.value.isNotEmpty &&
-                                        controller.lastName.value!='null'&&controller.lastName.value.isNotEmpty
-                                        ? '${controller.firstName.value} ${controller.lastName.value}'
+                                    text: controller.userFullName.value !=
+                                                'null' &&
+                                            controller
+                                                .userFullName.value.isNotEmpty
+                                        ? controller.userFullName.value
                                         : 'User Name',
                                     color: Col.inverseSecondary,
                                     fontSize: 16.px),
                                 SizedBox(height: 2.px),
                                 userDetailTextView(
-                                  text: controller.developer.value!='null'&&controller.developer.value.isNotEmpty
-                                          ? '${controller.developer.value} Developers'
-                                          : 'Developer',
+                                  text: controller.developer.value != 'null' &&
+                                          controller.developer.value.isNotEmpty
+                                      ? controller.developer.value
+                                      : 'Designation',
                                 ),
                               ],
                             ),
@@ -78,7 +82,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
               ],
             ),
             SizedBox(height: 10.px),
-            CW.commonDividerView(color: Col.gray.withOpacity(.4),wight: 1.px),
+            CW.commonDividerView(color: Col.gray.withOpacity(.4), wight: 1.px),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 10.px),
               child: Row(
@@ -88,7 +92,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
                   SizedBox(width: 6.px),
                   Flexible(
                     child: userNameTextView(
-                        text: controller.companyName.value !='null'&&controller.companyName.value.isNotEmpty
+                        text: controller.companyName.value != 'null' &&
+                                controller.companyName.value.isNotEmpty
                             ? controller.companyName.value.toString()
                             : 'Company Name',
                         fontSize: 14.px,
@@ -99,7 +104,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
                 ],
               ),
             ),
-            CW.commonDividerView(color: Col.gray.withOpacity(.4),wight: 1.px),
+            CW.commonDividerView(color: Col.gray.withOpacity(.4), wight: 1.px),
             ListView.builder(
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
@@ -110,10 +115,16 @@ class DrawerViewView extends GetView<DrawerViewController> {
                   onTap: () => controller.clickOnList(index: index),
                   borderRadius: BorderRadius.circular(6.px),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: 12.px),
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10.px, horizontal: 12.px),
                     child: Row(
                       children: [
-                        CW.commonNetworkImageView(path: controller.iconList[index], isAssetImage: true, height: 22.px, width: 22.px, color: Col.darkGray.withOpacity(.8)),
+                        CW.commonNetworkImageView(
+                            path: controller.iconList[index],
+                            isAssetImage: true,
+                            height: 22.px,
+                            width: 22.px,
+                            color: Col.darkGray.withOpacity(.8)),
                         SizedBox(width: 12.px),
                         titleTextView(text: controller.titleList[index])
                       ],
@@ -129,34 +140,50 @@ class DrawerViewView extends GetView<DrawerViewController> {
   }
 
   Widget userProfileView() => Container(
-            width: 72.px,
-            height: 72.px,
-            margin: EdgeInsets.only(right: 12.px),
-            decoration: BoxDecoration(
-                color: Col.inverseSecondary, shape: BoxShape.circle),
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(31.px),
-                child: CW.commonNetworkImageView(
-                    path: controller.userPic.value.isNotEmpty
-                        ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                        : 'assets/images/profile.png',
-                    isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
-                    errorImage: 'assets/images/profile.png',
-                    width: 66.px,
-                    height: 66.px),
+        width: 72.px,
+        height: 72.px,
+        margin: EdgeInsets.only(right: 12.px),
+        decoration: BoxDecoration(
+            color:  Col.inverseSecondary,
+            shape: BoxShape.circle),
+        child:  Center(
+                child: controller.userPic.value != 'null' && controller.userPic.value.isNotEmpty
+                    ? ClipRRect(
+                  borderRadius: BorderRadius.circular(31.px),
+                  child: CW.commonNetworkImageView(
+                      path: controller.userPic.value.isNotEmpty
+                          ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
+                          : 'assets/images/profile.png',
+                      isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
+                      errorImage: 'assets/images/profile.png',
+                      width: 66.px,
+                      height: 66.px),
+                ): Text(
+                  controller.userShortName.value != 'null' &&
+                          controller.userShortName.value.isNotEmpty
+                      ? controller.userShortName.value
+                      : '?',
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(
+                          fontWeight: FontWeight.w700, color: Col.primary)),
               ),
-            ),
-          );
+      );
 
   Widget userNameTextView(
           {required String text,
           Color? color,
           int? maxLines,
           TextAlign? textAlign,
-          double? fontSize}) => Text(
+          double? fontSize}) =>
+      Text(
         text,
-        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: color, fontSize: fontSize,letterSpacing: 0,fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(
+            color: color,
+            fontSize: fontSize,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w600),
         maxLines: maxLines ?? 1,
         textAlign: textAlign ?? TextAlign.start,
         overflow: TextOverflow.ellipsis,
@@ -164,7 +191,10 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   Widget userDetailTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .titleLarge
+            ?.copyWith(color: Col.inverseSecondary),
         maxLines: 2,
         textAlign: TextAlign.start,
         overflow: TextOverflow.ellipsis,
@@ -179,7 +209,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   Widget titleTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600,color: Col.darkGray.withOpacity(.8)),
+        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600, color: Col.darkGray.withOpacity(.8)),
         maxLines: 1,
         textAlign: TextAlign.start,
       );

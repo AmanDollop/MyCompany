@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
@@ -14,8 +13,6 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'ima:::::::::   ${AU.baseUrlForSearchCompanyImage}${controller.companyLogo}');
     return GestureDetector(
       onTap: () {
         CM.unFocusKeyBoard();

@@ -179,7 +179,9 @@ class SignUpController extends GetxController {
         dateController: joiningDateController,
         initialDate: joiningDateController.text.isNotEmpty
             ? DateFormat('dd MMM yyyy').parse(joiningDateController.text)
-            : DateTime.now());
+            : DateTime.now()).then((value) {
+              print('then::::::: $value');
+    });
   }
 
   Future<void> clickOnCountryCode() async {

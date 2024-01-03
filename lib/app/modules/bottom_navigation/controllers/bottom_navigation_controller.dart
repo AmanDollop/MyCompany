@@ -11,14 +11,22 @@ import 'package:task/app/modules/utilities/controllers/utilities_controller.dart
 import 'package:task/app/modules/utilities/views/utilities_view.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class BottomNavigationController extends GetxController {
 
   final count = 0.obs;
+  final userFullName = ''.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    try{
+      if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+        userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
+      }
+    }catch(e){}
   }
 
   @override

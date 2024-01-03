@@ -14,7 +14,7 @@ class BankDetailView extends GetView<BankDetailController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CW.commonAppBarView(
-          title: 'Bank Detail',
+          title: controller.profileMenuName.value,
           isLeading: true,
           onBackPressed: () => controller.clickOnBackButton()),
       body: Obx(() {

@@ -30,6 +30,7 @@ abstract class Routes {
   static const JOB_INFO = _Paths.JOB_INFO;
   static const ADD_BANK = _Paths.ADD_BANK;
   static const ADD_SOCIAL_INFO = _Paths.ADD_SOCIAL_INFO;
+  static const ADD_EDUCATION = _Paths.ADD_EDUCATION;
 }
 
 abstract class _Paths {
@@ -61,4 +62,5 @@ abstract class _Paths {
   static const JOB_INFO = '/job-info';
   static const ADD_BANK = '/add-bank';
   static const ADD_SOCIAL_INFO = '/add-social-info';
+  static const ADD_EDUCATION = '/add-education';
 }

@@ -14,12 +14,14 @@ class SocialInfoController extends GetxController {
 
   final accessType = ''.obs;
   final isChangeable = ''.obs;
+  final profileMenuName = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
     accessType.value = Get.arguments[0];
     isChangeable.value = Get.arguments[1];
+    profileMenuName.value = Get.arguments[2];
   }
 
   @override

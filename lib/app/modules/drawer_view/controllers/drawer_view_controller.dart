@@ -34,8 +34,8 @@ class DrawerViewController extends GetxController {
   ].obs;
 
   final userPic = ''.obs;
-  final firstName = ''.obs;
-  final lastName = ''.obs;
+  final userFullName = ''.obs;
+  final userShortName = ''.obs;
   final companyName = ''.obs;
   final developer = ''.obs;
 
@@ -68,7 +68,7 @@ class DrawerViewController extends GetxController {
     } else if (index == 1) {
       Get.back();
     } else if (index == 2) {
-      Get.back();
+      Get.toNamed(Routes.ADD_EDUCATION);
     } else if (index == 3) {
       Get.back();
     } else if (index == 4) {
@@ -102,11 +102,11 @@ class DrawerViewController extends GetxController {
 
   Future<void> setDefaultData() async {
 
-    firstName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    lastName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName,tableName: DataBaseConstant.tableNameForPersonalInfo);
+    userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName,tableName: DataBaseConstant.tableNameForPersonalInfo);
+    userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName,tableName: DataBaseConstant.tableNameForPersonalInfo);
     userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic,tableName: DataBaseConstant.tableNameForPersonalInfo);
     companyName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyName,tableName: DataBaseConstant.tableNameForCompanyDetail);
-    developer.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo);
+    developer.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo);
 
   }
 

@@ -31,6 +31,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
 
   final accessType = ''.obs;
   final isChangeable = ''.obs;
+  final profileMenuName = ''.obs;
 
   @override
   Future<void> onInit() async {
@@ -39,6 +40,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
     try {
       accessType.value = Get.arguments[0];
       isChangeable.value = Get.arguments[1];
+      profileMenuName.value = Get.arguments[2];
       rotationController = AnimationController(duration: const Duration(milliseconds: 30000), vsync: this);
       rotationController.forward(from: 0.0); // it starts the animation
       await Future.delayed(const Duration(seconds: 1));
@@ -197,11 +199,9 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
 
   Future<void> callingGetBankDetailApi() async {
     bodyParamsForGetBanks = {AK.action: "getBankDetails"};
-    getBankDetailModal.value =
-        await CAI.getBankDetailApi(bodyParams: bodyParamsForGetBanks);
+    getBankDetailModal.value = await CAI.getBankDetailApi(bodyParams: bodyParamsForGetBanks);
     if (getBankDetailModal.value != null) {
       getBankList = getBankDetailModal.value?.getBankDetails;
-      print('getBankList::::: ${getBankList?.length}');
       getBankList?.forEach((element) {
         downAndUpValue.add('-1');
       });

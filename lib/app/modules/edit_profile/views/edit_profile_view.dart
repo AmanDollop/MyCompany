@@ -189,7 +189,8 @@ class EditProfileView extends GetView<EditProfileController> {
                     width: 110.px,
                   ),
                 )
-                : ClipRRect(
+                : controller.userPic.value.isNotEmpty
+                ? ClipRRect(
                   borderRadius: BorderRadius.circular(65.px),
                   child: CW.commonNetworkImageView(
                     path: controller.userPic.value.isNotEmpty
@@ -201,14 +202,21 @@ class EditProfileView extends GetView<EditProfileController> {
                     height: 130.px,
                     width: 130.px,
                   ),
-                ),
+                )
+                : Text(
+                controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
+                    ? controller.userShortName.value
+                    : '?',
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .headlineLarge),
           ),
         ),
       );
 
   Widget userNameTextView() => Text(
-        controller.userFirstName.value.isNotEmpty || controller.userLastName.value.isNotEmpty
-            ? '${controller.userFirstName.value} ${controller.userLastName.value}'
+        controller.userFullName.value.isNotEmpty
+            ? controller.userFullName.value
             : 'User Name',
         style: Theme.of(Get.context!).textTheme.displaySmall,
         maxLines: 2,

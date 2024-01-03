@@ -32,6 +32,7 @@ class DataBaseConstant {
   static String hobbiesAndInterest = 'hobbies_and_interest';
   static String skills = 'skills';
   static String languageKnown = 'language_known';
+  static String shortName = 'short_name';
 
 
   ///TODO Table Name CONTACT_INFO for key

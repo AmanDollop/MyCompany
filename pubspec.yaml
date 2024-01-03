@@ -57,6 +57,7 @@ dependencies:
   geolocator: ^10.1.0
   flutter_dash: ^1.0.0
   location_geocoder: ^1.0.5
+  url_launcher_android: ^6.2.0
 
 
 dev_dependencies:

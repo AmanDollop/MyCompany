@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/blood_group_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
@@ -33,8 +34,8 @@ class EditProfileController extends GetxController {
   final dobController = TextEditingController();
   final bloodGroupController = TextEditingController();
 
-  final userFirstName = ''.obs;
-  final userLastName = ''.obs;
+  final userFullName = ''.obs;
+  final userShortName = ''.obs;
   final userPic = ''.obs;
   final countryCode = ''.obs;
   final mobileNumber = ''.obs;
@@ -44,18 +45,6 @@ class EditProfileController extends GetxController {
   final genderText = ['Male', 'Female'];
   final genderIndexValue = '-1'.obs;
   final genderType = ''.obs;
-
-  final bloodGroupList = [
-    'A+',
-    'A-',
-    'B+',
-    'B-',
-    'O+',
-    'O-',
-    'AB++',
-    'AB--',
-  ];
-  final bloodGroupValue = ''.obs;
 
   final apiResponseValue = true.obs;
   final saveButtonValue = false.obs;
@@ -71,9 +60,15 @@ class EditProfileController extends GetxController {
 
   Map<String, dynamic> bodyParamsForUpdateProfile = {};
 
+  final bloodGroupModal = Rxn<BloodGroupModal>();
+  String? bloodGroup;
+  final bloodGroupList = [];
+  final bloodGroupValue = ''.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
+    await callingBloodGroupApi();
     await setDefaultData();
     apiResponseValue.value = false;
   }
@@ -96,13 +91,19 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> setDefaultData() async {
+    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+      userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
+    }
+
+    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+      userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo);
+    }
+
     if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userFirstName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo);
       firstNameController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo);
     }
 
     if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userLastName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo);
       lastNameController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo);
     }
 
@@ -127,9 +128,11 @@ class EditProfileController extends GetxController {
 
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
       dob.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo);
-      DateTime inputDate = DateTime.parse(dob.value);
-      String formattedDate = formatDate(inputDate);
-      dobController.text = formattedDate.toString();
+      if(dob.value.isNotEmpty){
+        DateTime inputDate = DateTime.parse(dob.value);
+        String formattedDate = formatDate(inputDate);
+        dobController.text = formattedDate.toString();
+      }
     }
 
     if(await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
@@ -352,6 +355,19 @@ class EditProfileController extends GetxController {
      apiResponseValue.value=false;
      saveButtonValue.value=false;
      CM.error();
+   }
+  }
+
+  Future<void> callingBloodGroupApi() async {
+   try{
+     bloodGroupModal.value = await CAI.getBloodGroupApi(bodyParams: {AK.action:'getBloodGroup'});
+     if(bloodGroupModal.value != null){
+       bloodGroup = bloodGroupModal.value?.bloodGroup;
+       Map<String, dynamic> bloodGroupData = jsonDecode(bloodGroup??'');
+       bloodGroupList.addAll(bloodGroupData.values.toList());
+     }
+   }catch(e){
+     apiResponseValue.value=false;
    }
   }
 

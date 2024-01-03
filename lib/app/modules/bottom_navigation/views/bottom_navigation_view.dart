@@ -22,12 +22,11 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         // key: controller.scaffoldKey,
         drawerEdgeDragWidth: 30.w,
         drawer: const DrawerViewView(),
-
         backgroundColor: Col.inverseSecondary,
         appBar: selectedBottomNavigationIndex.value == 0
             ? CW.commonAppBarView(
             homeAppBarValue: true,
-            title: 'Hello, Dollop',
+            title: 'Hello, ${controller.userFullName.value.isNotEmpty?controller.userFullName.value:'User Name'}',
             leadingWidth: 60.px,
             isLeading: true,
             leading: Builder(

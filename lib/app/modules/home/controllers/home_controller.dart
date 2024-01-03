@@ -17,6 +17,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   final scrollController = ScrollController().obs;
 
+
   final breakValue = false.obs;
 
   final breakDialogConfirmButtonValue = false.obs;
@@ -108,7 +109,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   Future<void> callingGetLatLongMethod() async {
     try {
       getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
-      print('getLatLong::::::   $getLatLong');
 
       if (getLatLong != null) {
         // location.onLocationChanged.listen((event) {

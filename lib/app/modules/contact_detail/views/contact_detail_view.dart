@@ -89,9 +89,9 @@ class ContactDetailView extends GetView<ContactDetailController> {
                                     imagePath:
                                         'assets/icons/contact_phone_icon.png',
                                     title: 'Whatsapp Number',
-                                    subTitle: controller.countryCodeWhatsapp.value.isNotEmpty &&
+                                    subTitle: controller.countryCode.value.isNotEmpty &&
                                             controller.whatsappController.text.isNotEmpty
-                                        ? '${controller.countryCodeWhatsapp} ${controller.whatsappController.text}'
+                                        ? '${controller.countryCode} ${controller.whatsappController.text}'
                                         : 'No Data Available!'),
                                 SizedBox(height: 5.px),
                                 commonRowForContactDetailView(
@@ -173,8 +173,8 @@ class ContactDetailView extends GetView<ContactDetailController> {
 
   AppBar appBarView() => CW.commonAppBarView(
         title: controller.valueForEditFiled.value
-            ? 'Update Contact Detail'
-            : 'Contact Detail',
+            ? 'Update ${controller.profileMenuName.value}'
+            : controller.profileMenuName.value,
         isLeading: true,
         onBackPressed: () => controller.clickOnBackButton(),
       );
@@ -200,8 +200,11 @@ class ContactDetailView extends GetView<ContactDetailController> {
         readOnly: true,
         maxLength: 10,
         suffixIcon: Icon(Icons.lock, color: Col.gray, size: 20.px),
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        selectedCountryCode: controller.countryCode.value,
+        countryFlagPath: controller.countryImagePath.value,
+        clickOnArrowDown: () => controller.clickOnCountryCode(),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/email_icon.png'),
+        isCountrySelection: true,
         onChanged: (value) {
           controller.count.value++;
         },
@@ -214,13 +217,11 @@ class ContactDetailView extends GetView<ContactDetailController> {
         labelText: 'Whatsapp Number',
         hintText: 'Whatsapp Number',
         maxLength: 10,
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/emergency_phone_icon.png'),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter whatsapp number'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter whatsapp number'),
         isCountrySelection: true,
         selectedCountryCode: controller.countryCode.value,
         countryFlagPath: controller.countryImagePath.value,
+         prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/email_icon.png'),
         clickOnArrowDown: () => controller.clickOnCountryCode(),
         onChanged: (value) {
           controller.count.value++;
@@ -334,11 +335,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
     ),
       );
 
-  Widget commonRowForContactDetailView({
-    required String imagePath,
-    required String title,
-    required String subTitle,
-  }) {
+  Widget commonRowForContactDetailView({required String imagePath, required String title, required String subTitle}) {
     return Column(
       children: [
         Row(
@@ -373,12 +370,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
     );
   }
 
-  Widget commonTitleTextView(
-          {required String title,
-          TextAlign? textAlign,
-          int? maxLines,
-          Color? color,
-          FontWeight? fontWeight}) =>
+  Widget commonTitleTextView({required String title, TextAlign? textAlign, int? maxLines, Color? color, FontWeight? fontWeight}) =>
       Text(
         title,
         style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(fontSize: 14.px, color: color, fontWeight: fontWeight),

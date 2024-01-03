@@ -21,7 +21,8 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: appBarView(),
-        floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'?Padding(
+        floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
+            ? Padding(
           padding: EdgeInsets.only(bottom: 10.px),
           child: CW.commonOutlineButton(
               onPressed: () => controller.clickOnEditViewButton(),
@@ -35,7 +36,8 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
               backgroundColor: Col.primary,
               borderColor: Colors.transparent,
               borderRadius: 25.px),
-        ):const SizedBox(),
+        )
+            : const SizedBox(),
         body: Obx(() {
           controller.count.value;
           if (controller.apiResponseValue.value) {
@@ -47,17 +49,15 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
               alignment: Alignment.bottomCenter,
               children: [
                 ListView(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
+                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
                   children: [
                     profileView(),
                     SizedBox(height: 25.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/user_icon.png',
                         title: 'User Name',
-                        subTitle: controller.userFirstName.value.isNotEmpty &&
-                                controller.userLastName.value.isNotEmpty
-                            ? '${controller.userFirstName.value} ${controller.userLastName.value}'
+                        subTitle: controller.userFullName.value.isNotEmpty
+                            ? controller.userFullName.value
                             : 'No Data Available!'),
                     SizedBox(height: 5.px),
                     commonRowForContactDetailView(
@@ -136,7 +136,7 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
   }
 
   AppBar appBarView() => CW.commonAppBarView(
-        title: 'Personal Info',
+        title: controller.profileMenuName.value,
         isLeading: true,
         onBackPressed: () => controller.clickOnBackButton(),
       );
@@ -151,7 +151,7 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
             borderRadius: BorderRadius.circular(58.px),
           ),
           child: Center(
-            child: ClipRRect(
+            child: controller.userPic.isNotEmpty?ClipRRect(
               borderRadius: BorderRadius.circular(55.px),
               child: CW.commonNetworkImageView(
                   height: 110.px,
@@ -160,7 +160,11 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
                       ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
                       : 'assets/images/profile.png',
                   isAssetImage: controller.userPic.isNotEmpty ? false : true),
-            ),
+            ):Text(
+                controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
+                    ? controller.userShortName.value
+                    : '?',
+                style: Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(color: Col.inverseSecondary)),
           ),
         ),
       );

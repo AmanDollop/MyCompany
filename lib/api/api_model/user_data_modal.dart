@@ -30,10 +30,10 @@ class UserDetails {
 
   UserDetails(
       {this.personalInfo,
-        this.contactInfo,
-        this.jobInfo,
-        this.socialInfo,
-        this.token});
+      this.contactInfo,
+      this.jobInfo,
+      this.socialInfo,
+      this.token});
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     personalInfo = json['personal_info'] != null
@@ -42,9 +42,8 @@ class UserDetails {
     contactInfo = json['contact_info'] != null
         ? ContactInfo.fromJson(json['contact_info'])
         : null;
-    jobInfo = json['job_info'] != null
-        ? JobInfo.fromJson(json['job_info'])
-        : null;
+    jobInfo =
+        json['job_info'] != null ? JobInfo.fromJson(json['job_info']) : null;
     socialInfo = json['social_info'] != null
         ? SocialInfo.fromJson(json['social_info'])
         : null;
@@ -82,19 +81,22 @@ class PersonalInfo {
   String? hobbiesAndInterest;
   String? skills;
   String? languageKnown;
+  String? shortName;
 
-  PersonalInfo(
-      {this.userFirstName,
-        this.userMiddleName,
-        this.userLastName,
-        this.userFullName,
-        this.gender,
-        this.bloodGroup,
-        this.userProfilePic,
-        this.memberDateOfBirth,
-        this.hobbiesAndInterest,
-        this.skills,
-        this.languageKnown});
+  PersonalInfo({
+    this.userFirstName,
+    this.userMiddleName,
+    this.userLastName,
+    this.userFullName,
+    this.gender,
+    this.bloodGroup,
+    this.userProfilePic,
+    this.memberDateOfBirth,
+    this.hobbiesAndInterest,
+    this.skills,
+    this.languageKnown,
+    this.shortName,
+  });
 
   PersonalInfo.fromJson(Map<String, dynamic> json) {
     userFirstName = json['user_first_name'];
@@ -108,6 +110,7 @@ class PersonalInfo {
     hobbiesAndInterest = json['hobbies_and_interest'];
     skills = json['skills'];
     languageKnown = json['language_known'];
+    shortName = json['short_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -123,6 +126,7 @@ class PersonalInfo {
     data['hobbies_and_interest'] = hobbiesAndInterest;
     data['skills'] = skills;
     data['language_known'] = languageKnown;
+    data['short_name'] = shortName;
     return data;
   }
 }
@@ -145,19 +149,19 @@ class ContactInfo {
 
   ContactInfo(
       {this.countryCode,
-        this.userMobile,
-        this.whatsappCountryCode,
-        this.whatsappNumber,
-        this.personalEmail,
-        this.userEmail,
-        this.currentAddress,
-        this.permanentAddress,
-        this.userMobilePrivacy,
-        this.whatsappNumberPrivacy,
-        this.userEmailPrivacy,
-        this.personalEmailPrivacy,
-        this.currentAddressPrivacy,
-        this.permanentAddressPrivacy});
+      this.userMobile,
+      this.whatsappCountryCode,
+      this.whatsappNumber,
+      this.personalEmail,
+      this.userEmail,
+      this.currentAddress,
+      this.permanentAddress,
+      this.userMobilePrivacy,
+      this.whatsappNumberPrivacy,
+      this.userEmailPrivacy,
+      this.personalEmailPrivacy,
+      this.currentAddressPrivacy,
+      this.permanentAddressPrivacy});
 
   ContactInfo.fromJson(Map<String, dynamic> json) {
     countryCode = json['country_code'];
@@ -209,14 +213,14 @@ class JobInfo {
 
   JobInfo(
       {this.userDesignation,
-        this.dateOfJoining,
-        this.employeeId,
-        this.employeeType,
-        this.employeeTypeView,
-        this.branchName,
-        this.departmentName,
-        this.branchId,
-        this.departmentId});
+      this.dateOfJoining,
+      this.employeeId,
+      this.employeeType,
+      this.employeeTypeView,
+      this.branchName,
+      this.departmentName,
+      this.branchId,
+      this.departmentId});
 
   JobInfo.fromJson(Map<String, dynamic> json) {
     userDesignation = json['user_designation'];
@@ -254,10 +258,10 @@ class SocialInfo {
 
   SocialInfo(
       {this.twitter,
-        this.linkedin,
-        this.instagram,
-        this.facebook,
-        this.socialLinksPrivacy});
+      this.linkedin,
+      this.instagram,
+      this.facebook,
+      this.socialLinksPrivacy});
 
   SocialInfo.fromJson(Map<String, dynamic> json) {
     twitter = json['twitter'];

@@ -38,9 +38,11 @@ class Col {
 
   static Color  onError= const Color(0xffE94235);
 
+  static Color  orange = const Color(0xffFE6C35);
+
   /* --------------------------Success Colors Collection--------------------------*/
 
-  static Color  success = const Color(0xff177E22);
+  static Color  success = const Color(0xff02A63D);
 
 /* --------------------------Text Colors Collection--------------------------*/
 

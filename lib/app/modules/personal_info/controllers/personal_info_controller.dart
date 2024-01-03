@@ -8,8 +8,8 @@ class PersonalInfoController extends GetxController {
   final count = 0.obs;
 
   final userPic = ''.obs;
-  final userFirstName = ''.obs;
-  final userLastName = ''.obs;
+  final userFullName = ''.obs;
+  final userShortName = ''.obs;
   final email = ''.obs;
   final mobileNumber = ''.obs;
   final dob = ''.obs;
@@ -24,12 +24,14 @@ class PersonalInfoController extends GetxController {
 
   final accessType = ''.obs;
   final isChangeable = ''.obs;
+  final profileMenuName = ''.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     accessType.value = Get.arguments[0];
     isChangeable.value = Get.arguments[1];
+    profileMenuName.value = Get.arguments[2];
     await setDefaultData();
     apiResponseValue.value=false;
   }
@@ -52,12 +54,12 @@ class PersonalInfoController extends GetxController {
       userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo);
     }
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userFirstName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo);
+    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+      userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
     }
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userLastName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo);
+    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+      userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo);
     }
 
     if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {

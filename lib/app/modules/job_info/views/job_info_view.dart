@@ -62,7 +62,7 @@ class JobInfoView extends GetView<JobInfoController> {
   }
 
   AppBar appBarView() => CW.commonAppBarView(
-    title: 'Job Info',
+    title: controller.profileMenuName.value,
     isLeading: true,
     onBackPressed: () => controller.clickOnBackButton(),
 

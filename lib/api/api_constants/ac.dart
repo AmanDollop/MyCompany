@@ -101,6 +101,22 @@ class AK {
 
 
 
+  static const educationAchievementId = "education_achievement_id";
+  static const classAchievement = "class_achievement";
+  static const type = "type";
+  static const universityLocation = "university_location";
+  static const year = "year";
+  static const remark = "remark";
+  static const createdDate = "created_date";
+
+
+  static const twitter = "twitter";
+  static const facebook = "facebook";
+  static const instagram = "instagram";
+  static const linkedin = "linkedin";
+
+
+
 
 }
 

@@ -461,7 +461,7 @@ class CW {
                         child: suffixIcon,
                       )
                     : null,
-                prefixIcon: prefixIcon != null
+                   prefixIcon: prefixIcon != null
                     ? Padding(
                         padding: prefixPadding ?? EdgeInsets.zero,
                         child: isCountrySelection
@@ -562,66 +562,69 @@ class CW {
     bool readOnly = false,
     bool filled = true,
   }) {
-    return SizedBox(
-      height: maxHeight,
-      child: Card(
-        elevation: elevation ?? 0.px,
-        color: Col.inverseSecondary,
-        shape: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
-            borderSide: BorderSide.none),
-        child: TextFormField(
-          cursorHeight: cursorHeight,
-          controller: controller,
-          maxLines: maxLines,
-          validator: validator,
-          keyboardType: keyboardType,
-          readOnly: readOnly,
-          autofocus: autofocus,
-          inputFormatters: inputFormatters,
-          textCapitalization: textCapitalization,
-          style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
-          decoration: InputDecoration(
-            labelText: labelText,
-            labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
-            errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-            hintText: hintText,
-            fillColor: fillColor ?? Col.inverseSecondary,
-            filled: filled,
-            contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px,vertical: 10.px),
-            hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-            disabledBorder: OutlineInputBorder(
-                borderSide: isBorder
-                    ? BorderSide(color: Col.gray, width: 1.px)
-                    : BorderSide.none,
-                borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-            border: OutlineInputBorder(
-                borderSide: isBorder
-                    ? BorderSide(color: Col.primary, width: 1.px)
-                    : BorderSide.none,
-                borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-            enabledBorder: OutlineInputBorder(
-                borderSide: isBorder
-                    ? BorderSide(
-                    color: filled
-                        ? initialBorderColor ?? Col.gray
-                        : Col.secondary,
-                    width: initialBorderWidth ?? 1.px)
-                    : BorderSide.none,
-                borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-            errorBorder: OutlineInputBorder(
-                borderSide: isBorder
-                    ? BorderSide(color: Col.error, width: 1.px)
-                    : BorderSide.none,
-                borderRadius:
-                BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-            suffixIcon: suffixIcon != null
-                ? Padding(
-              padding: suffixPadding ?? EdgeInsets.zero,
-              child: suffixIcon,
-            )
-                : null,
-              prefixIcon: prefixIcon
+    return Theme(
+      data: ThemeData(),
+      child: SizedBox(
+        height: maxHeight,
+        child: Card(
+          elevation: elevation ?? 0.px,
+          color: Col.inverseSecondary,
+          shape: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+              borderSide: BorderSide.none),
+          child: TextFormField(
+            cursorHeight: cursorHeight,
+            controller: controller,
+            maxLines: maxLines,
+            validator: validator,
+            keyboardType: keyboardType,
+            readOnly: readOnly,
+            autofocus: autofocus,
+            inputFormatters: inputFormatters,
+            textCapitalization: textCapitalization,
+            style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
+            decoration: InputDecoration(
+              labelText: labelText,
+              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
+              errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+              hintText: hintText,
+              fillColor: fillColor ?? Col.inverseSecondary,
+              filled: filled,
+              contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px,vertical: 10.px),
+              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+              disabledBorder: OutlineInputBorder(
+                  borderSide: isBorder
+                      ? BorderSide(color: Col.gray, width: 1.px)
+                      : BorderSide.none,
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+              border: OutlineInputBorder(
+                  borderSide: isBorder
+                      ? BorderSide(color: Col.primary, width: 1.px)
+                      : BorderSide.none,
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: isBorder
+                      ? BorderSide(
+                      color: filled
+                          ? initialBorderColor ?? Col.gray
+                          : Col.secondary,
+                      width: initialBorderWidth ?? 1.px)
+                      : BorderSide.none,
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+              errorBorder: OutlineInputBorder(
+                  borderSide: isBorder
+                      ? BorderSide(color: Col.error, width: 1.px)
+                      : BorderSide.none,
+                  borderRadius:
+                  BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+              suffixIcon: suffixIcon != null
+                  ? Padding(
+                padding: suffixPadding ?? EdgeInsets.zero,
+                child: suffixIcon,
+              )
+                  : null,
+                prefixIcon: prefixIcon
+            ),
           ),
         ),
       ),

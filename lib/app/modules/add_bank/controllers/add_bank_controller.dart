@@ -5,6 +5,8 @@ import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/bank_detail_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class AddBankController extends GetxController {
 
@@ -39,12 +41,14 @@ class AddBankController extends GetxController {
 
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     pageType = Get.arguments[0];
     if(pageType == 'UpDate Bank Detail') {
       getBankDetails = Get.arguments[1];
       setDefaultBankData();
+    }else{
+      localDataBaseData();
     }
   }
 
@@ -59,6 +63,12 @@ class AddBankController extends GetxController {
   }
 
   void increment() => count.value++;
+
+  Future<void> localDataBaseData() async {
+    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
+      accountHolderNameController.text =await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
+    }
+  }
 
   void setDefaultBankData(){
     accountHolderNameController.text = getBankDetails?.accountHoldersName??'Data not found!';

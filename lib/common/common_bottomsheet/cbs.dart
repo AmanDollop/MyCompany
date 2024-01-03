@@ -632,7 +632,6 @@ class BottomSheetForOTP extends GetxController {
 
         if(userData?.contactInfo != null){
           contactInfo = userData?.contactInfo;
-          print('contactInfo:::::  ${contactInfo?.countryCode}');
           DataBaseHelper().upDateDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
         }
 

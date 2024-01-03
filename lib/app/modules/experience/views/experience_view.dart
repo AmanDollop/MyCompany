@@ -21,7 +21,7 @@ class ExperienceView extends GetView<ExperienceController> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CW.commonAppBarView(
-            title: 'Experience',
+            title: controller.profileMenuName.value,
             isLeading: true,
             onBackPressed: () => controller.clickOnBackButton()),
         body: Obx(() {
