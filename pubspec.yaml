@@ -58,6 +58,10 @@ dependencies:
   flutter_dash: ^1.0.0
   location_geocoder: ^1.0.5
   url_launcher_android: ^6.2.0
+  syncfusion_flutter_pdfviewer: ^24.1.44
+  path_provider: ^2.0.12
+  flutter_downloader: ^1.11.6
+  dio: ^5.4.0
 
 
 dev_dependencies:

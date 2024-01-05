@@ -56,7 +56,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
                                             controller
                                                 .userFullName.value.isNotEmpty
                                         ? controller.userFullName.value
-                                        : 'User Name',
+                                        : 'Employee Name',
                                     color: Col.inverseSecondary,
                                     fontSize: 16.px),
                                 SizedBox(height: 2.px),

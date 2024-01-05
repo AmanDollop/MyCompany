@@ -26,7 +26,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         appBar: selectedBottomNavigationIndex.value == 0
             ? CW.commonAppBarView(
             homeAppBarValue: true,
-            title: 'Hello, ${controller.userFullName.value.isNotEmpty?controller.userFullName.value:'User Name'}',
+            title: 'Hello, ${controller.userFullName.value.isNotEmpty?controller.userFullName.value:'Employee Name'}',
             leadingWidth: 60.px,
             isLeading: true,
             leading: Builder(

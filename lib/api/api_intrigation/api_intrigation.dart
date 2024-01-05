@@ -9,8 +9,11 @@ import 'package:task/api/api_model/branch_modal.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/country_code_modal.dart';
 import 'package:task/api/api_model/department_modal.dart';
+import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
+import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
+import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
@@ -469,6 +472,102 @@ class CAI {
           wantShowFailResponse: true)) {
         bloodGroupModal = BloodGroupModal.fromJson(jsonDecode(response.body));
         return bloodGroupModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<DocumentModal?> getDocumentApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    DocumentModal? documentModal;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        documentModal = DocumentModal.fromJson(jsonDecode(response.body));
+        return documentModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<ExperienceModal?> getExperienceApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    ExperienceModal? experienceModal;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        experienceModal = ExperienceModal.fromJson(jsonDecode(response.body));
+        return experienceModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<PromotionModal?> getPromotionApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    PromotionModal? promotionModal;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        promotionModal = PromotionModal.fromJson(jsonDecode(response.body));
+        return promotionModal;
       } else {
         return null;
       }

@@ -155,7 +155,7 @@ class MyProfileView extends GetView<MyProfileController> {
       controller.userFullName.value != 'null' &&
               controller.userFullName.isNotEmpty
           ? controller.userFullName.value
-          : 'User Name',
+          : 'Employee Name',
       style: Theme.of(Get.context!)
           .textTheme
           .bodyLarge

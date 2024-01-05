@@ -9,7 +9,7 @@ import '../../../../api/api_constants/ac.dart';
 
 class AddSocialInfoController extends GetxController {
   final count = 0.obs;
-
+  final key = GlobalKey<FormState>();
   final twitterController = TextEditingController();
   final facebookController = TextEditingController();
   final instagramController = TextEditingController();
@@ -71,8 +71,10 @@ class AddSocialInfoController extends GetxController {
   }
 
   Future<void> clickOnSaveButton() async {
-    saveButtonValue.value = true;
-    await callingAddSocialInfoApi();
+    if(key.currentState!.validate()) {
+      saveButtonValue.value = true;
+      await callingAddSocialInfoApi();
+    }
   }
 
   Future<void> callingAddSocialInfoApi() async {
@@ -106,4 +108,5 @@ class AddSocialInfoController extends GetxController {
       Get.back();
     }
   }
+
 }

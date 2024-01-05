@@ -217,7 +217,7 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget userNameTextView() => Text(
         controller.userFullName.value.isNotEmpty
             ? controller.userFullName.value
-            : 'User Name',
+            : 'Employee Name',
         style: Theme.of(Get.context!).textTheme.displaySmall,
         maxLines: 2,
         textAlign: TextAlign.center,

@@ -292,15 +292,16 @@ class CW {
         borderRadius: BorderRadius.circular(20.px),
         child: LinearProgressIndicator(
           color: Col.primary,
-          backgroundColor: Col.primaryColor,
+          backgroundColor: Col.gray,
           value: value,
           minHeight: height ?? 10.px,
         ),
       );
 
-  static commonProgressBarView({Color? color}) => CircularProgressIndicator(
-        backgroundColor: color ?? Col.darkGray,
-        color: Col.inverseSecondary,
+  static commonProgressBarView({Color? color,Color? backgroundColor,double? value}) => CircularProgressIndicator(
+        backgroundColor: color ?? Col.gray,
+        color:backgroundColor?? Col.inverseSecondary,
+        value: value,
         strokeWidth: 3,
       );
 
@@ -561,6 +562,7 @@ class CW {
     bool autofocus = false,
     bool readOnly = false,
     bool filled = true,
+    TextInputAction? textInputAction,
   }) {
     return Theme(
       data: ThemeData(),
@@ -573,6 +575,7 @@ class CW {
               borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
               borderSide: BorderSide.none),
           child: TextFormField(
+            textInputAction: textInputAction,
             cursorHeight: cursorHeight,
             controller: controller,
             maxLines: maxLines,

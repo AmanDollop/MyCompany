@@ -25,18 +25,21 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
           return Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              ListView(
-                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                children: [
-                  twitterTextField(),
-                  SizedBox(height: 20.px),
-                  facebookTextField(),
-                  SizedBox(height: 20.px),
-                  instagramTextField(),
-                  SizedBox(height: 20.px),
-                  linkedinTextField(),
-                  SizedBox(height: 20.px),
-                ],
+              Form(
+                key: controller.key,
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                  children: [
+                    twitterTextField(),
+                    SizedBox(height: 20.px),
+                    facebookTextField(),
+                    SizedBox(height: 20.px),
+                    instagramTextField(),
+                    SizedBox(height: 20.px),
+                    linkedinTextField(),
+                    SizedBox(height: 20.px),
+                  ],
+                ),
               ),
               Container(
                 height: 80.px,
@@ -78,6 +81,15 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     onChanged: (value) {
       controller.count.value++;
     },
+    validator: (value) {
+      if(value == null || value.isEmpty){
+        return null;
+      }
+      if (!isValidTwitterUrl(value: value)) {
+        return 'Invalid twitter url';
+      }
+      return null;
+    },
   );
 
   Widget facebookTextField() => CW.commonTextField(
@@ -88,6 +100,15 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     prefixIcon: commonIconImageForTextField(imagePath: controller.facebookController.text.isNotEmpty?'assets/images/facebook_dark_image.png':'assets/images/facebook_light_image.png'),
     onChanged: (value) {
       controller.count.value++;
+    },
+    validator: (value) {
+      if(value == null || value.isEmpty){
+        return null;
+      }
+      if (!isValidFacebookUrl(value: value)) {
+        return 'Invalid facebook url';
+      }
+      return null;
     },
   );
 
@@ -100,6 +121,15 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     onChanged: (value) {
       controller.count.value++;
     },
+    validator: (value) {
+      if(value == null || value.isEmpty){
+        return null;
+      }
+      if (!isValidInstagramUrl(value: value)) {
+        return 'Invalid instagram url';
+      }
+      return null;
+    },
   );
 
   Widget linkedinTextField() => CW.commonTextField(
@@ -111,6 +141,35 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     onChanged: (value) {
       controller.count.value++;
     },
+    validator: (value) {
+      if(value == null || value.isEmpty){
+        return null;
+      }
+      if (!isValidLinkedInUrl(value: value)) {
+        return 'Invalid linkedin url';
+      }
+      return null;
+    },
   );
+
+  bool isValidTwitterUrl({String? value}) {
+    RegExp twitterUrlRegex = RegExp(r'^https?://(?:www\.)?twitter\.com/');
+    return twitterUrlRegex.hasMatch(value ?? '');
+  }
+
+  bool isValidFacebookUrl({String? value}) {
+    RegExp facebookUrlRegex = RegExp(r'^https?://(?:www\.)?facebook\.com/');
+    return facebookUrlRegex.hasMatch(value ?? '');
+  }
+
+  bool isValidInstagramUrl({String? value}) {
+    RegExp instagramUrlRegex = RegExp(r'^https?://(?:www\.)?instagram\.com/');
+    return instagramUrlRegex.hasMatch(value??'');
+  }
+
+  bool isValidLinkedInUrl({String? value}) {
+    RegExp linkedinUrlRegex = RegExp(r'^https?://(?:www\.)?linkedin\.com/in/');
+    return linkedinUrlRegex.hasMatch(value ?? '');
+  }
 
 }

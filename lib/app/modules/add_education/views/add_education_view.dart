@@ -34,9 +34,7 @@ class AddEducationView extends GetView<AddEducationController> {
     );
   }
 
-  Widget commonIconImage(
-          {required String imagePath, double? height, double? width}) =>
-      SizedBox(
+  Widget commonIconImage({required String imagePath, double? height, double? width}) => SizedBox(
         width: height ?? 24.px,
         height: width ?? 24.px,
         child: Center(
@@ -165,10 +163,11 @@ class AddEducationView extends GetView<AddEducationController> {
 
   Widget remarkTextField() => CW.commonTextFieldForMultiline(
         fillColor: Colors.transparent,
+        textInputAction: TextInputAction.newline,
         controller: controller.remarkController,
         labelText: 'Remark',
         hintText: 'Remark',
-        keyboardType: TextInputType.name,
+        keyboardType: TextInputType.multiline,
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         onChanged: (value) {
           controller.count.value++;

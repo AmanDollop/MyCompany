@@ -55,7 +55,7 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
                     SizedBox(height: 25.px),
                     commonRowForContactDetailView(
                         imagePath: 'assets/icons/user_icon.png',
-                        title: 'User Name',
+                        title: 'Employee Name',
                         subTitle: controller.userFullName.value.isNotEmpty
                             ? controller.userFullName.value
                             : 'No Data Available!'),
