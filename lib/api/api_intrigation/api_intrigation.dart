@@ -15,6 +15,7 @@ import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
+import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -295,7 +296,6 @@ class CAI {
     }
   }
 
-
   static Future<UserDataModal?> getUserDataApi({
     required Map<String, dynamic> bodyParams,
   }) async {
@@ -327,7 +327,6 @@ class CAI {
       return null;
     }
   }
-
 
   static Future<http.Response?> updateProfileApi({
     required Map<String, dynamic> bodyParams,
@@ -568,6 +567,38 @@ class CAI {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         promotionModal = PromotionModal.fromJson(jsonDecode(response.body));
         return promotionModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<ShiftDetailsModal?> getShiftDetailApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    ShiftDetailsModal? shiftDetailsModal;
+
+    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    Map<String, String> authorization = {};
+    authorization = {
+      // AK.accept: AK.applicationJson,
+      AK.authorization: '${AK.bearer} $token',
+    };
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointShiftControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        shiftDetailsModal = ShiftDetailsModal.fromJson(jsonDecode(response.body));
+        return shiftDetailsModal;
       } else {
         return null;
       }

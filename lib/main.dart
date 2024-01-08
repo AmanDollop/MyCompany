@@ -28,10 +28,10 @@ Future<void> main() async {
         enabled: false,
         builder: (context) => ResponsiveSizer(
           builder: (
-            buildContext,
-            orientation,
-            screenType,
-          ) => GetMaterialApp(
+              buildContext,
+              orientation,
+              screenType,
+              ) => GetMaterialApp(
             title: "Application",
             initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,

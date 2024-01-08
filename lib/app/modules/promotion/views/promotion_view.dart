@@ -15,18 +15,18 @@ class PromotionView extends GetView<PromotionController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CW.commonAppBarView(
-          title: 'Promotion',
+          title: controller.profileMenuName.value,
           isLeading: true,
           onBackPressed: () => controller.clickOnBackButton()),
       body: Obx(() {
         controller.count.value;
         return ModalProgress(
           inAsyncCall: controller.apiResValue.value,
-          child: controller.experienceModal.value != null
-              ? controller.getExperienceDetails != null &&
-                      controller.getExperienceDetails!.isNotEmpty
+          child: controller.promotionModal.value != null
+              ? controller.getPromotionDetails != null &&
+                      controller.getPromotionDetails!.isNotEmpty
                   ? ListView.builder(
-                      itemCount: controller.getExperienceDetails?.length,
+                      itemCount: controller.getPromotionDetails?.length,
                       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                       itemBuilder: (context, index) {
                         print(index);
@@ -47,17 +47,19 @@ class PromotionView extends GetView<PromotionController> {
             flex: 1,
             child: Column(
               children: [
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(seconds: 4),
                   width: 12.px,
                   height: 12.px,
+
                   // margin: EdgeInsets.only(top: 4.px),
-                  decoration:
-                      BoxDecoration(color: Col.primary, shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: Col.primary, shape: BoxShape.circle),
+                  child: Center(child: ColoredBox(color: Col.primary)),
                 ),
                 // if(index != 9)
                 AnimatedContainer(
-                  duration: const Duration(seconds: 2),
-                  height: 80.px,
+                  duration: const Duration(seconds: 4),
+                  height: 60.px,
                   width: 2.5.px,
                   padding: const EdgeInsets.only(bottom: 0),
                   child: ColoredBox(color: Col.primary),
@@ -76,27 +78,23 @@ class PromotionView extends GetView<PromotionController> {
                 Row(
                   children: [
                     Flexible(
-                      child: companyNameTextView(text:controller.getExperienceDetails?[index].companyName != null
-                          && controller.getExperienceDetails![index].companyName!.isNotEmpty
-                          ? '${controller.getExperienceDetails?[index].companyName}'
-                          : 'Company name not found!'),
+                      child: companyNameTextView(text:controller.getPromotionDetails?[index].designation != null
+                          && controller.getPromotionDetails![index].designation!.isNotEmpty
+                          ? '${controller.getPromotionDetails?[index].designation}'
+                          : 'Designation not found!'),
                     ),
                     SizedBox(width: 6.px),
                     verifiedIconView()
                   ],
                 ),
-                designationTextView(text: controller.getExperienceDetails?[index].designation != null
-                    && controller.getExperienceDetails![index].designation!.isNotEmpty
-                    ? '${controller.getExperienceDetails?[index].designation}'
-                    : 'Designation not found!'),
-                locationTextView(text: controller.getExperienceDetails?[index].joiningDate != null
-                    && controller.getExperienceDetails![index].joiningDate!.isNotEmpty
-                    ? '${controller.getExperienceDetails?[index].joiningDate}'
-                    : 'Join date not found!'),
-                locationTextView(text:controller.getExperienceDetails?[index].companyLocation != null
-                    && controller.getExperienceDetails![index].companyLocation!.isNotEmpty
-                    ? '${controller.getExperienceDetails?[index].companyLocation}'
-                    : 'Company location not found!'),
+                locationTextView(text: controller.getPromotionDetails?[index].promotionDate != null
+                    && controller.getPromotionDetails![index].promotionDate!.isNotEmpty
+                    ? '${controller.getPromotionDetails?[index].promotionDate}'
+                    : 'Promotion date not found!'),
+                locationTextView(text:controller.getPromotionDetails?[index].remark != null
+                    && controller.getPromotionDetails![index].remark!.isNotEmpty
+                    ? '${controller.getPromotionDetails?[index].remark}'
+                    : 'Remark not found!'),
                 SizedBox(height: 16.px),
               ],
             ),

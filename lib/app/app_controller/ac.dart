@@ -35,7 +35,7 @@ class AC extends GetxController {
       } else {
         isConnect.value = false;
         isDialogShow = 1;
-        CD.commonAndroidNoInternetDialog();
+       // CD.commonAndroidNoInternetDialog();
         CM.noInternet();
       }
       return updateConnectionState(event);

@@ -29,15 +29,24 @@ class GetDocumentDetails {
   String? documentId;
   String? documentName;
   String? documentFile;
+  String? createdByName;
+  String? createdDate;
   String? remark;
 
   GetDocumentDetails(
-      {this.documentId, this.documentName, this.documentFile, this.remark});
+      {this.documentId,
+        this.documentName,
+        this.documentFile,
+        this.createdByName,
+        this.createdDate,
+        this.remark});
 
   GetDocumentDetails.fromJson(Map<String, dynamic> json) {
     documentId = json['document_id'];
     documentName = json['document_name'];
     documentFile = json['document_file'];
+    createdByName = json['created_by_name'];
+    createdDate = json['created_date'];
     remark = json['remark'];
   }
 
@@ -46,6 +55,8 @@ class GetDocumentDetails {
     data['document_id'] = documentId;
     data['document_name'] = documentName;
     data['document_file'] = documentFile;
+    data['created_by_name'] = createdByName;
+    data['created_date'] = createdDate;
     data['remark'] = remark;
     return data;
   }

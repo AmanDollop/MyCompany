@@ -31,6 +31,8 @@ abstract class Routes {
   static const ADD_BANK = _Paths.ADD_BANK;
   static const ADD_SOCIAL_INFO = _Paths.ADD_SOCIAL_INFO;
   static const ADD_EDUCATION = _Paths.ADD_EDUCATION;
+  static const ADD_EXPERIENCE = _Paths.ADD_EXPERIENCE;
+  static const SHIFT_DETAIL = _Paths.SHIFT_DETAIL;
 }
 
 abstract class _Paths {
@@ -63,4 +65,6 @@ abstract class _Paths {
   static const ADD_BANK = '/add-bank';
   static const ADD_SOCIAL_INFO = '/add-social-info';
   static const ADD_EDUCATION = '/add-education';
+  static const ADD_EXPERIENCE = '/add-experience';
+  static const SHIFT_DETAIL = '/shift-detail';
 }

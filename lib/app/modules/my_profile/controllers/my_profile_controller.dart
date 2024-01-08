@@ -146,9 +146,13 @@ class MyProfileController extends GetxController {
     }else if (getEmployeeDetails?[listIndex].menuClick == 'experience') {
       Get.toNamed(Routes.EXPERIENCE,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
     }else if (getEmployeeDetails?[listIndex].menuClick == 'promotion') {
-      Get.toNamed(Routes.PROMOTION);
+      Get.toNamed(Routes.PROMOTION,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
+    } else if (getEmployeeDetails?[listIndex].menuClick == 'document') {
+      Get.toNamed(Routes.DOCUMENT,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
+    } else if (getEmployeeDetails?[listIndex].menuClick == 'shift_detail') {
+      Get.toNamed(Routes.SHIFT_DETAIL,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
     } else {
-      Get.toNamed(Routes.DOCUMENT);
+      CM.showSnackBar(message: 'Comming soon.');
     }
   }
 

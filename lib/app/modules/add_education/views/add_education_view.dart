@@ -22,7 +22,7 @@ class AddEducationView extends GetView<AddEducationController> {
         controller.count.value;
         return Scaffold(
           appBar: CW.commonAppBarView(
-              title: 'Add Achievements / Education',
+              title: controller.profileMenuName.value,
               isLeading: true,
               onBackPressed: () => controller.clickOnBackButton()),
           body: Obx(() {
@@ -73,6 +73,7 @@ class AddEducationView extends GetView<AddEducationController> {
                               onChanged: (value) {
                                 CM.unFocusKeyBoard();
                                 controller.achievementAndEducationType.value = value.toString();
+                                print('achievementAndEducationType::: ${value}');
                                 controller.count.value++;
                               },
                               index: index.toString(),

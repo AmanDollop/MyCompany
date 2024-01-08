@@ -2,13 +2,14 @@ import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/education_modal.dart';
+import 'package:task/app/routes/app_pages.dart';
 
 class EducationController extends GetxController {
   final count = 0.obs;
 
   final apiResponseValue = true.obs;
 
-  final tabBarValue = 'Achievement'.obs;
+  final tabBarValue = 'Education'.obs;
 
   final accessType = ''.obs;
   final isChangeable = ''.obs;
@@ -21,6 +22,7 @@ class EducationController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    apiResponseValue.value = true;
     try{
       accessType.value = Get.arguments[0];
       isChangeable.value = Get.arguments[1];
@@ -57,6 +59,8 @@ class EducationController extends GetxController {
   }
 
   Future<void> callingGetEducationOrAchievementsApi() async {
+    getAchievementsList.clear();
+    getEducationList.clear();
     educationOrAchievementsModal.value = await CAI.getEducationOrAchievementsApi(bodyParams: {AK.action: 'getEducationDetails'});
     if(educationOrAchievementsModal.value != null){
 
@@ -71,4 +75,20 @@ class EducationController extends GetxController {
 
     }
   }
+
+  Future<void> clickOnAddViewButton() async {
+    await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['Add ${tabBarValue.value}',tabBarValue.value]);
+   onInit();
+  }
+
+  Future<void> clickOnEducationData({required int index}) async {
+    await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['UpDate ${tabBarValue.value}',getEducationList[index]]);
+    onInit();
+  }
+
+  Future<void> clickOnAchievementsData({required int index}) async {
+    await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['UpDate ${tabBarValue.value}',getAchievementsList[index]]);
+    onInit();
+  }
+
 }

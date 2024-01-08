@@ -4,6 +4,8 @@ import '../modules/add_bank/bindings/add_bank_binding.dart';
 import '../modules/add_bank/views/add_bank_view.dart';
 import '../modules/add_education/bindings/add_education_binding.dart';
 import '../modules/add_education/views/add_education_view.dart';
+import '../modules/add_experience/bindings/add_experience_binding.dart';
+import '../modules/add_experience/views/add_experience_view.dart';
 import '../modules/add_social_info/bindings/add_social_info_binding.dart';
 import '../modules/add_social_info/views/add_social_info_view.dart';
 import '../modules/bank_detail/bindings/bank_detail_binding.dart';
@@ -48,6 +50,8 @@ import '../modules/select_department/bindings/select_department_binding.dart';
 import '../modules/select_department/views/select_department_view.dart';
 import '../modules/select_shift_time/bindings/select_shift_time_binding.dart';
 import '../modules/select_shift_time/views/select_shift_time_view.dart';
+import '../modules/shift_detail/bindings/shift_detail_binding.dart';
+import '../modules/shift_detail/views/shift_detail_view.dart';
 import '../modules/sign_up/bindings/sign_up_binding.dart';
 import '../modules/sign_up/views/sign_up_view.dart';
 import '../modules/social_info/bindings/social_info_binding.dart';
@@ -204,6 +208,16 @@ class AppPages {
       name: _Paths.ADD_EDUCATION,
       page: () => const AddEducationView(),
       binding: AddEducationBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_EXPERIENCE,
+      page: () => const AddExperienceView(),
+      binding: AddExperienceBinding(),
+    ),
+    GetPage(
+      name: _Paths.SHIFT_DETAIL,
+      page: () => const ShiftDetailView(),
+      binding: ShiftDetailBinding(),
     ),
   ];
 }

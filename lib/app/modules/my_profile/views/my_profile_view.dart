@@ -117,39 +117,41 @@ class MyProfileView extends GetView<MyProfileController> {
     );
   }
 
-  Widget profileImageView() => Container(
-        width: 66.px,
-        height: 66.px,
-        margin: EdgeInsets.only(right: 12.px),
-        decoration: BoxDecoration(color: Col.primary, shape: BoxShape.circle),
-        child: Center(
-          child: controller.userPic.value != 'null' &&
-                  controller.userPic.isNotEmpty
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(31.px),
-                  child: CW.commonNetworkImageView(
-                      path: controller.userPic.value.isNotEmpty
-                          ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                          : 'assets/images/profile.png',
-                      isAssetImage:
-                          controller.userPic.value.isNotEmpty ? false : true,
-                      errorImage: 'assets/images/profile.png',
-                      width: 62.px,
-                      height: 62.px),
-                )
-              : Text(
-                  controller.userShortName.value != 'null' &&
-                          controller.userShortName.value.isNotEmpty
-                      ? controller.userShortName.value
-                      : '?',
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .displaySmall
-                      ?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: Col.inverseSecondary)),
-        ),
-      );
+  Widget profileImageView() {
+    return Container(
+      width: 66.px,
+      height: 66.px,
+      margin: EdgeInsets.only(right: 12.px),
+      decoration: BoxDecoration(color: Col.primary, shape: BoxShape.circle),
+      child: Center(
+        child: controller.userPic.value != 'null' &&
+            controller.userPic.isNotEmpty
+            ? ClipRRect(
+          borderRadius: BorderRadius.circular(31.px),
+          child: CW.commonNetworkImageView(
+              path: controller.userPic.value.isNotEmpty
+                  ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
+                  : 'assets/images/profile.png',
+              isAssetImage:
+              controller.userPic.value.isNotEmpty ? false : true,
+              errorImage: 'assets/images/profile.png',
+              width: 62.px,
+              height: 62.px),
+        )
+            : Text(
+            controller.userShortName.value != 'null' &&
+                controller.userShortName.value.isNotEmpty
+                ? controller.userShortName.value
+                : '?',
+            style: Theme.of(Get.context!)
+                .textTheme
+                .displaySmall
+                ?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Col.inverseSecondary)),
+      ),
+    );
+  }
 
   Widget nameTextView() => Text(
       controller.userFullName.value != 'null' &&
@@ -338,8 +340,7 @@ class MyProfileView extends GetView<MyProfileController> {
 
   Widget listView() {
     if (controller.getEmployeeDetailsModal.value != null) {
-      if (controller.getEmployeeDetails != null &&
-          controller.getEmployeeDetails!.isNotEmpty) {
+      if (controller.getEmployeeDetails != null && controller.getEmployeeDetails!.isNotEmpty) {
         return commonCardForList(
           titleText: '',
           listWidget: GridView.builder(
@@ -356,8 +357,7 @@ class MyProfileView extends GetView<MyProfileController> {
               return InkWell(
                 onTap: () =>
                     controller.getEmployeeDetails?[index].menuClick != null &&
-                            controller.getEmployeeDetails![index].menuClick!
-                                .isNotEmpty
+                            controller.getEmployeeDetails![index].menuClick!.isNotEmpty
                         ? controller.clickOnList(listIndex: index)
                         : CM.error(),
                 borderRadius: BorderRadius.circular(8.px),
@@ -365,25 +365,16 @@ class MyProfileView extends GetView<MyProfileController> {
                     // gradient: LinearGradient(colors: controller.cList[index]),
                     // imageHeight: 24.px,
                     // imageWidth: 24.px,
-                    imagePath: controller.getEmployeeDetails?[index]
-                                    .profileMenuPhoto !=
-                                null &&
-                            controller.getEmployeeDetails![index]
-                                .profileMenuPhoto!.isNotEmpty
+                    imagePath: controller.getEmployeeDetails?[index].profileMenuPhoto != null &&
+                            controller.getEmployeeDetails![index].profileMenuPhoto!.isNotEmpty
                         ? '${AU.baseUrlAllApisImage}${controller.getEmployeeDetails![index].profileMenuPhoto}'
                         : 'assets/images/shoping_dark.png',
-                    isAssetImage: controller.getEmployeeDetails?[index]
-                                    .profileMenuPhoto !=
-                                null &&
-                            controller.getEmployeeDetails![index]
-                                .profileMenuPhoto!.isNotEmpty
+                    isAssetImage: controller.getEmployeeDetails?[index].profileMenuPhoto != null &&
+                            controller.getEmployeeDetails![index].profileMenuPhoto!.isNotEmpty
                         ? false
                         : true,
-                    text1: controller.getEmployeeDetails?[index]
-                                    .profileMenuName !=
-                                null &&
-                            controller.getEmployeeDetails![index]
-                                .profileMenuName!.isNotEmpty
+                    text1: controller.getEmployeeDetails?[index].profileMenuName != null &&
+                            controller.getEmployeeDetails![index].profileMenuName!.isNotEmpty
                         ? '${controller.getEmployeeDetails![index].profileMenuName}'
                         : 'Menu Name Not Found!',
                     cardHeight: 100.px),
@@ -397,9 +388,7 @@ class MyProfileView extends GetView<MyProfileController> {
             : CW.commonNoDataFoundText();
       }
     } else {
-      return CW.commonNoDataFoundText(
-          text:
-              controller.apiResponseValue.value ? '' : 'Something went wrong!');
+      return CW.commonNoDataFoundText(text: controller.apiResponseValue.value ? '' : 'Something went wrong!');
     }
   }
 }

@@ -31,6 +31,7 @@ class CW {
       double? borderRadius,
       Color? splashColor,
       Color? buttonColor,
+      Color? buttonTextColor,
       double? elevation,
       bool isContentSizeButton = true,
       required VoidCallback onPressed,
@@ -61,7 +62,7 @@ class CW {
             )
           : child ?? Text(
                 buttonText ?? '',
-                style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px),
+                style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px,color: buttonTextColor),
               ),
     );
   }
@@ -588,13 +589,13 @@ class CW {
             style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
             decoration: InputDecoration(
               labelText: labelText,
-              labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.labelMedium,
+                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
               hintText: hintText,
               fillColor: fillColor ?? Col.inverseSecondary,
               filled: filled,
               contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px,vertical: 10.px),
-              hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
               disabledBorder: OutlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.gray, width: 1.px)

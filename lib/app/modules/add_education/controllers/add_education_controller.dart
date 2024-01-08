@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,6 @@ import '../../../../api/api_constants/ac.dart';
 class AddEducationController extends GetxController {
   final count = 0.obs;
   final key = GlobalKey<FormState>();
-  final tabBarValue = 'Achievement'.obs;
 
   final labelTypeText = ['Education', 'Achievement'];
   final achievementAndEducationType = ''.obs;
@@ -29,10 +29,26 @@ class AddEducationController extends GetxController {
 
   final sendAddRequestButtonValue = false.obs;
   Map<String, dynamic> bodyParams = {};
+  GetEducationDetails? getEducationDetails;
+
+  final profileMenuName = ''.obs;
+  final tabBarValueData = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
+    profileMenuName.value = Get.arguments[0];
+    if(profileMenuName.value == 'Add Achievement' || profileMenuName.value == 'Add Education'){
+      tabBarValueData.value = Get.arguments[1];
+      if(tabBarValueData.value == 'Achievement'){
+        achievementAndEducationType.value ='1';
+      }else{
+        achievementAndEducationType.value = "0";
+      }
+    }else{
+      getEducationDetails = Get.arguments[1];
+      setDefaultDat();
+    }
   }
 
   @override
@@ -47,17 +63,19 @@ class AddEducationController extends GetxController {
 
   void increment() => count.value++;
 
+  void setDefaultDat(){
+    achievementNameController.text = getEducationDetails?.classAchievement ??'';
+    universityLocationController.text = getEducationDetails?.universityLocation ??'';
+    yearController.text = getEducationDetails?.year ??'';
+    remarkController.text = getEducationDetails?.remark ??'';
+    educationAchievementId.value = getEducationDetails?.educationAchievementId ??'';
+    achievementAndEducationType.value = getEducationDetails?.type ??'';
+  }
+
   void clickOnBackButton() {
     Get.back();
   }
 
-  void clickOnEducationTab() {
-    tabBarValue.value = 'Education';
-  }
-
-  void clickOnAchievementsTab() {
-    tabBarValue.value = 'Achievement';
-  }
 
   Future<void> clickOnYearTextField() async {
 

@@ -63,7 +63,6 @@ dependencies:
   flutter_downloader: ^1.11.6
   dio: ^5.4.0
 
-
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:

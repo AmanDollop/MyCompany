@@ -15,7 +15,7 @@ class DocumentView extends GetView<DocumentController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CW.commonAppBarView(
-          title: 'Document',
+          title: controller.profileMenuName.value,
           isLeading: true,
           onBackPressed: () => controller.clickOnBackButton()),
       body: Obx(() {

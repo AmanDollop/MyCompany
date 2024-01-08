@@ -18,6 +18,10 @@ import 'package:url_launcher_platform_interface/url_launcher_platform_interface.
 
 class DocumentController extends GetxController {
   final count = 0.obs;
+  final accessType = ''.obs;
+  final isChangeable = ''.obs;
+  final profileMenuName = ''.obs;
+
   final apiResValue = true.obs;
 
   final documentModal = Rxn<DocumentModal>();
@@ -34,6 +38,9 @@ class DocumentController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    accessType.value = Get.arguments[0];
+    isChangeable.value = Get.arguments[1];
+    profileMenuName.value = Get.arguments[2];
     await callingGetDocumentApi();
     apiResValue.value = false;
   }
@@ -55,7 +62,8 @@ class DocumentController extends GetxController {
   }
 
   Future<void> clickOnDocument({required int index, required BuildContext context}) async {
-    if (getDocumentDetails?[index].documentFile != null && getDocumentDetails![index].documentFile!.isNotEmpty) {
+    if (getDocumentDetails?[index].documentFile != null &&
+        getDocumentDetails![index].documentFile!.isNotEmpty) {
       if (getDocumentDetails![index].documentFile!.contains('.pdf')) {
         await showGeneralDialog(
           context: context,
@@ -73,7 +81,8 @@ class DocumentController extends GetxController {
             return InteractiveViewer(
               child: SafeArea(
                 child: commonContainerForImage(
-                  networkImage: '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+                  networkImage:
+                      '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
                 ),
               ),
             );
@@ -98,6 +107,12 @@ class DocumentController extends GetxController {
         SizedBox(height: 10.px),
         commonRowForBottomSheet(
           imagePath: 'assets/icons/share_icon.png',
+          text: 'Detail',
+          onTap: () => clickOnDetailButton(index: index),
+        ),
+        SizedBox(height: 10.px),
+        commonRowForBottomSheet(
+          imagePath: 'assets/icons/share_icon.png',
           text: 'Share',
           onTap: () => clickOnShareButton(index: index),
         ),
@@ -112,25 +127,64 @@ class DocumentController extends GetxController {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if(pdfDownloadValue.value)
-                SizedBox(height: 6.px),
-              if(pdfDownloadValue.value)
+              if (pdfDownloadValue.value) SizedBox(height: 6.px),
+              if (pdfDownloadValue.value)
                 Obx(() {
-                  return CW.commonLinearProgressBar(value: pdfProgressBarValue.value);
+                  return CW.commonLinearProgressBar(
+                      value: pdfProgressBarValue.value);
                 }),
-              if(pdfDownloadValue.value)
-                SizedBox(height: 4.px),
-              if(pdfDownloadValue.value)
-              Text(pdfProgressBarPerValue.value, style: Theme.of(Get.context!).textTheme.titleLarge,textAlign: TextAlign.end),
+              if (pdfDownloadValue.value) SizedBox(height: 4.px),
+              if (pdfDownloadValue.value)
+                Text(pdfProgressBarPerValue.value,
+                    style: Theme.of(Get.context!).textTheme.titleLarge,
+                    textAlign: TextAlign.end),
             ],
           );
         }),
         SizedBox(height: 16.px),
       ],
     ).whenComplete(() {
-      pdfDownloadValue.value=false;
+      pdfDownloadValue.value = false;
     });
   }
+
+  Future<void> clickOnDetailButton({required int index}) async {
+    Get.back();
+    await CBS.commonBottomSheet(children: [
+      Text('Document Detail', style: Theme.of(Get.context!).textTheme.bodyLarge),
+      SizedBox(height: 24.px),
+      commonColumn(
+          text: 'Name',
+          text1: getDocumentDetails?[index].documentName != null &&
+                  getDocumentDetails![index].documentName!.isNotEmpty
+              ? '${getDocumentDetails?[index].documentName}'
+              : 'Data not found!'),
+      SizedBox(height: 14.px),
+      commonColumn(
+          text: 'Date',
+          text1: getDocumentDetails?[index].createdDate != null &&
+                  getDocumentDetails![index].createdDate!.isNotEmpty
+              ? '${getDocumentDetails?[index].createdDate}'
+              : 'Data not found!'),
+      SizedBox(height: 14.px),
+      commonColumn(
+          text: 'Upload By',
+          text1: getDocumentDetails?[index].createdByName != null &&
+                  getDocumentDetails![index].createdByName!.isNotEmpty
+              ? '${getDocumentDetails?[index].createdByName}'
+              : 'Data not found!'),
+      SizedBox(height: 24.px),
+    ]);
+  }
+
+  Widget commonColumn({required String text, required String text1}) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$text:', style: Theme.of(Get.context!).textTheme.labelMedium),
+          SizedBox(height: 4.px),
+          Text(text1, style: Theme.of(Get.context!).textTheme.titleLarge)
+        ],
+      );
 
   void clickOnShareButton({required int index}) {}
 
@@ -139,7 +193,9 @@ class DocumentController extends GetxController {
       pdfDownloadValue.value = true;
       Random random = Random();
       int randomNumber = random.nextInt(1000);
-      await download('${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}', "${getDocumentDetails?[index].documentName}$randomNumber");
+      await download(
+          '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+          "${getDocumentDetails?[index].documentName}$randomNumber");
       pdfDownloadValue.value = false;
       CM.showSnackBar(message: 'PDF downloaded successfully.');
       Get.back();
@@ -150,7 +206,12 @@ class DocumentController extends GetxController {
     }
   }
 
-  Widget commonRowForBottomSheet({required String imagePath, required String text, required GestureTapCallback onTap,}) => SizedBox(
+  Widget commonRowForBottomSheet({
+    required String imagePath,
+    required String text,
+    required GestureTapCallback onTap,
+  }) =>
+      SizedBox(
         height: 35.px,
         child: InkWell(
           onTap: onTap,
@@ -236,7 +297,7 @@ class DocumentController extends GetxController {
       var file = File(savePath);
       var raf = file.openSync(mode: FileMode.write);
       raf.writeFromSync(response.data);
-       pdfDownloadLocalPath.value = raf.path;
+      pdfDownloadLocalPath.value = raf.path;
       await raf.close();
     } catch (e) {
       debugPrint(e.toString());
@@ -246,9 +307,12 @@ class DocumentController extends GetxController {
   void showDownloadProgress(received, total) {
     if (total != -1) {
       pdfProgressBarValue.value = received / total;
-      pdfProgressBarPerValue.value = '${(received / total * 100).toStringAsFixed(0) + '%'}';
-      debugPrint('pdfProgressBarValue.value::::::  ${pdfProgressBarValue.value}');
-      debugPrint('pdfProgressBarPerValue.value ::::::  ${pdfProgressBarPerValue.value }');
+      pdfProgressBarPerValue.value =
+          '${(received / total * 100).toStringAsFixed(0) + '%'}';
+      debugPrint(
+          'pdfProgressBarValue.value::::::  ${pdfProgressBarValue.value}');
+      debugPrint(
+          'pdfProgressBarPerValue.value ::::::  ${pdfProgressBarPerValue.value}');
     }
   }
 }

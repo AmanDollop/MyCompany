@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
@@ -5,22 +6,27 @@ import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
 
 class PromotionController extends GetxController {
-
   final count = 0.obs;
   final apiResValue = true.obs;
-  final experienceModal = Rxn<ExperienceModal>();
-  List<GetExperienceDetails>? getExperienceDetails;
+
+  final accessType = ''.obs;
+  final isChangeable = ''.obs;
+  final profileMenuName = ''.obs;
 
   final promotionModal = Rxn<PromotionModal>();
   List<GetPromotionDetails>? getPromotionDetails;
 
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    await callingExperienceApi();
+    accessType.value = Get.arguments[0];
+    isChangeable.value = Get.arguments[1];
+    profileMenuName.value = Get.arguments[2];
     await callingPromotionApi();
-    apiResValue.value= false;
+    apiResValue.value = false;
   }
+
 
   @override
   void onReady() {
@@ -39,31 +45,18 @@ class PromotionController extends GetxController {
   }
 
 
-  Future<void> callingExperienceApi() async {
-    try{
-      experienceModal.value = await CAI.getExperienceApi(bodyParams: {AK.action:'getExperience'});
-      if(experienceModal.value != null){
-        getExperienceDetails = experienceModal.value?.getExperienceDetails;
-        print('getExperienceDetails:::: $getExperienceDetails');
-      }
-    }catch(e){
-      apiResValue.value= false;
-      print('e::::: $e');
-    }
-  }
 
   Future<void> callingPromotionApi() async {
-    try{
-      promotionModal.value = await CAI.getPromotionApi(bodyParams: {AK.action:'getPromotion'});
-      if(promotionModal.value != null){
+    try {
+      promotionModal.value =
+          await CAI.getPromotionApi(bodyParams: {AK.action: 'getPromotion'});
+      if (promotionModal.value != null) {
         getPromotionDetails = promotionModal.value?.getPromotionDetails;
         print('getPromotionDetails:::: $getPromotionDetails');
       }
-    }catch(e){
-      apiResValue.value= false;
+    } catch (e) {
+      apiResValue.value = false;
       print('e::::: $e');
     }
   }
-
-
 }
