@@ -1,7 +1,9 @@
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import '../controllers/home_controller.dart';
 
@@ -23,61 +25,55 @@ class HomeView extends GetView<HomeController> {
               }*/
               return false;
             },
-            child: ListView(
-              controller: controller.scrollController.value,
-              padding: EdgeInsets.symmetric(vertical: 16.px,horizontal: 0.px),
-              children: [
-                breakView(),
-                commonSwitchButtonView(),
-                SizedBox(height: 16.px),
-                bannerView(),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: commonCon(
-                              imagePath: 'assets/icons/circulars_icon.png',
-                              titleText: 'Circulars',
-                              onTap: () => controller.clickOnCirculars(),
-                            ),
-                          ),
-                          SizedBox(width: 8.px),
-                          Expanded(
-                            child: commonCon(
-                              imagePath: 'assets/icons/circulars_icon.png',
-                              titleText: 'Discussion',
-                              onTap: () => controller.clickOnDiscussion(),
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 14.px),
-                      upcomingCelebrationsButtonView(),
-                    ],
+            child: ModalProgress(
+              inAsyncCall: controller.apiResValue.value,
+              child: ListView(
+                controller: controller.scrollController.value,
+                padding: EdgeInsets.symmetric(vertical: 16.px,horizontal: 0.px),
+                children: [
+                  breakView(),
+                  commonSwitchButtonView(),
+                  if(controller.hideBanner.value == '0')
+                  SizedBox(height: 16.px),
+                  if(controller.hideBanner.value == '0')
+                  bannerView(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
+                    child: Column(
+                      children: [
+                        isLargeMenuListView(),
+                        if(controller.hideUpcomingCelebration.value == '0')
+                        SizedBox(height: 14.px),
+                        if(controller.hideUpcomingCelebration.value == '0')
+                        upcomingCelebrationsButtonView(),
+                      ],
+                    ),
                   ),
-                ),
-                headingListView(),
-                SizedBox(height: 14.px),
-                myTeamListView(),
-                SizedBox(height: 14.px),
-                yourDepartmentListView(),
-                Padding(
-                  padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      cardTextView(text: 'Gallery', fontSize: 16.px),
-                      viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
-                    ],
+                  headingListView(),
+                  if(controller.hideMyTeam.value == '0')
+                  SizedBox(height: 14.px),
+                  if(controller.hideMyTeam.value == '0')
+                  myTeamListView(),
+                  if(controller.hideMyDepartment.value == '0')
+                  SizedBox(height: 14.px),
+                  if(controller.hideMyDepartment.value == '0')
+                  yourDepartmentListView(),
+                  if(controller.hideGallery.value == '0')
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        cardTextView(text: 'Gallery', fontSize: 16.px),
+                        viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
+                      ],
+                    ),
                   ),
-                ),
-                galleryListView(),
-                SizedBox(height: 10.px),
-              ],
+                  if(controller.hideGallery.value == '0')
+                  galleryListView(),
+                  SizedBox(height: 10.px),
+                ],
+              ),
             ),
           );
         }),
@@ -270,48 +266,6 @@ class HomeView extends GetView<HomeController> {
         indicatorWidth: 12.px,
       );
 
-  Widget commonCon({required String imagePath, required String titleText, required GestureTapCallback onTap}) => InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14.px),
-        child: Container(
-          width: 164.px,
-          height: 62.px,
-          padding: EdgeInsets.symmetric(horizontal: 8.px),
-          decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 24.px,
-                color: Col.secondary.withOpacity(.1),
-              )
-            ],
-            border: Border.all(color: Col.gray.withOpacity(.5), width: 1.5.px),
-            borderRadius: BorderRadius.circular(14.px),
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 42.px,
-                width: 42.px,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Col.primary.withOpacity(.2),
-                ),
-                child: Center(
-                  child: CW.commonNetworkImageView(
-                      path: imagePath,
-                      isAssetImage: true,
-                      width: 24.px,
-                      height: 24.px),
-                ),
-              ),
-              SizedBox(width: 12.px),
-              Flexible(child: cardTextView(text: titleText,maxLines: 2),)
-            ],
-          ),
-        ),
-      );
-
   Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight?fontWeight,TextAlign? textAlign}) => Text(
         text,
         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: fontWeight??FontWeight.w500, fontSize: fontSize ?? 14.px, color: color),
@@ -325,8 +279,7 @@ class HomeView extends GetView<HomeController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            cardTextView(
-                text: 'Upcoming Celebrations', color: Col.inverseSecondary),
+            cardTextView(text: 'Upcoming Celebrations', color: Col.inverseSecondary),
             cardTextView(text: 'View', color: Col.inverseSecondary),
           ],
         ),
@@ -358,6 +311,75 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
+  Widget commonContainerForLargeMenus({required String imagePath, required String titleText, required GestureTapCallback onTap}) => InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(12.px),
+    child: Container(
+      // width: 164.px,
+      // height: 62.px,
+      padding: EdgeInsets.symmetric(horizontal: 8.px),
+      decoration: BoxDecoration(
+        color: Col.inverseSecondary,
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 24.px,
+            color: Col.secondary.withOpacity(.1),
+          )
+        ],
+        border: Border.all(color: Col.gray.withOpacity(.8), width: 1.px),
+        borderRadius: BorderRadius.circular(12.px),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: 42.px,
+            width: 42.px,
+            margin: EdgeInsets.only(right: 12.px),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Col.primary.withOpacity(.2),
+            ),
+            child: Center(
+              child: CW.commonNetworkImageView(
+                  path: imagePath,
+                  isAssetImage: false,
+                  width: 24.px,
+                  height: 24.px),
+            ),
+          ),
+          Flexible(child: cardTextView(text: titleText,maxLines: 2),),
+          SizedBox(width: 12.px),
+        ],
+      ),
+    ),
+  );
+
+  Widget isLargeMenuListView() {
+    if(controller.isLargeMenuList.isNotEmpty){
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.isLargeMenuList.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: controller.isLargeMenuList.length==1?1:2,
+            crossAxisSpacing: 10.px,
+            mainAxisSpacing: 10.px,
+            childAspectRatio: 5.5.px
+        ),
+        itemBuilder: (context, index) {
+          return commonContainerForLargeMenus(
+            imagePath: '${AU.baseUrlForSearchCompanyImage}${controller.isLargeMenuList[index].menuImage}',
+            titleText: '${controller.isLargeMenuList[index].menuName}',
+            onTap: () => controller.clickOnLargeMenus(largeMenusIndex:index),
+          );
+        },
+      );
+    }else{
+      return CW.commonNoDataFoundText(text: controller.apiResValue.value?'':'Large menu not found!');
+    }
+  }
+
   Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) => CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
@@ -366,19 +388,22 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget headingListView() => commonCard(
-        titleText: 'Heading',
+  Widget headingListView() {
+    if(controller.isHeadingMenuList.isNotEmpty){
+      return commonCard(
+        titleText: 'Profile Menu',
         listWidget: GridView.builder(
           shrinkWrap: true,
           padding: EdgeInsets.all(10.px),
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.titleList.length,
+          itemCount: controller.isHeadingMenuList.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10.px,
             mainAxisSpacing: 10.px,
           ),
           itemBuilder: (context, index) {
+            Color convertedColor = stringToColor( colorString: '${controller.isHeadingMenuList[index].backgroundColor}');
             return InkWell(
               onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
               borderRadius: BorderRadius.circular(10.px),
@@ -392,7 +417,7 @@ class HomeView extends GetView<HomeController> {
                       color: Col.secondary.withOpacity(.05),
                     )
                   ],
-                  color: controller.colorList[index],
+                  color: convertedColor,
                   borderRadius: BorderRadius.circular(8.px),
                 ),
                 child: Ink(
@@ -408,22 +433,19 @@ class HomeView extends GetView<HomeController> {
                       Container(
                         width: 40.px,
                         height: 40.px,
+                        padding: EdgeInsets.all(2.px),
                         decoration: BoxDecoration(
-                          color: controller.colorList[index],
+                          color: convertedColor,
                           borderRadius: BorderRadius.circular(6.px),
                         ),
                         child: Center(
-                          child: Image.asset(
-                            'assets/images/shoping_light.png',
-                            width: 24.px,
-                            height: 24.px,
-                          ),
+                          child: CW.commonNetworkImageView(path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}', isAssetImage: false),
                         ),
                       ),
                       SizedBox(height: 10.px),
                       Flexible(
                         child: Text(
-                          controller.titleList[index],
+                          '${controller.isHeadingMenuList[index].menuName}',
                           style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700,fontSize: 10.px),
                           maxLines:  2,
                           overflow: TextOverflow.ellipsis,
@@ -438,6 +460,18 @@ class HomeView extends GetView<HomeController> {
           },
         ),
       );
+    }else{
+      return CW.commonNoDataFoundText(text: controller.apiResValue.value?'':'Menus not found!');
+    }
+  }
+
+  Color stringToColor({required String colorString}) {
+    // Remove the '#' from the color code
+    String formattedColor = colorString.startsWith('#') ? colorString.substring(1) : colorString;
+
+    // Parse the hexadecimal value and create a Color object
+    return Color(int.parse('0xFF$formattedColor'));
+  }
 
   Widget myTeamListView() => commonCard(
         titleText: 'My Team',
@@ -445,7 +479,7 @@ class HomeView extends GetView<HomeController> {
           shrinkWrap: true,
           padding: EdgeInsets.all(10.px),
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.titleList.length,
+          itemCount: 10,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10.px,

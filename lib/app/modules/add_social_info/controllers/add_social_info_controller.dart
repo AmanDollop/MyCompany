@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -20,7 +23,13 @@ class AddSocialInfoController extends GetxController {
   final accessType = ''.obs;
   final isChangeable = ''.obs;
   final profileMenuName = ''.obs;
+
   Map<String, dynamic> bodyParams = {};
+
+  final userDataFromLocalDataBase =''.obs;
+
+  UserDetails? userData;
+  SocialInfo? socialInfo;
 
   @override
   Future<void> onInit() async {
@@ -46,23 +55,20 @@ class AddSocialInfoController extends GetxController {
   void increment() => count.value++;
 
   Future<void> setDefaultData() async {
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.twitter, tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      twitterController.text = await DataBaseHelper().getParticularData(
-          key: DataBaseConstant.twitter,
-          tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.linkedin, tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      linkedinController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.linkedin, tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.instagram, tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      instagramController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.instagram, tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.facebook, tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      facebookController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.facebook, tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+    socialInfo=userData?.socialInfo;
+
+    twitterController.text = socialInfo?.twitter??'';
+
+    linkedinController.text = socialInfo?.linkedin??'';
+
+    instagramController.text = socialInfo?.instagram??'';
+
+    facebookController.text = socialInfo?.facebook??'';
     count.value++;
   }
 
@@ -86,8 +92,7 @@ class AddSocialInfoController extends GetxController {
         AK.instagram: instagramController.text.trim().toString(),
         AK.linkedin: linkedinController.text.trim().toString(),
       };
-      http.Response? response =
-          await CAI.updateUserControllerApi(bodyParams: bodyParams);
+      http.Response? response = await CAI.updateUserControllerApi(bodyParams: bodyParams);
       if (response != null) {
         if (response.statusCode == 200) {
           Get.back();

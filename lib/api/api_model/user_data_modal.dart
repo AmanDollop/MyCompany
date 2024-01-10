@@ -27,13 +27,16 @@ class UserDetails {
   JobInfo? jobInfo;
   SocialInfo? socialInfo;
   String? token;
+  MyFace? myFace;
 
   UserDetails(
       {this.personalInfo,
       this.contactInfo,
       this.jobInfo,
       this.socialInfo,
-      this.token});
+      this.token,
+      this.myFace,
+      });
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     personalInfo = json['personal_info'] != null
@@ -48,6 +51,8 @@ class UserDetails {
         ? SocialInfo.fromJson(json['social_info'])
         : null;
     token = json['token'];
+    myFace =
+    json['my_face'] != null ? MyFace.fromJson(json['my_face']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -65,6 +70,9 @@ class UserDetails {
       data['social_info'] = socialInfo!.toJson();
     }
     data['token'] = token;
+    if (myFace != null) {
+      data['my_face'] = myFace!.toJson();
+    }
     return data;
   }
 }
@@ -278,6 +286,28 @@ class SocialInfo {
     data['instagram'] = instagram;
     data['facebook'] = facebook;
     data['social_links_privacy'] = socialLinksPrivacy;
+    return data;
+  }
+}
+
+class MyFace {
+  String? userFaceRowData;
+  String? userFaceImage;
+  String? userFaceAddedDate;
+
+  MyFace({this.userFaceRowData, this.userFaceImage, this.userFaceAddedDate});
+
+  MyFace.fromJson(Map<String, dynamic> json) {
+    userFaceRowData = json['user_face_row_data'];
+    userFaceImage = json['user_face_image'];
+    userFaceAddedDate = json['user_face_added_date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_face_row_data'] = userFaceRowData;
+    data['user_face_image'] = userFaceImage;
+    data['user_face_added_date'] = userFaceAddedDate;
     return data;
   }
 }

@@ -92,9 +92,8 @@ class DrawerViewView extends GetView<DrawerViewController> {
                   SizedBox(width: 6.px),
                   Flexible(
                     child: userNameTextView(
-                        text: controller.companyName.value != 'null' &&
-                                controller.companyName.value.isNotEmpty
-                            ? controller.companyName.value.toString()
+                        text: controller.getCompanyDetails?.companyName != null && controller.getCompanyDetails!.companyName!.isNotEmpty
+                            ? '${controller.getCompanyDetails?.companyName}'
                             : 'Company Name',
                         fontSize: 14.px,
                         color: Col.primary,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -21,163 +22,158 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
       body: Obx(
         () {
           controller.count.value;
-          if (controller.shiftDetailsModal.value != null) {
-            if (controller.shiftDetails != null) {
-              return ModalProgress(
-                inAsyncCall: controller.apiResValue.value,
-                child: ListView(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: C.margin - 4, vertical: 24.px),
-                  children: [
-                    Card(
-                      elevation: 0,
-                      color: Col.primary.withOpacity(.3),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4.px)),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.px),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            commonTitleRowView(
-                              text: 'Shift Name',
+          if (controller.shiftDetails != null) {
+            return ModalProgress(
+              inAsyncCall: controller.apiResValue.value,
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: C.margin - 4, vertical: 24.px),
+                children: [
+                  Card(
+                    elevation: 0,
+                    color: Col.primary.withOpacity(.3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.px)),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.px),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          commonTitleRowView(
+                            text: 'Shift Name',
+                            text1:
+                            controller.shiftDetails?.shiftName != null &&
+                                controller.shiftDetails!.shiftName!
+                                    .isNotEmpty
+                                ? '${controller.shiftDetails?.shiftName}'
+                                : 'N/A',
+                          ),
+                          SizedBox(height: 10.px),
+                          commonTitleRowView(
+                              text: 'Shift Code',
+                              text1: controller.shiftDetails?.shiftCode !=
+                                  null &&
+                                  controller
+                                      .shiftDetails!.shiftCode!.isNotEmpty
+                                  ? '${controller.shiftDetails?.shiftCode}'
+                                  : 'N/A')
+                        ],
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: Col.inverseSecondary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.px),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 14.px),
+                          commonRowForDetailView(
+                              text1: 'Week Off',
+                              text2: controller.shiftDetails?.weekOffDaysView != null && controller.shiftDetails!.weekOffDaysView!.isNotEmpty
+                                  ? '${controller.shiftDetails?.weekOffDaysView}'
+                                  : 'N/A',
+                              flex1: 5,
+                              flex2: 7),
+                          SizedBox(height: 10.px),
+                          commonRowForDetailView(
+                              text1: 'Has Auto Week Off',
+                              text2: controller.shiftDetails?.hasAlternateWeekOff != null && controller.shiftDetails!.hasAlternateWeekOff!.isNotEmpty
+                                  ? controller.shiftDetails?.hasAlternateWeekOff == '1'
+                                  ? 'Yes'
+                                  : 'No'
+                                  : 'N/A',
+                              flex1: 5,
+                              flex2: 7),
+                          SizedBox(height: 10.px),
+                          commonRowForDetailView(
+                              text1: 'Alternate Week Off',
+                              text2: controller.shiftDetails?.alternateWeekOffView != null && controller.shiftDetails!.alternateWeekOffView!.isNotEmpty
+                                  ? '${controller.shiftDetails?.alternateWeekOffView}'
+                                  : 'N/A',
+                              flex1: 5,
+                              flex2: 7),
+                          SizedBox(height: 10.px),
+                          commonRowForDetailView(
+                              text1: 'Alternate Week Off Days',
+                              text2: controller.shiftDetails?.alternateWeekOffDaysView != null && controller.shiftDetails!.alternateWeekOffDaysView!.isNotEmpty
+                                  ? '${controller.shiftDetails?.alternateWeekOffDaysView}'
+                                  : 'N/A',
+                              flex1: 5,
+                              flex2: 7),
+                          commonDividerView(),
+                          // commonRowForDetailView(
+                          //     text1: 'Paid Leave on Extra Day', text2: 'Yes'),
+                          // SizedBox(height: 10.px),
+                          // commonRowForDetailView(
+                          //     text1: 'Extra Day Leave Expire Days',
+                          //     text2: '60 Days'),
+                          // SizedBox(height: 10.px),
+                          // commonRowForDetailView(
+                          //     text1: 'Applicable Extra Day Leave in Month',
+                          //     text2: '4'),
+                          // SizedBox(height: 10.px),
+                          // commonRowForDetailView(
+                          //     text1: 'Allow Comp Off Leave on Past Date',
+                          //     text2: 'No'),
+                          // commonDividerView(),
+                          // commonRowForDetailView(text1: 'Multiple Punch in Allowed', text2: 'Yes'),
+                          // SizedBox(height: 10.px),
+                          commonRowForDetailView(
+                              text1: 'Late In Reason Required',
+                              text2: controller.shiftDetails?.lateInReasonRequired != null && controller.shiftDetails!.lateInReasonRequired!.isNotEmpty
+                                  ? controller.shiftDetails?.lateInReasonRequired == '1'
+                                  ? 'Yes'
+                                  : 'No'
+                                  : 'N/A'),
+                          SizedBox(height: 10.px),
+                          commonRowForDetailView(
+                              text1: 'Early Out Reason Required',
+                              text2: controller.shiftDetails?.earlyOutReasonRequired != null && controller.shiftDetails!.earlyOutReasonRequired!.isNotEmpty
+                                  ? controller.shiftDetails?.earlyOutReasonRequired == '1'
+                                  ? 'Yes'
+                                  : 'No'
+                                  : 'N/A'),
+                          SizedBox(height: 10.px),
+                          commonRowForDetailView(
                               text1:
-                                  controller.shiftDetails?.shiftName != null &&
-                                          controller.shiftDetails!.shiftName!
-                                              .isNotEmpty
-                                      ? '${controller.shiftDetails?.shiftName}'
-                                      : 'N/A',
-                            ),
-                            SizedBox(height: 10.px),
-                            commonTitleRowView(
-                                text: 'Shift Code',
-                                text1: controller.shiftDetails?.shiftCode !=
-                                            null &&
-                                        controller
-                                            .shiftDetails!.shiftCode!.isNotEmpty
-                                    ? '${controller.shiftDetails?.shiftCode}'
-                                    : 'N/A')
-                          ],
-                        ),
+                              'Take Reason If Punch In/ Punch Out  is Out of Range',
+                              text2: controller.shiftDetails?.outOfRangeReasonRequired != null && controller.shiftDetails!.outOfRangeReasonRequired!.isNotEmpty
+                                  ? controller.shiftDetails?.outOfRangeReasonRequired == '1'
+                                  ? 'Yes'
+                                  : 'No'
+                                  : 'N/A'),
+                          commonDividerView(),
+                          commonRowForDetailView(
+                              text1: 'Total Late In Allowed Per Month',
+                              text2: controller.shiftDetails?.maxLateInMonth != null && controller.shiftDetails!.maxLateInMonth!.isNotEmpty
+                                  ? '${controller.shiftDetails?.maxLateInMonth}'
+                                  : 'N/A'),
+                          SizedBox(height: 10.px),
+                          commonRowForDetailView(
+                              text1: 'Total Early Out Allowed Per Month',
+                              text2: controller.shiftDetails?.maxEarlyOutMonth != null && controller.shiftDetails!.maxEarlyOutMonth!.isNotEmpty
+                                  ? '${controller.shiftDetails?.maxEarlyOutMonth}'
+                                  : 'N/A'),
+                          SizedBox(height: 10.px),
+                          Text(
+                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore',
+                            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.onSecondary, fontSize: 10.px),
+                            textAlign: TextAlign.start,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          commonDividerView(),
+                        ],
                       ),
                     ),
-                    Card(
-                      color: Col.inverseSecondary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.px),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 14.px),
-                            commonRowForDetailView(
-                                text1: 'Week Off',
-                                text2: controller.shiftDetails?.weekOffDaysView != null && controller.shiftDetails!.weekOffDaysView!.isNotEmpty
-                                    ? '${controller.shiftDetails?.weekOffDaysView}'
-                                    : 'N/A',
-                                flex1: 5,
-                                flex2: 7),
-                            SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1: 'Has Auto Week Off',
-                                text2: controller.shiftDetails?.hasAlternateWeekOff != null && controller.shiftDetails!.hasAlternateWeekOff!.isNotEmpty
-                                    ? controller.shiftDetails?.hasAlternateWeekOff == '1'
-                                        ? 'Yes'
-                                        : 'No'
-                                    : 'N/A',
-                                flex1: 5,
-                                flex2: 7),
-                            SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1: 'Alternate Week Off',
-                                text2: controller.shiftDetails?.alternateWeekOffView != null && controller.shiftDetails!.alternateWeekOffView!.isNotEmpty
-                                    ? '${controller.shiftDetails?.alternateWeekOffView}'
-                                        : 'N/A',
-                                flex1: 5,
-                                flex2: 7),
-                            SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1: 'Alternate Week Off Days',
-                                text2: controller.shiftDetails?.alternateWeekOffDaysView != null && controller.shiftDetails!.alternateWeekOffDaysView!.isNotEmpty
-                                    ? '${controller.shiftDetails?.alternateWeekOffDaysView}'
-                                    : 'N/A',
-                                flex1: 5,
-                                flex2: 7),
-                            commonDividerView(),
-                            // commonRowForDetailView(
-                            //     text1: 'Paid Leave on Extra Day', text2: 'Yes'),
-                            // SizedBox(height: 10.px),
-                            // commonRowForDetailView(
-                            //     text1: 'Extra Day Leave Expire Days',
-                            //     text2: '60 Days'),
-                            // SizedBox(height: 10.px),
-                            // commonRowForDetailView(
-                            //     text1: 'Applicable Extra Day Leave in Month',
-                            //     text2: '4'),
-                            // SizedBox(height: 10.px),
-                            // commonRowForDetailView(
-                            //     text1: 'Allow Comp Off Leave on Past Date',
-                            //     text2: 'No'),
-                            // commonDividerView(),
-                            // commonRowForDetailView(text1: 'Multiple Punch in Allowed', text2: 'Yes'),
-                            // SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1: 'Late In Reason Required',
-                                text2: controller.shiftDetails?.lateInReasonRequired != null && controller.shiftDetails!.lateInReasonRequired!.isNotEmpty
-                                    ? controller.shiftDetails?.lateInReasonRequired == '1'
-                                    ? 'Yes'
-                                    : 'No'
-                                    : 'N/A'),
-                            SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1: 'Early Out Reason Required',
-                                text2: controller.shiftDetails?.earlyOutReasonRequired != null && controller.shiftDetails!.earlyOutReasonRequired!.isNotEmpty
-                                    ? controller.shiftDetails?.earlyOutReasonRequired == '1'
-                                    ? 'Yes'
-                                    : 'No'
-                                    : 'N/A'),
-                            SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1:
-                                    'Take Reason If Punch In/ Punch Out  is Out of Range',
-                                text2: controller.shiftDetails?.outOfRangeReasonRequired != null && controller.shiftDetails!.outOfRangeReasonRequired!.isNotEmpty
-                                    ? controller.shiftDetails?.outOfRangeReasonRequired == '1'
-                                    ? 'Yes'
-                                    : 'No'
-                                    : 'N/A'),
-                            commonDividerView(),
-                            commonRowForDetailView(
-                                text1: 'Total Late In Allowed Per Month',
-                                text2: controller.shiftDetails?.maxLateInMonth != null && controller.shiftDetails!.maxLateInMonth!.isNotEmpty
-                                    ? '${controller.shiftDetails?.maxLateInMonth}'
-                                    : 'N/A'),
-                            SizedBox(height: 10.px),
-                            commonRowForDetailView(
-                                text1: 'Total Early Out Allowed Per Month',
-                                text2: controller.shiftDetails?.maxEarlyOutMonth != null && controller.shiftDetails!.maxEarlyOutMonth!.isNotEmpty
-                                    ? '${controller.shiftDetails?.maxEarlyOutMonth}'
-                                    : 'N/A'),
-                            SizedBox(height: 10.px),
-                            Text(
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore',
-                              style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.onSecondary, fontSize: 10.px),
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            commonDividerView(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    controller.shiftTimeList != null && controller.shiftTimeList!.isNotEmpty
-                        ? shiftListView()
-                        : SizedBox(height: 14.h,child: CW.commonNoDataFoundText(text: 'Shift data not Found!'),),
-                  ],
-                ),
-              );
-            } else {
-              return CW.commonNoDataFoundText();
-            }
+                  ),
+                  controller.shiftTimeList != null && controller.shiftTimeList!.isNotEmpty
+                      ? shiftListView()
+                      : SizedBox(height: 14.h,child: CW.commonNoDataFoundText(text: 'Shift data not Found!'),),
+                ],
+              ),
+            );
           } else {
             return CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'No Data Found!');
           }
@@ -287,7 +283,108 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
       shrinkWrap: true,
   );
 
+  String convertTo12HourFormat({required String time24HourFormat}) {
+    final inputFormat = DateFormat('HH:mm');
+    final outputFormat = DateFormat('hh:mm a');
+
+    DateTime dateTime = inputFormat.parse(time24HourFormat);
+    return outputFormat.format(dateTime);
+  }
+
+  String subtractMinutes({required String time12HourFormat,required int subtractValue}) {
+    final inputFormat = DateFormat('hh:mm a');
+    final outputFormat = DateFormat('hh:mm a');
+
+    // Parse the input time in 12-hour format
+    DateTime dateTime = inputFormat.parse(time12HourFormat);
+
+      // Subtract minutes
+    dateTime = dateTime.subtract(Duration(minutes: subtractValue));
+
+    // Format the adjusted time in 12-hour format
+    return outputFormat.format(dateTime);
+  }
+
+  int subtractTimes(String startTimeString, String endTimeString) {
+    final inputFormat = DateFormat('hh:mm a');
+    final outputFormat = DateFormat('hh:mm a');
+
+    // Parse the input times in 12-hour format
+    DateTime startTime = inputFormat.parse(startTimeString);
+    DateTime endTime = inputFormat.parse(endTimeString);
+
+    // If the end time is before the start time, assume it's on the next day
+    if (endTime.isBefore(startTime)) {
+      endTime = endTime.add(const Duration(days: 1));
+    }
+
+    // Calculate the difference in minutes
+    int differenceInMinutes = endTime.difference(startTime).inMinutes;
+
+    return differenceInMinutes;
+  }
+
   Widget shiftCardView({required int index}) {
+
+    if(controller.shiftTimeList?[index].totalShiftMinutes!=null&& controller.shiftTimeList![index].totalShiftMinutes!.isNotEmpty) {
+       controller.totalMinutes = controller.shiftTimeList?[index].totalShiftMinutes;
+    }
+
+    if(controller.totalMinutes!=null&& controller.totalMinutes!.isNotEmpty) {
+     controller.totalHoursFormApi = int.parse(controller.totalMinutes.toString()) / 60;
+    }
+
+    if(controller.shiftTimeList?[index].shiftStartTime!=null&& controller.shiftTimeList![index].shiftStartTime!.isNotEmpty) {
+      controller.shiftStartTimeString = convertTo12HourFormat(time24HourFormat: controller.shiftTimeList?[index].shiftStartTime ?? '');
+    }
+
+    if(controller.shiftTimeList?[index].shiftEndTime!=null&& controller.shiftTimeList![index].shiftEndTime!.isNotEmpty) {
+      controller.shiftEndTimeString  = convertTo12HourFormat(time24HourFormat: controller.shiftTimeList?[index].shiftEndTime ?? '');
+    }
+
+    if(controller.totalHoursFormApi == 0.0){
+      controller.totalHoursLocal = subtractTimes(controller.shiftStartTimeString ?? '',controller.shiftEndTimeString??'');
+      print('controller.totalHoursLocal:::::::::   ${controller.totalHoursLocal / 60}');
+    }
+
+    if(controller.shiftTimeList?[index].lunchBreakStartTime!=null&& controller.shiftTimeList![index].lunchBreakStartTime!.isNotEmpty) {
+      controller.lunchBreakStartTime  = convertTo12HourFormat(time24HourFormat: controller.shiftTimeList?[index].lunchBreakStartTime ?? '');
+    }
+
+    if(controller.shiftTimeList?[index].lunchBreakEndTime!=null&& controller.shiftTimeList![index].lunchBreakEndTime!.isNotEmpty) {
+      controller.lunchBreakEndTime  = convertTo12HourFormat(time24HourFormat: controller.shiftTimeList?[index].lunchBreakEndTime ?? '');
+    }
+
+    controller.lunchBreakTime = subtractTimes(controller.lunchBreakStartTime ?? '',controller.lunchBreakEndTime??'');
+    print('controller.lunchBreakTime:::::  ${controller.lunchBreakTime}');
+
+    if(controller.shiftTimeList?[index].lateInMinutes!=null&& controller.shiftTimeList![index].lateInMinutes!.isNotEmpty) {
+      controller.lateInRelaxationText  = '${controller.shiftTimeList?[index].lateInMinutes}';
+      controller.lateInRelaxationTime = subtractMinutes(time12HourFormat: controller.shiftStartTimeString??'',subtractValue: int.parse(controller.lateInRelaxationText??''));
+      // print('controller.lateInRelaxationTime::::::  ${controller.lateInRelaxationTime}');
+    }
+
+    if(controller.shiftTimeList?[index].earlyOutMinutes!=null&& controller.shiftTimeList![index].earlyOutMinutes!.isNotEmpty) {
+      controller.earlyOutRelaxationText  = '${controller.shiftTimeList?[index].earlyOutMinutes}';
+      controller.earlyOutRelaxationTime = subtractMinutes(time12HourFormat: controller.shiftEndTimeString??'',subtractValue: int.parse(controller.earlyOutRelaxationText??''));
+    }
+
+    if(controller.shiftTimeList?[index].halfDayBeforeTime!=null&& controller.shiftTimeList![index].halfDayBeforeTime!.isNotEmpty) {
+      controller.halfDayBeforeTime  = convertTo12HourFormat(time24HourFormat: controller.shiftTimeList?[index].halfDayBeforeTime ?? '');
+    }
+
+    if(controller.shiftTimeList?[index].halfDayAfterTime!=null&& controller.shiftTimeList![index].halfDayAfterTime!.isNotEmpty) {
+      controller.halfDayAfterTime  = convertTo12HourFormat(time24HourFormat: controller.shiftTimeList?[index].halfDayAfterTime ?? '');
+    }
+
+    if(controller.shiftTimeList?[index].minHalfHours!=null&& controller.shiftTimeList![index].minHalfHours!.isNotEmpty) {
+      controller.minHalfHours  = '${controller.shiftTimeList?[index].minHalfHours} Hours' ?? '';
+    }
+
+    if(controller.shiftTimeList?[index].minFullDayHours!=null&& controller.shiftTimeList![index].minFullDayHours!.isNotEmpty) {
+      controller.minFullDayHours  = '${controller.shiftTimeList?[index].minFullDayHours} Hours' ?? '';
+    }
+
     return Card(
       color: Col.inverseSecondary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
@@ -297,7 +394,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             dayTextView(
-                dayText: controller.shiftTimeList?[index].shiftDayName!=null&& controller.shiftTimeList![index].shiftDayName!.isNotEmpty
+                dayText: controller.shiftTimeList?[index].shiftDayName!=null && controller.shiftTimeList![index].shiftDayName!.isNotEmpty
                     ? '${controller.shiftTimeList?[index].shiftDayName}'
                     : 'N/A'),
             dayTextBoarderView(
@@ -306,41 +403,45 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
                     : 'N/A'),
             SizedBox(height: 12.px),
             timeRowView(
-                morningTimeText: controller.shiftTimeList?[index].shiftStartTime!=null&& controller.shiftTimeList![index].shiftStartTime!.isNotEmpty
-                    ? '${controller.shiftTimeList?[index].shiftStartTime} AM'
+                morningTimeText: controller.shiftStartTimeString !=null && controller.shiftStartTimeString!.isNotEmpty
+                    ? '${controller.shiftStartTimeString}'
                     : 'N/A',
-                totalTimeText: controller.shiftTimeList?[index].totalShiftMinutes!=null&& controller.shiftTimeList![index].totalShiftMinutes!.isNotEmpty
-                    ? '${controller.shiftTimeList?[index].totalShiftMinutes} Min'
-                    : 'N/A',
-                eveningTimeText: controller.shiftTimeList?[index].shiftEndTime!=null&& controller.shiftTimeList![index].shiftEndTime!.isNotEmpty
-                    ? '${controller.shiftTimeList?[index].shiftEndTime} PM'
+                totalTimeText: controller.totalHoursFormApi != 0.0
+                    ? '${controller.totalHoursFormApi} Hours'
+                    : '${controller.totalHoursLocal / 60} Hours',
+                eveningTimeText: controller.shiftEndTimeString!=null&& controller.shiftEndTimeString!.isNotEmpty
+                    ? '${controller.shiftEndTimeString}'
                     : 'N/A'),
             SizedBox(height: 12.px),
             breakShiftTextView(
                 breakText: 'Shift Type', breakTimeText: controller.shiftTimeList?[index].shiftType!=null&& controller.shiftTimeList![index].shiftType!.isNotEmpty
                 ? '${controller.shiftTimeList?[index].shiftType}'
                 : 'N/A'),
+            if(controller.lunchBreakStartTime != null && controller.lunchBreakStartTime!.isNotEmpty && controller.lunchBreakEndTime!= null && controller.lunchBreakEndTime!.isNotEmpty)
+              SizedBox(height: 6.px),
+            if(controller.lunchBreakStartTime != null && controller.lunchBreakStartTime!.isNotEmpty && controller.lunchBreakEndTime!= null && controller.lunchBreakEndTime!.isNotEmpty)
+            breakShiftTextView(breakText: 'Lunch Break ( ${controller.lunchBreakStartTime} - ${controller.lunchBreakEndTime} )', breakTimeText: '${controller.lunchBreakTime} Minutes'),
             SizedBox(height: 6.px),
-            if(controller.shiftTimeList?[index].lunchBreakStartTime!= null && controller.shiftTimeList![index].lunchBreakStartTime!.isNotEmpty && controller.shiftTimeList?[index].lunchBreakEndTime!= null && controller.shiftTimeList![index].lunchBreakEndTime!.isNotEmpty)
-            breakShiftTextView(breakText: 'Lunch Break ( ${controller.shiftTimeList?[index].lunchBreakStartTime} PM - ${controller.shiftTimeList?[index].lunchBreakEndTime} PM )', breakTimeText: '30 Minutes'),
+            breakShiftTextView(breakText: 'Late In Relaxation ( ${controller.lateInRelaxationTime} )', breakTimeText: '${controller.lateInRelaxationText} Minutes'),
             SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Take Lunch Break Before Minutes', breakTimeText: '60 Minutes'),
+            breakShiftTextView(breakText: 'Early Out Relaxation ( ${controller.earlyOutRelaxationTime} )', breakTimeText: '${controller.earlyOutRelaxationText} Minutes'),
+            if(controller.halfDayAfterTime != null && controller.halfDayAfterTime!.isNotEmpty)
             SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Late In Relaxation ( 09:30 AM)', breakTimeText: '30 Minutes'),
+            if(controller.halfDayAfterTime != null && controller.halfDayAfterTime!.isNotEmpty)
+            breakShiftTextView(breakText: 'Mark As Half Day ( Punch In After)', breakTimeText: '${controller.halfDayAfterTime}'),
+            if(controller.halfDayBeforeTime != null && controller.halfDayBeforeTime!.isNotEmpty)
             SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Early Out Relaxation ( 05:30 PM)', breakTimeText: '30 Minutes'),
+            if(controller.halfDayBeforeTime != null && controller.halfDayBeforeTime!.isNotEmpty)
+            breakShiftTextView(breakText: 'Mark As Half Day ( Punch Out Before)', breakTimeText: '${controller.halfDayBeforeTime}'),
+            if(controller.minHalfHours != null && controller.minHalfHours!.isNotEmpty)
             SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Mark As Half Day ( Punch In After)', breakTimeText: '01:30 PM'),
+            if(controller.minHalfHours != null && controller.minHalfHours!.isNotEmpty)
+            breakShiftTextView(breakText: 'Minimum Working Hours For Half Day', breakTimeText: '${controller.minHalfHours}'),
+            if(controller.minFullDayHours != null && controller.minFullDayHours!.isNotEmpty)
             SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Mark As Half Day ( Punch Out Before)', breakTimeText: '02:00 PM'),
+            if(controller.minFullDayHours != null && controller.minFullDayHours!.isNotEmpty)
+            breakShiftTextView(breakText: 'Minimum Working Hours For Full Day', breakTimeText: '${controller.minFullDayHours}'),
             SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Minimum Working Hours For Half Day', breakTimeText: '04 hr 30 min'),
-            SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Minimum Working Hours For Full Day', breakTimeText: '08 hr 30 min'),
-            SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'Max Tea Break', breakTimeText: '1'),
-            SizedBox(height: 6.px),
-            breakShiftTextView(breakText: 'MaxLunch Break', breakTimeText: '1'),
           ],
         ),
       ),

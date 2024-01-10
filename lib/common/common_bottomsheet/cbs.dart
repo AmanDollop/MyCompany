@@ -414,26 +414,25 @@ class BottomSheetForOTP extends GetxController {
 
         userData = userDataModal.value?.userDetails;
 
-        if (userData?.token != null && userData!.token!.isNotEmpty || userData?.personalInfo != null || userData?.contactInfo != null || userData?.jobInfo != null || userData?.socialInfo != null) {
-
-          personalInfo = userData?.personalInfo;
-          contactInfo = userData?.contactInfo;
-          jobInfo = userData?.jobInfo;
-          socialInfo = userData?.socialInfo;
-
-          DataBaseHelper().insertInDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
-
-          DataBaseHelper().insertInDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
-
-          DataBaseHelper().insertInDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
-
-          DataBaseHelper().insertInDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
-
-          DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userToken: userData?.token}, tableName: DataBaseConstant.tableNameForUserToken);
+          // personalInfo = userData?.personalInfo;
+          // contactInfo = userData?.contactInfo;
+          // jobInfo = userData?.jobInfo;
+          // socialInfo = userData?.socialInfo;
+          // DataBaseHelper().insertInDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
+          //
+          // DataBaseHelper().insertInDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
+          //
+          // DataBaseHelper().insertInDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
+          //
+          // DataBaseHelper().insertInDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
+          //
+          // DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userToken: userData?.token}, tableName: DataBaseConstant.tableNameForUserToken);
+          print('userData?.token:::::::: ${userData?.token}');
+          await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail:json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
 
           Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
           CM.showSnackBar(message: 'LogIn Successfully');
-        }
+
       } else {
         verifyButtonValue.value = false;
         CM.error();
@@ -610,7 +609,11 @@ class BottomSheetForOTP extends GetxController {
       if(companyDetailsModal.value != null){
        getCompanyDetails = companyDetailsModal.value?.getCompanyDetails;
        if(getCompanyDetails != null){
-         DataBaseHelper().insertInDataBase(data: getCompanyDetails!.toJson(), tableName: DataBaseConstant.tableNameForCompanyDetail);
+         if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForCompanyDetail)) {
+           await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.companyDetail:json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
+         }else{
+           await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.companyDetail:json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
+         }
        }
       }
     }catch(e){
@@ -619,31 +622,37 @@ class BottomSheetForOTP extends GetxController {
   }
 
   static Future<void> callingGetUserDataApi() async {
+    final userDataFromLocalDataBase = ''.obs;
     try{
 
       userDataModal.value= await CAI.getUserDataApi(bodyParams: {AK.action:'getUserDetails'});
       if(userDataModal.value != null){
         userData = userDataModal.value?.userDetails;
 
-        if(userData?.personalInfo != null){
-          personalInfo = userData?.personalInfo;
-          DataBaseHelper().upDateDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
-        }
+        userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+        userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+        userDataModal.value?.userDetails?.token =  userData?.token;
+        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.userDetail:json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
 
-        if(userData?.contactInfo != null){
-          contactInfo = userData?.contactInfo;
-          DataBaseHelper().upDateDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
-        }
-
-        if(userData?.jobInfo != null){
-          jobInfo = userData?.jobInfo;
-          DataBaseHelper().upDateDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
-        }
-
-        if(userData?.socialInfo != null){
-          socialInfo = userData?.socialInfo;
-          DataBaseHelper().upDateDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
-        }
+        // if(userData?.personalInfo != null){
+        //   personalInfo = userData?.personalInfo;
+        //   DataBaseHelper().upDateDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
+        // }
+        //
+        // if(userData?.contactInfo != null){
+        //   contactInfo = userData?.contactInfo;
+        //   DataBaseHelper().upDateDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
+        // }
+        //
+        // if(userData?.jobInfo != null){
+        //   jobInfo = userData?.jobInfo;
+        //   DataBaseHelper().upDateDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
+        // }
+        //
+        // if(userData?.socialInfo != null){
+        //   socialInfo = userData?.socialInfo;
+        //   DataBaseHelper().upDateDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
+        // }
 
       }
     }catch(e){

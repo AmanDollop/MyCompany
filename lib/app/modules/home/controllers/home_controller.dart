@@ -1,22 +1,29 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/company_details_modal.dart';
+import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import '../../../../common/common_methods/cm.dart';
 
 class HomeController extends GetxController with GetTickerProviderStateMixin {
   late AnimationController animationController;
 
   final count = 0.obs;
+  final apiResValue = true.obs;
 
   final scrollController = ScrollController().obs;
-
 
   final breakValue = false.obs;
 
@@ -28,46 +35,26 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   final bannerIndex = 0.obs;
 
+  final companyDetailFromLocalDataBase = ''.obs;
+  GetCompanyDetails? getCompanyDetails;
+
+  final companyId = ''.obs;
+  final hideUpcomingCelebration = ''.obs;
+  final hideMyDepartment = ''.obs;
+  final hideGallery = ''.obs;
+  final hideBanner = ''.obs;
+  final hideMyTeam = ''.obs;
+
+  final menusModal = Rxn<MenusModal>();
+  List<GetMenu> isLargeMenuList = [];
+  List<GetMenu> isHeadingMenuList = [];
+  Map<String, dynamic> bodyParamsForMenusApi = {};
+
   final bannerList = [
     'https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYRNamIIDEJN4sHp3UuQVpYfwhrsNUZEld0aTCqAs4qMG-X9Wb3IGmvN3CbeSnvDzl_4c&usqp=CAU',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g3P5972LeN4_5J9Dua6oCYn3cBzjSUGys5dhj4qerMbHQY5-TRyMzrmuRe3m6SPz4WU&usqp=CAU'
   ];
-
-  final colorList = [
-    const Color(0xff5FE079),
-    const Color(0xffF36155),
-    const Color(0xffF6BD4C),
-    const Color(0xffA785F3),
-    const Color(0xffCE46C4),
-    const Color(0xff3BACA9),
-    const Color(0xff7558B4),
-    const Color(0xff9D9F22),
-    const Color(0xff7AAEDD),
-    const Color(0xffA2610C),
-    const Color(0xffB04DF6),
-    const Color(0xff7558B4),
-    const Color(0xff9D9F22),
-    const Color(0xff7AAEDD),
-    const Color(0xffA2610C),
-  ].obs;
-
-  final titleList = [
-    'Take Order',
-    'Sales Summery',
-    'Leave Tracker',
-    'Assets',
-    'My Expense',
-    'Work report',
-    'Tasks',
-    'Payslip',
-    'Parcel In/ Out',
-    'My Visits',
-    'Documents',
-    'Tasks',
-    'Payslip',
-    'Parcel In/ Out',
-  ].obs;
 
   final breakTitleList = [
     'Lunch Break',
@@ -81,9 +68,14 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   @override
   Future<void> onInit() async {
     super.onInit();
-    Get.put(DrawerViewController());
-    animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
-    await callingGetLatLongMethod();
+    try{
+      Get.put(DrawerViewController());
+      animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+      await callingGetLatLongMethod();
+    }catch(e){
+      apiResValue.value = false;
+    }
+    apiResValue.value = false;
   }
 
   @override
@@ -118,6 +110,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         //   print('getLatLong?.longitude::::::::  ${getLatLong?.longitude}');
         // });
         // await callingApi();
+        await setDefaultData();
+        await callingMenusApi();
       } else {
         if (AC.isConnect.value) {
           locationAlertDialog();
@@ -126,6 +120,19 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     } catch (e) {
       CM.error();
     }
+  }
+
+  Future<void> setDefaultData() async {
+    companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
+
+    getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
+
+    companyId.value = getCompanyDetails?.companyId ?? '';
+    hideUpcomingCelebration.value = getCompanyDetails?.hideUpcomingCelebration ?? '';
+    hideMyDepartment.value = getCompanyDetails?.hideMyDepartment ?? '';
+    hideGallery.value = getCompanyDetails?.hideGallery ?? '';
+    hideBanner.value = getCompanyDetails?.hideBanner ?? '';
+    hideMyTeam.value = getCompanyDetails?.hideMyTeam ?? '';
   }
 
   locationAlertDialog() async {
@@ -175,7 +182,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
           });
       if (breakCheckBoxValue.value != '' &&
           breakDialogConfirmButtonValue.value) {
-        print('breakCheckBoxValue.value::::::  ${breakCheckBoxValue.value}');
         animationController.reverse();
       }
     } else {
@@ -185,7 +191,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  void clickOnCirculars() {}
+  void clickOnLargeMenus({required int largeMenusIndex}) {}
 
   void clickOnDiscussion() {}
 
@@ -201,4 +207,19 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   void clickOnGalleryViewAllButton() {}
 
+  Future<void> callingMenusApi() async {
+    bodyParamsForMenusApi = {AK.action: 'getDashboardMenu',AK.companyId:companyId.value};
+    menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
+    if(menusModal.value!= null){
+      menusModal.value?.getMenu?.forEach((element) {
+        if(element.isDashboardMenu == '1') {
+          if(element.isLargeMenu == '1'){
+            isLargeMenuList.add(element);
+          }else{
+            isHeadingMenuList.add(element);
+          }
+        }
+      });
+    }
+  }
 }

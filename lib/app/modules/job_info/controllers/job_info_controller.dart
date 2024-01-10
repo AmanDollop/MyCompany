@@ -1,9 +1,19 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
+import '../../../../api/api_model/user_data_modal.dart';
+
 class JobInfoController extends GetxController {
   final count = 0.obs;
+
+  final userDataFromLocalDataBase =''.obs;
+
+  UserDetails? userData;
+
+  JobInfo? jobInfo;
 
   final designation = ''.obs;
   final employeeID = ''.obs;
@@ -42,21 +52,19 @@ class JobInfoController extends GetxController {
 
   Future<void> setDefaultData() async {
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo) != 'null') {
-      designation.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.employeeId,tableName: DataBaseConstant.tableNameForJobInfo) != 'null') {
-      employeeID.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.employeeId,tableName: DataBaseConstant.tableNameForJobInfo);
-    }
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.employeeTypeView,tableName: DataBaseConstant.tableNameForJobInfo) != 'null') {
-      employeeType.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.employeeTypeView,tableName: DataBaseConstant.tableNameForJobInfo);
-    }
+    jobInfo=userData?.jobInfo;
+    
+      designation.value = jobInfo?.userDesignation??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.dateOfJoining,tableName: DataBaseConstant.tableNameForJobInfo) != 'null') {
-      joiningDate.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.dateOfJoining,tableName: DataBaseConstant.tableNameForJobInfo);
-    }
+      employeeID.value = jobInfo?.employeeId??'';
+
+      employeeType.value = jobInfo?.employeeTypeView??'';
+
+      joiningDate.value = jobInfo?.dateOfJoining??'';
 
   }
 
@@ -65,7 +73,6 @@ class JobInfoController extends GetxController {
   }
 
   void clickOnEditButton() {
-    // DataBaseHelper().upDateDataBase(data: data, tableName: DataBaseConstant.tableNameForJobInfo);
     Get.back();
   }
 

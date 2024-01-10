@@ -64,7 +64,7 @@ class CM {
       bool showCloseIcon = false}) {
     backgroundColor = Col.primary;
     if (isFloating) {
-      var snackBar = SnackBar(
+      /*var snackBar = SnackBar(
         elevation: .4,
         showCloseIcon: showCloseIcon,
         closeIconColor: Colors.white,
@@ -80,12 +80,20 @@ class CM {
         behavior: SnackBarBehavior.floating,
         duration: duration ?? const Duration(seconds: 2),
       );
-      ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);
+      ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);*/
+      Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          textColor: Col.inverseSecondary,
+          fontSize: 12.px
+      );
     } else {
-      var snackBar = SnackBar(
+      /*var snackBar = SnackBar(
         elevation: .4,
         showCloseIcon: showCloseIcon,
-        closeIconColor: Colors.white,
+        closeIconColor: Col.inverseSecondary,
         content: Text(
           message,
           style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
@@ -95,16 +103,40 @@ class CM {
         backgroundColor: backgroundColor,
         duration: duration ?? const Duration(seconds: 2),
       );
-      ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);
+      ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);*/
+      Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          textColor: Col.inverseSecondary,
+          fontSize: 12.px
+      );
     }
   }
 
   static void error() {
-    showSnackBar(message: 'Something went wrong!');
+    Fluttertoast.showToast(
+        msg: 'Something went wrong!',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        textColor: Col.inverseSecondary,
+        fontSize: 12.px
+    );
+    // showSnackBar(message: 'Something went wrong!');
   }
 
   static void noInternet() {
-    showSnackBar(message: 'Please check your internet connection');
+    // showSnackBar(message: 'Please check your internet connection');
+    Fluttertoast.showToast(
+        msg: 'Please check your internet connection',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        textColor: Col.inverseSecondary,
+        fontSize: 12.px
+    );
   }
 
   ///flutter pub add shared_preferences --For Local DataBase

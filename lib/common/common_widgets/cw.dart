@@ -14,7 +14,7 @@ import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../common_packages/rating/rating_bar_indicator.dart';
 
 class CW {
@@ -24,7 +24,7 @@ class CW {
   static Widget commonElevatedButton(
       {double? height,
       double? width,
-        double? progressBarHeight,
+      double? progressBarHeight,
       double? progressBarWidth,
       EdgeInsetsGeometry? margin,
       EdgeInsetsGeometry? padding,
@@ -55,14 +55,18 @@ class CW {
       child: isLoading
           ? Center(
               child: SizedBox(
-                height: progressBarHeight??24.px,
-                width: progressBarWidth??24.px,
+                height: progressBarHeight ?? 24.px,
+                width: progressBarWidth ?? 24.px,
                 child: CW.commonProgressBarView(color: Col.primary),
               ),
             )
-          : child ?? Text(
+          : child ??
+              Text(
                 buttonText ?? '',
-                style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px,color: buttonTextColor),
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .displaySmall
+                    ?.copyWith(fontSize: 14.px, color: buttonTextColor),
               ),
     );
   }
@@ -102,14 +106,12 @@ class CW {
                 backgroundColor: backgroundColor ?? Colors.transparent,
                 shadowColor: Colors.transparent,
                 foregroundColor: Col.text,
-                minimumSize: Size(width??56.px, height??56.px)),
+                minimumSize: Size(width ?? 56.px, height ?? 56.px)),
             child: child ??
                 Text(
                   buttonText ?? '',
                   style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: buttonTextColor
-                      ),
+                      fontWeight: FontWeight.w600, color: buttonTextColor),
                 ),
           );
   }
@@ -160,7 +162,8 @@ class CW {
     IconData? icon,
     Color? color,
     Color? splashColor,
-  }) => IconButton(
+  }) =>
+      IconButton(
         onPressed: onPressed,
         splashRadius: size != null ? size + 4.px : 24.px,
         icon: imagePath != null && imagePath.isNotEmpty
@@ -284,11 +287,13 @@ class CW {
   }
 
   /// --------------------------Common Refresh Indicator/Progress Bar Collection--------------------------
-  static Widget commonRefreshIndicator({required Widget child, required RefreshCallback onRefresh}) {
+  static Widget commonRefreshIndicator(
+      {required Widget child, required RefreshCallback onRefresh}) {
     return RefreshIndicator(onRefresh: onRefresh, child: child);
   }
 
-  static Widget commonLinearProgressBar({required double value, double? height}) =>
+  static Widget commonLinearProgressBar(
+          {required double value, double? height}) =>
       ClipRRect(
         borderRadius: BorderRadius.circular(20.px),
         child: LinearProgressIndicator(
@@ -299,9 +304,11 @@ class CW {
         ),
       );
 
-  static commonProgressBarView({Color? color,Color? backgroundColor,double? value}) => CircularProgressIndicator(
+  static commonProgressBarView(
+          {Color? color, Color? backgroundColor, double? value}) =>
+      CircularProgressIndicator(
         backgroundColor: color ?? Col.gray,
-        color:backgroundColor?? Col.inverseSecondary,
+        color: backgroundColor ?? Col.inverseSecondary,
         value: value,
         strokeWidth: 3,
       );
@@ -341,18 +348,18 @@ class CW {
       bool isCountrySelection = false,
       VoidCallback? clickOnArrowDown,
       String selectedCountryCode = "",
-      String countryFlagPath = "", int? maxLength}) {
+      String countryFlagPath = "",
+      int? maxLength}) {
     return Theme(
-      data: ThemeData(
-
-      ),
+      data: ThemeData(),
       child: TextFormField(
         cursorHeight: cursorHeight,
         onTap: onTap,
         controller: controller,
         onChanged: keyboardType == TextInputType.number
             ? (value) {}
-            : onChanged ?? (value) {
+            : onChanged ??
+                (value) {
                   value = value.trim();
                   if (value.isEmpty || value.replaceAll(" ", "").isEmpty) {
                     controller?.text = "";
@@ -373,30 +380,42 @@ class CW {
         decoration: isUnderlineBorder
             ? InputDecoration(
                 labelText: labelText,
-                errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                errorStyle: errorStyle ??
+                    Theme.of(Get.context!)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(color: Col.error),
+                labelStyle:
+                    labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
                 hintText: hintText,
                 fillColor: fillColor ?? Col.inverseSecondary,
                 filled: filled ? true : false,
-                contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                contentPadding: contentPadding ??
+                    EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+                hintStyle:
+                    hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
                 disabledBorder: UnderlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.inverseSecondary, width: 1.px)
                         : BorderSide.none,
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 border: UnderlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.primary, width: 1.px)
                         : BorderSide.none,
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 enabledBorder: UnderlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(
-                            color: filled ? initialBorderColor ?? Col.inverseSecondary : Col.secondary,
+                            color: filled
+                                ? initialBorderColor ?? Col.inverseSecondary
+                                : Col.secondary,
                             width: initialBorderWidth ?? 1.px)
                         : BorderSide.none,
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 errorBorder: UnderlineInputBorder(
                   borderSide: isBorder
                       ? BorderSide(color: Col.error, width: 1.px)
@@ -425,23 +444,32 @@ class CW {
             : InputDecoration(
                 counterText: '',
                 labelText: labelText,
-                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                labelStyle:
+                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                errorStyle: errorStyle ??
+                    Theme.of(Get.context!)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(color: Col.error),
                 hintText: hintText,
                 fillColor: fillColor ?? Col.inverseSecondary,
                 filled: filled,
-                contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
-                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                contentPadding:
+                    contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
+                hintStyle:
+                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 disabledBorder: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.gray, width: 1.px)
                         : BorderSide.none,
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 border: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.primary, width: 1.px)
                         : BorderSide.none,
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 enabledBorder: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(
@@ -450,20 +478,21 @@ class CW {
                                 : Col.secondary,
                             width: initialBorderWidth ?? 1.px)
                         : BorderSide.none,
-                    borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 errorBorder: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.error, width: 1.px)
                         : BorderSide.none,
-                    borderRadius:
-                        BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 suffixIcon: suffixIcon != null
                     ? Padding(
                         padding: suffixPadding ?? EdgeInsets.zero,
                         child: suffixIcon,
                       )
                     : null,
-                   prefixIcon: prefixIcon != null
+                prefixIcon: prefixIcon != null
                     ? Padding(
                         padding: prefixPadding ?? EdgeInsets.zero,
                         child: isCountrySelection
@@ -476,7 +505,8 @@ class CW {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       SizedBox(width: 10.px),
-                                      Icon(Icons.arrow_drop_down,size: 26.px,color: Col.gray),
+                                      Icon(Icons.arrow_drop_down,
+                                          size: 26.px, color: Col.gray),
                                       Center(
                                         child: CW.commonNetworkImageView(
                                             path: countryFlagPath,
@@ -485,7 +515,10 @@ class CW {
                                             width: 20.px),
                                       ),
                                       SizedBox(width: 4.px),
-                                      Text(selectedCountryCode,style: Theme.of(Get.context!).textTheme.titleSmall),
+                                      Text(selectedCountryCode,
+                                          style: Theme.of(Get.context!)
+                                              .textTheme
+                                              .titleSmall),
                                       SizedBox(width: 6.px),
                                       VerticalDivider(
                                         width: 2,
@@ -511,9 +544,13 @@ class CW {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   SizedBox(width: 10.px),
-                                  Text(selectedCountryCode, style: Theme.of(Get.context!).textTheme.titleSmall),
+                                  Text(selectedCountryCode,
+                                      style: Theme.of(Get.context!)
+                                          .textTheme
+                                          .titleSmall),
                                   SizedBox(width: 4.px),
-                                  Icon(Icons.keyboard_arrow_down, size: 20.px, color: Col.secondary),
+                                  Icon(Icons.keyboard_arrow_down,
+                                      size: 20.px, color: Col.secondary),
                                   SizedBox(width: 4.px),
                                   VerticalDivider(
                                     width: 2,
@@ -573,7 +610,8 @@ class CW {
           elevation: elevation ?? 0.px,
           color: Col.inverseSecondary,
           shape: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+              borderRadius:
+                  BorderRadius.circular(borderRadius ?? C.textFieldRadius),
               borderSide: BorderSide.none),
           child: TextFormField(
             textInputAction: textInputAction,
@@ -588,47 +626,55 @@ class CW {
             textCapitalization: textCapitalization,
             style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
             decoration: InputDecoration(
-              labelText: labelText,
-                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-              errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-              hintText: hintText,
-              fillColor: fillColor ?? Col.inverseSecondary,
-              filled: filled,
-              contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px,vertical: 10.px),
-                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-              disabledBorder: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.gray, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              border: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.primary, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(
-                      color: filled
-                          ? initialBorderColor ?? Col.gray
-                          : Col.secondary,
-                      width: initialBorderWidth ?? 1.px)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              errorBorder: OutlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.error, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius:
-                  BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-              suffixIcon: suffixIcon != null
-                  ? Padding(
-                padding: suffixPadding ?? EdgeInsets.zero,
-                child: suffixIcon,
-              )
-                  : null,
-                prefixIcon: prefixIcon
-            ),
+                labelText: labelText,
+                labelStyle:
+                    labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                errorStyle: Theme.of(Get.context!)
+                    .textTheme
+                    .labelMedium
+                    ?.copyWith(color: Col.error),
+                hintText: hintText,
+                fillColor: fillColor ?? Col.inverseSecondary,
+                filled: filled,
+                contentPadding: contentPadding ??
+                    EdgeInsets.symmetric(horizontal: 20.px, vertical: 10.px),
+                hintStyle:
+                    hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                disabledBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.gray, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
+                border: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.primary, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(
+                            color: filled
+                                ? initialBorderColor ?? Col.gray
+                                : Col.secondary,
+                            width: initialBorderWidth ?? 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
+                errorBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.error, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
+                suffixIcon: suffixIcon != null
+                    ? Padding(
+                        padding: suffixPadding ?? EdgeInsets.zero,
+                        child: suffixIcon,
+                      )
+                    : null,
+                prefixIcon: prefixIcon),
           ),
         ),
       ),
@@ -653,7 +699,8 @@ class CW {
     bool centerTitle = false,
     bool isLeading = false,
     bool homeAppBarValue = false,
-  }) => homeAppBarValue
+  }) =>
+      homeAppBarValue
           ? AppBar(
               title: Row(
                 children: [
@@ -665,7 +712,11 @@ class CW {
                   SizedBox(width: 5.px),
                   Text(
                     title,
-                    style: titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
+                    style: titleStyle ??
+                        Theme.of(Get.context!)
+                            .textTheme
+                            .displaySmall
+                            ?.copyWith(fontSize: 16.px),
                   ),
                 ],
               ),
@@ -673,7 +724,8 @@ class CW {
               elevation: elevation,
               centerTitle: centerTitle,
               leading: leading,
-              actions: actions ?? [
+              actions: actions ??
+                  [
                     Center(
                       child: SizedBox(
                         height: 44.px,
@@ -706,7 +758,11 @@ class CW {
           : AppBar(
               title: Text(
                 title,
-                style: titleStyle ?? Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
+                style: titleStyle ??
+                    Theme.of(Get.context!)
+                        .textTheme
+                        .displaySmall
+                        ?.copyWith(fontSize: 16.px),
               ),
               bottom: tabBar,
               elevation: elevation,
@@ -718,7 +774,8 @@ class CW {
                         height: 45.px,
                         width: 45.px,
                         child: Center(
-                          child: leading ?? IconButton(
+                          child: leading ??
+                              IconButton(
                                 onPressed: onBackPressed,
                                 style: IconButton.styleFrom(
                                   backgroundColor: Col.inverseSecondary,
@@ -857,7 +914,8 @@ class CW {
     required List<String> imageList,
     required int selectedIndex,
     EdgeInsetsGeometry? padding,
-    required Function(int index, CarouselPageChangedReason reason)?onPageChanged,
+    required Function(int index, CarouselPageChangedReason reason)?
+        onPageChanged,
     CarouselController? carouselController,
     double? height,
     double? borderRadius,
@@ -881,9 +939,12 @@ class CW {
               items: imageList.isNotEmpty
                   ? imageList.map((image) {
                       return Padding(
-                        padding: padding ?? EdgeInsets.symmetric(horizontal: C.outlineButtonRadius),
+                        padding: padding ??
+                            EdgeInsets.symmetric(
+                                horizontal: C.outlineButtonRadius),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(borderRadius ?? 12.px),
+                          borderRadius:
+                              BorderRadius.circular(borderRadius ?? 12.px),
                           child: Material(
                             color: Col.gray.withOpacity(.1),
                             child: CW.commonNetworkImageView(
@@ -934,7 +995,8 @@ class CW {
     double? cornerRadius,
     Color? activeColor,
     Color? inactiveColor,
-  }) => Padding(
+  }) =>
+      Padding(
         padding: EdgeInsets.only(bottom: bottomPadding ?? 12.px),
         child: CarouselIndicator(
           count: length,
@@ -1065,14 +1127,16 @@ class CW {
     Color? activeFillColor,
     Color? selectedColor,
     Color? selectedFillColor,
-  }) => PinCodeTextField(
+  }) =>
+      PinCodeTextField(
         length: length,
         mainAxisAlignment: mainAxisAlignment,
         appContext: Get.context!,
         cursorColor: cursorColor ?? Col.secondary,
         autoFocus: autoFocus,
         keyboardType: keyboardType,
-        inputFormatters: inputFormatters ?? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+        inputFormatters: inputFormatters ??
+            <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
         readOnly: readOnly,
         textStyle: textStyle ?? Theme.of(Get.context!).textTheme.headlineMedium,
         autoDisposeControllers: false,
@@ -1095,7 +1159,10 @@ class CW {
           borderWidth: borderWidth ?? 1.px,
           borderRadius: BorderRadius.circular(borderRadius ?? 10.px),
         ),
-        enableActiveFill: shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle ? true : false,
+        enableActiveFill:
+            shape == PinCodeFieldShape.box || shape == PinCodeFieldShape.circle
+                ? true
+                : false,
         controller: controller,
         onChanged: onChanged,
         enablePinAutofill: enablePinAutofill,
@@ -1129,7 +1196,8 @@ class CW {
     required String index,
     required String selectedIndex,
     Color? radioColor,
-  }) => Radio(
+  }) =>
+      Radio(
         toggleable: true,
         // fillColor: MaterialStateProperty.all(radioColor ?? Col.primary),
         focusColor: Col.gray,
@@ -1157,7 +1225,8 @@ class CW {
     Color? activeFillColor,
     Color? checkColor,
     Color? borderColor,
-  }) => Checkbox(
+  }) =>
+      Checkbox(
         value: changeValue,
         onChanged: onChanged,
         activeColor: activeFillColor ?? Col.primary,
@@ -1173,7 +1242,8 @@ class CW {
     double? wight,
     double? leftPadding,
     double? rightPadding,
-  }) => Divider(
+  }) =>
+      Divider(
         color: color ?? Col.gray,
         height: height ?? 10.px,
         thickness: wight ?? .5.px,
@@ -1195,7 +1265,9 @@ class CW {
           ImageLoadingBuilder? loadingBuilder,
           Duration? shimmerDuration,
           Color? shimmerBackgroundColor,
-          Color? shimmerMovementColor,String? errorImage}) => InkWell(
+          Color? shimmerMovementColor,
+          String? errorImage}) =>
+      InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
         child: ClipRRect(
@@ -1245,7 +1317,7 @@ class CW {
       Color? movementColor}) {
     return Shimmer.fromColors(
       period: duration ?? const Duration(milliseconds: 2000),
-      baseColor: backgroundColor ?? Col.secondary,
+      baseColor: backgroundColor ?? Col.darkGray,
       highlightColor: movementColor ?? Col.gray,
       enabled: true,
       child: Container(
@@ -1358,13 +1430,15 @@ class CW {
           double? topMargin,
           ScrollController? scrollController,
           VoidCallback? onTab}) => SingleChildScrollView(
-        padding: externalPadding ?? EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
+        padding: externalPadding ??
+            EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
         controller: scrollController,
         physics: const ScrollPhysics(),
         child: Wrap(
           children: List.generate(
               length,
-              child ?? (index) {
+              child ??
+                  (index) {
                     final cellWidth =
                         MediaQuery.of(Get.context!).size.width / crossAxisCount;
                     return SizedBox(
@@ -1408,4 +1482,53 @@ class CW {
         ),
       );
 
+  static CachedNetworkImage commonCachedNetworkImageView(
+      {required String path,
+      double? height,
+      double? width,
+      double? radius,
+      BoxFit fit = BoxFit.fill,
+      GestureTapCallback? onTap,
+      PlaceholderWidgetBuilder? loadingBuilder,
+      Duration? shimmerDuration,
+      Color? shimmerBackgroundColor,
+      Color? shimmerMovementColor,
+      String? errorImage,
+      Color? imageColor}) {
+    return CachedNetworkImage(
+      imageUrl: path,
+      imageBuilder: (context, imageProvider) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(radius ?? 0.px),
+        child: Ink(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(radius ?? 0.px),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: fit,
+            ),
+          ),
+        ),
+      ),
+      placeholder: loadingBuilder ??
+          (context, url) {
+            return CW.commonShimmerViewForImage(
+                height: height,
+                width: width,
+                radius: radius,
+                backgroundColor: shimmerBackgroundColor,
+                duration: shimmerDuration,
+                movementColor: shimmerMovementColor);
+          },
+      errorWidget: (context, url, error) => Image.asset(
+        errorImage ?? 'assets/images/default_image.jpg',
+        height: height,
+        width: width,
+        color: imageColor,
+        fit: fit,
+      ),
+    );
+  }
 }

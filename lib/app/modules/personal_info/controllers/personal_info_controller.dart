@@ -1,11 +1,23 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
+import '../../../../api/api_model/user_data_modal.dart';
+
 class PersonalInfoController extends GetxController {
 
   final count = 0.obs;
+
+  final userDataFromLocalDataBase =''.obs;
+
+  UserDetails? userData;
+  PersonalInfo? personalInfo;
+  ContactInfo? contactInfo;
+  JobInfo? jobInfo;
+  SocialInfo? socialInfo;
 
   final userPic = ''.obs;
   final userFullName = ''.obs;
@@ -18,6 +30,7 @@ class PersonalInfoController extends GetxController {
   final interestHobbies = ''.obs;
   final specialSkills = ''.obs;
   final languagesKnown = ''.obs;
+
 
 
   final apiResponseValue = true.obs;
@@ -50,49 +63,36 @@ class PersonalInfoController extends GetxController {
 
   Future<void> setDefaultData() async {
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    personalInfo=userData?.personalInfo;
+    contactInfo=userData?.contactInfo;
+    jobInfo=userData?.jobInfo;
+    socialInfo=userData?.socialInfo;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      email.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      userPic.value = personalInfo?.userProfilePic ?? '';
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      mobileNumber.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      userFullName.value = personalInfo?.userFullName??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      dob.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      userShortName.value = personalInfo?.shortName??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.bloodGroup,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      bloodGroup.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.bloodGroup,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      dob.value = personalInfo?.memberDateOfBirth??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.gender,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      gender.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.gender,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      bloodGroup.value = personalInfo?.bloodGroup??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.hobbiesAndInterest,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      interestHobbies.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.hobbiesAndInterest,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      gender.value = personalInfo?.gender??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      specialSkills.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      interestHobbies.value = personalInfo?.hobbiesAndInterest??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.languageKnown,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      languagesKnown.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.languageKnown,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      specialSkills.value = personalInfo?.skills??'';
+
+      languagesKnown.value = personalInfo?.languageKnown??'';
+
+      email.value = contactInfo?.userEmail??'';
+
+      mobileNumber.value = contactInfo?.userMobile ?? '';
 
   }
 

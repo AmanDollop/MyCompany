@@ -49,12 +49,10 @@ class EditProfileController extends GetxController {
   final apiResponseValue = true.obs;
   final saveButtonValue = false.obs;
 
-  final userDataModal = Rxn<UserDataModal>();
-  UserDetails? userDetails;
+  final userDataFromLocalDataBase =''.obs;
+  UserDetails? userData;
   PersonalInfo? personalInfo;
   ContactInfo? contactInfo;
-  JobInfo? jobInfo;
-  SocialInfo? socialInfo;
 
   Map<String, dynamic> bodyParamsForGetUserDate = {};
 
@@ -91,28 +89,25 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> setDefaultData() async {
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      firstNameController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFirstName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      lastNameController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userLastName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    personalInfo=userData?.personalInfo;
+    contactInfo=userData?.contactInfo;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      userFullName.value = personalInfo?.userFullName??'';
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.gender, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      genderType.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.gender, tableName: DataBaseConstant.tableNameForPersonalInfo);
+      userShortName.value = personalInfo?.shortName??'';
+
+      firstNameController.text = personalInfo?.userFirstName??'';
+
+      lastNameController.text = personalInfo?.userLastName??'';
+
+      userPic.value = personalInfo?.userProfilePic??'';
+
+      genderType.value = personalInfo?.gender??'';
       if (genderType.value == 'Male') {
         genderIndexValue.value = '0';
       } else if (genderType.value == 'Female') {
@@ -120,48 +115,31 @@ class EditProfileController extends GetxController {
       } else {
         genderIndexValue.value = '-1';
       }
-    }
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.hobbiesAndInterest,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      hobbiesAndInterestController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.hobbiesAndInterest,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      hobbiesAndInterestController.text = personalInfo?.hobbiesAndInterest??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      dob.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.memberDatePOfBirth,tableName: DataBaseConstant.tableNameForPersonalInfo);
+      dob.value = personalInfo?.memberDateOfBirth??'';
       if(dob.value.isNotEmpty){
         DateTime inputDate = DateTime.parse(dob.value);
         String formattedDate = formatDate(inputDate);
         dobController.text = formattedDate.toString();
       }
-    }
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      skillsController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo);
-      skill.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.skills,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      skillsController.text = personalInfo?.skills??'';
+      skill.value = personalInfo?.skills??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.languageKnown,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      languageKnownController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.languageKnown,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      languageKnownController.text = personalInfo?.languageKnown??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.bloodGroup,tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      bloodGroupController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.bloodGroup,tableName: DataBaseConstant.tableNameForPersonalInfo);
-      bloodGroupValue.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.bloodGroup,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+      bloodGroupController.text = personalInfo?.bloodGroup??'';
+      bloodGroupValue.value = personalInfo?.bloodGroup??'';
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      emailController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      emailController.text = contactInfo?.userEmail??'';
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      mobileNumber.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      mobileNumber.value = contactInfo?.userMobile??'';
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.countryCode, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      countryCode.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.countryCode, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      countryCode.value = contactInfo?.countryCode??'';
 
-    if (countryCode.value != 'null' && countryCode.value.isNotEmpty && mobileNumber.value != 'null' && mobileNumber.value.isNotEmpty) {
+      if (countryCode.value != 'null' && countryCode.value.isNotEmpty && mobileNumber.value != 'null' && mobileNumber.value.isNotEmpty) {
       mobileNumberController.text = '${countryCode.value} ${mobileNumber.value}';
     }
 

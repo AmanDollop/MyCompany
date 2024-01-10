@@ -63,7 +63,6 @@ class EducationController extends GetxController {
     getEducationList.clear();
     educationOrAchievementsModal.value = await CAI.getEducationOrAchievementsApi(bodyParams: {AK.action: 'getEducationDetails'});
     if(educationOrAchievementsModal.value != null){
-
       educationOrAchievementsModal.value?.getEducationDetails?.forEach((element) {
         if(element.type == '1'){
           getAchievementsList.add(element);
@@ -71,7 +70,6 @@ class EducationController extends GetxController {
           getEducationList.add(element);
         }
       });
-
 
     }
   }

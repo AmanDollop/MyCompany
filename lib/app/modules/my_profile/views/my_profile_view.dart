@@ -24,93 +24,102 @@ class MyProfileView extends GetView<MyProfileController> {
         controller.count.value;
         return ModalProgress(
           inAsyncCall: controller.apiResponseValue.value,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        profileImageView(),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              nameTextView(),
-                              userDetailTextView(),
-                            ],
+          child: CW.commonRefreshIndicator(
+            onRefresh: () async {
+              controller.apiResponseValue.value=true;
+              await controller.onInit();
+            },
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          profileImageView(),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                nameTextView(),
+                                userDetailTextView(),
+                              ],
+                            ),
                           ),
-                        ),
-                        editButtonView()
-                      ],
-                    ),
-                    SizedBox(height: 20.px),
-                    commonRowForEmailAndNumber(
-                        title: 'Mobile Number',
-                        name: controller.mobileNumber.value != 'null' &&
-                                controller.mobileNumber.isNotEmpty &&
-                                controller.countryCode.value != 'null' &&
-                                controller.countryCode.isNotEmpty
-                            ? '${controller.countryCode} ${controller.mobileNumber}'
-                            : '+91 1234567890'),
-                    SizedBox(height: 2.px),
-                    commonRowForEmailAndNumber(
-                        title: 'Email Address',
-                        name: controller.email.value != 'null' &&
-                                controller.email.isNotEmpty
-                            ? '${controller.email}'
-                            : 'test@gmai.com'),
-                  ],
+                          editButtonView()
+                        ],
+                      ),
+                      SizedBox(height: 20.px),
+                      commonRowForEmailAndNumber(
+                          title: 'Mobile Number',
+                          name: controller.mobileNumber.value != 'null' &&
+                                  controller.mobileNumber.isNotEmpty &&
+                                  controller.countryCode.value != 'null' &&
+                                  controller.countryCode.isNotEmpty
+                              ? '${controller.countryCode} ${controller.mobileNumber}'
+                              : '+91 1234567890'),
+                      SizedBox(height: 2.px),
+                      commonRowForEmailAndNumber(
+                          title: 'Email Address',
+                          name: controller.email.value != 'null' &&
+                                  controller.email.isNotEmpty
+                              ? '${controller.email}'
+                              : 'test@gmai.com'),
+                    ],
+                  ),
                 ),
-              ),
-              commonDividerView(),
-              SizedBox(height: 6.px),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        commonContainerForSocialButton(
-                          imagePath: controller.twitterUrl.isNotEmpty?'assets/images/twitter_dark_image.png':'assets/images/twitter_light_image.png',
-                          onTap: () => controller.clickOnTwitterButton(),
-                        ),
-                        SizedBox(width: 10.px),
-                        commonContainerForSocialButton(
-                        imagePath: controller.linkedinUrl.isNotEmpty?'assets/images/linkdin_dark_image.png':'assets/images/linkdin_light_image.png',
-                          onTap: () => controller.clickOnLinkedinButton(),
-                        ),
-                        SizedBox(width: 10.px),
-                        commonContainerForSocialButton(
-                         imagePath: controller.instagramUrl.isNotEmpty?'assets/images/instagram_dark_image.png':'assets/images/instagram_light_image.png',
-                          onTap: () => controller.clickOnInstagramButton(),
-                        ),
-                        SizedBox(width: 10.px),
-                        commonContainerForSocialButton(
-                         imagePath: controller.facebookUrl.isNotEmpty?'assets/images/facebook_dark_image.png':'assets/images/facebook_light_image.png',
-                          onTap: () => controller.clickOnFacebookButton(),
-                        ),
-                      ],
-                    ),
-                    commonContainerForSocialButton(
-                      imagePath: 'assets/icons/edit_icon.png',
-                      onTap: () => controller.clickOnEditSocialInfoButton(),
-                      width: 36.px,
-                      height: 36.px
-                    ),
-                  ],
+                commonDividerView(),
+                SizedBox(height: 6.px),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.px),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          commonContainerForSocialButton(
+                            imagePath: controller.twitterUrl.value.isNotEmpty
+                                ?'assets/images/twitter_dark_image.png':'assets/images/twitter_light_image.png',
+                            onTap: () => controller.clickOnTwitterButton(),
+                          ),
+                          SizedBox(width: 10.px),
+                          commonContainerForSocialButton(
+                          imagePath: controller.linkedinUrl.isNotEmpty?'assets/images/linkdin_dark_image.png':'assets/images/linkdin_light_image.png',
+                            onTap: () => controller.clickOnLinkedinButton(),
+                          ),
+                          SizedBox(width: 10.px),
+                          commonContainerForSocialButton(
+                           imagePath: controller.instagramUrl.isNotEmpty?'assets/images/instagram_dark_image.png':'assets/images/instagram_light_image.png',
+                            onTap: () => controller.clickOnInstagramButton(),
+                          ),
+                          SizedBox(width: 10.px),
+                          commonContainerForSocialButton(
+                           imagePath: controller.facebookUrl.isNotEmpty?'assets/images/facebook_dark_image.png':'assets/images/facebook_light_image.png',
+                            onTap: () => controller.clickOnFacebookButton(),
+                          ),
+                        ],
+                      ),
+                      commonContainerForSocialButton(
+                        imagePath: 'assets/icons/edit_icon.png',
+                        onTap: () => controller.clickOnEditSocialInfoButton(),
+                        width: 36.px,
+                        height: 36.px
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 6.px),
-              commonDividerView(),
-              SizedBox(height: 16.px),
-              listView(),
-              SizedBox(height: 30.px),
-            ],
+                SizedBox(height: 6.px),
+                commonDividerView(),
+                if(controller.hideMyReportingPerson.value == '0')
+                SizedBox(height: 16.px),
+                reportingPersonListView(),
+                SizedBox(height: 16.px),
+                listView(),
+                SizedBox(height: 30.px),
+              ],
+            ),
           ),
         );
       }),
@@ -241,7 +250,7 @@ class MyProfileView extends GetView<MyProfileController> {
         ),
       );
 
-  Widget commonCardForList({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
+  Widget commonCardForList({required Widget listWidget, required String titleText, VoidCallback? onPressedViewAllButton}) => Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
         shadowColor: Col.secondary.withOpacity(.1),
@@ -253,18 +262,13 @@ class MyProfileView extends GetView<MyProfileController> {
           children: [
             if (titleText != '')
               Padding(
-                padding: EdgeInsets.only(
-                    left: 12.px,
-                    right: 12.px,
-                    top: viewAllButtonValue ? 8.px : 16.px),
+                padding: EdgeInsets.only(left: 12.px, right: 12.px, top: 12.px,bottom: 2.px),
                 child: Row(
-                  mainAxisAlignment: viewAllButtonValue
-                      ? MainAxisAlignment.spaceBetween
-                      : MainAxisAlignment.start,
+                  mainAxisAlignment:MainAxisAlignment.start,
                   children: [
                     Text(
                       titleText,
-                      style: Theme.of(Get.context!).textTheme.displayLarge,
+                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -274,7 +278,7 @@ class MyProfileView extends GetView<MyProfileController> {
         ),
       );
 
-  Widget commonCard({required String imagePath, required String text1, String? text2, bool text2Value = false, bool isAssetImage = true, double? imageWidth, double? imageHeight, double? cardHeight, Gradient? gradient}) => Ink(
+  Widget commonCard({required String imagePath, required String text1, String? text2, bool text2Value = false, bool isAssetImage = true, double? imageWidth, double? imageHeight, double? cardHeight,int? maxLines}) => Ink(
         height: cardHeight ?? 134.px,
         padding: EdgeInsets.only(left: 3.px),
         decoration: BoxDecoration(
@@ -295,12 +299,16 @@ class MyProfileView extends GetView<MyProfileController> {
               // width: 44.px,
               // height: 44.px,
               margin: EdgeInsets.only(top: 12.px),
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, gradient: gradient),
-              child: Center(
-                child: CW.commonNetworkImageView(
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: isAssetImage?
+                  CW.commonNetworkImageView(
+                    path: imagePath,
+                    isAssetImage: isAssetImage,
+                    width: imageWidth ?? 44.px,
+                    height: imageHeight ?? 44.px,)
+                  : Center(
+                child: CW.commonCachedNetworkImageView(
                   path: imagePath,
-                  isAssetImage: isAssetImage,
                   width: imageWidth ?? 44.px,
                   height: imageHeight ?? 44.px,
                 ),
@@ -310,11 +318,8 @@ class MyProfileView extends GetView<MyProfileController> {
             Flexible(
               child: Text(
                 text1,
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
-                maxLines: 2,
+                style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
+                maxLines: maxLines ?? 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
               ),
@@ -322,14 +327,11 @@ class MyProfileView extends GetView<MyProfileController> {
             // if (text2Value)
             // SizedBox(height: 4.px),
             if (text2Value)
-              Flexible(
+            Flexible(
                 child: Text(
                   text2 ?? "",
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .labelMedium
-                      ?.copyWith(fontWeight: FontWeight.w500),
-                  maxLines: 2,
+                  style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
+                  maxLines: maxLines ?? 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                 ),
@@ -338,11 +340,50 @@ class MyProfileView extends GetView<MyProfileController> {
         ),
       );
 
-  Widget listView() {
-    if (controller.getEmployeeDetailsModal.value != null) {
+  Widget reportingPersonListView() {
       if (controller.getEmployeeDetails != null && controller.getEmployeeDetails!.isNotEmpty) {
         return commonCardForList(
-          titleText: '',
+          titleText: 'Reporting Person',
+          listWidget: GridView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(10.px),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.getEmployeeDetails?.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10.px,
+              mainAxisSpacing: 10.px,
+              childAspectRatio: .95
+            ),
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () => controller.getEmployeeDetails?[index].menuClick != null && controller.getEmployeeDetails![index].menuClick!.isNotEmpty
+                        ? controller.clickOnList(listIndex: index)
+                        : CM.error(),
+                borderRadius: BorderRadius.circular(8.px),
+                child: commonCard(
+                    imagePath: 'assets/images/profile.png',
+                    text1: 'Testing Dollop',
+                    text2Value: true,
+                    text2: 'Flutter Developer',
+                  maxLines: 1,
+                ),
+              );
+            },
+          ),
+        );
+      } else {
+        return controller.apiResponseValue.value
+            ? const SizedBox()
+            : CW.commonNoDataFoundText();
+      }
+
+  }
+
+  Widget listView() {
+      if (controller.getEmployeeDetails != null && controller.getEmployeeDetails!.isNotEmpty) {
+        return commonCardForList(
+          titleText: 'Profile Menu',
           listWidget: GridView.builder(
             shrinkWrap: true,
             padding: EdgeInsets.all(10.px),
@@ -387,8 +428,6 @@ class MyProfileView extends GetView<MyProfileController> {
             ? const SizedBox()
             : CW.commonNoDataFoundText();
       }
-    } else {
-      return CW.commonNoDataFoundText(text: controller.apiResponseValue.value ? '' : 'Something went wrong!');
-    }
+
   }
 }

@@ -193,11 +193,15 @@ class DocumentController extends GetxController {
       pdfDownloadValue.value = true;
       Random random = Random();
       int randomNumber = random.nextInt(1000);
-      await download(
-          '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
-          "${getDocumentDetails?[index].documentName}$randomNumber");
-      pdfDownloadValue.value = false;
-      CM.showSnackBar(message: 'PDF downloaded successfully.');
+      if(getDocumentDetails![index].documentFile!.contains('.pdf')){
+        await download(url: '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',filename:  "${getDocumentDetails?[index].documentName}$randomNumber.pdf");
+        pdfDownloadValue.value = false;
+        CM.showSnackBar(message: 'PDF downloaded successfully.');
+      }else{
+        await download(url: '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',filename:  "${getDocumentDetails?[index].documentName}$randomNumber.image");
+        pdfDownloadValue.value = false;
+        CM.showSnackBar(message: 'File downloaded successfully.');
+      }
       Get.back();
     } catch (e) {
       pdfDownloadValue.value = false;
@@ -206,11 +210,7 @@ class DocumentController extends GetxController {
     }
   }
 
-  Widget commonRowForBottomSheet({
-    required String imagePath,
-    required String text,
-    required GestureTapCallback onTap,
-  }) =>
+  Widget commonRowForBottomSheet({required String imagePath,required String text,required GestureTapCallback onTap}) =>
       SizedBox(
         height: 35.px,
         child: InkWell(
@@ -280,8 +280,8 @@ class DocumentController extends GetxController {
     }
   }
 
-  Future download(String url, String filename) async {
-    var savePath = '/storage/emulated/0/Download/$filename.pdf';
+  Future download({required String url, required String filename}) async {
+    var savePath = '/storage/emulated/0/Download/$filename';
     var dio = Dio();
     dio.interceptors.add(LogInterceptor());
     try {
@@ -307,12 +307,8 @@ class DocumentController extends GetxController {
   void showDownloadProgress(received, total) {
     if (total != -1) {
       pdfProgressBarValue.value = received / total;
-      pdfProgressBarPerValue.value =
-          '${(received / total * 100).toStringAsFixed(0) + '%'}';
-      debugPrint(
-          'pdfProgressBarValue.value::::::  ${pdfProgressBarValue.value}');
-      debugPrint(
-          'pdfProgressBarPerValue.value ::::::  ${pdfProgressBarPerValue.value}');
+      pdfProgressBarPerValue.value = '${(received / total * 100).toStringAsFixed(0) + '%'}';
     }
   }
+
 }

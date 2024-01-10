@@ -32,6 +32,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/menu_view/bindings/menu_view_binding.dart';
 import '../modules/menu_view/views/menu_view_view.dart';
+import '../modules/my_face_attendance/bindings/my_face_attendance_binding.dart';
+import '../modules/my_face_attendance/views/my_face_attendance_view.dart';
 import '../modules/my_profile/bindings/my_profile_binding.dart';
 import '../modules/my_profile/views/my_profile_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
@@ -218,6 +220,11 @@ class AppPages {
       name: _Paths.SHIFT_DETAIL,
       page: () => const ShiftDetailView(),
       binding: ShiftDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.MY_FACE_ATTENDANCE,
+      page: () => const MyFaceAttendanceView(),
+      binding: MyFaceAttendanceBinding(),
     ),
   ];
 }

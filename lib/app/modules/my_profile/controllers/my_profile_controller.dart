@@ -1,8 +1,10 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
@@ -11,8 +13,19 @@ import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
+import '../../../../api/api_model/user_data_modal.dart';
+
 class MyProfileController extends GetxController {
   final count = 0.obs;
+
+  final userDataFromLocalDataBase =''.obs;
+
+  UserDetails? userData;
+  PersonalInfo? personalInfo;
+  ContactInfo? contactInfo;
+  JobInfo? jobInfo;
+  SocialInfo? socialInfo;
+
 
   final userPic = ''.obs;
   final userFullName = ''.obs;
@@ -39,8 +52,15 @@ class MyProfileController extends GetxController {
   final getEmployeeDetailsModal = Rxn<GetEmployeeDetailsModal>();
   List<GetEmployeeDetails>? getEmployeeDetails;
 
+  final companyDetailFromLocalDataBase = ''.obs;
+  GetCompanyDetails? getCompanyDetails;
+  final hideMyReportingPerson= ''.obs;
+
+
   final apiResponseValue = true.obs;
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
+
+  final profileMenuDetails= ''.obs;
 
 
   @override
@@ -48,8 +68,10 @@ class MyProfileController extends GetxController {
     super.onInit();
     try {
       await BottomSheetForOTP.callingGetUserDataApi();
+      if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForProfileMenu)) {
+        await callingGetEmployeeDetailsApi();
+      }
       await setDefaultData();
-      await callingGetEmployeeDetailsApi();
     } catch (e) {
       apiResponseValue.value = false;
     }
@@ -69,50 +91,47 @@ class MyProfileController extends GetxController {
   void increment() => count.value++;
 
   Future<void> setDefaultData() async {
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      email.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+    personalInfo=userData?.personalInfo;
+    contactInfo=userData?.contactInfo;
+    jobInfo=userData?.jobInfo;
+    socialInfo=userData?.socialInfo;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      mobileNumber.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile, tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+    profileMenuDetails.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.profileMenuDetails, tableName: DataBaseConstant.tableNameForProfileMenu);
+    getEmployeeDetails = GetEmployeeDetailsModal.fromJson(jsonDecode(profileMenuDetails.value)).getEmployeeDetails;
 
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.countryCode, tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      countryCode.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.countryCode, tableName: DataBaseConstant.tableNameForContactInfo);
+    companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
+    getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
 
-    }
+      userFullName.value = personalInfo?.userFullName ?? '';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo) != 'null') {
-      developer.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo);
-    }
+      userShortName.value = personalInfo?.shortName??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.twitter,tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      twitterUrl.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.twitter,tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+      userPic.value = personalInfo?.userProfilePic??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.linkedin,tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      linkedinUrl.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.linkedin,tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+      email.value = contactInfo?.userEmail??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.instagram,tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      instagramUrl.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.instagram,tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+      mobileNumber.value = contactInfo?.userMobile??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.facebook,tableName: DataBaseConstant.tableNameForSocialInfo) != 'null') {
-      facebookUrl.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.facebook,tableName: DataBaseConstant.tableNameForSocialInfo);
-    }
+      countryCode.value = contactInfo?.countryCode??'';
+
+      developer.value = jobInfo?.userDesignation??'';
+
+      twitterUrl.value = socialInfo?.twitter??'';
+
+      linkedinUrl.value = socialInfo?.linkedin??'';
+
+      instagramUrl.value = socialInfo?.instagram??'';
+
+      facebookUrl.value = socialInfo?.facebook??'';
+
+      hideMyReportingPerson.value = getCompanyDetails?.hideMyReportingPerson ?? '';
+
+    await callingGetEmployeeDetailsApi();
 
   }
 
@@ -129,29 +148,47 @@ class MyProfileController extends GetxController {
   }
 
   Future<void> clickOnList({required int listIndex}) async {
+
+    dynamic arguments = [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName];
+
     if (getEmployeeDetails?[listIndex].menuClick == 'personal') {
-      Get.toNamed(Routes.PERSONAL_INFO,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    } else if (getEmployeeDetails?[listIndex].menuClick == 'contact') {
-      Get.toNamed(Routes.CONTACT_DETAIL,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    } else if (getEmployeeDetails?[listIndex].menuClick == 'job') {
-      Get.toNamed(Routes.JOB_INFO,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    }else if (getEmployeeDetails?[listIndex].menuClick == 'social') {
-      await Get.toNamed(Routes.ADD_SOCIAL_INFO,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
+      Get.toNamed(Routes.PERSONAL_INFO,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'contact') {
+      Get.toNamed(Routes.CONTACT_DETAIL,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'job') {
+      await Get.toNamed(Routes.JOB_INFO,arguments:arguments);
       apiResponseValue.value = true;
       onInit();
-    }else if (getEmployeeDetails?[listIndex].menuClick == 'bank') {
-      Get.toNamed(Routes.BANK_DETAIL,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    }else if (getEmployeeDetails?[listIndex].menuClick == 'education') {
-      Get.toNamed(Routes.EDUCATION,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    }else if (getEmployeeDetails?[listIndex].menuClick == 'experience') {
-      Get.toNamed(Routes.EXPERIENCE,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    }else if (getEmployeeDetails?[listIndex].menuClick == 'promotion') {
-      Get.toNamed(Routes.PROMOTION,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    } else if (getEmployeeDetails?[listIndex].menuClick == 'document') {
-      Get.toNamed(Routes.DOCUMENT,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    } else if (getEmployeeDetails?[listIndex].menuClick == 'shift_detail') {
-      Get.toNamed(Routes.SHIFT_DETAIL,arguments: [getEmployeeDetails?[listIndex].accessType,getEmployeeDetails?[listIndex].isChangeable,getEmployeeDetails?[listIndex].profileMenuName]);
-    } else {
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'social') {
+      await Get.toNamed(Routes.ADD_SOCIAL_INFO,arguments:arguments);
+      apiResponseValue.value = true;
+      onInit();
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'bank') {
+      Get.toNamed(Routes.BANK_DETAIL,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'education') {
+      Get.toNamed(Routes.EDUCATION,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'experience') {
+      Get.toNamed(Routes.EXPERIENCE,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'promotion') {
+      Get.toNamed(Routes.PROMOTION,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'document') {
+      Get.toNamed(Routes.DOCUMENT,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'shift_detail') {
+      Get.toNamed(Routes.SHIFT_DETAIL,arguments:arguments);
+    }
+    else if (getEmployeeDetails?[listIndex].menuClick == 'attendance_face') {
+      Get.toNamed(Routes.MY_FACE_ATTENDANCE,arguments:arguments);
+    }
+    else {
       CM.showSnackBar(message: 'Comming soon.');
     }
   }
@@ -161,6 +198,12 @@ class MyProfileController extends GetxController {
       getEmployeeDetailsModal.value = await CAI.getEmployeeDetailsApi(bodyParams: {AK.action: 'getEmployeeProfileMenu'});
       if (getEmployeeDetailsModal.value != null) {
         getEmployeeDetails = getEmployeeDetailsModal.value?.getEmployeeDetails;
+        if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForProfileMenu)) {
+          await DataBaseHelper().insertInDataBase(data: {'getEmployeeDetails':json.encode(getEmployeeDetailsModal.value)}, tableName: DataBaseConstant.tableNameForProfileMenu);
+        }
+        else{
+          await DataBaseHelper().upDateDataBase(data: {'getEmployeeDetails':json.encode(getEmployeeDetailsModal.value)}, tableName: DataBaseConstant.tableNameForProfileMenu);
+        }
       }
     } catch (e) {
       print('e::::::::  $e');

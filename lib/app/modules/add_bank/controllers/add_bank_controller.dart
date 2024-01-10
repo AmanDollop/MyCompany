@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
@@ -8,11 +10,18 @@ import 'package:http/http.dart' as http;
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
+import '../../../../api/api_model/user_data_modal.dart';
+
 class AddBankController extends GetxController {
 
   final key = GlobalKey<FormState>();
 
   final count = 0.obs;
+
+  final userDataFromLocalDataBase =''.obs;
+
+  UserDetails? userData;
+  PersonalInfo? personalInfo;
 
   final accountHolderNameController = TextEditingController();
   final bankNameController = TextEditingController();
@@ -65,9 +74,14 @@ class AddBankController extends GetxController {
   void increment() => count.value++;
 
   Future<void> localDataBaseData() async {
-    if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-      accountHolderNameController.text =await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+
+    personalInfo=userData?.personalInfo;
+
+      accountHolderNameController.text = personalInfo?.userFullName ?? '';
+
   }
 
   void setDefaultBankData(){

@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_model/company_details_modal.dart';
+import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -36,8 +40,19 @@ class DrawerViewController extends GetxController {
   final userPic = ''.obs;
   final userFullName = ''.obs;
   final userShortName = ''.obs;
-  final companyName = ''.obs;
   final developer = ''.obs;
+
+  final userDataFromLocalDataBase =''.obs;
+
+  UserDetails? userData;
+  PersonalInfo? personalInfo;
+  JobInfo? jobInfo;
+
+
+  final companyDetailValue = false.obs;
+  final companyDetail = ''.obs;
+  GetCompanyDetails? getCompanyDetails;
+
 
   @override
   Future<void> onInit() async {
@@ -65,33 +80,44 @@ class DrawerViewController extends GetxController {
   Future<void> clickOnList({required int index}) async {
     if (index == 0) {
       Get.back();
-    } else if (index == 1) {
+    }
+    else if (index == 1) {
       Get.back();
-    } else if (index == 2) {
+    }
+    else if (index == 2) {
       Get.toNamed(Routes.ADD_EDUCATION);
-    } else if (index == 3) {
+    }
+    else if (index == 3) {
       Get.back();
-    } else if (index == 4) {
+    }
+    else if (index == 4) {
       Get.back();
-    } else if (index == 5) {
+    }
+    else if (index == 5) {
       Get.back();
-    } else if (index == 6) {
+    }
+    else if (index == 6) {
       Get.back();
-    } else if (index == 7) {
+    }
+    else if (index == 7) {
       Get.back();
-    } else {
+    }
+    else {
       Get.back();
       await CD.commonIosLogoutDialog(
         clickOnCancel: () {
           Get.back();
         },
         clickOnLogout: () async {
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
+          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
+          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
+          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
+          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
+          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
           await CM.setString(key: AK.baseUrl, value: '');
           Get.offAllNamed(Routes.SEARCH_COMPANY);
         },
@@ -102,11 +128,22 @@ class DrawerViewController extends GetxController {
 
   Future<void> setDefaultData() async {
 
-    userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    userShortName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shortName,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    userPic.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userProfilePic,tableName: DataBaseConstant.tableNameForPersonalInfo);
-    companyName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyName,tableName: DataBaseConstant.tableNameForCompanyDetail);
-    developer.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDesignation,tableName: DataBaseConstant.tableNameForJobInfo);
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+    personalInfo=userData?.personalInfo;
+    jobInfo=userData?.jobInfo;
+
+    companyDetailValue.value = await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForCompanyDetail);
+    if (!companyDetailValue.value) {
+      companyDetail.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail,tableName: DataBaseConstant.tableNameForCompanyDetail);
+      getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetail.value)).getCompanyDetails;
+    }
+
+    userFullName.value = personalInfo?.userFullName??'';
+    userShortName.value = personalInfo?.shortName??'';
+    userPic.value = personalInfo?.userProfilePic??'';
+    developer.value = jobInfo?.userDesignation??'';
+
 
   }
 

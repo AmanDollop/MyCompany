@@ -13,6 +13,7 @@ import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
+import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
@@ -23,11 +24,33 @@ import 'package:task/common/my_http/my_http.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
-class CAI {
+class CAI extends GetxController{
 
   static Future<String> baseUrlReturn() async {
     String baseUrlAll = await CM.getString(key: AK.baseUrl) ?? '';
     return baseUrlAll;
+  }
+
+  static userToken({bool stringToken = false}) async {
+    final userDataFromLocalDataBase = ''.obs;
+    UserDetails? userData;
+    final token = ''.obs;
+    Map<String, String> authorization = {};
+
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+
+    token.value = '${AK.bearer} ${userData?.token}';
+
+    authorization = {
+      AK.authorization: token.value,
+    };
+    if(stringToken){
+      return token.value;
+    }else{
+      return authorization;
+    }
   }
 
   static Future<SearchCompanyModal?> searchCompanyApi({
@@ -45,8 +68,7 @@ class CAI {
           response: response,
           wantInternetFailResponse: true,
           wantShowFailResponse: true)) {
-        searchCompanyModal =
-            SearchCompanyModal.fromJson(jsonDecode(response.body));
+        searchCompanyModal = SearchCompanyModal.fromJson(jsonDecode(response.body));
         return searchCompanyModal;
       } else {
         return null;
@@ -236,12 +258,7 @@ class CAI {
     String baseUrl = await baseUrlReturn();
 
     CompanyDetailsModal? companyDetailsModal;
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+    Map<String, String> authorization = await userToken();
 
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointCompanyControllerDetailPhpApi}',
@@ -272,12 +289,9 @@ class CAI {
 
     GetEmployeeDetailsModal? getEmployeeDetailsModal;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+
+    Map<String, String> authorization = await userToken();
+
       http.Response? response = await MyHttp.postMethod(
           url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -304,12 +318,8 @@ class CAI {
 
     UserDataModal? getUserData;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+    Map<String, String> authorization = await userToken();
+
       http.Response? response = await MyHttp.postMethod(
           url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -335,7 +345,8 @@ class CAI {
 
     String baseUrl = await baseUrlReturn();
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
+    String? token = await userToken(stringToken: true);
+
     http.Response? response = await MyHttp.multipartRequest(
         url: '$baseUrl${AU.endPointUserControllerApi}',
       bodyParams: bodyParams,
@@ -343,7 +354,7 @@ class CAI {
       userProfileImageKey: AK.userProfilePic,
       image: image,
       multipartRequestType: 'POST',
-      token: '${AK.bearer} $token'
+      token: '$token'
     );
     if (response != null) {
       if (await CM.checkResponse(
@@ -363,12 +374,8 @@ class CAI {
     required Map<String, dynamic> bodyParams,
   }) async {
     String baseUrl = await baseUrlReturn();
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+
+    Map<String, String> authorization = await userToken();
 
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointUserControllerApi}',
@@ -398,12 +405,8 @@ class CAI {
 
     BankDetailModal? bankDetail;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+   Map<String, String> authorization = await userToken();
+
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -430,12 +433,8 @@ class CAI {
 
     EducationDetailsModal? educationModal;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+   Map<String, String> authorization = await userToken();
+
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -487,12 +486,8 @@ class CAI {
 
     DocumentModal? documentModal;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+   Map<String, String> authorization = await userToken();
+
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -519,12 +514,8 @@ class CAI {
 
     ExperienceModal? experienceModal;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+   Map<String, String> authorization = await userToken();
+
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -551,12 +542,8 @@ class CAI {
 
     PromotionModal? promotionModal;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+   Map<String, String> authorization = await userToken();
+
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointUserControllerApi}',
         bodyParams: bodyParams,
@@ -583,12 +570,8 @@ class CAI {
 
     ShiftDetailsModal? shiftDetailsModal;
 
-    String? token = await DataBaseHelper().getParticularData(key: DataBaseConstant.userToken, tableName: DataBaseConstant.tableNameForUserToken);
-    Map<String, String> authorization = {};
-    authorization = {
-      // AK.accept: AK.applicationJson,
-      AK.authorization: '${AK.bearer} $token',
-    };
+   Map<String, String> authorization = await userToken();
+
     http.Response? response = await MyHttp.postMethod(
         url: '$baseUrl${AU.endPointShiftControllerApi}',
         bodyParams: bodyParams,
@@ -599,6 +582,31 @@ class CAI {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         shiftDetailsModal = ShiftDetailsModal.fromJson(jsonDecode(response.body));
         return shiftDetailsModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<MenusModal?> menusApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    MenusModal? menusModal;
+    http.Response? response = await MyHttp.postMethod(
+      url: AU.endPointCompanyControllerApi,
+      bodyParams: bodyParams,
+      context: Get.context!,
+      showSnackBar: false,
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        menusModal = MenusModal.fromJson(jsonDecode(response.body));
+        return menusModal;
       } else {
         return null;
       }

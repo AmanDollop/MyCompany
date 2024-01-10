@@ -1,7 +1,8 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/modules/home/controllers/home_controller.dart';
 import 'package:task/app/modules/home/views/home_view.dart';
@@ -10,22 +11,30 @@ import 'package:task/app/modules/menu_view/views/menu_view_view.dart';
 import 'package:task/app/modules/utilities/controllers/utilities_controller.dart';
 import 'package:task/app/modules/utilities/views/utilities_view.dart';
 import 'package:task/app/routes/app_pages.dart';
-import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class BottomNavigationController extends GetxController {
 
   final count = 0.obs;
+
+  final userDataFromLocalDataBase =''.obs;
+  UserDetails? userData;
+  PersonalInfo? personalInfo;
+
   final userFullName = ''.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     try{
-      if (await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo) != 'null') {
-        userFullName.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userFullName, tableName: DataBaseConstant.tableNameForPersonalInfo);
-      }
+      userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+
+      userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+      personalInfo=userData?.personalInfo;
+
+      userFullName.value = personalInfo?.userFullName??'';
+
     }catch(e){}
   }
 

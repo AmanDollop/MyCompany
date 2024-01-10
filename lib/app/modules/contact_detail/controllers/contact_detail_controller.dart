@@ -1,16 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/country_code_modal.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
-import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
-import 'package:task/theme/colors/colors.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../../api/api_model/user_data_modal.dart';
 
 class ContactDetailController extends GetxController {
 
@@ -24,8 +26,15 @@ class ContactDetailController extends GetxController {
   final permanentAddressController = TextEditingController();
 
   final mobileNumber = ''.obs;
-  final countryId = ''.obs;
   final countryCode = ''.obs;
+
+  final companyDetail = ''.obs;
+  GetCompanyDetails? getCompanyDetails;
+
+  final userDataFromLocalDataBase =''.obs;
+  UserDetails? userData;
+  ContactInfo? contactInfo;
+
 
   final countryCodeModal = Rxn<CountryCodeModal?>();
   List<CountryCodeList>? countryCodeList;
@@ -79,36 +88,27 @@ class ContactDetailController extends GetxController {
   void increment() => count.value++;
 
   Future<void> setDefaultData() async {
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      mobileNumber.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile,tableName: DataBaseConstant.tableNameForContactInfo);
-      contactController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userMobile,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.whatsappNumber,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      whatsappController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.whatsappNumber,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
 
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+    contactInfo=userData?.contactInfo;
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      companyEmailController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.userEmail,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+    companyDetail.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail,tableName: DataBaseConstant.tableNameForCompanyDetail);
+    getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetail.value)).getCompanyDetails;
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.personalEmail,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      personalEmailController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.personalEmail,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      mobileNumber.value = contactInfo?.userMobile??'';
+      contactController.text = contactInfo?.userMobile??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.currentAddress,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      currentAddressController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.currentAddress,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      whatsappController.text =  contactInfo?.whatsappNumber??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.permanentAddress,tableName: DataBaseConstant.tableNameForContactInfo) != 'null') {
-      permanentAddressController.text = await DataBaseHelper().getParticularData(key: DataBaseConstant.permanentAddress,tableName: DataBaseConstant.tableNameForContactInfo);
-    }
+      companyEmailController.text =  contactInfo?.userEmail??'';
 
-    if(await DataBaseHelper().getParticularData(key: DataBaseConstant.countryId,tableName: DataBaseConstant.tableNameForCompanyDetail) != 'null') {
-      countryId.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.countryId,tableName: DataBaseConstant.tableNameForCompanyDetail);
-      print('countryId.value:::::  ${countryId.value}');
-    }
+      personalEmailController.text =  contactInfo?.personalEmail??'';
+
+      currentAddressController.text =  contactInfo?.currentAddress??'';
+
+      permanentAddressController.text =  contactInfo?.permanentAddress??'';
 
   }
 
@@ -136,7 +136,7 @@ class ContactDetailController extends GetxController {
       if (countryCodeModal.value != null) {
         countryCodeList = countryCodeModal.value?.countryCode ?? [];
         countryCodeList?.forEach((element) {
-          if(element.countryId == countryId.value){
+          if(element.countryId == getCompanyDetails?.countryId){
             countryCode.value = element.phonecode ??'';
             countryImagePath.value = "${AU.baseUrlAllApisImage}${element.flag}";
             print('countryImagePath.value::::::  ${countryImagePath.value}');
@@ -151,88 +151,6 @@ class ContactDetailController extends GetxController {
 
   Future<void> clickOnCountryCode() async {
     CM.unFocusKeyBoard();
-    // await CBS.commonBottomSheetForCountry(
-    //   searchController: searchCountryController,
-    //   onChanged: (value) {
-    //     countryCodeListSearch.clear();
-    //     if (value.isEmpty) {
-    //       return;
-    //     } else {
-    //       countryCodeList?.forEach((countryCodeAllData) {
-    //         if (countryCodeAllData.countryName!.toLowerCase().contains(value.toLowerCase().trim())) {
-    //           if (countryCodeAllData.countryName?.toLowerCase().trim().contains(value.toLowerCase().trim()) != null) {
-    //             countryCodeListSearch.add(countryCodeAllData);
-    //           } else {
-    //             countryCodeListSearch = [];
-    //           }
-    //         }
-    //       });
-    //       count.value++;
-    //     }
-    //   },
-    //   child: Obx(() {
-    //     count.value;
-    //     return ListView.builder(
-    //       physics: const ScrollPhysics(),
-    //       padding: EdgeInsets.only(bottom: 20.px),
-    //       shrinkWrap: true,
-    //       itemCount: searchCountryController.text.isNotEmpty
-    //           ? countryCodeListSearch.length
-    //           : countryCodeList?.length,
-    //       itemBuilder: (context, index) {
-    //         return InkWell(
-    //           onTap: () => clickOnCountryDropDownValue(index: index),
-    //           borderRadius: BorderRadius.circular(2.px),
-    //           splashColor: Col.primary.withOpacity(.2),
-    //           child: Column(
-    //             children: [
-    //               Padding(
-    //                 padding: EdgeInsets.symmetric(vertical: 5.px),
-    //                 child: Row(
-    //                   children: [
-    //                     Padding(
-    //                       padding: EdgeInsets.all(5.px),
-    //                       child: CW.commonNetworkImageView(
-    //                         path: searchCountryController.text.isNotEmpty
-    //                             ? '${AU.baseUrlAllApisImage}${countryCodeListSearch[index].flag}'
-    //                             : '${AU.baseUrlAllApisImage}${countryCodeList?[index].flag}',
-    //                         isAssetImage: false,
-    //                         height: 18.px,
-    //                         width: 28.px,
-    //                       ),
-    //                     ),
-    //                     SizedBox(width: 6.px),
-    //                     Text(
-    //                       searchCountryController.text.isNotEmpty
-    //                           ?'${countryCodeListSearch[index].phonecode}'
-    //                           :'${countryCodeList?[index].phonecode}',
-    //                       style: Theme.of(context).textTheme.labelSmall,
-    //                     ),
-    //                     SizedBox(width: 10.px),
-    //                     Flexible(
-    //                       child: Text(
-    //                         searchCountryController.text.isNotEmpty
-    //                             ?'${countryCodeListSearch[index].countryName}'
-    //                             :'${countryCodeList?[index].countryName}',
-    //                         style: Theme.of(context).textTheme.titleSmall,
-    //                         maxLines: 2,
-    //                         overflow: TextOverflow.ellipsis,
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //               CW.commonDividerView(height: 0.px),
-    //             ],
-    //           ),
-    //         );
-    //       },
-    //     );
-    //   }),
-    // ).whenComplete(() {
-    //   searchCountryController.clear();
-    //   countryCodeListSearch.clear();
-    // });
   }
 
   void clickOnCountryDropDownValue({required int index}) {

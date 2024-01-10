@@ -29,6 +29,15 @@ class GetCompanyDetails {
   String? companyLatitude;
   String? companyLongitude;
   String? companyLogo;
+  String? hideUpcomingCelebration;
+  String? hideMyDepartment;
+  String? hideGallery;
+  String? hideBanner;
+  String? hideMyTeam;
+  String? hideMyReportingPerson;
+  String? attendanceSelfieRequired;
+  String? restrictAttendanceOutOfRange;
+  String? workReportRequiredOnPunchOut;
 
   GetCompanyDetails(
       {this.companyId,
@@ -37,7 +46,16 @@ class GetCompanyDetails {
         this.companyAddress,
         this.companyLatitude,
         this.companyLongitude,
-        this.companyLogo});
+        this.companyLogo,
+        this.hideUpcomingCelebration,
+        this.hideMyDepartment,
+        this.hideGallery,
+        this.hideBanner,
+        this.hideMyTeam,
+        this.hideMyReportingPerson,
+        this.attendanceSelfieRequired,
+        this.restrictAttendanceOutOfRange,
+        this.workReportRequiredOnPunchOut});
 
   GetCompanyDetails.fromJson(Map<String, dynamic> json) {
     companyId = json['company_id'];
@@ -47,6 +65,15 @@ class GetCompanyDetails {
     companyLatitude = json['company_latitude'];
     companyLongitude = json['company_longitude'];
     companyLogo = json['company_logo'];
+    hideUpcomingCelebration = json['hide_upcoming_celebration'];
+    hideMyDepartment = json['hide_my_department'];
+    hideGallery = json['hide_gallery'];
+    hideBanner = json['hide_banner'];
+    hideMyTeam = json['hide_my_team'];
+    hideMyReportingPerson = json['hide_my_reporting_person'];
+    attendanceSelfieRequired = json['attendance_selfie_required'];
+    restrictAttendanceOutOfRange = json['restrict_attendance_out_of_range'];
+    workReportRequiredOnPunchOut = json['work_report_required_on_punch_out'];
   }
 
   Map<String, dynamic> toJson() {
@@ -58,6 +85,17 @@ class GetCompanyDetails {
     data['company_latitude'] = companyLatitude;
     data['company_longitude'] = companyLongitude;
     data['company_logo'] = companyLogo;
+    data['hide_upcoming_celebration'] = hideUpcomingCelebration;
+    data['hide_my_department'] = hideMyDepartment;
+    data['hide_gallery'] = hideGallery;
+    data['hide_banner'] = hideBanner;
+    data['hide_my_team'] = hideMyTeam;
+    data['hide_my_reporting_person'] = hideMyReportingPerson;
+    data['attendance_selfie_required'] = attendanceSelfieRequired;
+    data['restrict_attendance_out_of_range'] =
+        restrictAttendanceOutOfRange;
+    data['work_report_required_on_punch_out'] =
+        workReportRequiredOnPunchOut;
     return data;
   }
 }
