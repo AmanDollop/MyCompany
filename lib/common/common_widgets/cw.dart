@@ -341,6 +341,7 @@ class CW {
       double? cursorHeight,
       bool isBorder = true,
       bool autofocus = false,
+      bool isSearchLabelText = true,
       bool readOnly = false,
       bool filled = true,
       bool isUnderlineBorder = false,
@@ -379,23 +380,15 @@ class CW {
         maxLength: maxLength,
         decoration: isUnderlineBorder
             ? InputDecoration(
-                labelText: labelText,
-                errorStyle: errorStyle ??
-                    Theme.of(Get.context!)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(color: Col.error),
-                labelStyle:
-                    labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                labelText: isSearchLabelText?'':labelText,
+                errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
                 hintText: hintText,
                 fillColor: fillColor ?? Col.inverseSecondary,
                 filled: filled ? true : false,
-                contentPadding: contentPadding ??
-                    EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-                hintStyle:
-                    hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-                disabledBorder: UnderlineInputBorder(
-                    borderSide: isBorder
+                contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                disabledBorder: UnderlineInputBorder(borderSide: isBorder
                         ? BorderSide(color: Col.inverseSecondary, width: 1.px)
                         : BorderSide.none,
                     borderRadius: BorderRadius.circular(
@@ -420,8 +413,7 @@ class CW {
                   borderSide: isBorder
                       ? BorderSide(color: Col.error, width: 1.px)
                       : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
                 ),
                 constraints: labelText != null && labelText.isNotEmpty
                     ? null

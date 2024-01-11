@@ -143,6 +143,8 @@ class AU {
 
   static const endPointShiftControllerApi = "api/ShiftController.php";
 
+  static const endPointAttendanceControllerApi = "api/AttendanceController.php";
+
 
 
 

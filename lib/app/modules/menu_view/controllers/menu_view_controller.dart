@@ -21,6 +21,7 @@ class MenuViewController extends GetxController {
 
   final companyId = ''.obs;
 
+  final appMenuFromLocalDataBase = ''.obs;
   final menusModal = Rxn<MenusModal>();
   List<GetMenu> getMenuList = [];
   List<GetMenu> getMenuListForSearch = [];
@@ -31,7 +32,7 @@ class MenuViewController extends GetxController {
     super.onInit();
     try {
       await setDefaultData();
-      await callingMenusApi();
+      // await callingMenusApi();
     } catch (e) {
       apiResValue.value = false;
     }
@@ -56,22 +57,33 @@ class MenuViewController extends GetxController {
     getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
 
     companyId.value = getCompanyDetails?.companyId ?? '';
+
+    appMenuFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus, tableName: DataBaseConstant.tableNameForAppMenu);
+
+    menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
+
+    menusModal.value?.getMenu?.forEach((element) {
+      if(element.isDashboardMenu != '1'){
+        getMenuList.add(element);
+      }
+    });
+
   }
 
   willPop() {
     selectedBottomNavigationIndex.value = 0;
   }
 
-  Future<void> callingMenusApi() async {
+ /* Future<void> callingMenusApi() async {
     bodyParamsForMenusApi = {
       AK.action: 'getDashboardMenu',
       AK.companyId: companyId.value
     };
     menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
     if (menusModal.value != null) {
-      getMenuList = menusModal.value?.getMenu ?? [];
+
     }
-  }
+  }*/
 
   void searchOnChange({required String value}) {
     apiResValue.value = true;

@@ -76,7 +76,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
   Widget searchTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.searchController,
-        labelText: 'Search your Company',
+        isSearchLabelText: true,
         hintText: 'Search your Company',
         prefixIcon: commonIconImage(imagePath: 'assets/icons/search_icon.png'),
         suffixIcon: commonIconImage(imagePath: 'assets/icons/audio_icon.png'),

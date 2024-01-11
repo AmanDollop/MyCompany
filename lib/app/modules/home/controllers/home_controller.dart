@@ -36,14 +36,19 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final bannerIndex = 0.obs;
 
   final companyDetailFromLocalDataBase = ''.obs;
-  GetCompanyDetails? getCompanyDetails;
 
+  GetCompanyDetails? getCompanyDetails;
   final companyId = ''.obs;
+
   final hideUpcomingCelebration = ''.obs;
   final hideMyDepartment = ''.obs;
   final hideGallery = ''.obs;
   final hideBanner = ''.obs;
   final hideMyTeam = ''.obs;
+
+
+  final appMenuFromLocalDataBase = ''.obs;
+  final isDatabaseHaveDataForAppMenu = true.obs;
 
   final menusModal = Rxn<MenusModal>();
   List<GetMenu> isLargeMenuList = [];
@@ -71,7 +76,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     try{
       Get.put(DrawerViewController());
       animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
-      await callingGetLatLongMethod();
+        await callingGetLatLongMethod();
     }catch(e){
       apiResValue.value = false;
     }
@@ -110,8 +115,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         //   print('getLatLong?.longitude::::::::  ${getLatLong?.longitude}');
         // });
         // await callingApi();
+        isDatabaseHaveDataForAppMenu.value = await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu);
         await setDefaultData();
-        await callingMenusApi();
       } else {
         if (AC.isConnect.value) {
           locationAlertDialog();
@@ -123,6 +128,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> setDefaultData() async {
+
     companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
 
     getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
@@ -133,6 +139,28 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     hideGallery.value = getCompanyDetails?.hideGallery ?? '';
     hideBanner.value = getCompanyDetails?.hideBanner ?? '';
     hideMyTeam.value = getCompanyDetails?.hideMyTeam ?? '';
+
+    if(isDatabaseHaveDataForAppMenu.value) {
+      await callingMenusApi();
+    }else{
+      appMenuFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus, tableName: DataBaseConstant.tableNameForAppMenu);
+
+      menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
+
+      menusModal.value?.getMenu?.forEach((element) {
+        if(element.isDashboardMenu == '1') {
+          if(element.isLargeMenu == '1'){
+            isLargeMenuList.add(element);
+          }else{
+            isHeadingMenuList.add(element);
+          }
+        }
+      });
+
+      await callingMenusApi();
+    }
+
+
   }
 
   locationAlertDialog() async {
@@ -211,15 +239,22 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     bodyParamsForMenusApi = {AK.action: 'getDashboardMenu',AK.companyId:companyId.value};
     menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
     if(menusModal.value!= null){
-      menusModal.value?.getMenu?.forEach((element) {
-        if(element.isDashboardMenu == '1') {
-          if(element.isLargeMenu == '1'){
-            isLargeMenuList.add(element);
-          }else{
-            isHeadingMenuList.add(element);
+      if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu)) {
+        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.appMenus:json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
+        menusModal.value?.getMenu?.forEach((element) {
+          if(element.isDashboardMenu == '1') {
+            if(element.isLargeMenu == '1'){
+              isLargeMenuList.add(element);
+            }else{
+              isHeadingMenuList.add(element);
+            }
           }
-        }
-      });
+        });
+      }
+      else{
+        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.appMenus:json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
+      }
     }
   }
+
 }

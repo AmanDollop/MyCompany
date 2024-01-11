@@ -25,54 +25,62 @@ class HomeView extends GetView<HomeController> {
               }*/
               return false;
             },
-            child: ModalProgress(
-              inAsyncCall: controller.apiResValue.value,
-              child: ListView(
-                controller: controller.scrollController.value,
-                padding: EdgeInsets.symmetric(vertical: 16.px,horizontal: 0.px),
-                children: [
-                  breakView(),
-                  commonSwitchButtonView(),
-                  if(controller.hideBanner.value == '0')
-                  SizedBox(height: 16.px),
-                  if(controller.hideBanner.value == '0')
-                  bannerView(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
-                    child: Column(
-                      children: [
-                        isLargeMenuListView(),
-                        if(controller.hideUpcomingCelebration.value == '0')
-                        SizedBox(height: 14.px),
-                        if(controller.hideUpcomingCelebration.value == '0')
-                        upcomingCelebrationsButtonView(),
-                      ],
+            child: CW.commonRefreshIndicator(
+              onRefresh: () async {
+                controller.apiResValue.value = true;
+                controller.isLargeMenuList.clear();
+                controller.isHeadingMenuList.clear();
+                await controller.onInit();
+              },
+              child: ModalProgress(
+                inAsyncCall: controller.apiResValue.value,
+                child: ListView(
+                  controller: controller.scrollController.value,
+                  padding: EdgeInsets.symmetric(vertical: 16.px,horizontal: 0.px),
+                  children: [
+                    breakView(),
+                    commonSwitchButtonView(),
+                    if(controller.hideBanner.value == '0')
+                    SizedBox(height: 16.px),
+                    if(controller.hideBanner.value == '0')
+                    bannerView(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
+                      child: Column(
+                        children: [
+                          isLargeMenuListView(),
+                          if(controller.hideUpcomingCelebration.value == '0')
+                          SizedBox(height: 14.px),
+                          if(controller.hideUpcomingCelebration.value == '0')
+                          upcomingCelebrationsButtonView(),
+                        ],
+                      ),
                     ),
-                  ),
-                  headingListView(),
-                  if(controller.hideMyTeam.value == '0')
-                  SizedBox(height: 14.px),
-                  if(controller.hideMyTeam.value == '0')
-                  myTeamListView(),
-                  if(controller.hideMyDepartment.value == '0')
-                  SizedBox(height: 14.px),
-                  if(controller.hideMyDepartment.value == '0')
-                  yourDepartmentListView(),
-                  if(controller.hideGallery.value == '0')
-                  Padding(
-                    padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        cardTextView(text: 'Gallery', fontSize: 16.px),
-                        viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
-                      ],
+                    headingListView(),
+                    if(controller.hideMyTeam.value == '0')
+                    SizedBox(height: 14.px),
+                    if(controller.hideMyTeam.value == '0')
+                    myTeamListView(),
+                    if(controller.hideMyDepartment.value == '0')
+                    SizedBox(height: 14.px),
+                    if(controller.hideMyDepartment.value == '0')
+                    yourDepartmentListView(),
+                    if(controller.hideGallery.value == '0')
+                    Padding(
+                      padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          cardTextView(text: 'Gallery', fontSize: 16.px),
+                          viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
+                        ],
+                      ),
                     ),
-                  ),
-                  if(controller.hideGallery.value == '0')
-                  galleryListView(),
-                  SizedBox(height: 10.px),
-                ],
+                    if(controller.hideGallery.value == '0')
+                    galleryListView(),
+                    SizedBox(height: 10.px),
+                  ],
+                ),
               ),
             ),
           );

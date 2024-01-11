@@ -50,15 +50,11 @@ class SplashController extends GetxController {
 
 
   Future<void> createDataBaseTables() async {
-    // await DataBaseHelper().createTableInDataBaseForToken(db: database!);
-    // await DataBaseHelper().createTableInDataBaseForPersonalInfo(db: database!,);
-    // await DataBaseHelper().createTableInDataBaseForContactInfo(db: database!);
-    // await DataBaseHelper().createTableInDataBaseForJobInfo(db: database!);
-    // await DataBaseHelper().createTableInDataBaseForSocialInfo(db: database!);
     await DataBaseHelper().createTableInDataBaseForUserDetail(db: database!);
     await DataBaseHelper().createTableInDataBaseForCompanyDetail(db: database!);
     await DataBaseHelper().createTableInDataBaseForProfileMenu(db: database!);
     await DataBaseHelper().createTableInDataBaseForShiftDetail(db: database!);
+    await DataBaseHelper().createTableInDataBaseForAppMenu(db: database!);
   }
 
   Future<void> dataBaseCalling() async {
@@ -84,15 +80,11 @@ class SplashController extends GetxController {
   }
 
   Future<void> dataBaseDeleteMethod() async {
-    // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
-    // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
-    // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
-    // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
-    // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
   }
 
 }

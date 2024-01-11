@@ -109,15 +109,11 @@ class DrawerViewController extends GetxController {
           Get.back();
         },
         clickOnLogout: () async {
-          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserToken);
-          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForPersonalInfo);
-          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForContactInfo);
-          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForJobInfo);
-          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForSocialInfo);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
           await CM.setString(key: AK.baseUrl, value: '');
           Get.offAllNamed(Routes.SEARCH_COMPANY);
         },

@@ -41,82 +41,17 @@ class DataBaseHelper {
         )''');
   }
 
-  // createTableInDataBaseForToken({required Database db}) async {
-  //   await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForUserToken}
-  //       (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
-  //       , ${DataBaseConstant.userToken} ${DataBaseType.textType}
-  //       )''');
-  // }
-  //
-  // createTableInDataBaseForPersonalInfo({required Database db}) async {
-  //   await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForPersonalInfo}
-  //       (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
-  //       , ${DataBaseConstant.companyId} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userFirstName} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userMiddleName} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userLastName} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userFullName} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.gender} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.bloodGroup} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userProfilePic} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.memberDatePOfBirth} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.hobbiesAndInterest} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.skills} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.languageKnown} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.shortName} ${DataBaseType.textType}
-  //       )''');
-  // }
-  //
-  // createTableInDataBaseForContactInfo({required Database db}) async {
-  //   await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForContactInfo}
-  //       (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
-  //       , ${DataBaseConstant.countryCode} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userMobile} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.whatsappCountryCode} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.whatsappNumber} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.personalEmail} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userEmail} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.currentAddress} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.permanentAddress} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userMobilePrivacy} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.whatsappNumberPrivacy} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.userEmailPrivacy} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.personalEmailPrivacy} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.currentAddressPrivacy} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.permanentAddressPrivacy} ${DataBaseType.textType}
-  //       )''');
-  // }
-  //
-  // createTableInDataBaseForJobInfo({required Database db}) async {
-  //   await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForJobInfo}
-  //       (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
-  //       , ${DataBaseConstant.userDesignation} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.dateOfJoining} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.employeeId} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.employeeType} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.employeeTypeView} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.branchName} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.departmentName} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.branchId} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.departmentId} ${DataBaseType.textType}
-  //       )''');
-  // }
-  //
-  // createTableInDataBaseForSocialInfo({required Database db}) async {
-  //   await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForSocialInfo}
-  //       (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
-  //       , ${DataBaseConstant.twitter} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.linkedin} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.instagram} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.facebook} ${DataBaseType.textType}
-  //       , ${DataBaseConstant.socialLinksPrivacy} ${DataBaseType.textType}
-  //       )''');
-  // }
-
   createTableInDataBaseForProfileMenu({required Database db}) async {
     await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForProfileMenu}  
         (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
         , ${DataBaseConstant.profileMenuDetails} ${DataBaseType.textType}
+        )''');
+  }
+
+  createTableInDataBaseForAppMenu({required Database db}) async {
+    await db.execute('''CREATE TABLE IF NOT EXISTS ${DataBaseConstant.tableNameForAppMenu}  
+        (${DataBaseConstant.columnId} ${DataBaseType.autoIncrementUserId}
+        , ${DataBaseConstant.appMenus} ${DataBaseType.textType}
         )''');
   }
 
