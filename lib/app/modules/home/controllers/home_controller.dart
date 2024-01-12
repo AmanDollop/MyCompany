@@ -409,6 +409,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       http.Response? response = await  CAI.attendancePunchInApi(bodyParams: bodyParamsForAttendancePunchInApi,image: File(''));
       if(response!=null){
         if(response.statusCode==200){
+
           CM.showSnackBar(message: 'Punch In Successful');
         }else{
           CM.error();
