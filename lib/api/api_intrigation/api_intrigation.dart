@@ -615,4 +615,36 @@ class CAI extends GetxController{
     }
   }
 
+  static Future<http.Response?> attendancePunchInApi({
+    required Map<String, dynamic> bodyParams,
+    File? image
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await userToken(stringToken: true);
+
+    http.Response? response = await MyHttp.multipartRequest(
+        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        userProfileImageKey: AK.userProfilePic,
+        image: image,
+        multipartRequestType: 'POST',
+        token: '$token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }

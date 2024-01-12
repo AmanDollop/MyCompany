@@ -34,6 +34,7 @@ abstract class Routes {
   static const ADD_EXPERIENCE = _Paths.ADD_EXPERIENCE;
   static const SHIFT_DETAIL = _Paths.SHIFT_DETAIL;
   static const MY_FACE_ATTENDANCE = _Paths.MY_FACE_ATTENDANCE;
+  static const CIRCULAR = _Paths.CIRCULAR;
 }
 
 abstract class _Paths {
@@ -69,4 +70,5 @@ abstract class _Paths {
   static const ADD_EXPERIENCE = '/add-experience';
   static const SHIFT_DETAIL = '/shift-detail';
   static const MY_FACE_ATTENDANCE = '/my-face-attendance';
+  static const CIRCULAR = '/circular';
 }

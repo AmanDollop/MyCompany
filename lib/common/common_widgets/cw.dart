@@ -448,8 +448,7 @@ class CW {
                 filled: filled,
                 contentPadding:
                     contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
-                hintStyle:
-                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 disabledBorder: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.gray, width: 1.px)
@@ -620,7 +619,7 @@ class CW {
             decoration: InputDecoration(
                 labelText: labelText,
                 labelStyle:
-                    labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 errorStyle: Theme.of(Get.context!)
                     .textTheme
                     .labelMedium
@@ -631,7 +630,7 @@ class CW {
                 contentPadding: contentPadding ??
                     EdgeInsets.symmetric(horizontal: 20.px, vertical: 10.px),
                 hintStyle:
-                    hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 disabledBorder: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.gray, width: 1.px)

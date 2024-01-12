@@ -62,27 +62,35 @@ class DocumentController extends GetxController {
   }
 
   Future<void> clickOnDocument({required int index, required BuildContext context}) async {
-    if (getDocumentDetails?[index].documentFile != null &&
-        getDocumentDetails![index].documentFile!.isNotEmpty) {
+    if (getDocumentDetails?[index].documentFile != null && getDocumentDetails![index].documentFile!.isNotEmpty) {
       if (getDocumentDetails![index].documentFile!.contains('.pdf')) {
         await showGeneralDialog(
           context: context,
-          pageBuilder: (context, animation, secondaryAnimation) => SafeArea(
-            child: SfPdfViewer.network(
-              '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+          pageBuilder: (context, animation, secondaryAnimation) => Material(
+            child: InteractiveViewer(
+              child: SafeArea(
+                child: SfPdfViewer.network(
+                  '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+                ),
+              ),
             ),
           ),
         );
-      } else {
+      }
+      else {
         await showGeneralDialog(
           context: context,
           barrierColor: Col.inverseSecondary,
           pageBuilder: (context, animation, secondaryAnimation) {
-            return InteractiveViewer(
-              child: SafeArea(
-                child: commonContainerForImage(
-                  networkImage:
-                      '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+            return Material(
+              child: Center(
+                child: InteractiveViewer(
+                  child: SafeArea(
+                    child: commonContainerForImage(
+                      networkImage:
+                          '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+                    ),
+                  ),
                 ),
               ),
             );
@@ -252,9 +260,7 @@ class DocumentController extends GetxController {
               ),
             );
           },
-          errorBuilder: (context, error, stackTrace) =>
-              CW.commonNetworkImageView(
-                  path: 'assets/images/default_image.jpg', isAssetImage: true),
+          errorBuilder: (context, error, stackTrace) => CW.commonNetworkImageView(height: 150.px,width: 250.px, path: 'assets/images/default_image.jpg', isAssetImage: true),
         ),
       ),
     );

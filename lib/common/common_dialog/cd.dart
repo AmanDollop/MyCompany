@@ -134,6 +134,7 @@ class CD {
   }
 
   static Future<void> commonAndroidAlertDialogBox({
+    Widget? titleWidget,
     String? title,
     WidgetBuilder? builder,
     String? content,
@@ -164,37 +165,25 @@ class CD {
     EdgeInsetsGeometry? titlePadding,
     EdgeInsetsGeometry? contentPadding,
     EdgeInsetsGeometry? actionsPadding,
+    EdgeInsets? insetPadding,
   }) async {
     await showDialog(
       context: Get.context!,
-      builder: builder ??
-          (context) {
+      builder: builder ?? (context) {
             return WillPopScope(
               onWillPop: () async {
                 return isBackOn;
               },
               child: AlertDialog(
-                iconPadding: iconPadding ??
-                    EdgeInsets.only(
-                        top: C.margin + C.margin,
-                        left: C.margin,
-                        right: C.margin),
-                titlePadding: titlePadding ??
-                    EdgeInsets.only(
-                        top: C.margin, left: C.margin, right: C.margin),
-                contentPadding: contentPadding ??
-                    EdgeInsets.only(
-                        top: C.margin - 6.px, left: C.margin, right: C.margin),
-                actionsPadding: actionsPadding ??
-                    EdgeInsets.only(
-                        top: C.margin / 2,
-                        left: C.margin,
-                        right: C.margin,
-                        bottom: C.margin / 2),
+                insetPadding: insetPadding ?? EdgeInsets.zero,
+                iconPadding: iconPadding ?? EdgeInsets.only(top: C.margin + C.margin, left: C.margin, right: C.margin),
+                titlePadding: titlePadding ?? EdgeInsets.only(top: C.margin, left: C.margin, right: C.margin),
+                contentPadding: contentPadding ?? EdgeInsets.only(top: C.margin - 6.px, left: C.margin, right: C.margin),
+                actionsPadding: actionsPadding ?? EdgeInsets.only(top: C.margin / 2, left: C.margin, right: C.margin, bottom: C.margin / 2),
                 backgroundColor: backgroundColor ?? Col.inverseSecondary,
                 elevation: elevation ?? 0.px,
                 alignment: dialogAlignment ?? Alignment.center,
-                actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
+                actionsAlignment: actionsAlignment ?? MainAxisAlignment.spaceBetween,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(borderRadius ?? 10.px),
                   side: BorderSide(
@@ -210,7 +199,8 @@ class CD {
                             width: imageWidth),
                       )
                     : null,
-                title: Text(
+                title: titleWidget
+                    ?? Text(
                   title ?? '',
                   style: titleStyle ??
                       Theme.of(Get.context!).textTheme.displayLarge,
@@ -226,30 +216,39 @@ class CD {
                       )
                     : const SizedBox(),
                 actions: [
-                  if (leftButtonTitle != null)
-                    CW.commonTextButton(
-                      onPressed: clickOnLeftButton ?? () {},
-                      child: Text(
-                        leftButtonTitle,
-                        style: leftTitleStyle ??
-                            Theme.of(Get.context!)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: Col.primary),
-                      ),
-                    ),
-                  if (rightButtonTitle != null)
-                    CW.commonTextButton(
-                      onPressed: clickOnRightButton ?? () {},
-                      child: Text(
-                        rightButtonTitle,
-                        style: rightTitleStyle ??
-                            Theme.of(Get.context!)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: Col.primary),
-                      ),
-                    ),
+                  Row(
+                    children: [
+                      if (leftButtonTitle != null)
+                        Expanded(
+                          child: CW.commonOutlineButton(
+                            onPressed: clickOnLeftButton ?? () {},
+                            height: 36.px,
+                            borderRadius: 4.px,
+                            borderWidth: 1.px,
+                            borderColor: Col.darkGray,
+                            child: Text(
+                              leftButtonTitle,
+                              style: leftTitleStyle ?? Theme.of(Get.context!).textTheme.labelLarge?.copyWith(color: Col.darkGray),
+                            ),
+                          ),
+                        ),
+                      if (rightButtonTitle != null)
+                        SizedBox(width: 10.px),
+                      if (rightButtonTitle != null)
+                        Expanded(
+                          child: CW.commonElevatedButton(
+                            borderRadius: 4.px,
+                            height: 36.px,
+                            onPressed: clickOnRightButton ?? () {},
+                            child: Text(
+                              rightButtonTitle,
+                              style: rightTitleStyle ?? Theme.of(Get.context!).textTheme.labelLarge,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 10.px),
                 ],
               ),
             );

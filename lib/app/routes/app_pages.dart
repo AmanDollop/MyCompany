@@ -12,6 +12,8 @@ import '../modules/bank_detail/bindings/bank_detail_binding.dart';
 import '../modules/bank_detail/views/bank_detail_view.dart';
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
+import '../modules/circular/bindings/circular_binding.dart';
+import '../modules/circular/views/circular_view.dart';
 import '../modules/contact_detail/bindings/contact_detail_binding.dart';
 import '../modules/contact_detail/views/contact_detail_view.dart';
 import '../modules/document/bindings/document_binding.dart';
@@ -225,6 +227,11 @@ class AppPages {
       name: _Paths.MY_FACE_ATTENDANCE,
       page: () => const MyFaceAttendanceView(),
       binding: MyFaceAttendanceBinding(),
+    ),
+    GetPage(
+      name: _Paths.CIRCULAR,
+      page: () => const CircularView(),
+      binding: CircularBinding(),
     ),
   ];
 }

@@ -77,9 +77,7 @@ class EducationView extends GetView<EducationController> {
     height: 44.px,
     width: double.infinity,
     padding: EdgeInsets.symmetric(horizontal: 6.px),
-    decoration: BoxDecoration(
-        color: Col.primary,
-        borderRadius: BorderRadius.circular(6.px)
+    decoration: BoxDecoration(color: Col.primary, borderRadius: BorderRadius.circular(6.px)
     ),
     duration: const Duration(milliseconds: 500),
     child:  Row(

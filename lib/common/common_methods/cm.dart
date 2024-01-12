@@ -16,7 +16,6 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../theme/constants/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_geocoder/location_geocoder.dart';
 
@@ -327,7 +326,7 @@ class MyLocation{
       bool serviceEnabled;
       PermissionStatus permissionGranted;
       serviceEnabled = await location.serviceEnabled();
-      print('serviceEnabled::::::   $serviceEnabled');
+      // print('serviceEnabled::::::   $serviceEnabled');
 
       if (!serviceEnabled) {
         serviceEnabled = await location.requestService();
@@ -336,7 +335,7 @@ class MyLocation{
         }
       }
       permissionGranted = await location.hasPermission();
-      print('permissionGranted::::::   $permissionGranted');
+      // print('permissionGranted::::::   $permissionGranted');
 
       if (permissionGranted == PermissionStatus.denied) {
         permissionGranted = await location.requestPermission();
@@ -370,7 +369,6 @@ class MyLocation{
   static Future<GetLatLong?> getLatLong() async {
     LocationData? myLocation;
     Location location = Location();
-
     /*try {
       myLocation = await location.getLocation();
     } on PlatformException catch (e) {
@@ -379,14 +377,13 @@ class MyLocation{
 
       return null;
     }*/
-    print('location   ::::::   $location');
+    // print('location   ::::::   ${location.getLocation()}');
     myLocation = await location.getLocation();
-    print('myLocation.latitude:::::::::    ${myLocation.latitude}');
+    // print('myLocation.latitude:::::::::    ${myLocation.latitude}');
 
     if (myLocation.latitude != null && myLocation.longitude != null) {
 
       GetLatLong getLatLongData = GetLatLong(latitude:myLocation.latitude,longitude: myLocation.longitude );
-
 
       return getLatLongData;
     } else {

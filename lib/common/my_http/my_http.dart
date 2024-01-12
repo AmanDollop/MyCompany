@@ -27,7 +27,7 @@ class MyHttp {
         return null;
       }
     } else {
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }
@@ -58,7 +58,7 @@ class MyHttp {
         return null;
       }
     } else {
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }
@@ -126,7 +126,7 @@ class MyHttp {
         }
       }
     } else {
-            CM.noInternet();
+            // CM.noInternet();
       // MyLogger.logger.i("MJGRy8rfgugudgufguydgyudughdsughidhghegug");
       return null;
     }
@@ -168,7 +168,7 @@ class MyHttp {
         return null;
       }
     } else {
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }
@@ -241,7 +241,7 @@ class MyHttp {
       }
     } else {
       // ignore: use_build_context_synchronously
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }
@@ -298,7 +298,7 @@ class MyHttp {
         }
 
     } else {
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }
@@ -326,7 +326,7 @@ class MyHttp {
       }
     } else {
       // ignore: use_build_context_synchronously
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }
@@ -471,7 +471,7 @@ class MyHttp {
         }
       }
     } else {
-      CM.noInternet();
+      // CM.noInternet();
       return null;
     }
   }*/

@@ -6,6 +6,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -168,25 +169,49 @@ class MyProfileController extends GetxController {
       onInit();
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'bank') {
-      Get.toNamed(Routes.BANK_DETAIL,arguments:arguments);
+      if(AC.isConnect.value){
+        Get.toNamed(Routes.BANK_DETAIL,arguments:arguments);
+      }else{
+        CM.noInternet();
+      }
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'education') {
-      Get.toNamed(Routes.EDUCATION,arguments:arguments);
+      if(AC.isConnect.value) {
+        Get.toNamed(Routes.EDUCATION,arguments:arguments);
+      }else{
+        CM.noInternet();
+      }
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'experience') {
-      Get.toNamed(Routes.EXPERIENCE,arguments:arguments);
+      if(AC.isConnect.value) {
+        Get.toNamed(Routes.EXPERIENCE,arguments:arguments);
+      }else{
+        CM.noInternet();
+      }
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'promotion') {
-      Get.toNamed(Routes.PROMOTION,arguments:arguments);
+      if(AC.isConnect.value) {
+        Get.toNamed(Routes.PROMOTION,arguments:arguments);
+      }else{
+        CM.noInternet();
+      }
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'document') {
-      Get.toNamed(Routes.DOCUMENT,arguments:arguments);
+      if(AC.isConnect.value) {
+        Get.toNamed(Routes.DOCUMENT,arguments:arguments);
+      }else{
+        CM.noInternet();
+      }
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'shift_detail') {
       Get.toNamed(Routes.SHIFT_DETAIL,arguments:arguments);
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'attendance_face') {
-      Get.toNamed(Routes.MY_FACE_ATTENDANCE,arguments:arguments);
+      if(AC.isConnect.value) {
+        Get.toNamed(Routes.MY_FACE_ATTENDANCE,arguments:arguments);
+      }else{
+        CM.noInternet();
+      }
     }
     else {
       CM.showSnackBar(message: 'Comming soon.');
@@ -206,7 +231,6 @@ class MyProfileController extends GetxController {
         }
       }
     } catch (e) {
-      print('e::::::::  $e');
       apiResponseValue.value = false;
     }
   }
