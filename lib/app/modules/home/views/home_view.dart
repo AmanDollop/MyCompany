@@ -40,32 +40,32 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     breakView(),
                     commonSwitchButtonView(),
-                    if(controller.hideBanner.value == '0')
+                    if(controller.hideBanner.value)
                     SizedBox(height: 16.px),
-                    if(controller.hideBanner.value == '0')
+                    if(controller.hideBanner.value)
                     bannerView(),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
                       child: Column(
                         children: [
                           isLargeMenuListView(),
-                          if(controller.hideUpcomingCelebration.value == '0')
+                          if(controller.hideUpcomingCelebration.value)
                           SizedBox(height: 14.px),
-                          if(controller.hideUpcomingCelebration.value == '0')
+                          if(controller.hideUpcomingCelebration.value)
                           upcomingCelebrationsButtonView(),
                         ],
                       ),
                     ),
                     headingListView(),
-                    if(controller.hideMyTeam.value == '0')
+                    if(controller.hideMyTeam.value)
                     SizedBox(height: 14.px),
-                    if(controller.hideMyTeam.value == '0')
+                    if(controller.hideMyTeam.value)
                     myTeamListView(),
-                    if(controller.hideMyDepartment.value == '0')
+                    if(controller.hideMyDepartment.value)
                     SizedBox(height: 14.px),
-                    if(controller.hideMyDepartment.value == '0')
+                    if(controller.hideMyDepartment.value)
                     yourDepartmentListView(),
-                    if(controller.hideGallery.value == '0')
+                    if(controller.hideGallery.value)
                     Padding(
                       padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
                       child: Row(
@@ -76,7 +76,7 @@ class HomeView extends GetView<HomeController> {
                         ],
                       ),
                     ),
-                    if(controller.hideGallery.value == '0')
+                    if(controller.hideGallery.value)
                     galleryListView(),
                     SizedBox(height: 10.px),
                   ],

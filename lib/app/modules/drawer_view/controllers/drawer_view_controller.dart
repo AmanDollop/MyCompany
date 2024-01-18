@@ -85,7 +85,7 @@ class DrawerViewController extends GetxController {
       Get.back();
     }
     else if (index == 2) {
-      Get.toNamed(Routes.ADD_EDUCATION);
+      Get.toNamed(Routes.CIRCULAR);
     }
     else if (index == 3) {
       Get.back();

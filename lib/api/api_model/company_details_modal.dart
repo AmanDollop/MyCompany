@@ -29,15 +29,15 @@ class GetCompanyDetails {
   String? companyLatitude;
   String? companyLongitude;
   String? companyLogo;
-  String? hideUpcomingCelebration;
-  String? hideMyDepartment;
-  String? hideGallery;
-  String? hideBanner;
-  String? hideMyTeam;
-  String? hideMyReportingPerson;
-  String? attendanceSelfieRequired;
-  String? restrictAttendanceOutOfRange;
-  String? workReportRequiredOnPunchOut;
+  bool? hideUpcomingCelebration;
+  bool? hideMyDepartment;
+  bool? hideGallery;
+  bool? hideBanner;
+  bool? hideMyTeam;
+  bool? hideMyReportingPerson;
+  bool? attendanceSelfieRequired;
+  bool? restrictAttendanceOutOfRange;
+  bool? workReportRequiredOnPunchOut;
 
   GetCompanyDetails(
       {this.companyId,

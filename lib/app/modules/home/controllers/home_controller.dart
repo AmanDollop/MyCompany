@@ -45,11 +45,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   GetCompanyDetails? getCompanyDetails;
   final companyId = ''.obs;
 
-  final hideUpcomingCelebration = ''.obs;
-  final hideMyDepartment = ''.obs;
-  final hideGallery = ''.obs;
-  final hideBanner = ''.obs;
-  final hideMyTeam = ''.obs;
+  final hideUpcomingCelebration = false.obs;
+  final hideMyDepartment = false.obs;
+  final hideGallery = false.obs;
+  final hideBanner = false.obs;
+  final hideMyTeam = false.obs;
 
   final appMenuFromLocalDataBase = ''.obs;
   final isDatabaseHaveDataForAppMenu = true.obs;
@@ -150,22 +150,16 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> companyData() async {
     try {
-      companyDetailFromLocalDataBase.value = await DataBaseHelper()
-          .getParticularData(
-              key: DataBaseConstant.companyDetail,
-              tableName: DataBaseConstant.tableNameForCompanyDetail);
+      companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
 
-      getCompanyDetails = CompanyDetailsModal.fromJson(
-              jsonDecode(companyDetailFromLocalDataBase.value))
-          .getCompanyDetails;
+      getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
 
       companyId.value = getCompanyDetails?.companyId ?? '';
-      hideUpcomingCelebration.value =
-          getCompanyDetails?.hideUpcomingCelebration ?? '';
-      hideMyDepartment.value = getCompanyDetails?.hideMyDepartment ?? '';
-      hideGallery.value = getCompanyDetails?.hideGallery ?? '';
-      hideBanner.value = getCompanyDetails?.hideBanner ?? '';
-      hideMyTeam.value = getCompanyDetails?.hideMyTeam ?? '';
+      hideUpcomingCelebration.value = getCompanyDetails?.hideUpcomingCelebration ?? false;
+      hideMyDepartment.value = getCompanyDetails?.hideMyDepartment ?? false;
+      hideGallery.value = getCompanyDetails?.hideGallery ?? false;
+      hideBanner.value = getCompanyDetails?.hideBanner ?? false;
+      hideMyTeam.value = getCompanyDetails?.hideMyTeam ?? false;
     } catch (e) {}
   }
 
@@ -409,7 +403,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       http.Response? response = await  CAI.attendancePunchInApi(bodyParams: bodyParamsForAttendancePunchInApi,image: File(''));
       if(response!=null){
         if(response.statusCode==200){
-
           CM.showSnackBar(message: 'Punch In Successful');
         }else{
           CM.error();

@@ -35,6 +35,7 @@ abstract class Routes {
   static const SHIFT_DETAIL = _Paths.SHIFT_DETAIL;
   static const MY_FACE_ATTENDANCE = _Paths.MY_FACE_ATTENDANCE;
   static const CIRCULAR = _Paths.CIRCULAR;
+  static const CIRCULAR_DETAIL = _Paths.CIRCULAR_DETAIL;
 }
 
 abstract class _Paths {
@@ -71,4 +72,5 @@ abstract class _Paths {
   static const SHIFT_DETAIL = '/shift-detail';
   static const MY_FACE_ATTENDANCE = '/my-face-attendance';
   static const CIRCULAR = '/circular';
+  static const CIRCULAR_DETAIL = '/circular-detail';
 }

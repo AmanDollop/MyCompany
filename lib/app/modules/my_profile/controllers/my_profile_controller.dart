@@ -55,7 +55,7 @@ class MyProfileController extends GetxController {
 
   final companyDetailFromLocalDataBase = ''.obs;
   GetCompanyDetails? getCompanyDetails;
-  final hideMyReportingPerson= ''.obs;
+  final hideMyReportingPerson= false.obs;
 
 
   final apiResponseValue = true.obs;
@@ -130,7 +130,7 @@ class MyProfileController extends GetxController {
 
       facebookUrl.value = socialInfo?.facebook??'';
 
-      hideMyReportingPerson.value = getCompanyDetails?.hideMyReportingPerson ?? '';
+      hideMyReportingPerson.value = getCompanyDetails?.hideMyReportingPerson ?? false;
 
     await callingGetEmployeeDetailsApi();
 

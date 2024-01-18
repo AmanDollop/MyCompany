@@ -14,6 +14,8 @@ import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
 import '../modules/circular/bindings/circular_binding.dart';
 import '../modules/circular/views/circular_view.dart';
+import '../modules/circular_detail/bindings/circular_detail_binding.dart';
+import '../modules/circular_detail/views/circular_detail_view.dart';
 import '../modules/contact_detail/bindings/contact_detail_binding.dart';
 import '../modules/contact_detail/views/contact_detail_view.dart';
 import '../modules/document/bindings/document_binding.dart';
@@ -232,6 +234,11 @@ class AppPages {
       name: _Paths.CIRCULAR,
       page: () => const CircularView(),
       binding: CircularBinding(),
+    ),
+    GetPage(
+      name: _Paths.CIRCULAR_DETAIL,
+      page: () => const CircularDetailView(),
+      binding: CircularDetailBinding(),
     ),
   ];
 }

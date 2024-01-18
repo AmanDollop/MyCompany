@@ -101,7 +101,7 @@ class CDT {
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
                         formattedDate = DateFormat('dd MMM yyyy').format(value);
-                        dateController?.text = formattedDate;
+                        // dateController?.text = formattedDate;
                       },
                       minimumYear: minimumYear ?? DateTime.now().year - 123,
                       maximumYear: maximumYear ?? DateTime.now().year,

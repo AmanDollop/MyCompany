@@ -6,6 +6,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_model/bank_detail_modal.dart';
 import 'package:task/api/api_model/blood_group_modal.dart';
 import 'package:task/api/api_model/branch_modal.dart';
+import 'package:task/api/api_model/circular_detail_modal.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/country_code_modal.dart';
 import 'package:task/api/api_model/department_modal.dart';
@@ -639,6 +640,34 @@ class CAI extends GetxController{
           wantInternetFailResponse: true,
           wantShowFailResponse: true)) {
         return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<CircularDetailModal?> getCircularDetailApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    CircularDetailModal? circularDetailModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointCircularControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        circularDetailModal = CircularDetailModal.fromJson(jsonDecode(response.body));
+        return circularDetailModal;
       } else {
         return null;
       }

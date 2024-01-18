@@ -250,7 +250,6 @@ class EditProfileView extends GetView<EditProfileController> {
         labelText: 'First Name',
         hintText: 'First Name',
         keyboardType: TextInputType.name,
-
         prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
         validator: (value) => V.isValid(value: value, title: 'Please enter first name'),
         onChanged: (value) {
@@ -327,8 +326,6 @@ class EditProfileView extends GetView<EditProfileController> {
     controller: controller.dobController,
     labelText: 'Date Of Birth',
     hintText: 'Date Of Birth',
-    labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-    hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
     prefixIcon:
     commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
     onChanged: (value) {
@@ -337,7 +334,6 @@ class EditProfileView extends GetView<EditProfileController> {
     onTap: () => controller.clickOnDOBTextField(),
     readOnly: true,
     suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
-    // validator: (value) => V.isValid(value: value, title: 'Please enter DOB'),
   );
 
   Widget bloodGroupTextField() => CW.commonTextField(

@@ -194,10 +194,7 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> clickOnDOBTextField() async {
-    await CDT.iosPicker(
-            context: Get.context!,
-            dateController: dobController,
-            initialDate: dobController.text.isNotEmpty ? DateFormat('dd MMM yyyy').parse(dobController.text) : DateTime.now()).whenComplete(() => CM.unFocusKeyBoard(),);
+    await CDT.iosPicker(context: Get.context!, dateController: dobController, initialDate: dobController.text.isNotEmpty ? DateFormat('dd MMM yyyy').parse(dobController.text) : DateTime.now()).whenComplete(() => CM.unFocusKeyBoard(),);
   }
 
   Future<void> clickOnBloodGroupTextField() async {

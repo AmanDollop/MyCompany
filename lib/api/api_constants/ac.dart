@@ -126,6 +126,11 @@ class AK {
   static const punchInImage = "punch_in_image";
 
 
+  static const startDate = "startDate";
+  static const endDate = "endDate";
+  static const search = "search";
+
+
 
 }
 
@@ -153,6 +158,8 @@ class AU {
   static const endPointShiftControllerApi = "api/ShiftController.php";
 
   static const endPointAttendanceControllerApi = "api/AttendanceController.php";
+
+  static const endPointCircularControllerApi = "api/CircularController.php";
 
 
 

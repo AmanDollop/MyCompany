@@ -112,7 +112,7 @@ class MyProfileView extends GetView<MyProfileController> {
                 ),
                 SizedBox(height: 6.px),
                 commonDividerView(),
-                if(controller.hideMyReportingPerson.value == '0')
+                if(controller.hideMyReportingPerson.value)
                 SizedBox(height: 16.px),
                 reportingPersonListView(),
                 SizedBox(height: 16.px),
