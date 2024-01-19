@@ -328,6 +328,24 @@ class CD {
     );
   }
 
+  static  Future<void> commonAndroidFakeLocationDialog({bool isDismiss = true}) async {
+    await CD.commonAndroidAlertDialogBox(
+      // title: "Location",
+      // content: 'Fake Location',
+      imagePath: 'assets/images/fake_location_image.jpg',
+      imageWidth: 200.px,
+      actionsPadding: EdgeInsets.zero,
+      insetPadding: EdgeInsets.zero,
+      contentPadding: EdgeInsets.zero,
+      // iconPadding: EdgeInsets.only(left: C.margin + C.margin / 2),
+      titlePadding: EdgeInsets.zero,
+      centerTitle: true,
+      centerContent: true,
+      isDismiss: false,
+      isBackOn: false,
+    );
+  }
+
   ///  Calling Of Country Picker Dialog
   static Future<void> commonCountryPickerDialog({
     double? elevation,

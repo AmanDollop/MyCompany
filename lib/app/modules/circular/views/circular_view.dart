@@ -31,50 +31,50 @@ class CircularView extends GetView<CircularController> {
           if(controller.circularDetailModal.value != null){
             return ModalProgress(
               inAsyncCall: controller.apiResValue.value,
-              child: LM(
-                isLastPage: controller.isLastPage.value,
-                onLoadMore: () => controller.onLoadMore(),
-                onRefresh: () async {
-                  controller.offset.value=0;
-                  controller.circularList.clear();
-                  await controller.onInit();
-                },
-                child: ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
-                  children: [
-                    circularSearchTextFieldView(),
-                    SizedBox(height: 16.px),
-                    Row(
-                      children: [
-                        Expanded(child: startTextField()),
-                        SizedBox(width: 24.px),
-                        Expanded(child: endTextField())
-                      ],
-                    ),
-                    controller.circularList.isNotEmpty
-                        ? ListView.builder(
-                           shrinkWrap: true,
-                           physics: const NeverScrollableScrollPhysics(),
-                           itemCount: controller.circularList.length,
-                           padding: EdgeInsets.symmetric(vertical: 20.px),
-                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 14.px),
-                              child: cardView(index: index),
-                            );
-                      },
-                    )
-                        : SizedBox(
-                      height: 25.h,
-                      child: CW.commonNoDataFoundText(),
-                    ),
-                  ],
+              child: CW.commonRefreshIndicator(
+                onRefresh: () => controller.onRefresh(),
+                child: LM(
+                  noMoreWidget: const SizedBox(),
+                  isLastPage: controller.isLastPage.value,
+                  onLoadMore: () => controller.onLoadMore(),
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.only(left: 12.px,right: 12.px, top: 12.px),
+                    children: [
+                      circularSearchTextFieldView(),
+                      SizedBox(height: 16.px),
+                      Row(
+                        children: [
+                          Expanded(child: startTextField()),
+                          SizedBox(width: 24.px),
+                          Expanded(child: endTextField())
+                        ],
+                      ),
+                      controller.circularList.isNotEmpty
+                          ? ListView.builder(
+                             shrinkWrap: true,
+                             physics: const NeverScrollableScrollPhysics(),
+                             itemCount: controller.circularList.length,
+                             padding: EdgeInsets.only(top: 20.px),
+                             itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: index!=controller.circularList.length-1?14.px:0),
+                                child: cardView(index: index),
+                              );
+                        },
+                      )
+                          : SizedBox(
+                        height: 25.h,
+                        child: CW.commonNoDataFoundText(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
-          }else{
+          }
+          else {
             return CW.commonNoDataFoundText(text: controller.apiResValue.value?'':'No Data Found!');
           }
         }),
@@ -147,66 +147,58 @@ class CircularView extends GetView<CircularController> {
         ),
       );
 
-  Widget cardView({required int index}) => InkWell(
-        onTap: () => controller.clickOnCard(index: index),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Col.inverseSecondary,
-              borderRadius: BorderRadius.circular(6.px),
-              boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget cardView({required int index}) => Container(
+    decoration: BoxDecoration(
+        color: Col.inverseSecondary,
+        borderRadius: BorderRadius.circular(6.px),
+        boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 12.px, right: 12.px),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 12.px, right: 12.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    cardTitleTextView(text: '${controller.circularList[index].title}'),
-                    viewMoreButtonView(index: index),
-                  ],
-                ),
-              ),
-              CW.commonDividerView(color: Col.gray),
-              SizedBox(height: 6.px),
-              Padding(
-                padding:
-                    EdgeInsets.only(left: 12.px, right: 12.px, bottom: 12.px),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    cardDetailTextView(
-                      text: '${controller.circularList[index].description}',
-                    ),
-                    SizedBox(height: 12.px),
-                    CW.commonNetworkImageView(
-                        path: '${AU.baseUrlAllApisImage}${controller.circularList[index].attachment}',
-                        isAssetImage: false,
-                        height: 40.px,
-                        width: 40.px),
-                    SizedBox(height: 12.px),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              cardTitleTextView(text: '${controller.circularList[index].createdByName}'),
-                              SizedBox(height: 6.px),
-                              cardDateTextView(text: '${controller.circularList[index].createdDate}')
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              cardTitleTextView(text: '${controller.circularList[index].title}'),
+              viewMoreButtonView(index: index),
             ],
           ),
         ),
-      );
+        CW.commonDividerView(color: Col.gray),
+        SizedBox(height: 6.px),
+        Padding(
+          padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 12.px),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              cardDetailTextView(
+                text: '${controller.circularList[index].description}',
+              ),
+              SizedBox(height: 12.px),
+              imageView(index:index),
+              SizedBox(height: 12.px),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        cardTitleTextView(text: '${controller.circularList[index].createdByName}'),
+                        SizedBox(height: 6.px),
+                        cardDateTextView(text: '${controller.circularList[index].createdDate}')
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 
   Widget cardTitleTextView({required String text, TextAlign? textAlign}) => Text(
         text,
@@ -217,7 +209,7 @@ class CircularView extends GetView<CircularController> {
       );
 
   Widget viewMoreButtonView({required int index}) => CW.commonTextButton(
-        onPressed: () => controller.clickOnCard(index: index),
+        onPressed: () => controller.clickOnViewMoreButton(index: index),
         child: Text(
           'View More',
           style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
@@ -238,16 +230,26 @@ class CircularView extends GetView<CircularController> {
             fontFamily: "KumbhSans",
             fontSize: FontSize(10.px),
             fontWeight: FontWeight.w500,
-            color: Col.secondary),
+            color: Col.secondary,
+            maxLines: 2,
+          textOverflow: TextOverflow.ellipsis
+        ),
       },
     );
   }
 
+  Widget imageView({required int index}) => InkWell(
+    onTap: () => controller.clickOnImageView(index:index),
+    child: CW.commonNetworkImageView(
+        path: '${AU.baseUrlAllApisImage}${controller.circularList[index].attachment}',
+        isAssetImage: false,
+        height: 40.px,
+        width: 40.px),
+  );
+
   Widget cardDateTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelMedium
-            ?.copyWith(fontSize: 10.px),
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px),
       );
+
 }

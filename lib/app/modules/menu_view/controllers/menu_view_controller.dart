@@ -62,11 +62,9 @@ class MenuViewController extends GetxController {
 
     menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
 
-    menusModal.value?.getMenu?.forEach((element) {
-      if(element.isDashboardMenu != '1'){
-        getMenuList.add(element);
-      }
-    });
+    getMenuList = menusModal.value?.getMenu??[];
+
+    print('getMenuList::::: ${getMenuList.length}');
 
   }
 

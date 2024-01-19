@@ -109,8 +109,8 @@ class DrawerViewController extends GetxController {
           Get.back();
         },
         clickOnLogout: () async {
+          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);

@@ -80,10 +80,10 @@ class ExperienceView extends GetView<ExperienceController> {
                       BoxDecoration(color: Col.primary, shape: BoxShape.circle),
                   child: Center(child: ColoredBox(color: Col.primary)),
                 ),
-                // if(index != 9)
+                // if(index != controller.getExperienceDetails!.length-1)
                 AnimatedContainer(
                   duration: const Duration(seconds: 4),
-                  height: 80.px,
+                  height: 82.px,
                   width: 2.5.px,
                   padding: const EdgeInsets.only(bottom: 0),
                   child: ColoredBox(color: Col.primary),

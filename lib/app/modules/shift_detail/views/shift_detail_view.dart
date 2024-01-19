@@ -30,9 +30,8 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
                 children: [
                   Card(
                     elevation: 0,
-                    color: Col.primary.withOpacity(.3),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.px)),
+                    color: const Color(0xffB9ACD6),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
                     child: Padding(
                       padding: EdgeInsets.all(8.px),
                       child: Column(
@@ -52,8 +51,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
                               text: 'Shift Code',
                               text1: controller.shiftDetails?.shiftCode !=
                                   null &&
-                                  controller
-                                      .shiftDetails!.shiftCode!.isNotEmpty
+                                  controller.shiftDetails!.shiftCode!.isNotEmpty
                                   ? '${controller.shiftDetails?.shiftCode}'
                                   : 'N/A')
                         ],

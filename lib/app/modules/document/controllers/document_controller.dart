@@ -9,6 +9,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/document_modal.dart';
+import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -17,7 +18,9 @@ import 'package:task/theme/colors/colors.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 class DocumentController extends GetxController {
+
   final count = 0.obs;
+
   final accessType = ''.obs;
   final isChangeable = ''.obs;
   final profileMenuName = ''.obs;
@@ -315,6 +318,10 @@ class DocumentController extends GetxController {
       pdfProgressBarValue.value = received / total;
       pdfProgressBarPerValue.value = '${(received / total * 100).toStringAsFixed(0) + '%'}';
     }
+  }
+
+  void clickOnAddViewButton() {
+    Get.toNamed(Routes.ADD_DOCUMENT);
   }
 
 }

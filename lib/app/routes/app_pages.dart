@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/add_bank/bindings/add_bank_binding.dart';
 import '../modules/add_bank/views/add_bank_view.dart';
+import '../modules/add_document/bindings/add_document_binding.dart';
+import '../modules/add_document/views/add_document_view.dart';
 import '../modules/add_education/bindings/add_education_binding.dart';
 import '../modules/add_education/views/add_education_view.dart';
 import '../modules/add_experience/bindings/add_experience_binding.dart';
@@ -28,6 +30,8 @@ import '../modules/education/bindings/education_binding.dart';
 import '../modules/education/views/education_view.dart';
 import '../modules/experience/bindings/experience_binding.dart';
 import '../modules/experience/views/experience_view.dart';
+import '../modules/face_detection/bindings/face_detection_binding.dart';
+import '../modules/face_detection/views/face_detection_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/job_info/bindings/job_info_binding.dart';
@@ -239,6 +243,16 @@ class AppPages {
       name: _Paths.CIRCULAR_DETAIL,
       page: () => const CircularDetailView(),
       binding: CircularDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.FACE_DETECTION,
+      page: () => const FaceDetectionView(),
+      binding: FaceDetectionBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_DOCUMENT,
+      page: () => const AddDocumentView(),
+      binding: AddDocumentBinding(),
     ),
   ];
 }

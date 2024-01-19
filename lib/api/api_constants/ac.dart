@@ -124,6 +124,7 @@ class AK {
   static const punchInOutOfRange = "punch_in_out_of_range";
   static const punchInOutOfRangeReason = "punch_in_out_of_range_reason";
   static const punchInImage = "punch_in_image";
+  static const shiftType = "shift_type";
 
 
   static const startDate = "startDate";

@@ -1,6 +1,7 @@
 ///flutter pub add connectivity_plus => For Check Internet on real time
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:safe_device/safe_device.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,10 @@ import 'package:get/get.dart';
 import '../../common/common_methods/cm.dart';
 
 class AC extends GetxController {
+
   static final isConnect = false.obs;
   int isDialogShow = 0;
+  static bool isFakeLocation = false;
 
   final Connectivity connectivity = Connectivity();
 
@@ -58,4 +61,12 @@ class AC extends GetxController {
         break;
     }
   }
+
+  static Future<bool> checkFakeLocation() async {
+    isFakeLocation = await SafeDevice.canMockLocation;
+    print('isFakeLocation:::::::::  $isFakeLocation');
+    return isFakeLocation;
+  }
+
+
 }

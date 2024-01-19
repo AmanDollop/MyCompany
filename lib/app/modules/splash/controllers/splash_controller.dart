@@ -91,8 +91,8 @@ class SplashController extends GetxController {
   }
 
   Future<void> dataBaseDeleteMethod() async {
+    // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
-    await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);

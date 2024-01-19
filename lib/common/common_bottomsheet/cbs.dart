@@ -414,19 +414,6 @@ class BottomSheetForOTP extends GetxController {
 
         userData = userDataModal.value?.userDetails;
 
-          // personalInfo = userData?.personalInfo;
-          // contactInfo = userData?.contactInfo;
-          // jobInfo = userData?.jobInfo;
-          // socialInfo = userData?.socialInfo;
-          // DataBaseHelper().insertInDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
-          //
-          // DataBaseHelper().insertInDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
-          //
-          // DataBaseHelper().insertInDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
-          //
-          // DataBaseHelper().insertInDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
-          //
-          // DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userToken: userData?.token}, tableName: DataBaseConstant.tableNameForUserToken);
           print('userData?.token:::::::: ${userData?.token}');
           await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail:json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
 

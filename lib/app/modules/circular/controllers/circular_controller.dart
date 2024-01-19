@@ -1,12 +1,17 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/circular_detail_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/theme/colors/colors.dart';
 
 class CircularController extends GetxController {
   final count = 0.obs;
@@ -35,9 +40,10 @@ class CircularController extends GetxController {
     super.onInit();
     try {
       menuName.value = Get.arguments[0];
+      var i = calculateTheLatLongDistanceInMeter(22.7248, 75.8871,22.6845, 75.8645);
+      print('i:::: $i');
       newDate = currentDate.subtract(const Duration(days: 30));
-      startController.text =
-          DateFormat('dd MMM yyyy').format(newDate ?? currentDate);
+      startController.text = DateFormat('dd MMM yyyy').format(newDate ?? currentDate);
       endController.text = DateFormat('dd MMM yyyy').format(currentDate);
       await callingCircularDetailApi();
     } catch (e) {
@@ -45,6 +51,14 @@ class CircularController extends GetxController {
       apiResValue.value = false;
     }
     apiResValue.value = false;
+  }
+
+
+  double calculateTheLatLongDistanceInMeter(double lat1, double lon1, double lat2, double lon2) {
+    const double p = 0.017453292519943295; // Math.PI / 180
+    const double earthRadius = 6371.0; // Radius of the Earth in kilometers
+    double a = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+    return 2 * earthRadius * asin(sqrt(a)) * 1000; // Multiply by 1000 to convert to meters
   }
 
   @override
@@ -64,39 +78,43 @@ class CircularController extends GetxController {
   }
 
   Future<void> clickOnStartTextField() async {
-    await CDT.iosPicker(
+    await CDT
+        .iosPicker(
             context: Get.context!,
             dateController: startController,
             initialDate: startController.text.isNotEmpty
                 ? DateFormat('dd MMM yyyy').parse(startController.text)
-                : DateTime.now()).whenComplete(() async {
-        CM.unFocusKeyBoard();
-        apiResValue.value = true;
-        offset.value = 0;
-        await callingCircularDetailApi();
-        apiResValue.value = false;
-      }).then((value) {
-        print('val:::::  $value');
+                : DateTime.now())
+        .whenComplete(() async {
+      CM.unFocusKeyBoard();
+      apiResValue.value = true;
+      offset.value = 0;
+      await callingCircularDetailApi();
+      apiResValue.value = false;
+    }).then((value) {
+      print('val:::::  $value');
     });
   }
 
   Future<void> clickOnEndTextField() async {
-    CDT.iosPicker(
+    CDT
+        .iosPicker(
             context: Get.context!,
             dateController: endController,
             firstDate: DateFormat('dd MMM yyyy').parse(startController.text),
             initialDate: endController.text.isNotEmpty
                 ? DateFormat('dd MMM yyyy').parse(endController.text)
-                : DateTime.now()).whenComplete(() async {
-        CM.unFocusKeyBoard();
-        apiResValue.value = true;
-        offset.value = 0;
-        await callingCircularDetailApi();
-        apiResValue.value = false;
-      });
+                : DateTime.now())
+        .whenComplete(() async {
+      CM.unFocusKeyBoard();
+      apiResValue.value = true;
+      offset.value = 0;
+      await callingCircularDetailApi();
+      apiResValue.value = false;
+    });
   }
 
-  void clickOnCard({required int index}) {
+  void clickOnViewMoreButton({required int index}) {
     CM.unFocusKeyBoard();
     if (circularList.isNotEmpty) {
       Get.toNamed(Routes.CIRCULAR_DETAIL, arguments: [circularList[index]]);
@@ -105,12 +123,76 @@ class CircularController extends GetxController {
     }
   }
 
+  Future<void> clickOnImageView({required int index}) async {
+    if (circularList[index].attachment != null && circularList[index].attachment!.isNotEmpty) {
+      if (circularList[index].attachment!.contains('.pdf')) {
+        await showGeneralDialog(
+          context: Get.context!,
+          pageBuilder: (context, animation, secondaryAnimation) => Material(
+            child: InteractiveViewer(
+              child: SafeArea(
+                child: SfPdfViewer.network(
+                  '${AU.baseUrlAllApisImage}${circularList[index].attachment}',
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      else {
+        await showGeneralDialog(
+          context: Get.context!,
+          barrierColor: Col.inverseSecondary,
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return Material(
+              child: Center(
+                child: InteractiveViewer(
+                  child: SafeArea(
+                    child: commonContainerForImage(
+                      networkImage:
+                          '${AU.baseUrlAllApisImage}${circularList[index].attachment}',
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }
+    }
+  }
+
+  Widget commonContainerForImage({required String networkImage}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 0.px, vertical: 4.px),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(3.px),
+        child: Image.network(
+          networkImage,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.px),
+                child: CW.commonShimmerViewForImage(),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) => CW.commonNetworkImageView(height: 150.px,width: 250.px, path: 'assets/images/default_image.jpg', isAssetImage: true),
+        ),
+      ),
+    );
+  }
+
   Future<void> callingCircularDetailApi() async {
-    try{
-      DateTime dateTimeStart = DateFormat('d MMM yyyy').parse(startController.text.trim().toString());
+    try {
+      DateTime dateTimeStart = DateFormat('d MMM yyyy')
+          .parse(startController.text.trim().toString());
       String start = DateFormat('yyyy-MM-dd').format(dateTimeStart);
 
-      DateTime dateTimeEnd = DateFormat('d MMM yyyy').parse(endController.text.trim().toString());
+      DateTime dateTimeEnd =
+          DateFormat('d MMM yyyy').parse(endController.text.trim().toString());
       String end = DateFormat('yyyy-MM-dd').format(dateTimeEnd);
 
       bodyParamsForCircularDetail = {
@@ -121,23 +203,25 @@ class CircularController extends GetxController {
         AK.startDate: start,
         AK.endDate: end,
       };
-      circularDetailModal.value = await CAI.getCircularDetailApi(bodyParams: bodyParamsForCircularDetail);
+      circularDetailModal.value = await CAI.getCircularDetailApi(
+          bodyParams: bodyParamsForCircularDetail);
       if (offset.value == 0) {
         circularList.clear();
         isLastPage.value = false;
       }
       if (circularDetailModal.value != null) {
-        if (circularDetailModal.value?.circular != null && circularDetailModal.value!.circular!.isNotEmpty) {
+        if (circularDetailModal.value?.circular != null &&
+            circularDetailModal.value!.circular!.isNotEmpty) {
           circularList.addAll(circularDetailModal.value?.circular ?? []);
           print('circularList:::::::::: ${circularList.length}');
         } else {
           isLastPage.value = true;
         }
       }
-    }catch(e){
-      apiResValue.value=false;
+    } catch (e) {
+      apiResValue.value = false;
     }
-    apiResValue.value=false;
+    apiResValue.value = false;
   }
 
   Future<void> searchOnChange({required String value}) async {
@@ -156,5 +240,12 @@ class CircularController extends GetxController {
     } catch (e) {
       CM.error();
     }
+  }
+
+  Future<void> onRefresh() async {
+    apiResValue.value=true;
+    offset.value=0;
+    // circularList.clear();
+    await onInit();
   }
 }

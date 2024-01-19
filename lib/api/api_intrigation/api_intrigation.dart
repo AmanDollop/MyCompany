@@ -14,6 +14,7 @@ import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
+import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
@@ -616,6 +617,62 @@ class CAI extends GetxController{
     }
   }
 
+  static Future<CircularDetailModal?> getCircularDetailApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    CircularDetailModal? circularDetailModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointCircularControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        circularDetailModal = CircularDetailModal.fromJson(jsonDecode(response.body));
+        return circularDetailModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetTodayAttendanceModal?> getTodayAttendanceApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetTodayAttendanceModal? getTodayAttendanceModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getTodayAttendanceModal = GetTodayAttendanceModal.fromJson(jsonDecode(response.body));
+        return getTodayAttendanceModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   static Future<http.Response?> attendancePunchInApi({
     required Map<String, dynamic> bodyParams,
     File? image
@@ -640,34 +697,6 @@ class CAI extends GetxController{
           wantInternetFailResponse: true,
           wantShowFailResponse: true)) {
         return response;
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  static Future<CircularDetailModal?> getCircularDetailApi({
-    required Map<String, dynamic> bodyParams,
-  }) async {
-
-    String baseUrl = await baseUrlReturn();
-
-    CircularDetailModal? circularDetailModal;
-
-    Map<String, String> authorization = await userToken();
-
-    http.Response? response = await MyHttp.postMethod(
-        url: '$baseUrl${AU.endPointCircularControllerApi}',
-        bodyParams: bodyParams,
-        context: Get.context!,
-        token: authorization,
-        showSnackBar: false);
-    if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
-        circularDetailModal = CircularDetailModal.fromJson(jsonDecode(response.body));
-        return circularDetailModal;
       } else {
         return null;
       }

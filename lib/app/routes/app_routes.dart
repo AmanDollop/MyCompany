@@ -36,6 +36,8 @@ abstract class Routes {
   static const MY_FACE_ATTENDANCE = _Paths.MY_FACE_ATTENDANCE;
   static const CIRCULAR = _Paths.CIRCULAR;
   static const CIRCULAR_DETAIL = _Paths.CIRCULAR_DETAIL;
+  static const FACE_DETECTION = _Paths.FACE_DETECTION;
+  static const ADD_DOCUMENT = _Paths.ADD_DOCUMENT;
 }
 
 abstract class _Paths {
@@ -73,4 +75,6 @@ abstract class _Paths {
   static const MY_FACE_ATTENDANCE = '/my-face-attendance';
   static const CIRCULAR = '/circular';
   static const CIRCULAR_DETAIL = '/circular-detail';
+  static const FACE_DETECTION = '/face-detection';
+  static const ADD_DOCUMENT = '/add-document';
 }

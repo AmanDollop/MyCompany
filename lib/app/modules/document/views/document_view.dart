@@ -127,6 +127,24 @@ class DocumentView extends GetView<DocumentController> {
               }
             }));
       }),
+      floatingActionButton: controller.accessType.value != '1' &&
+          controller.isChangeable.value != '1'
+          ? Padding(
+        padding: EdgeInsets.only(bottom: 10.px),
+        child: CW.commonOutlineButton(
+            onPressed: () => controller.clickOnAddViewButton(),
+            child: Icon(
+              Icons.add,
+              color: Col.inverseSecondary,
+              size: 22.px,
+            ),
+            height: 50.px,
+            width: 50.px,
+            backgroundColor: Col.primary,
+            borderColor: Colors.transparent,
+            borderRadius: 25.px),
+      )
+          : const SizedBox(),
     );
   }
 }
