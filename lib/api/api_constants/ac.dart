@@ -127,6 +127,16 @@ class AK {
   static const shiftType = "shift_type";
 
 
+  static const breakTypeId = "break_type_id";
+  static const breakStartLatitude = "break_start_latitude";
+  static const breakEndLongitude = "break_end_longitude";
+  static const breakTypeName = "break_type_name";
+  static const attendanceId = "attendance_id";
+  static const breakHistoryId = "break_history_id";
+
+
+
+
   static const startDate = "startDate";
   static const endDate = "endDate";
   static const search = "search";
@@ -161,6 +171,8 @@ class AU {
   static const endPointAttendanceControllerApi = "api/AttendanceController.php";
 
   static const endPointCircularControllerApi = "api/CircularController.php";
+
+  static const endPointBreakControllerApi = "api/BreakController.php";
 
 
 

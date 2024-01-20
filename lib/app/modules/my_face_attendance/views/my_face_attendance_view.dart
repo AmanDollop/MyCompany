@@ -39,7 +39,7 @@ class MyFaceAttendanceView extends GetView<MyFaceAttendanceController> {
             ),
           ),
           SizedBox(height: 30.px),
-          Center(child: CW.commonElevatedButton(onPressed: (){},buttonText: 'Change Face',width: 150.px,height: 38.px),)
+          Center(child: CW.commonElevatedButton(onPressed: ()=> controller.clickOnChangeFaceButton(),buttonText: 'Change Face',width: 150.px,height: 38.px),)
         ],
       ),
     );

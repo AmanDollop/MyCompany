@@ -5,6 +5,8 @@ class Col {
 
   static Color primary = const Color(0xFF7558B4);
 
+  static Color primary1 = const Color(0xFF730DE3);
+
   static Color primaryColor = const Color(0xFF7558B4);
 
   /* --------------------------Secondary Colors Collection--------------------------*/

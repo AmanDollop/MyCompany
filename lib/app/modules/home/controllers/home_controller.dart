@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -77,22 +79,29 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   GetLatLong? getLatLong;
 
   Map<String, dynamic> bodyParamsForAttendancePunchInApi = {};
+  Map<String, dynamic> bodyParamsForAttendancePunchOutApi = {};
+
+  Map<String, dynamic> bodyParamsForBreakInApi = {};
+  Map<String, dynamic> bodyParamsForBreakOutApi = {};
 
   final getTodayAttendanceModal = Rxn<GetTodayAttendanceModal>();
   GetTodayAttendance? getTodayAttendanceDetail;
   Map<String, dynamic> bodyParamsForGetTodayAttendanceApi = {};
 
-  final currentDateAndTime = DateTime.now().obs;
-
+  late DateTime currentTimeForTimer = DateTime(00);
+  late DateTime currentTimeForBreakTimer = DateTime(00);
+  final currentDateTimeForPunchIn = DateTime(00).obs;
+  final currentDateTimeForBreak = DateTime(00).obs;
+  late Timer timer;
+  late Timer timer1;
 
   @override
   Future<void> onInit() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-        currentDateAndTime.value = DateTime.now();
-    });
     super.onInit();
     try {
       Get.put(DrawerViewController());
+      var i = calculateTheLatLongDistanceInMeter(22.7248, 75.8871,22.6845, 75.8645);
+      print('i:::: ${i.toDouble()}');
       await callingGetLatLongMethod();
     } catch (e) {
       apiResValue.value = false;
@@ -117,6 +126,13 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   void increment() => count.value++;
+
+  double calculateTheLatLongDistanceInMeter(double lat1, double lon1, double lat2, double lon2) {
+    const double p = 0.017453292519943295; // Math.PI / 180
+    const double earthRadius = 6371.0; // Radius of the Earth in kilometers
+    double a = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+    return 2 * earthRadius * asin(sqrt(a)) * 1000; // Multiply by 1000 to convert to meters
+  }
 
   willPop() {
     CD.commonIosExitAppDialog(
@@ -145,10 +161,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         //   print('getLatLong?.longitude::::::::  ${getLatLong?.longitude}');
         // });
 
-        isDatabaseHaveDataForAppMenu.value =
-        await DataBaseHelper().isDatabaseHaveData(
-            db: DataBaseHelper.dataBaseHelper,
-            tableName: DataBaseConstant.tableNameForAppMenu);
+        isDatabaseHaveDataForAppMenu.value = await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu);
         await setDefaultData();
       } else {
         if (AC.isConnect.value) {
@@ -175,17 +188,12 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   Future<void> companyData() async {
     try {
       companyDetailFromLocalDataBase.value =
-      await DataBaseHelper().getParticularData(
-          key: DataBaseConstant.companyDetail,
-          tableName: DataBaseConstant.tableNameForCompanyDetail);
+      await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
 
-      getCompanyDetails = CompanyDetailsModal
-          .fromJson(jsonDecode(companyDetailFromLocalDataBase.value))
-          .getCompanyDetails;
+      getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
 
       companyId.value = getCompanyDetails?.companyId ?? '';
-      hideUpcomingCelebration.value =
-          getCompanyDetails?.hideUpcomingCelebration ?? false;
+      hideUpcomingCelebration.value = getCompanyDetails?.hideUpcomingCelebration ?? false;
       hideMyDepartment.value = getCompanyDetails?.hideMyDepartment ?? false;
       hideGallery.value = getCompanyDetails?.hideGallery ?? false;
       hideBanner.value = getCompanyDetails?.hideBanner ?? false;
@@ -208,10 +216,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         await callingMenusApi();
       } else {
         appMenuFromLocalDataBase.value =
-        await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus,
-            tableName: DataBaseConstant.tableNameForAppMenu);
-        menusModal.value =
-            MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
+        await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus, tableName: DataBaseConstant.tableNameForAppMenu);
+        menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
         menusModal.value?.getMenu?.forEach((element) {
           if (element.isDashboardMenu == '1') {
               isHeadingMenuList.add(element);
@@ -237,13 +243,24 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     Get.toNamed(Routes.NOTIFICATION);
   }
 
+  void startTimer(){
+      currentTimeForTimer = DateTime(2022, 1, 1, 0, 0, 0);
+      timer = Timer.periodic(const Duration(seconds: 1), updateTimeForTimer);
+      count.value++;
+  }
+
+  void updateTimeForTimer(Timer timer) {
+    if(!breakValue.value) {
+      currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
+    }
+    count.value++;
+  }
+
   Future<void> clickOnSwitchButton() async {
     if (await AC.checkFakeLocation()) {
       await CD.commonAndroidFakeLocationDialog();
     }
     else {
-      breakCheckBoxValue.value = '';
-      breakValue.value = false;
       CD.commonAndroidAlertDialogBox(
         contentPadding: EdgeInsets.zero,
         isDismiss: false,
@@ -340,13 +357,26 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         rightButtonTitle: checkInOrCheckOutValue.value
             ? 'Punch In'
             : 'Punch Out',
-        clickOnRightButton: () {
-          Get.back();
-          checkInOrCheckOutValue.value = !checkInOrCheckOutValue.value;
-        },
+        clickOnRightButton: checkInOrCheckOutValue.value
+            ? () => clickOnPunchInButton()
+            : () => clickOnPunchOutButton(),
       );
       count.value++;
     }
+  }
+
+  Future<void> clickOnPunchInButton() async {
+    Get.back();
+    startTimer();
+    currentDateTimeForPunchIn.value = await getISTDateTime();
+    checkInOrCheckOutValue.value = !checkInOrCheckOutValue.value;
+  }
+
+  Future<void> clickOnPunchOutButton() async {
+    Get.back();
+    timer.cancel();
+    currentTimeForTimer = DateTime(2022, 1, 1, 0, 0, 0);
+    checkInOrCheckOutValue.value = !checkInOrCheckOutValue.value;
   }
 
   Future<void> clickOnBreakButton() async {
@@ -362,6 +392,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
           });
     } else {
       breakCheckBoxValue.value = '';
+      currentTimeForBreakTimer=DateTime(00);
+      print('currentTimeForBreakTimer:::::::::  ${currentTimeForBreakTimer.second}');
       breakValue.value = false;
     }
   }
@@ -411,8 +443,22 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     getTodayAttendanceModal.value = await CAI.getTodayAttendanceApi(bodyParams: bodyParamsForGetTodayAttendanceApi);
     if(getTodayAttendanceModal.value != null){
       getTodayAttendanceDetail = getTodayAttendanceModal.value?.getTodayAttendance;
-      checkInOrCheckOutValue.value = getTodayAttendanceDetail?.isPunchIn ?? true;
+      // checkInOrCheckOutValue.value = getTodayAttendanceDetail?.isPunchIn ?? true;
       print('getTodayAttendanceDetail::::::  ${getTodayAttendanceDetail?.branchGeofenceLatitude}');
+    }
+  }
+
+  Future<DateTime> getISTDateTime() async {
+    final response = await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final String utcDateTimeString = data['utc_datetime'];
+      final DateTime utcDateTime = DateTime.parse(utcDateTimeString);
+      final DateTime istDateTime = utcDateTime.add(const Duration(hours: 5, minutes: 30));
+      return istDateTime;
+    } else {
+      throw Exception('Failed to load IST date and time');
     }
   }
 
@@ -430,7 +476,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         AK.punchInOutOfRangeReason: '',
         AK.shiftType: shiftTime?.shiftType,
       };
-      http.Response? response = await CAI.attendancePunchInApi(
+      http.Response? response = await CAI.attendancePunchInAndPunchOutApi(
           bodyParams: bodyParamsForAttendancePunchInApi, image: File(''));
       if (response != null) {
         if (response.statusCode == 200) {
@@ -446,5 +492,83 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
     apiResValue.value = false;
   }
+
+  Future<void> callingAttendancePunchOutApi() async {
+    apiResValue.value = true;
+    try {
+      bodyParamsForAttendancePunchOutApi = {
+        AK.action: 'attendancePunchOut',
+        AK.lateInReason: '',
+        AK.punchInLatitude: '',
+        AK.punchInLongitude: '',
+        AK.punchInRange: '',
+        AK.punchInOutOfRange: '',
+        AK.punchInOutOfRangeReason: '',
+        AK.shiftType: shiftTime?.shiftType,
+      };
+      http.Response? response = await CAI.attendancePunchInAndPunchOutApi(
+          bodyParams: bodyParamsForAttendancePunchOutApi, image: File(''));
+      if (response != null) {
+        if (response.statusCode == 200) {
+          CM.showSnackBar(message: 'Punch In Successful');
+        } else {
+          CM.error();
+        }
+      } else {
+        CM.error();
+      }
+    } catch (e) {
+      apiResValue.value = false;
+    }
+    apiResValue.value = false;
+  }
+
+  Future<void> callingBreakInApi() async {
+    try{
+      bodyParamsForBreakInApi = {
+        AK.action: 'breakIn',
+        AK.breakTypeId: '',
+        AK.breakStartLatitude: '',
+        AK.breakEndLongitude: '',
+        AK.breakTypeName: '',
+        AK.attendanceId: '',
+      };
+      http.Response? response = await CAI.breakInAndOutApi(bodyParams: bodyParamsForBreakInApi);
+      if (response != null && response.statusCode == 200) {
+       CM.showSnackBar(message: 'Break In');
+      }
+      else {
+        CM.error();
+      }
+    }catch(e){
+      CM.error();
+    }
+
+  }
+
+  Future<void> callingBreakOutApi() async {
+    try{
+      bodyParamsForBreakInApi = {
+        AK.action: 'breakOut',
+        AK.breakHistoryId: '',
+        AK.breakStartLatitude: '',
+        AK.breakEndLongitude: '',
+        AK.attendanceId: '',
+      };
+      http.Response? response = await CAI.breakInAndOutApi(bodyParams: bodyParamsForBreakInApi);
+      if (response != null && response.statusCode == 200) {
+       CM.showSnackBar(message: 'Break In');
+      }
+      else {
+        CM.error();
+      }
+    }catch(e){
+      CM.error();
+    }
+
+  }
+
+  clickOnBreakConfirmButton() {}
+
 
 }

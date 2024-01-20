@@ -180,8 +180,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
     );
   }
 
-  Widget commonTitleRowView({required String text, required String text1}) =>
-      Row(
+  Widget commonTitleRowView({required String text, required String text1}) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(text,
@@ -342,7 +341,6 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
 
     if(controller.totalHoursFormApi == 0.0){
       controller.totalHoursLocal = subtractTimes(controller.shiftStartTimeString ?? '',controller.shiftEndTimeString??'');
-      print('controller.totalHoursLocal:::::::::   ${controller.totalHoursLocal / 60}');
     }
 
     if(controller.shiftTimeList?[index].lunchBreakStartTime!=null&& controller.shiftTimeList![index].lunchBreakStartTime!.isNotEmpty) {
@@ -354,12 +352,10 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
     }
 
     controller.lunchBreakTime = subtractTimes(controller.lunchBreakStartTime ?? '',controller.lunchBreakEndTime??'');
-    print('controller.lunchBreakTime:::::  ${controller.lunchBreakTime}');
 
     if(controller.shiftTimeList?[index].lateInMinutes!=null&& controller.shiftTimeList![index].lateInMinutes!.isNotEmpty) {
       controller.lateInRelaxationText  = '${controller.shiftTimeList?[index].lateInMinutes}';
       controller.lateInRelaxationTime = subtractMinutes(time12HourFormat: controller.shiftStartTimeString??'',subtractValue: int.parse(controller.lateInRelaxationText??''));
-      // print('controller.lateInRelaxationTime::::::  ${controller.lateInRelaxationTime}');
     }
 
     if(controller.shiftTimeList?[index].earlyOutMinutes!=null&& controller.shiftTimeList![index].earlyOutMinutes!.isNotEmpty) {
@@ -376,11 +372,11 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
     }
 
     if(controller.shiftTimeList?[index].minHalfHours!=null&& controller.shiftTimeList![index].minHalfHours!.isNotEmpty) {
-      controller.minHalfHours  = '${controller.shiftTimeList?[index].minHalfHours} Hours' ?? '';
+      controller.minHalfHours  = '${controller.shiftTimeList?[index].minHalfHours} Hours';
     }
 
     if(controller.shiftTimeList?[index].minFullDayHours!=null&& controller.shiftTimeList![index].minFullDayHours!.isNotEmpty) {
-      controller.minFullDayHours  = '${controller.shiftTimeList?[index].minFullDayHours} Hours' ?? '';
+      controller.minFullDayHours  = '${controller.shiftTimeList?[index].minFullDayHours} Hours';
     }
 
     return Card(

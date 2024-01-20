@@ -238,6 +238,8 @@ class AppPages {
       name: _Paths.CIRCULAR,
       page: () => const CircularView(),
       binding: CircularBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(microseconds: 0)
     ),
     GetPage(
       name: _Paths.CIRCULAR_DETAIL,

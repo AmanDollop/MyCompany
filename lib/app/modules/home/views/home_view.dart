@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ class HomeView extends GetView<HomeController> {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
       child: Scaffold(
+        backgroundColor: Col.inverseSecondary,
         body: Obx(() {
           controller.count.value;
           return NotificationListener(
@@ -40,22 +42,15 @@ class HomeView extends GetView<HomeController> {
                   padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
                   children: [
                     punchInAndPunchOutView(),
-                    if (controller.hideBanner.value)
-                      SizedBox(height: 16.px),
+                    if (controller.hideBanner.value) SizedBox(height: 16.px),
                     if (controller.hideBanner.value) bannerView(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 12.px, vertical: 14.px),
-                      child: Column(
-                        children: [
-                          if (controller.hideUpcomingCelebration.value)
-                            SizedBox(height: 14.px),
-                          if (controller.hideUpcomingCelebration.value)
-                            upcomingCelebrationsButtonView(),
-                        ],
+                    if (controller.hideUpcomingCelebration.value)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.px, vertical: 14.px),
+                        child: upcomingCelebrationsButtonView(),
                       ),
-                    ),
-                    headingListView(),
+                    appMenusListView(),
                     if (controller.hideMyTeam.value) SizedBox(height: 14.px),
                     if (controller.hideMyTeam.value) myTeamListView(),
                     if (controller.hideMyDepartment.value)
@@ -64,15 +59,12 @@ class HomeView extends GetView<HomeController> {
                       yourDepartmentListView(),
                     if (controller.hideGallery.value)
                       Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.px, right: 12.px, bottom: 4.px),
+                        padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             cardTextView(text: 'Gallery', fontSize: 16.px),
-                            viewAllTextButtonView(
-                                onPressedViewAllButton: () =>
-                                    controller.clickOnGalleryViewAllButton())
+                            viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
                           ],
                         ),
                       ),
@@ -88,130 +80,169 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget punchInAndPunchOutView() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+  Widget punchInAndPunchOutView() => Row(
     children: [
-      Row(
-        children: [
-          SizedBox(
-            width: 198.px,
-            height: 198.px,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  height: 164.px,
-                  width: 164.px,
-                  decoration: const BoxDecoration(
-                    // color: Col.primary.withOpacity(.1),
-                    shape: BoxShape.circle
-                  ),
-                  child: Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        circularProgressIndicatorView(),
-                        circularProgressIndicatorTextView(),
-                      ],
-                    ),
+      Expanded(
+        child: SizedBox(
+          width: 198.px,
+          height: 198.px,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                height: 198.px,
+                width: 198.px,
+                child: CustomPaint(
+                  painter: MyClockPainter(
+                      currentTime: controller.currentTimeForTimer),
+                ),
+              ),
+              Container(
+                height: 164.px,
+                width: 164.px,
+                decoration: const BoxDecoration(shape: BoxShape.circle),
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      circularProgressIndicatorView(),
+                      circularProgressIndicatorTextView(),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 198.px,
-                  width: 198.px,
-                  child: CustomPaint(
-                    painter: MyClockPainter(currentTime: controller.currentDateAndTime.value),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Padding(
-            padding:  EdgeInsets.only(right: 12.px),
-            child: Column(
-              children: [
-                commonSwitchButtonView(),
-                SizedBox(height: 14.px),
-                controller.breakValue.value
-                    ? SizedBox(
-                      width: 150.px,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      ),
+      Expanded(
+        child: Padding(
+          padding: EdgeInsets.only(right: 12.px),
+          child: Column(
+            children: [
+              commonSwitchButtonView(),
+              SizedBox(height: 14.px),
+              controller.breakValue.value
+                  ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          cardTextView(
+                            text: 'Break time',
+                          ),
+                          cardTextView(
+                              text: DateFormat('hh:mm:ss a').format(controller.currentDateTimeForBreak.value),
+                              fontSize: 12.px),
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () => controller.clickOnBreakButton(),
+                        borderRadius: BorderRadius.circular(4.px),
+                        child: Column(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                cardTextView(text: 'Break time',),
-                                cardTextView(text: '10:15 am',fontSize: 12.px),
-                              ],
+                            Container(
+                              height: 24.px,
+                              width: 24.px,
+                              decoration: BoxDecoration(
+                                  color: Col.primary,
+                                  shape: BoxShape.circle),
+                              child: Icon(Icons.play_arrow,
+                                  color: Col.inverseSecondary,
+                                  size: 16.px),
                             ),
-                            InkWell(
-                              onTap: () => controller.clickOnBreakButton(),
-                              borderRadius: BorderRadius.circular(4.px),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 24.px,
-                                    width: 24.px,
-                                    decoration: BoxDecoration(color: Col.primary, shape: BoxShape.circle),
-                                    child: Icon(Icons.play_arrow, color: Col.inverseSecondary, size: 16.px),
-                                  ),
-                                  cardTextView(text: 'End', color: Col.primary),
-                                ],
-                              ),
-                            ),
+                            cardTextView(text: 'End', color: Col.primary),
                           ],
                         ),
-                    )
-                    : CW.commonElevatedButton(
-                        onPressed: controller.checkInOrCheckOutValue.value?() => null:() => controller.clickOnBreakButton(),
-                        buttonText: 'Take a Break',
-                        width: 150.px,
-                        height: 38.px,
-                        borderRadius: 20.px,
-                        buttonColor: controller.checkInOrCheckOutValue.value?Col.primary.withOpacity(.5):Col.primary),
-              ],
-            ),
+                      ),
+                    ],
+                  )
+                  : CW.commonElevatedButton(
+                      onPressed: controller.checkInOrCheckOutValue.value
+                          ? () => null
+                          : () => controller.clickOnBreakButton(),
+                      buttonText: 'Take a Break',
+                      // width: 150.px,
+                      height: 38.px,
+                      borderRadius: 20.px,
+                      buttonColor: controller.checkInOrCheckOutValue.value
+                          ? Col.primary.withOpacity(.5)
+                          : Col.primary),
+            ],
           ),
-        ],
+        ),
       ),
     ],
   );
 
-  Widget circularProgressIndicatorView() => SizedBox(
-        height: 130.px,
-        width: 130.px,
+  Widget circularProgressIndicatorView() {
+
+    double total = 0.0;
+    double left = 0.0;
+    double linerValue = 0.0;
+
+    if (controller.shiftTime?.totalShiftMinutes!=null&&controller.shiftTime!.totalShiftMinutes!.isNotEmpty) {
+      total = double.parse('${controller.shiftTime?.totalShiftMinutes}');
+    }
+
+    left = double.parse(controller.currentTimeForTimer.minute.toString());
+
+    linerValue = (left / total);
+
+    if(linerValue.isNaN){
+      return SizedBox(
+        height: 124.px,
+        width: 124.px,
         child: CircularProgressIndicator(
-          strokeWidth: 12.px,
-          value: .8,
+          strokeWidth: 10.px,
+          value: 0,
           backgroundColor: Col.primary.withOpacity(.2),
           strokeCap: StrokeCap.round,
         ),
       );
+    }
+    else {
+      return SizedBox(
+      height: 124.px,
+      width: 124.px,
+      child: CircularProgressIndicator(
+        strokeWidth: 10.px,
+        value: linerValue,
+        backgroundColor: Col.primary.withOpacity(.2),
+        strokeCap: StrokeCap.round,
+      ),
+    );
+    }
+  }
 
   Widget circularProgressIndicatorTextView() => Container(
-        height: 118.px,
-        width: 118.px,
-        decoration: BoxDecoration(
-          color: Col.inverseSecondary,
-         shape: BoxShape.circle
-        ),
+        height: 100.px,
+        width: 100.px,
+        decoration: BoxDecoration(color: Col.inverseSecondary, shape: BoxShape.circle),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            circularProgressIndicatorCheckInTextView(firstText: 'Check In', fontSize: 8.px),
-            circularProgressIndicatorCheckInTextView(firstText: '09:30 AM', fontSize: 10.px),
+            circularProgressIndicatorCheckInTextView(
+                firstText: 'Check In -', fontSize: 8.px),
+            if (!controller.checkInOrCheckOutValue.value)
+              circularProgressIndicatorCheckInTextView(
+                  firstText: DateFormat('hh:mm:ss a').format(controller.currentDateTimeForPunchIn.value),
+                  fontSize: 10.px),
             SizedBox(height: 2.px),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                circularProgressIndicatorTimeTextView(firstText: '10'),
-                circularProgressIndicatorTimeTextView(firstText: ':00:'),
-                circularProgressIndicatorTimeTextView(firstText: '00'),
+                circularProgressIndicatorTimeTextView(
+                  firstText: '${controller.currentTimeForTimer.hour}:${controller.currentTimeForTimer.minute}:${controller.currentTimeForTimer.second}',
+                ),
               ],
             ),
             SizedBox(height: 4.px),
-            circularProgressIndicatorCheckInTextView(firstText: 'Thursday, Oct 13', fontSize: 10.px),
+            circularProgressIndicatorCheckInTextView(
+                firstText: DateFormat('EEEE, MMM dd')
+                    .format(controller.currentTimeForTimer),
+                fontSize: 10.px),
           ],
         ),
       );
@@ -219,7 +250,10 @@ class HomeView extends GetView<HomeController> {
   Widget circularProgressIndicatorTimeTextView({required String firstText}) =>
       Text(
         firstText,
-        style: Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 18.px),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .headlineLarge
+            ?.copyWith(fontSize: 18.px),
       );
 
   Widget circularProgressIndicatorCheckInTextView({required String firstText, double? fontSize}) =>
@@ -238,7 +272,7 @@ class HomeView extends GetView<HomeController> {
         onTap: () => controller.clickOnSwitchButton(),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 500),
-          width: 150.px,
+          // width: 150.px,
           height: 40.px,
           alignment: controller.checkInOrCheckOutValue.value
               ? Alignment.centerLeft
@@ -301,7 +335,8 @@ class HomeView extends GetView<HomeController> {
         indicatorWidth: 12.px,
       );
 
-  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight? fontWeight, TextAlign? textAlign}) => Text(
+  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight? fontWeight, TextAlign? textAlign}) =>
+      Text(
         text,
         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
             fontWeight: fontWeight ?? FontWeight.w500,
@@ -324,8 +359,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) =>
-      Card(
+  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
         shadowColor: Col.secondary.withOpacity(.1),
@@ -357,47 +391,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget commonContainerForLargeMenus({required String imagePath, required String titleText, required GestureTapCallback onTap}) =>
-      InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12.px),
-        child: Container(
-          // width: 164.px,
-          // height: 62.px,
-          padding: EdgeInsets.symmetric(horizontal: 8.px),
-          decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 24.px,
-                color: Col.secondary.withOpacity(.1),
-              )
-            ],
-            border: Border.all(color: Col.gray.withOpacity(.8), width: 1.px),
-            borderRadius: BorderRadius.circular(12.px),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Center(
-                child: CW.commonNetworkImageView(
-                    path: imagePath,
-                    isAssetImage: false,
-                    width: 36.px,
-                    height: 36.px),
-              ),
-              SizedBox(width: 6.px),
-              Flexible(
-                child: cardTextView(text: titleText, maxLines: 2),
-              ),
-              SizedBox(width: 12.px),
-            ],
-          ),
-        ),
-      );
-
-  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) =>
-      CW.commonTextButton(
+  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) => CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',
@@ -408,7 +402,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget headingListView() {
+  Widget appMenusListView() {
     if (controller.isHeadingMenuList.isNotEmpty) {
       return commonCard(
         titleText: 'App Menu',
@@ -463,11 +457,24 @@ class HomeView extends GetView<HomeController> {
                           borderRadius: BorderRadius.circular(6.px),
                         ),
                         child: Center(
-                          child: CW.commonCachedNetworkImageView(
-                            path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
-                            width: 22.px,
-                            height: 22.px,
-                          ),
+                          child:
+                              controller.isHeadingMenuList[index].menuImage ==
+                                          null &&
+                                      controller.isHeadingMenuList[index]
+                                          .menuImage!.isEmpty
+                                  ? CW.commonNetworkImageView(
+                                      path: 'assets/images/default_image.jpg',
+                                      isAssetImage: true,
+                                      width: 44.px,
+                                      height: 44.px,
+                                    )
+                                  : CW.commonNetworkImageView(
+                                      isAssetImage: false,
+                                      path:
+                                          '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
+                                      width: 22.px,
+                                      height: 22.px,
+                                    ),
                         ),
                       ),
                       SizedBox(height: 10.px),
@@ -493,7 +500,8 @@ class HomeView extends GetView<HomeController> {
         ),
       );
     } else {
-      return CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'Menus not found!');
+      return CW.commonNoDataFoundText(
+          text: controller.apiResValue.value ? '' : 'Menus not found!');
     }
   }
 
@@ -708,38 +716,38 @@ class HomeView extends GetView<HomeController> {
 
 class MyClockPainter extends CustomPainter {
   final DateTime currentTime;
+
   const MyClockPainter({required this.currentTime});
+
   @override
   void paint(Canvas canvas, Size size) {
-    final width = size.width-2;
-    final height = size.height-2;
+    final width = size.width - 2;
+    final height = size.height - 2;
     final radius = min(width, height) / 2;
     final centerOffset = Offset(width / 2, height / 2);
     const totalNumberOfTicks = 60;
 
     const rotatedAngle = 2 * pi / totalNumberOfTicks;
 
-    Paint minutesTicksPaint = Paint()..color = Col.gray ..strokeWidth = 2;
-
+    Paint minutesTicksPaint = Paint()
+      ..color = Col.gray
+      ..strokeWidth = 1.8;
+    Paint minutesTicksPaint1 = Paint()
+      ..color = Col.primary
+      ..strokeWidth = 1.8;
 
     canvas.save();
     canvas.translate(centerOffset.dx, centerOffset.dy);
 
     for (var i = 0; i < totalNumberOfTicks; i++) {
-
-      if(i==currentTime.second) {
-        Path linePath = Path();
-          linePath.moveTo(0, -radius * 0.95);
-          linePath.lineTo(-radius * 0.013, -radius * 0.9);
-          linePath.lineTo(-radius * 0.01, 0);
-          linePath.lineTo(radius * 0.01, 0);
-          linePath.lineTo(radius * 0.013, -radius * 0.9);
-          linePath.lineTo(0, -radius * 0.95);
-        canvas.drawColor(Col.primary,BlendMode.color);
-      }else{
-        canvas.drawLine(Offset(0, -radius + 18), Offset(0, -radius + 25), minutesTicksPaint);
+      if (i == currentTime.second) {
+        canvas.drawColor(Col.primary1, BlendMode.softLight);
+        canvas.drawLine(Offset(0, -radius + 16), Offset(0, -radius + 25),
+            minutesTicksPaint1);
+      } else {
+        canvas.drawLine(Offset(0, -radius + 16), Offset(0, -radius + 25),
+            minutesTicksPaint);
       }
-
       canvas.rotate(rotatedAngle);
     }
     canvas.restore();

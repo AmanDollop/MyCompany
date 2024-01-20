@@ -307,10 +307,10 @@ class MyProfileView extends GetView<MyProfileController> {
                     width: imageWidth ?? 44.px,
                     height: imageHeight ?? 44.px,)
                   : Center(
-                child: CW.commonCachedNetworkImageView(
-                  path: imagePath,
-                  width: imageWidth ?? 44.px,
-                  height: imageHeight ?? 44.px,
+                    child: CW.commonCachedNetworkImageView(
+                    path: imagePath,
+                    width: imageWidth ?? 44.px,
+                    height: imageHeight ?? 44.px,
                 ),
               ),
             ),

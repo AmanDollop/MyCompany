@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -15,7 +17,8 @@ class BreakDialog extends GetView<HomeController> {
       controller.breakDialogConfirmButtonValue.value = false;
       return Dialog(
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
         backgroundColor: Col.inverseSecondary,
         child: SizedBox(
           height: 300.px,
@@ -35,12 +38,14 @@ class BreakDialog extends GetView<HomeController> {
                       CW.commonIconButton(
                           onPressed: () {
                             Get.back();
-                            if(!controller.breakDialogConfirmButtonValue.value) {
-                              controller.breakCheckBoxValue.value='';
+                            if (!controller
+                                .breakDialogConfirmButtonValue.value) {
+                              controller.breakCheckBoxValue.value = '';
                             }
                           },
                           isAssetImage: false,
-                          icon: Icons.cancel,size: 22.px)
+                          icon: Icons.cancel,
+                          size: 22.px)
                     ],
                   ),
                 ),
@@ -58,14 +63,18 @@ class BreakDialog extends GetView<HomeController> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(controller.breakTitleList[index], style: Theme.of(context).textTheme.titleLarge),
+                            Text(controller.breakTitleList[index],
+                                style: Theme.of(context).textTheme.titleLarge),
                             InkWell(
                               onTap: () {
-                                controller.breakCheckBoxValue.value = controller.breakTitleList.value[index].toString();
+                                controller.breakCheckBoxValue.value = controller
+                                    .breakTitleList.value[index]
+                                    .toString();
                                 controller.count.value++;
                               },
                               borderRadius: BorderRadius.circular(6.px),
-                              child: controller.breakCheckBoxValue.value == controller.breakTitleList.value[index]
+                              child: controller.breakCheckBoxValue.value ==
+                                      controller.breakTitleList.value[index]
                                   ? Padding(
                                       padding: EdgeInsets.only(right: 2.px),
                                       child: SizedBox(
@@ -98,8 +107,11 @@ class BreakDialog extends GetView<HomeController> {
                 SizedBox(height: 6.px),
                 CW.commonElevatedButton(
                   onPressed: controller.breakCheckBoxValue.value != ''
-                      ? () {
-                          controller.breakValue.value = !controller.breakValue.value;
+                      ? () async {
+                          controller.currentDateTimeForBreak.value =
+                              await controller.getISTDateTime();
+                          controller.breakValue.value =
+                              !controller.breakValue.value;
                           controller.breakDialogConfirmButtonValue.value = true;
                           Get.back();
                         }

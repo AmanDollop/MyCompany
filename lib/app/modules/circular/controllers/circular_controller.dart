@@ -40,8 +40,6 @@ class CircularController extends GetxController {
     super.onInit();
     try {
       menuName.value = Get.arguments[0];
-      var i = calculateTheLatLongDistanceInMeter(22.7248, 75.8871,22.6845, 75.8645);
-      print('i:::: $i');
       newDate = currentDate.subtract(const Duration(days: 30));
       startController.text = DateFormat('dd MMM yyyy').format(newDate ?? currentDate);
       endController.text = DateFormat('dd MMM yyyy').format(currentDate);
@@ -51,14 +49,6 @@ class CircularController extends GetxController {
       apiResValue.value = false;
     }
     apiResValue.value = false;
-  }
-
-
-  double calculateTheLatLongDistanceInMeter(double lat1, double lon1, double lat2, double lon2) {
-    const double p = 0.017453292519943295; // Math.PI / 180
-    const double earthRadius = 6371.0; // Radius of the Earth in kilometers
-    double a = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
-    return 2 * earthRadius * asin(sqrt(a)) * 1000; // Multiply by 1000 to convert to meters
   }
 
   @override

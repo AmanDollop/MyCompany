@@ -673,7 +673,7 @@ class CAI extends GetxController{
     }
   }
 
-  static Future<http.Response?> attendancePunchInApi({
+  static Future<http.Response?> attendancePunchInAndPunchOutApi({
     required Map<String, dynamic> bodyParams,
     File? image
   }) async {
@@ -690,6 +690,29 @@ class CAI extends GetxController{
         image: image,
         multipartRequestType: 'POST',
         token: '$token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> breakInAndOutApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+    http.Response? response = await MyHttp.postMethod(
+      url: '$baseUrl${AU.endPointBreakControllerApi}',
+      bodyParams: bodyParams,
+      context: Get.context!,
     );
     if (response != null) {
       if (await CM.checkResponse(
