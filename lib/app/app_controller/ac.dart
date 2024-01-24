@@ -1,11 +1,9 @@
 ///flutter pub add connectivity_plus => For Check Internet on real time
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:safe_device/safe_device.dart';
-import 'package:task/common/common_dialog/cd.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
+import 'package:trust_location/trust_location.dart';
 import '../../common/common_methods/cm.dart';
 
 class AC extends GetxController {
@@ -63,7 +61,9 @@ class AC extends GetxController {
   }
 
   static Future<bool> checkFakeLocation() async {
-    isFakeLocation = await SafeDevice.canMockLocation;
+    // isFakeLocation = await SafeDevice.canMockLocation;
+    // isFakeLocation = await DetectFakeLocation().detectFakeLocation();
+    isFakeLocation = await TrustLocation.isMockLocation;
     print('isFakeLocation:::::::::  $isFakeLocation');
     return isFakeLocation;
   }

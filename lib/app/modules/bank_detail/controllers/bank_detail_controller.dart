@@ -92,8 +92,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
                 child: Row(
                   children: [
                     RotationTransition(
-                      turns: Tween(begin: 0.0, end: 30.0)
-                          .animate(rotationController),
+                      turns: Tween(begin: 0.0, end: 30.0).animate(rotationController),
                       child: CW.commonNetworkImageView(
                           path: 'assets/icons/sync_icon.png',
                           isAssetImage: true,

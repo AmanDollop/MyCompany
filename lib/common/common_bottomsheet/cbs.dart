@@ -383,8 +383,7 @@ class BottomSheetForOTP extends GetxController {
         AK.action: 'userSentOtp',
         AK.userEmail: email,
       };
-      http.Response? response =
-          await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
       if (response != null && response.statusCode == 200) {
         otpApiResponseMap = jsonDecode(response.body);
         Future.delayed(
@@ -502,13 +501,9 @@ class BottomSheetForOTP extends GetxController {
                         children: [
                           timer.value
                               ? TextButton(
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Theme.of(Get.context!)
-                                          .colorScheme
-                                          .background),
+                                  style: TextButton.styleFrom(foregroundColor: Theme.of(Get.context!).colorScheme.background),
                                   onPressed: () {},
-                                  child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+                                  child: Text("Resend OTP", style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                                 )
                               : TextButton(
                                   onPressed: () async {

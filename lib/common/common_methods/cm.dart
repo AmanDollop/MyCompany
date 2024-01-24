@@ -412,8 +412,7 @@ class MyLocation{
         if (permissionGranted == PermissionStatus.denied) {
           return null;
         } else if (permissionGranted == PermissionStatus.deniedForever) {
-          await OpenAppsSettings.openAppsSettings(
-              settingsCode: SettingsCode.APP_SETTINGS);
+          await OpenAppsSettings.openAppsSettings(settingsCode: SettingsCode.APP_SETTINGS);
           permissionGranted = await location.hasPermission();
           if (permissionGranted == PermissionStatus.denied) {
             return null;
