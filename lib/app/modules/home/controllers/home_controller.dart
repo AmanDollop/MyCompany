@@ -319,7 +319,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
         CBS.commonBottomSheet(
             isDismissible: false,
-
+            onTap: () {
+              CM.unFocusKeyBoard();
+            },
+            // maxChildSize: .35,
+            // initialChildSize: 0.35,
             children: [
               Column(
                 crossAxisAlignment:CrossAxisAlignment.start,
@@ -477,7 +481,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                     ),
                 ],
               ),
-              SizedBox(height: 30.px),
+              SizedBox(height: 20.px),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -497,7 +501,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                   ),
                 ],
               ),
-              SizedBox(height: 30.px),
+              SizedBox(height: 20.px),
         ],).whenComplete(() {
           lateInAndLateOutRangeController.clear();
           lateInAndLateOutRangeReasonController.clear();

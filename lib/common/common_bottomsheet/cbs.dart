@@ -36,6 +36,7 @@ class CBS {
     double? horizontalPadding,
     BorderSide borderSide = BorderSide.none,
     Widget? unScrollWidget,
+    GestureTapCallback? onTap
   }) async {
     await showModalBottomSheet(
       context: Get.context!,
@@ -59,41 +60,44 @@ class CBS {
           onWillPop: () async {
             return isCloseOnBack;
           },
-          child: Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: ClipRRect(
-              borderRadius: showDragHandle
-                  ? BorderRadius.zero
-                  : BorderRadius.only(
-                      topLeft: Radius.circular(cornerRadius ?? 20.px),
-                      topRight: Radius.circular(cornerRadius ?? 20.px),
-                    ),
-              child: ScrollConfiguration(
-                behavior: ListScrollBehavior(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (unScrollWidget != null)
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: showDragHandle ? 0.px : C.margin,
-                            left: horizontalPadding ?? C.margin,
-                            right: horizontalPadding ?? C.margin,
-                            bottom: horizontalPadding ?? C.margin / 2),
-                        child: unScrollWidget,
+          child: GestureDetector(
+            onTap:onTap,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ClipRRect(
+                borderRadius: showDragHandle
+                    ? BorderRadius.zero
+                    : BorderRadius.only(
+                        topLeft: Radius.circular(cornerRadius ?? 20.px),
+                        topRight: Radius.circular(cornerRadius ?? 20.px),
                       ),
-                    Flexible(
-                      child: ListView(
-                        padding: EdgeInsets.only(
-                            left: horizontalPadding ?? C.margin,
-                            right: horizontalPadding ?? C.margin,
-                            top: showDragHandle ? 0.px : C.margin,
-                            bottom: horizontalPadding ?? C.margin / 2),
-                        shrinkWrap: true,
-                        children: children ?? [],
+                child: ScrollConfiguration(
+                  behavior: ListScrollBehavior(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (unScrollWidget != null)
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: showDragHandle ? 0.px : C.margin,
+                              left: horizontalPadding ?? C.margin,
+                              right: horizontalPadding ?? C.margin,
+                              bottom: horizontalPadding ?? C.margin / 2),
+                          child: unScrollWidget,
+                        ),
+                      Flexible(
+                        child: ListView(
+                          padding: EdgeInsets.only(
+                              left: horizontalPadding ?? C.margin,
+                              right: horizontalPadding ?? C.margin,
+                              top: showDragHandle ? 0.px : C.margin,
+                              bottom: horizontalPadding ?? C.margin / 2),
+                          shrinkWrap: true,
+                          children: children ?? [],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
