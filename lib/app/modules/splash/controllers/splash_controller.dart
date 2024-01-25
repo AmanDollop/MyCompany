@@ -20,14 +20,8 @@ class SplashController extends GetxController {
 
   UserDetails? userData;
 
-  final dayValue = ''.obs;
 
-  final shiftDetailsModal = Rxn<ShiftDetailsModal>();
 
-  ShiftDetails? shiftDetails;
-  List<ShiftTime>? shiftTimeList;
-  ShiftTime? shiftTimeForSingleData;
-  Map<String, dynamic> bodyParamsForShiftDetail = {};
 
   @override
    Future<void> onInit()  async {
@@ -35,7 +29,7 @@ class SplashController extends GetxController {
     try{
       dataBaseCalling();
       await BottomSheetForOTP.callingGetCompanyDetailApi();
-      await callingGetShiftDetailApi();
+      // await BottomSheetForOTP.callingGetShiftDetailApi();
       Timer(
         const Duration(seconds: 3),
             () => callingNextScreen(),
@@ -98,63 +92,5 @@ class SplashController extends GetxController {
     await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
   }
 
-  Future<void> callingGetShiftDetailApi() async {
-    bodyParamsForShiftDetail = {AK.action: 'getShiftDetail'};
-    shiftDetailsModal.value = await CAI.getShiftDetailApi(bodyParams: bodyParamsForShiftDetail);
-    if (shiftDetailsModal.value != null) {
-      shiftDetails = shiftDetailsModal.value?.shiftDetails;
-      shiftTimeList = shiftDetails?.shiftTime;
-      day();
-      shiftTimeList?.forEach((element) {
-        if (dayValue.value == element.shiftDay) {
-          shiftTimeForSingleData = element;
-        }
-      });
-      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForShiftDetail)) {
-        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value), DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)}, tableName: DataBaseConstant.tableNameForShiftDetail);
-      } else {
-        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value), DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)}, tableName: DataBaseConstant.tableNameForShiftDetail);
-      }
-    }
-  }
-
-  void day() {
-    DateTime now = DateTime.now();
-    int currentDay = now.weekday;
-
-    switch (currentDay) {
-      case DateTime.monday:
-        dayValue.value = '1';
-        print('::::::::::::::::Today is Monday ::::::  $dayValue');
-        break;
-      case DateTime.tuesday:
-        dayValue.value = '2';
-        print('::::::::::::::::Today is Tuesday ::::::  $dayValue');
-        break;
-      case DateTime.wednesday:
-        dayValue.value = '3';
-        print('::::::::::::::::Today is Wednesday ::::::  $dayValue');
-        break;
-      case DateTime.thursday:
-        dayValue.value = '4';
-        print('::::::::::::::::Today is Thursday ::::::  $dayValue');
-        break;
-      case DateTime.friday:
-        dayValue.value = '5';
-        print('::::::::::::::::Today is Friday ::::::  $dayValue');
-        break;
-      case DateTime.saturday:
-        dayValue.value = '6';
-        print('::::::::::::::::Today is Saturday ::::::  $dayValue');
-        break;
-      case DateTime.sunday:
-        dayValue.value = '0';
-        print('::::::::::::::::Today is Sunday ::::::  $dayValue');
-        break;
-      default:
-        print('Failed to determine the current day');
-        break;
-    }
-  }
 
 }

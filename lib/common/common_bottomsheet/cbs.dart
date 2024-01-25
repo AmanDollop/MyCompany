@@ -5,6 +5,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
+import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -21,23 +22,22 @@ import 'package:timer_count_down/timer_count_down.dart';
 import 'package:http/http.dart' as http;
 
 class CBS {
-  static Future<void> commonBottomSheet({
-    required List<Widget> children,
-    bool enableDrag = true,
-    bool isDismissible = true,
-    bool useSafeArea = true,
-    bool isFullScreen = false,
-    bool showDragHandle = true,
-    bool isCloseOnBack = true,
-    Color? backGroundColor,
-    Color? barrierColor,
-    double? elevation,
-    double? cornerRadius,
-    double? horizontalPadding,
-    BorderSide borderSide = BorderSide.none,
-    Widget? unScrollWidget,
-    GestureTapCallback? onTap
-  }) async {
+  static Future<void> commonBottomSheet(
+      {required List<Widget> children,
+      bool enableDrag = true,
+      bool isDismissible = true,
+      bool useSafeArea = true,
+      bool isFullScreen = false,
+      bool showDragHandle = true,
+      bool isCloseOnBack = true,
+      Color? backGroundColor,
+      Color? barrierColor,
+      double? elevation,
+      double? cornerRadius,
+      double? horizontalPadding,
+      BorderSide borderSide = BorderSide.none,
+      Widget? unScrollWidget,
+      GestureTapCallback? onTap}) async {
     await showModalBottomSheet(
       context: Get.context!,
       showDragHandle: showDragHandle,
@@ -61,9 +61,10 @@ class CBS {
             return isCloseOnBack;
           },
           child: GestureDetector(
-            onTap:onTap,
+            onTap: onTap,
             child: Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
               child: ClipRRect(
                 borderRadius: showDragHandle
                     ? BorderRadius.zero
@@ -109,7 +110,7 @@ class CBS {
 
   static Future<void> commonDraggableBottomSheet(
       {required List<Widget> children,
-        Widget? list,
+      Widget? list,
       bool enableDrag = true,
       bool isDismissible = true,
       bool useSafeArea = true,
@@ -172,20 +173,20 @@ class CBS {
                               bottom: horizontalPadding ?? C.margin / 2),
                           child: unScrollWidget,
                         ),
-                      if(children.isNotEmpty)
-                      Flexible(
-                        child: ListView(
-                          controller: isDragOn ? scrollController : null,
-                          padding: EdgeInsets.only(
-                              top: showDragHandle ? 0.px : C.margin,
-                              left: horizontalPadding ?? C.margin,
-                              right: horizontalPadding ?? C.margin,
-                              bottom: horizontalPadding ?? C.margin / 2),
-                          shrinkWrap: true,
-                          children: children,
+                      if (children.isNotEmpty)
+                        Flexible(
+                          child: ListView(
+                            controller: isDragOn ? scrollController : null,
+                            padding: EdgeInsets.only(
+                                top: showDragHandle ? 0.px : C.margin,
+                                left: horizontalPadding ?? C.margin,
+                                right: horizontalPadding ?? C.margin,
+                                bottom: horizontalPadding ?? C.margin / 2),
+                            shrinkWrap: true,
+                            children: children,
+                          ),
                         ),
-                      ),
-                      list ??const SizedBox()
+                      list ?? const SizedBox()
                     ],
                   ),
                 ),
@@ -372,6 +373,14 @@ class BottomSheetForOTP extends GetxController {
   static final companyDetailsModal = Rxn<CompanyDetailsModal?>();
   static GetCompanyDetails? getCompanyDetails;
 
+  static final shiftDetailsModal = Rxn<ShiftDetailsModal>();
+
+  static ShiftDetails? shiftDetails;
+  static List<ShiftTime>? shiftTimeList;
+  static ShiftTime? shiftTimeForSingleData;
+  static final dayValue = ''.obs;
+
+  static Map<String, dynamic> bodyParamsForShiftDetail = {};
 
   static Map<String, dynamic> bodyParamsSendOtp = {};
   static Map<String, dynamic> otpApiResponseMap = {};
@@ -387,7 +396,8 @@ class BottomSheetForOTP extends GetxController {
         AK.action: 'userSentOtp',
         AK.userEmail: email,
       };
-      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+      http.Response? response =
+          await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
       if (response != null && response.statusCode == 200) {
         otpApiResponseMap = jsonDecode(response.body);
         Future.delayed(
@@ -404,25 +414,25 @@ class BottomSheetForOTP extends GetxController {
 
   static Future<void> matchOtpApiCalling({required String email, required String otp}) async {
     try {
-
       bodyParamsMatchOtp = {
         AK.action: 'matchOtp',
         AK.otp: otp,
         AK.userEmail: email,
       };
 
-      userDataModal.value = await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
+      userDataModal.value =
+          await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
 
       if (userDataModal.value != null) {
-
         userData = userDataModal.value?.userDetails;
 
-          print('userData?.token:::::::: ${userData?.token}');
-          await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail:json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
+        print('userData?.token:::::::: ${userData?.token}');
+        await DataBaseHelper().insertInDataBase(data: {
+          DataBaseConstant.userDetail: json.encode(userDataModal.value)
+        }, tableName: DataBaseConstant.tableNameForUserDetail);
 
-          Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
-          CM.showSnackBar(message: 'LogIn Successfully');
-
+        Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
+        CM.showSnackBar(message: 'LogIn Successfully');
       } else {
         verifyButtonValue.value = false;
         CM.error();
@@ -461,14 +471,19 @@ class BottomSheetForOTP extends GetxController {
                   return false;
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: ListView(
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(bottom: 34.px, left: 18.px, right: 18.px),
+                    padding: EdgeInsets.only(
+                        bottom: 34.px, left: 18.px, right: 18.px),
                     children: [
                       Text(
                         'OTP Verification',
-                        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.text),
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .displaySmall
+                            ?.copyWith(color: Col.text),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 12.px),
@@ -505,9 +520,17 @@ class BottomSheetForOTP extends GetxController {
                         children: [
                           timer.value
                               ? TextButton(
-                                  style: TextButton.styleFrom(foregroundColor: Theme.of(Get.context!).colorScheme.background),
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Theme.of(Get.context!)
+                                          .colorScheme
+                                          .background),
                                   onPressed: () {},
-                                  child: Text("Resend OTP", style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+                                  child: Text("Resend OTP",
+                                      style: Theme.of(Get.context!)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w600)),
                                 )
                               : TextButton(
                                   onPressed: () async {
@@ -563,7 +586,8 @@ class BottomSheetForOTP extends GetxController {
                                   if (otpController.text.isNotEmpty) {
                                     verifyButtonValue.value = true;
                                     await matchOtpApiCalling(email: email, otp: otpController.text.trim().toString());
-                                    await callingGetCompanyDetailApi();
+                                    await BottomSheetForOTP.callingGetCompanyDetailApi();
+                                    // await BottomSheetForOTP.callingGetShiftDetailApi();
                                   }
                                 },
                                 isLoading: verifyButtonValue.value,
@@ -590,35 +614,51 @@ class BottomSheetForOTP extends GetxController {
   }
 
   static Future<void> callingGetCompanyDetailApi() async {
-    try{
-      companyDetailsModal.value = await CAI.getCompanyDetailsApi(bodyParams: {AK.action:'getCompanyDetail'});
-      if(companyDetailsModal.value != null){
-       getCompanyDetails = companyDetailsModal.value?.getCompanyDetails;
-       if(getCompanyDetails != null){
-         if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForCompanyDetail)) {
-           await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.companyDetail:json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
-         }else{
-           await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.companyDetail:json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
-         }
-       }
+    try {
+      companyDetailsModal.value = await CAI
+          .getCompanyDetailsApi(bodyParams: {AK.action: 'getCompanyDetail'});
+      if (companyDetailsModal.value != null) {
+        getCompanyDetails = companyDetailsModal.value?.getCompanyDetails;
+        if (getCompanyDetails != null) {
+          if (await DataBaseHelper().isDatabaseHaveData(
+              db: DataBaseHelper.dataBaseHelper,
+              tableName: DataBaseConstant.tableNameForCompanyDetail)) {
+            await DataBaseHelper().insertInDataBase(data: {
+              DataBaseConstant.companyDetail:
+                  json.encode(companyDetailsModal.value)
+            }, tableName: DataBaseConstant.tableNameForCompanyDetail);
+          } else {
+            await DataBaseHelper().upDateDataBase(data: {
+              DataBaseConstant.companyDetail:
+                  json.encode(companyDetailsModal.value)
+            }, tableName: DataBaseConstant.tableNameForCompanyDetail);
+          }
+        }
       }
-    }catch(e){
+    } catch (e) {
       CM.error();
     }
   }
 
   static Future<void> callingGetUserDataApi() async {
     final userDataFromLocalDataBase = ''.obs;
-    try{
-
-      userDataModal.value= await CAI.getUserDataApi(bodyParams: {AK.action:'getUserDetails'});
-      if(userDataModal.value != null){
+    try {
+      userDataModal.value =
+          await CAI.getUserDataApi(bodyParams: {AK.action: 'getUserDetails'});
+      if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
 
-        userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
-        userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
-        userDataModal.value?.userDetails?.token =  userData?.token;
-        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.userDetail:json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
+        userDataFromLocalDataBase.value = await DataBaseHelper()
+            .getParticularData(
+                key: DataBaseConstant.userDetail,
+                tableName: DataBaseConstant.tableNameForUserDetail);
+        userData =
+            UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
+                .userDetails;
+        userDataModal.value?.userDetails?.token = userData?.token;
+        await DataBaseHelper().upDateDataBase(data: {
+          DataBaseConstant.userDetail: json.encode(userDataModal.value)
+        }, tableName: DataBaseConstant.tableNameForUserDetail);
 
         // if(userData?.personalInfo != null){
         //   personalInfo = userData?.personalInfo;
@@ -639,10 +679,68 @@ class BottomSheetForOTP extends GetxController {
         //   socialInfo = userData?.socialInfo;
         //   DataBaseHelper().upDateDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
         // }
-
       }
-    }catch(e){
+    } catch (e) {
       CM.error();
+    }
+  }
+
+  static void day() {
+    DateTime now = DateTime.now();
+    int currentDay = now.weekday;
+
+    switch (currentDay) {
+      case DateTime.monday:
+        dayValue.value = '1';
+        print('::::::::::::::::Today is Monday ::::::  $dayValue');
+        break;
+      case DateTime.tuesday:
+        dayValue.value = '2';
+        print('::::::::::::::::Today is Tuesday ::::::  $dayValue');
+        break;
+      case DateTime.wednesday:
+        dayValue.value = '3';
+        print('::::::::::::::::Today is Wednesday ::::::  $dayValue');
+        break;
+      case DateTime.thursday:
+        dayValue.value = '4';
+        print('::::::::::::::::Today is Thursday ::::::  $dayValue');
+        break;
+      case DateTime.friday:
+        dayValue.value = '5';
+        print('::::::::::::::::Today is Friday ::::::  $dayValue');
+        break;
+      case DateTime.saturday:
+        dayValue.value = '6';
+        print('::::::::::::::::Today is Saturday ::::::  $dayValue');
+        break;
+      case DateTime.sunday:
+        dayValue.value = '0';
+        print('::::::::::::::::Today is Sunday ::::::  $dayValue');
+        break;
+      default:
+        print('Failed to determine the current day');
+        break;
+    }
+  }
+
+  static Future<void> callingGetShiftDetailApi() async {
+    bodyParamsForShiftDetail = {AK.action: 'getShiftDetail'};
+    shiftDetailsModal.value = await CAI.getShiftDetailApi(bodyParams: bodyParamsForShiftDetail);
+    if (shiftDetailsModal.value != null) {
+      shiftDetails = shiftDetailsModal.value?.shiftDetails;
+      shiftTimeList = shiftDetails?.shiftTime;
+      day();
+      shiftTimeList?.forEach((element) {
+        if (dayValue.value == element.shiftDay) {
+          shiftTimeForSingleData = element;
+        }
+      });
+      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForShiftDetail)) {
+        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value), DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)}, tableName: DataBaseConstant.tableNameForShiftDetail);
+      } else {
+        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value), DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)}, tableName: DataBaseConstant.tableNameForShiftDetail);
+      }
     }
   }
 }

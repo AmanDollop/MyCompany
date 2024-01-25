@@ -93,6 +93,7 @@ class AppPages {
       name: _Paths.LOGIN,
       page: () => const LoginView(),
       binding: LoginBinding(),
+      transitionDuration: const Duration(microseconds: 0)
     ),
     GetPage(
       name: _Paths.SIGN_UP,
@@ -128,11 +129,13 @@ class AppPages {
       name: _Paths.NOTIFICATION,
       page: () => const NotificationView(),
       binding: NotificationBinding(),
+      transitionDuration: const Duration(microseconds: 0)
     ),
     GetPage(
       name: _Paths.DRAWER_VIEW,
       page: () => const DrawerViewView(),
       binding: DrawerViewBinding(),
+      transitionDuration: const Duration(microseconds: 0)
     ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
@@ -148,6 +151,7 @@ class AppPages {
       name: _Paths.MY_PROFILE,
       page: () => const MyProfileView(),
       binding: MyProfileBinding(),
+      transitionDuration: const Duration(microseconds: 0)
     ),
     GetPage(
       name: _Paths.SELECT_DEPARTMENT,

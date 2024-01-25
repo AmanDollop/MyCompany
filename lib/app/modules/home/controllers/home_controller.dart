@@ -11,6 +11,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
+import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
@@ -36,13 +37,15 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final scrollController = ScrollController().obs;
 
   final breakValue = false.obs;
-
+  final breakTypeIdCheckBoxValue = ''.obs;
   final breakDialogConfirmButtonValue = false.obs;
+  final getBreakDetailsModal = Rxn<GetBreakDetailsModal>();
+  List<GetBreakDetails>? getBreakDetailsList;
+
 
   final checkInValue = false.obs;
-  final checkOutValue = false.obs;
 
-  final breakCheckBoxValue = ''.obs;
+  final checkOutValue = false.obs;
 
   final bannerIndex = 0.obs;
 
@@ -70,13 +73,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g3P5972LeN4_5J9Dua6oCYn3cBzjSUGys5dhj4qerMbHQY5-TRyMzrmuRe3m6SPz4WU&usqp=CAU'
   ];
 
-  final breakTitleList = [
-    'Lunch Break',
-    'Tea Break',
-    'Personal Break',
-    'Dinner Break',
-  ];
-
   final shiftDetailFromLocalDataBase = ''.obs;
   ShiftDetails? shiftDetails;
   final shiftTimeFromLocalDataBase = ''.obs;
@@ -96,17 +92,18 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   GetTodayAttendance? getTodayAttendanceDetail;
   Map<String, dynamic> bodyParamsForGetTodayAttendanceApi = {};
 
-  late DateTime currentTimeForTimer = DateTime(00);
-  late DateTime currentTimeForBreakTimer = DateTime(00);
-  final currentDateTimeForPunchIn = DateTime(00).obs;
-  final currentDateTimeForBreak = DateTime(00).obs;
+  late DateTime currentTimeForTimer = DateTime(0, 0, 0, 0, 0, 0, 0);
+  late DateTime currentTimeForBreakTimer = DateTime(0, 0, 0, 0, 0, 0, 0);
   late Timer timer;
-  late Timer timer1;
+  final isTimerStartedValue = false.obs;
 
-  int hours = 0;
-  int minutes = 0;
-  int seconds = 0;
+  final hours = 0.obs;
+  final minutes = 0.obs;
+  final seconds = 0.obs;
+  final total = 540.0.obs;
+  final linerValue = 0.0.obs;
 
+  final key = GlobalKey<FormState>();
   final lateInAndLateOutRangeController = TextEditingController();
   final lateInAndLateOutRangeReasonController = TextEditingController();
   final image = Rxn<File?>();
@@ -114,13 +111,14 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   String punchInOutOfRange = '0';
   final isLatePunchIn = false.obs;
 
+  final isEarlyPunchOut = false.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
     try {
       Get.put(DrawerViewController());
-      rotationController = AnimationController(
-          duration: const Duration(milliseconds: 30000), vsync: this);
+      rotationController = AnimationController(duration: const Duration(milliseconds: 30000), vsync: this);
       rotationController.forward(from: 0.0);
       await callingGetLatLongMethod();
     } catch (e) {
@@ -147,11 +145,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   void increment() => count.value++;
 
-  double calculateTheLatLongDistanceInMeter(
-      {required double lat1,
-      required double lon1,
-      required double lat2,
-      required double lon2}) {
+  double calculateTheLatLongDistanceInMeter({required double lat1, required double lon1, required double lat2, required double lon2}) {
     const double p = 0.017453292519943295; // Math.PI / 180
     const double earthRadius = 6371.0; // Radius of the Earth in kilometers
     double a = 0.5 -
@@ -181,8 +175,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
 
       if (getLatLong != null) {
-        print(
-            'getLatLong:::::: ${getLatLong?.longitude}    ${getLatLong?.latitude}');
+        print('getLatLong:::::: ${getLatLong?.longitude}    ${getLatLong?.latitude}');
         // location.onLocationChanged.listen((event) {
         //   getLatLong?.latitude = event.latitude;
         //   print('getLatLong?.latitude::::::  ${getLatLong?.latitude}');
@@ -190,10 +183,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         //   print('getLatLong?.longitude::::::::  ${getLatLong?.longitude}');
         // });
 
-        isDatabaseHaveDataForAppMenu.value = await DataBaseHelper()
-            .isDatabaseHaveData(
-                db: DataBaseHelper.dataBaseHelper,
-                tableName: DataBaseConstant.tableNameForAppMenu);
+        isDatabaseHaveDataForAppMenu.value = await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu);
         await setDefaultData();
       } else {
         if (AC.isConnect.value) {
@@ -211,6 +201,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       await shiftData();
       await appMenusData();
       await callingGetTodayAttendanceApi();
+      await callingGetBreakDetailsApi();
     } catch (e) {
       apiResValue.value = false;
     }
@@ -232,14 +223,13 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> shiftData() async {
     try {
+      await BottomSheetForOTP.callingGetShiftDetailApi();
       shiftDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftDetails, tableName: DataBaseConstant.tableNameForShiftDetail);
       shiftDetails = ShiftDetailsModal.fromJson(jsonDecode(shiftDetailFromLocalDataBase.value)).shiftDetails;
-
       shiftTimeFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftTime, tableName: DataBaseConstant.tableNameForShiftDetail);
       shiftTime = ShiftTime.fromJson(jsonDecode(shiftTimeFromLocalDataBase.value));
-      print('shiftTime::::  ${shiftTime?.shiftStartTime}');
     } catch (e) {
-      print('e::::::::::   $e');
+      print('e:::shiftTime:::: :::::::   $e');
     }
   }
 
@@ -275,268 +265,369 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     Get.toNamed(Routes.NOTIFICATION);
   }
 
-  void startTimer() {
+  Future<void> callingGetBreakDetailsApi() async {
+    try{
+      getBreakDetailsModal.value = await CAI.getBreakDetailsApi(bodyParams: {AK.action:'getBreak'});
+       if(getBreakDetailsModal.value!=null){
+        getBreakDetailsList=getBreakDetailsModal.value?.getBreakDetails;
+      }
+    }catch(e){
+      CM.error();
+    }
+  }
+
+  Future<void> startTimer() async {
+
     DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
 
-    DateTime currentTime = DateTime.now();
+    DateTime currentTime = await getInternetDateTime();
 
     Duration difference = currentTime.difference(punchInDateTime);
 
-    hours = difference.inHours;
-    minutes = (difference.inMinutes % 60);
-    seconds = (difference.inSeconds % 60);
+    hours.value = difference.inHours;
+    minutes.value = (difference.inMinutes % 60);
+    seconds.value = (difference.inSeconds % 60);
 
-    currentTimeForTimer = DateTime(2022, 1, 1, hours, minutes, seconds);
+    currentTimeForTimer = DateTime(0, 0, 0, hours.value, minutes.value, seconds.value);
 
-    timer = Timer.periodic(const Duration(seconds: 1), updateTimeForTimer);
-    count.value++;
+    if(!isTimerStartedValue.value) {
+      isTimerStartedValue.value=true;
+      timer = Timer.periodic(const Duration(seconds: 1), updateTimeForTimer);
+    }
+    else{
+      timer.cancel();
+      timer = Timer.periodic(const Duration(seconds: 1), updateTimeForTimer);
+    }
+
   }
 
-  void updateTimeForTimer(Timer timer) {
-    if (!breakValue.value) {
-      currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
-    }
-    count.value++;
+  Future<void> updateTimeForTimer(Timer timer) async {
+       currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
+       if(breakValue.value){
+         DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.breakStartTime}");
+
+         DateTime currentTime = await getInternetDateTime();
+
+         Duration difference = currentTime.difference(punchInDateTime);
+
+         int hoursForBreak = difference.inHours;
+         int minutesForBreak = (difference.inMinutes % 60);
+         int secondsForBreak = (difference.inSeconds % 60);
+
+         currentTimeForBreakTimer = DateTime(0, 0, 0, hoursForBreak, minutesForBreak, secondsForBreak);
+         currentTimeForBreakTimer = currentTimeForBreakTimer.add(const Duration(seconds: 1));
+       }
+       count.value++;
   }
 
   Future<void> clickOnSwitchButton() async {
     if (await AC.checkFakeLocation()) {
       await CD.commonAndroidFakeLocationDialog();
     } else {
-      if (image.value == null) {
-        image.value = await IP.pickImage(isCropper: true, pickFromGallery: true);
-      } else {
-        rotationController.stop();
-
-        DateTime currentTime = await getInternetDateTime();
-        String formattedDate = DateFormat("yyyy-MM-dd").format(currentTime);
-
-        DateTime punchInDateTime = DateTime.parse("$formattedDate ${shiftTime?.shiftStartTime}");
-        // DateTime punchInDateTime1 = DateTime.parse("2024-01-24 09:30:00.000");
-        punchInDateTime = punchInDateTime.add(Duration(minutes: int.parse('${shiftTime?.lateInMinutes}')));
-
-        isLatePunchIn.value = currentTime.isAfter(punchInDateTime);
-
-        CBS.commonBottomSheet(
-            isDismissible: false,
-            onTap: () {
-              CM.unFocusKeyBoard();
-            },
-            // maxChildSize: .35,
-            // initialChildSize: 0.35,
-            children: [
-              Column(
-                crossAxisAlignment:CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      'Location Dialog',
-                      style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.primary),
-                    ),
-                  ),
-                  SizedBox(height: 16.px),
-                  Row(
-                    mainAxisAlignment:  MainAxisAlignment.center,
-                    children: [
-                      // Expanded(
-                      //   child: Row(
-                      //     children: [
-                      //       Text(
-                      //         'GPS Accuracy:',
-                      //         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500),
-                      //       ),
-                      //       Text(
-                      //         '14:06',
-                      //         style: Theme.of(Get.context!).textTheme.labelSmall,
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      CW.commonNetworkImageView(path: 'assets/icons/location_icon.png',
-                          isAssetImage: true,
-                          width: 18.px,
-                          height: 18.px,
-                          color: punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
-                              ? Col.primary
-                              : Col.error),
-                      if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
-                        SizedBox(width: 6.px),
-                      Flexible(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
-                                  ? 'You are in range'
-                                  : 'You are out of range: ',
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                  color: punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
-                                      ? Col.primary
-                                      : Col.error,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
-                              Flexible(
-                                child: Obx(() {
-                                  count.value;
-                                  return Text(
-                                    '${punchInAndPunchOutRange.value}',
-                                    style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary, fontSize: 12.px),
-                                    maxLines: 2,
-                                  );
-                                }),
-                              ),
-                          ],
-                        ),
-                      ),
-                      if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
-                        CW.commonElevatedButton(
-                          padding: EdgeInsets.symmetric(horizontal: 8.px),
-                          height: 30.px,
-                          width: 30.px,
-                          borderRadius: 4.px,
-                          onPressed: () async {
-                            rotationController.forward(from: 0.0);
-                            await Future.delayed(
-                              const Duration(seconds: 2),
-                                  () async {},
-                            );
-                            rotationController.stop();
-                          },
-                          child: RotationTransition(
-                            turns: Tween(begin: 0.0, end: 30.0)
-                                .animate(rotationController),
-                            child: Icon(Icons.refresh,
-                                color: Col.inverseSecondary, size: 20.px),
-                          ),
-                        ),
-                    ],
-                  ),
-                  if (shiftDetails?.lateInReasonRequired == '1')
-                    SizedBox(height: 10.px),
-                  if(isLatePunchIn.value)
-                    CW.commonTextFieldForMultiline(
-                      contentPadding: EdgeInsets.all(8.px),
-                      textInputAction: TextInputAction.newline,
-                      keyboardType: TextInputType.multiline,
-                      borderRadius: 4.px,
-                      controller: lateInAndLateOutRangeController,
-                      labelText: shiftDetails?.lateInReasonRequired == '1'
-                          ? 'Late in reason*'
-                          : 'Late in reason',
-                      hintText: shiftDetails?.lateInReasonRequired == '1'
-                          ? 'Late in reason*'
-                          : 'Late in reason',
-                    ),
-                  if(punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
-                    SizedBox(height: 5.px),
-                  if(punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
-                    CW.commonTextFieldForMultiline(
-                      contentPadding: EdgeInsets.all(8.px),
-                      textInputAction: TextInputAction.newline,
-                      keyboardType: TextInputType.multiline,
-                      borderRadius: 4.px,
-                      controller: lateInAndLateOutRangeReasonController,
-                      labelText: shiftDetails?.outOfRangeReasonRequired == '1'
-                          ? 'Out of range reason*'
-                          : 'Out of range reason',
-                      hintText: 'Type here',
-                    ),
-                ],
-              ),
-              SizedBox(height: 10.px),
-              Row(
-                children: [
-                    Expanded(
-                      child: CW.commonOutlineButton(
-                        onPressed:  () {
-                          Get.back();
-                        },
-                        height: 36.px,
-                        borderRadius: 4.px,
-                        borderWidth: 1.px,
-                        borderColor: Col.darkGray,
-                        child: Text(
-                          'Close',
-                          style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(color: Col.darkGray),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10.px),
-                    Expanded(
-                      child: CW.commonElevatedButton(
-                        borderRadius: 4.px,
-                        height: 36.px,
-                        onPressed: !checkInValue.value
-                            ? () => clickOnPunchInButton()
-                            : () => clickOnPunchOutButton(),
-                        child: Text(
-                          !checkInValue.value ? 'Punch In' : 'Punch Out',
-                          style: Theme.of(Get.context!).textTheme.labelLarge,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              SizedBox(height: 20.px),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                   Text("Auto Close in : ", style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
-                  Countdown(
-                    seconds: 60,
-                    build: (_, double time) {
-                      return Text(
-                        "00:${time.toInt()}",
-                        style: Theme.of(Get.context!).textTheme.titleLarge,
-                      );
-                    },
-                    interval: const Duration(milliseconds: 100),
-                    onFinished: () {
-                      Get.back();
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.px),
-        ],).whenComplete(() {
-          lateInAndLateOutRangeController.clear();
-          lateInAndLateOutRangeReasonController.clear();
-        });
-
-      }
+        await punchInAndPunchOutBottomSheetView();
     }
+  }
+
+  Future<void> punchInAndPunchOutBottomSheetView() async {
+    rotationController.stop();
+
+    DateTime currentTimeForPunchIn = await getInternetDateTime();
+    String formattedDateForPunchIn = DateFormat("yyyy-MM-dd").format(currentTimeForPunchIn);
+
+    DateTime punchInDateTimeForPunchIn = DateTime.parse("$formattedDateForPunchIn ${shiftTime?.shiftStartTime}");
+
+    punchInDateTimeForPunchIn = punchInDateTimeForPunchIn.add(Duration(minutes: int.parse('${shiftTime?.lateInMinutes}')));
+
+    isLatePunchIn.value = currentTimeForPunchIn.isAfter(punchInDateTimeForPunchIn);
+
+    DateTime currentTimeForPunchOut = await getInternetDateTime();
+    String formattedDateForPunchOut = DateFormat("yyyy-MM-dd").format(currentTimeForPunchOut);
+
+    DateTime punchOutDateTimeForPunchOut = DateTime.parse("$formattedDateForPunchOut ${shiftTime?.shiftEndTime}");
+
+    punchOutDateTimeForPunchOut = punchOutDateTimeForPunchOut.subtract(Duration(minutes: int.parse('${shiftTime?.earlyOutMinutes}')));
+
+    print('punchOutDateTimeForPunchOut:::  $punchOutDateTimeForPunchOut');
+
+    isEarlyPunchOut.value = currentTimeForPunchOut.isBefore(punchOutDateTimeForPunchOut);
+
+    CBS.commonBottomSheet(
+      isDismissible: false,
+      onTap: () {
+        CM.unFocusKeyBoard();
+      },
+      children: [
+        Form(
+          key: key,
+          child: Column(
+            crossAxisAlignment:CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  'Location Dialog',
+                  style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.primary),
+                ),
+              ),
+              SizedBox(height: 16.px),
+              Row(
+                mainAxisAlignment:  MainAxisAlignment.center,
+                children: [
+                  CW.commonNetworkImageView(path: 'assets/icons/location_icon.png',
+                      isAssetImage: true,
+                      width: 18.px,
+                      height: 18.px,
+                      color: punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
+                          ? Col.primary
+                          : Col.error),
+                  if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
+                    SizedBox(width: 6.px),
+                  Flexible(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
+                            ? 'You are in range'
+                            : 'You are out of range: ',
+                          style: Theme.of(Get.context!)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                              color: punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
+                                  ? Col.primary
+                                  : Col.error,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
+                          Flexible(
+                            child: Obx(() {
+                              count.value;
+                              return Text(
+                                '${punchInAndPunchOutRange.value}',
+                                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary, fontSize: 12.px),
+                                maxLines: 2,
+                              );
+                            }),
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
+                    CW.commonElevatedButton(
+                      padding: EdgeInsets.symmetric(horizontal: 8.px),
+                      height: 30.px,
+                      width: 30.px,
+                      borderRadius: 4.px,
+                      onPressed: () async {
+                        rotationController.forward(from: 0.0);
+                        await Future.delayed(const Duration(seconds: 2), () async {});
+                        rotationController.stop();
+                      },
+                      child: RotationTransition(
+                        turns: Tween(begin: 0.0, end: 30.0).animate(rotationController),
+                        child: Icon(Icons.refresh,
+                            color: Col.inverseSecondary, size: 20.px),
+                      ),
+                    ),
+                ],
+              ),
+              if (shiftDetails?.lateInReasonRequired == '1')
+              SizedBox(height: 10.px),
+              !checkInValue.value?
+               isLatePunchIn.value
+                    ? CW.commonTextFieldForMultiline(
+                  contentPadding: EdgeInsets.all(8.px),
+                  textInputAction: TextInputAction.newline,
+                  keyboardType: TextInputType.multiline,
+                  borderRadius: 4.px,
+                  controller: lateInAndLateOutRangeController,
+                  labelText: shiftDetails?.lateInReasonRequired == '1'
+                      ? 'Late in reason*'
+                      : 'Late in reason',
+                  hintText: shiftDetails?.lateInReasonRequired == '1'
+                      ? 'Late in reason*'
+                      : 'Late in reason',
+                  validator: (value) {
+                    if(isLatePunchIn.value){
+                      if (value == null || value.trim().toString().isEmpty) {
+                        return "Please enter late reason";
+                      }else{
+                        return null;
+                      }
+                    }else{
+                      return null;
+                    }
+                  },
+                )
+                    : const SizedBox()
+                    :  isEarlyPunchOut.value
+                    ?  CW.commonTextFieldForMultiline(
+                contentPadding: EdgeInsets.all(8.px),
+                textInputAction: TextInputAction.newline,
+                keyboardType: TextInputType.multiline,
+                borderRadius: 4.px,
+                controller: lateInAndLateOutRangeController,
+                labelText: shiftDetails?.lateInReasonRequired == '1'
+                    ? 'Early out reason*'
+                    : 'Early out reason',
+                hintText: shiftDetails?.lateInReasonRequired == '1'
+                    ? 'Early out reason*'
+                    : 'Early out reason',
+                validator: (value) {
+                  if(isEarlyPunchOut.value){
+                    if (value == null || value.trim().toString().isEmpty) {
+                      return "Please enter early out reason";
+                    }else{
+                      return null;
+                    }
+                  }else{
+                    return null;
+                  }
+                },
+              )
+                   : const SizedBox(),
+              if(punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
+                SizedBox(height: 5.px),
+              if(punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
+                CW.commonTextFieldForMultiline(
+                    contentPadding: EdgeInsets.all(8.px),
+                    textInputAction: TextInputAction.newline,
+                    keyboardType: TextInputType.multiline,
+                    borderRadius: 4.px,
+                    controller: lateInAndLateOutRangeReasonController,
+                    labelText: shiftDetails?.outOfRangeReasonRequired == '1'
+                        ? 'Out of range reason*'
+                        : 'Out of range reason',
+                    hintText: 'Type here',
+                    validator:(value) {
+                      if(punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')){
+                        if (value == null || value.trim().toString().isEmpty) {
+                          return "Please enter out of reason";
+                        }else{
+                          return null;
+                        }
+                      }else{
+                        return null;
+                      }
+                    }
+                ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.px),
+        Row(
+          children: [
+            Expanded(
+              child: CW.commonOutlineButton(
+                onPressed:  () {
+                  Get.back();
+                },
+                height: 36.px,
+                borderRadius: 4.px,
+                borderWidth: 1.px,
+                borderColor: Col.darkGray,
+                child: Text(
+                  'Close',
+                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(color: Col.darkGray),
+                ),
+              ),
+            ),
+            SizedBox(width: 10.px),
+            Expanded(
+              child: CW.commonElevatedButton(
+                borderRadius: 4.px,
+                height: 36.px,
+                onPressed:!checkInValue.value
+                    ? () => clickOnPunchInButton()
+                    : () => clickOnPunchOutButton(),
+                child: Text(
+                  !checkInValue.value
+                      ?'Punch In'
+                      :'Punch out',
+                  style: Theme.of(Get.context!).textTheme.labelLarge,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20.px),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Auto Close in : ", style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+            Countdown(
+              seconds: 60,
+              build: (_, double time) {
+                return Text(
+                  "00:${time.toInt()}",
+                  style: Theme.of(Get.context!).textTheme.titleLarge,
+                );
+              },
+              interval: const Duration(milliseconds: 100),
+              onFinished: () {
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 20.px),
+      ],).whenComplete(() {
+      lateInAndLateOutRangeController.clear();
+      lateInAndLateOutRangeReasonController.clear();
+    });
+
   }
 
   Future<void> clickOnPunchInButton() async {
-    await callingAttendancePunchInApi();
+    if(isLatePunchIn.value){
+      if(key.currentState!.validate()) {
+        await callingAttendancePunchInApi();
+      }
+    }else{
+      await callingAttendancePunchInApi();
+    }
   }
 
   Future<void> clickOnPunchOutButton() async {
-    await callingAttendancePunchOutApi();
+    if(isEarlyPunchOut.value){
+      if(key.currentState!.validate()) {
+        await callingAttendancePunchOutApi();
+      }
+    }else{
+      await callingAttendancePunchOutApi();
+    }
   }
 
-  Future<void> clickOnBreakButton() async {
-    if (!breakValue.value) {
-      await showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return WillPopScope(
-                onWillPop: () async {
-                  return false;
-                },
-                child: const BreakDialog());
-          });
-    } else {
-      breakCheckBoxValue.value = '';
-      currentTimeForBreakTimer = DateTime(00);
-      print(
-          'currentTimeForBreakTimer:::::::::  ${currentTimeForBreakTimer.second}');
-      breakValue.value = false;
-    }
+  Future<void> clickOnTakeBreakButton() async {
+     if(getBreakDetailsModal.value != null){
+       if(getBreakDetailsList!=null&& getBreakDetailsList!.isNotEmpty){
+         breakTypeIdCheckBoxValue.value='';
+         await showDialog(
+             context: Get.context!,
+             builder: (context) {
+               return WillPopScope(
+                 onWillPop: () async {
+                   return false;
+                 },
+                 child: const BreakDialog(),);
+             });
+       }else{
+         CM.showSnackBar(message: 'Break not found!');
+       }
+     }else{
+       CM.showSnackBar(message: 'Break not found!');
+     }
+  }
+
+  Future<void> clickOnConfirmBreakButton() async {
+    breakDialogConfirmButtonValue.value = true;
+    await callingBreakInApi();
+  }
+
+  Future<void> clickOnBreakEndButton() async {
+      // breakTypeIdCheckBoxValue.value = '';
+      // breakTypeNameCheckBoxValue.value = '';
+      // currentTimeForBreakTimer = DateTime(00);
+    await callingBreakOutApi();
   }
 
   void clickOnUpcomingCelebrationsButton() {}
@@ -593,25 +684,36 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       getTodayAttendanceDetail = getTodayAttendanceModal.value?.getTodayAttendance;
       checkOutValue.value = getTodayAttendanceDetail?.isPunchOut ?? false;
       checkInValue.value = getTodayAttendanceDetail?.isPunchIn ?? false;
-      // breakValue.value = getTodayAttendanceDetail?.isBreak ?? false;
+      breakValue.value = getTodayAttendanceDetail?.isBreak ?? false;
       if (checkInValue.value && checkOutValue.value) {
         DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
-        DateTime currentTime = DateTime.parse("${getTodayAttendanceDetail?.punchOutDate} ${getTodayAttendanceDetail?.punchOutTime}");
-        Duration difference = currentTime.difference(punchInDateTime);
-        hours = difference.inHours;
-        minutes = (difference.inMinutes % 60);
-        seconds = (difference.inSeconds % 60);
+        DateTime punchOutDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchOutDate} ${getTodayAttendanceDetail?.punchOutTime}");
+        Duration difference = punchOutDateTime.difference(punchInDateTime);
+        hours.value = difference.inHours;
+        minutes.value = (difference.inMinutes % 60);
+        seconds.value = (difference.inSeconds % 60);
         timer.cancel();
-        timer1.cancel();
-      } else {
-        startTimer();
       }
-      print('checkInValue.value:::: ${checkInValue.value}');
+      // else if(checkInValue.value && breakValue.value) {
+      //   DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
+      //   DateTime breakStartTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.breakStartTime}");
+      //   Duration difference = breakStartTime.difference(punchInDateTime);
+      //   hours = difference.inHours;
+      //   minutes = (difference.inMinutes % 60);
+      //   seconds = (difference.inSeconds % 60);
+      //   if (shiftTime?.totalShiftMinutes != null && shiftTime!.totalShiftMinutes!.isNotEmpty) {
+      //     total = double.parse('${shiftTime?.totalShiftMinutes}');
+      //     linerValue = (minutes / total);
+      //    }
+      //   }
+      else {
+        if(checkInValue.value){
+          startTimer();
+        }
+      }
       punchInAndPunchOutRange.value = calculateTheLatLongDistanceInMeter(
-        lat1:
-            double.parse('${getTodayAttendanceDetail?.branchGeofenceLatitude}'),
-        lon1: double.parse(
-            '${getTodayAttendanceDetail?.branchGeofenceLongitude}'),
+        lat1: double.parse('${getTodayAttendanceDetail?.branchGeofenceLatitude}'),
+        lon1: double.parse('${getTodayAttendanceDetail?.branchGeofenceLongitude}'),
         lat2: double.parse('${getLatLong?.latitude}'),
         lon2: double.parse('${getLatLong?.longitude}'),
       );
@@ -620,16 +722,17 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<DateTime> getInternetDateTime() async {
-    final response =
-        await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
+    final response = await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final String utcDateTimeString = data['utc_datetime'];
       final DateTime utcDateTime = DateTime.parse(utcDateTimeString);
-      final DateTime istDateTime =
-          utcDateTime.add(const Duration(hours: 5, minutes: 30));
-      return istDateTime;
+      final DateTime istDateTime = utcDateTime.add(const Duration(hours: 5, minutes: 30));
+
+      DateTime currentTime = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS').format(istDateTime));
+
+      return currentTime;
     } else {
       throw Exception('Failed to load IST date and time');
     }
@@ -637,7 +740,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingAttendancePunchInApi() async {
     apiResValue.value = true;
-    print('shiftTime?.shiftType:::: ${shiftTime?.shiftType}');
+    getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
     if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')) {
       punchInOutOfRange = '1';
     }
@@ -649,24 +752,25 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         AK.punchInLongitude: '${getLatLong?.longitude}',
         AK.punchInRange: '${punchInAndPunchOutRange.value}',
         AK.punchInOutOfRange: punchInOutOfRange,
-        AK.punchInOutOfRangeReason:
-        lateInAndLateOutRangeReasonController.text.trim().toString(),
+        AK.punchInOutOfRangeReason: lateInAndLateOutRangeReasonController.text.trim().toString(),
         AK.shiftType: shiftTime?.shiftType ?? '',
       };
-      http.Response? response = await CAI.attendancePunchInAndPunchOutApi(
-          bodyParams: bodyParamsForAttendancePunchInApi, image: image.value);
+      http.Response? response = await CAI.attendancePunchInAndPunchOutApi(bodyParams: bodyParamsForAttendancePunchInApi, userProfileImageKey: AK.punchInImage,image: image.value);
       if (response != null) {
         if (response.statusCode == 200) {
           CM.showSnackBar(message: 'Punch In Successful');
-          // startTimer();
-          currentDateTimeForPunchIn.value = await getInternetDateTime();
+          // currentDateTimeForPunchIn.value = await getInternetDateTime();
           await callingGetTodayAttendanceApi();
           Get.back();
         } else {
           CM.error();
+          await callingGetTodayAttendanceApi();
+          Get.back();
         }
       } else {
         CM.error();
+        await callingGetTodayAttendanceApi();
+        Get.back();
       }
     } catch (e) {
       apiResValue.value = false;
@@ -676,26 +780,32 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingAttendancePunchOutApi() async {
     apiResValue.value = true;
+    getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
+    if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')) {
+      punchInOutOfRange = '1';
+    }
     try {
+      getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
       bodyParamsForAttendancePunchOutApi = {
         AK.action: 'attendancePunchOut',
-        AK.lateInReason: '',
-        AK.punchInLatitude: '',
-        AK.punchInLongitude: '',
-        AK.punchInRange: '',
-        AK.punchInOutOfRange: '',
-        AK.punchInOutOfRangeReason: '',
-        AK.shiftType: shiftTime?.shiftType,
+        AK.attendanceId: getTodayAttendanceDetail?.attendanceId ?? "",
+        AK.punchOutLatitude: '${getLatLong?.latitude}',
+        AK.punchOutLongitude: '${getLatLong?.longitude}',
+        AK.punchOutOutOfRange: lateInAndLateOutRangeReasonController.text.trim().toString(),
+        AK.earlyOutReason: lateInAndLateOutRangeController.text.trim().toString(),
+        AK.punchOutRange: punchInOutOfRange,
+        AK.productiveWorkingMinutes: '',
+        AK.totalWorkingMinutes: '',
+        AK.remainingWorkingMinutes: '',
+        AK.earlyOut: '',
       };
-      http.Response? response = await CAI.attendancePunchInAndPunchOutApi(
-          bodyParams: bodyParamsForAttendancePunchOutApi, image: File(''));
+      http.Response? response = await CAI.attendancePunchInAndPunchOutApi(bodyParams: bodyParamsForAttendancePunchOutApi, userProfileImageKey: AK.punchOutImage,image: File(''));
       if (response != null) {
         if (response.statusCode == 200) {
           CM.showSnackBar(message: 'Punch Out Successful');
-          // currentDateTimeForPunchIn.value = await getInternetDateTime();
           Get.back();
           timer.cancel();
-          currentTimeForTimer = DateTime(2022, 1, 1, 0, 0, 0);
+          currentTimeForTimer = DateTime(0, 0, 0, 0, 0, 0);
           await callingGetTodayAttendanceApi();
           Get.back();
         } else {
@@ -712,44 +822,48 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingBreakInApi() async {
     try {
+      getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
       bodyParamsForBreakInApi = {
         AK.action: 'breakIn',
-        AK.breakTypeId: '',
-        AK.breakStartLatitude: '',
-        AK.breakEndLongitude: '',
-        AK.breakTypeName: '',
-        AK.attendanceId: '',
+        AK.breakTypeId: breakTypeIdCheckBoxValue.value,
+        AK.breakStartLatitude: '${getLatLong?.latitude}',
+        AK.breakStartLongitude: '${getLatLong?.longitude}',
+        AK.attendanceId: getTodayAttendanceDetail?.attendanceId??'',
       };
-      http.Response? response =
-          await CAI.breakInAndOutApi(bodyParams: bodyParamsForBreakInApi);
+      http.Response? response = await CAI.breakInAndOutApi(bodyParams: bodyParamsForBreakInApi);
       if (response != null && response.statusCode == 200) {
-        CM.showSnackBar(message: 'Break In');
+        await callingGetTodayAttendanceApi();
+        Get.back();
       } else {
         CM.error();
+        Get.back();
+      }
+    } catch (e) {
+      CM.error();
+      Get.back();
+    }
+  }
+
+  Future<void> callingBreakOutApi() async {
+    try {
+      getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
+      bodyParamsForBreakInApi = {
+        AK.action: 'breakOut',
+        AK.breakHistoryId: getTodayAttendanceDetail?.breakHistoryId??'',
+        AK.breakEndLatitude: '${getLatLong?.latitude}',
+        AK.breakEndLongitude: '${getLatLong?.longitude}',
+        AK.attendanceId: getTodayAttendanceDetail?.attendanceId??'',
+      };
+      http.Response? response = await CAI.breakInAndOutApi(bodyParams: bodyParamsForBreakInApi);
+      if (response != null && response.statusCode == 200) {
+        await callingGetTodayAttendanceApi();
+      } else {
+        CM.error();
+        await callingGetTodayAttendanceApi();
       }
     } catch (e) {
       CM.error();
     }
   }
 
-  Future<void> callingBreakOutApi() async {
-    try {
-      bodyParamsForBreakInApi = {
-        AK.action: 'breakOut',
-        AK.breakHistoryId: '',
-        AK.breakStartLatitude: '',
-        AK.breakEndLongitude: '',
-        AK.attendanceId: '',
-      };
-      http.Response? response =
-          await CAI.breakInAndOutApi(bodyParams: bodyParamsForBreakInApi);
-      if (response != null && response.statusCode == 200) {
-        CM.showSnackBar(message: 'Break In');
-      } else {
-        CM.error();
-      }
-    } catch (e) {
-      CM.error();
-    }
-  }
 }

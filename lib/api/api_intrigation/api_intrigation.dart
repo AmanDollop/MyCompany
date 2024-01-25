@@ -13,6 +13,7 @@ import 'package:task/api/api_model/department_modal.dart';
 import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
+import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
@@ -673,9 +674,38 @@ class CAI extends GetxController{
     }
   }
 
+  static Future<GetBreakDetailsModal?> getBreakDetailsApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetBreakDetailsModal? getBreakModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getBreakModal = GetBreakDetailsModal.fromJson(jsonDecode(response.body));
+        return getBreakModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   static Future<http.Response?> attendancePunchInAndPunchOutApi({
     required Map<String, dynamic> bodyParams,
-    File? image
+    File? image,
+    required String userProfileImageKey
   }) async {
 
     String baseUrl = await baseUrlReturn();
@@ -686,7 +716,7 @@ class CAI extends GetxController{
         url: '$baseUrl${AU.endPointAttendanceControllerApi}',
         bodyParams: bodyParams,
         context: Get.context!,
-        userProfileImageKey: AK.userProfilePic,
+        userProfileImageKey: userProfileImageKey,
         image: image,
         multipartRequestType: 'POST',
         token: '$token'
@@ -709,10 +739,12 @@ class CAI extends GetxController{
     required Map<String, dynamic> bodyParams,
   }) async {
     String baseUrl = await baseUrlReturn();
+    Map<String, String> authorization = await userToken();
     http.Response? response = await MyHttp.postMethod(
       url: '$baseUrl${AU.endPointBreakControllerApi}',
       bodyParams: bodyParams,
       context: Get.context!,
+      token: authorization
     );
     if (response != null) {
       if (await CM.checkResponse(

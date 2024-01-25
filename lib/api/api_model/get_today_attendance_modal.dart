@@ -35,6 +35,8 @@ class GetTodayAttendance {
   bool? isBreak;
   String? breakTypeName;
   String? breakStartTime;
+  String? attendanceId;
+  String? breakHistoryId;
 
   GetTodayAttendance(
       {this.branchGeofenceLatitude,
@@ -49,7 +51,10 @@ class GetTodayAttendance {
         this.totalWorkingMinutes,
         this.isBreak,
         this.breakTypeName,
-        this.breakStartTime});
+        this.breakStartTime,
+        this.attendanceId,
+        this.breakHistoryId,
+      });
 
   GetTodayAttendance.fromJson(Map<String, dynamic> json) {
     branchGeofenceLatitude = json['branch_geofence_latitude'];
@@ -65,6 +70,8 @@ class GetTodayAttendance {
     isBreak = json['is_break'];
     breakTypeName = json['break_type_name'];
     breakStartTime = json['break_start_time'];
+    attendanceId = json['attendance_id'];
+    breakHistoryId = json['break_history_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -82,6 +89,8 @@ class GetTodayAttendance {
     data['is_break'] = isBreak;
     data['break_type_name'] = breakTypeName;
     data['break_start_time'] = breakStartTime;
+    data['attendance_id'] = attendanceId;
+    data['break_history_id'] = breakHistoryId;
     return data;
   }
 }

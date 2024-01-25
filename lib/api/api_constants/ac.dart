@@ -127,8 +127,22 @@ class AK {
   static const shiftType = "shift_type";
 
 
+  static const totalWorkingMinutes = "total_working_minutes";
+  static const punchOutLatitude = "punch_out_latitude";
+  static const punchOutLongitude = "punch_out_longitude";
+  static const punchOutImage = "punch_out_image";
+  static const remainingWorkingMinutes = "remaining_working_minutes";
+  static const earlyOut = "early_out";
+  static const punchOutOutOfRange = "punch_out_out_of_range";
+  static const earlyOutReason = "early_out_reason";
+  static const productiveWorkingMinutes = "productive_working_minutes";
+  static const punchOutRange = "punch_out_range";
+
+
   static const breakTypeId = "break_type_id";
   static const breakStartLatitude = "break_start_latitude";
+  static const breakStartLongitude = "break_start_longitude";
+  static const breakEndLatitude = "break_end_latitude";
   static const breakEndLongitude = "break_end_longitude";
   static const breakTypeName = "break_type_name";
   static const attendanceId = "attendance_id";

@@ -36,7 +36,7 @@ class BreakDialog extends GetView<HomeController> {
                           onPressed: () {
                             Get.back();
                             if (!controller.breakDialogConfirmButtonValue.value) {
-                              controller.breakCheckBoxValue.value = '';
+                              controller.breakTypeIdCheckBoxValue.value = '';
                             }
                           },
                           isAssetImage: false,
@@ -50,7 +50,7 @@ class BreakDialog extends GetView<HomeController> {
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 12.px),
-                    itemCount: controller.breakTitleList.length,
+                    itemCount: controller.getBreakDetailsList?.length,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
@@ -59,14 +59,14 @@ class BreakDialog extends GetView<HomeController> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(controller.breakTitleList[index],style: Theme.of(context).textTheme.titleLarge),
+                            Text('${controller.getBreakDetailsList?[index].breakTypeName}',style: Theme.of(context).textTheme.titleLarge),
                             InkWell(
                               onTap: () {
-                                controller.breakCheckBoxValue.value = controller.breakTitleList[index].toString();
+                                controller.breakTypeIdCheckBoxValue.value = '${controller.getBreakDetailsList?[index].breakTypeId}';
                                 controller.count.value++;
                               },
                               borderRadius: BorderRadius.circular(6.px),
-                              child: controller.breakCheckBoxValue.value == controller.breakTitleList[index]
+                              child: controller.breakTypeIdCheckBoxValue.value == controller.getBreakDetailsList?[index].breakTypeId
                                   ? Padding(
                                       padding: EdgeInsets.only(right: 2.px),
                                       child: SizedBox(
@@ -97,17 +97,12 @@ class BreakDialog extends GetView<HomeController> {
                 ),
                 SizedBox(height: 6.px),
                 CW.commonElevatedButton(
-                  onPressed: controller.breakCheckBoxValue.value != ''
-                      ? () async {
-                          controller.currentDateTimeForBreak.value = await controller.getInternetDateTime();
-                          controller.breakValue.value = !controller.breakValue.value;
-                          controller.breakDialogConfirmButtonValue.value = true;
-                          Get.back();
-                        }
+                  onPressed: controller.breakTypeIdCheckBoxValue.value != ''
+                      ? () => controller.clickOnConfirmBreakButton()
                       : () => null,
                   width: 200.px,
                   height: 40.px,
-                  buttonText: controller.breakCheckBoxValue.value != ''
+                  buttonText: controller.breakTypeIdCheckBoxValue.value != ''
                       ? 'Confirm'
                       : 'Select break type',
                 )
