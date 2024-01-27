@@ -21,7 +21,6 @@ import 'package:task/app/modules/home/dialog/break_dialog.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_dialog/cd.dart';
-import 'package:task/common/common_packages/image_picker/ip.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -100,7 +99,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final hours = 0.obs;
   final minutes = 0.obs;
   final seconds = 0.obs;
-  final total = 540.0.obs;
+  final total = 540.obs;
+  final workingMinutes = 0.0.obs;
   final linerValue = 0.0.obs;
 
   final key = GlobalKey<FormState>();
@@ -267,7 +267,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingGetBreakDetailsApi() async {
     try{
-      getBreakDetailsModal.value = await CAI.getBreakDetailsApi(bodyParams: {AK.action:'getBreak'});
+      getBreakDetailsModal.value = await CAI.getBreakDetailsApi(bodyParams: {AK.action:ApiEndPointAction.getBreak});
        if(getBreakDetailsModal.value!=null){
         getBreakDetailsList=getBreakDetailsModal.value?.getBreakDetails;
       }
@@ -302,6 +302,17 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> updateTimeForTimer(Timer timer) async {
+
+    if (shiftTime?.totalShiftMinutes != null && shiftTime!.totalShiftMinutes!.isNotEmpty) {
+      total.value = int.parse('${shiftTime?.totalShiftMinutes}');
+      if (checkInValue.value && checkOutValue.value) {
+        // linerValue.value = hours.value * 60  / total.value;
+        linerValue.value = workingMinutes.value  / (total.value * 60);
+      } else {
+        workingMinutes.value++;
+        linerValue.value = workingMinutes.value  / (total.value * 60);
+      }
+    }
        currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
        if(breakValue.value){
          DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.breakStartTime}");
@@ -624,9 +635,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> clickOnBreakEndButton() async {
-      // breakTypeIdCheckBoxValue.value = '';
-      // breakTypeNameCheckBoxValue.value = '';
-      // currentTimeForBreakTimer = DateTime(00);
     await callingBreakOutApi();
   }
 
@@ -651,7 +659,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingMenusApi() async {
     bodyParamsForMenusApi = {
-      AK.action: 'getDashboardMenu',
+      AK.action: ApiEndPointAction.getDashboardMenu,
       AK.companyId: companyId.value
     };
     menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
@@ -675,9 +683,26 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
+  Future<DateTime> getInternetDateTime() async {
+    final response = await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final String utcDateTimeString = data['utc_datetime'];
+      final DateTime utcDateTime = DateTime.parse(utcDateTimeString);
+      final DateTime istDateTime = utcDateTime.add(const Duration(hours: 5, minutes: 30));
+
+      DateTime currentTime = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS').format(istDateTime));
+
+      return currentTime;
+    } else {
+      throw Exception('Failed to load IST date and time');
+    }
+  }
+
   Future<void> callingGetTodayAttendanceApi() async {
     bodyParamsForGetTodayAttendanceApi = {
-      AK.action: 'getTodayAttendance',
+      AK.action: ApiEndPointAction.getTodayAttendance,
     };
     getTodayAttendanceModal.value = await CAI.getTodayAttendanceApi(bodyParams: bodyParamsForGetTodayAttendanceApi);
     if (getTodayAttendanceModal.value != null) {
@@ -721,23 +746,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  Future<DateTime> getInternetDateTime() async {
-    final response = await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final String utcDateTimeString = data['utc_datetime'];
-      final DateTime utcDateTime = DateTime.parse(utcDateTimeString);
-      final DateTime istDateTime = utcDateTime.add(const Duration(hours: 5, minutes: 30));
-
-      DateTime currentTime = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS').format(istDateTime));
-
-      return currentTime;
-    } else {
-      throw Exception('Failed to load IST date and time');
-    }
-  }
-
   Future<void> callingAttendancePunchInApi() async {
     apiResValue.value = true;
     getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
@@ -746,7 +754,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
     try {
       bodyParamsForAttendancePunchInApi = {
-        AK.action: 'attendancePunchIn',
+        AK.action: ApiEndPointAction.attendancePunchIn,
         AK.lateInReason: lateInAndLateOutRangeController.text.trim().toString(),
         AK.punchInLatitude: '${getLatLong?.latitude}',
         AK.punchInLongitude: '${getLatLong?.longitude}',
@@ -787,7 +795,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     try {
       getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
       bodyParamsForAttendancePunchOutApi = {
-        AK.action: 'attendancePunchOut',
+        AK.action: ApiEndPointAction.attendancePunchOut,
         AK.attendanceId: getTodayAttendanceDetail?.attendanceId ?? "",
         AK.punchOutLatitude: '${getLatLong?.latitude}',
         AK.punchOutLongitude: '${getLatLong?.longitude}',
@@ -824,7 +832,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     try {
       getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
       bodyParamsForBreakInApi = {
-        AK.action: 'breakIn',
+        AK.action: ApiEndPointAction.breakIn,
         AK.breakTypeId: breakTypeIdCheckBoxValue.value,
         AK.breakStartLatitude: '${getLatLong?.latitude}',
         AK.breakStartLongitude: '${getLatLong?.longitude}',
@@ -848,7 +856,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     try {
       getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
       bodyParamsForBreakInApi = {
-        AK.action: 'breakOut',
+        AK.action: ApiEndPointAction.breakOut,
         AK.breakHistoryId: getTodayAttendanceDetail?.breakHistoryId??'',
         AK.breakEndLatitude: '${getLatLong?.latitude}',
         AK.breakEndLongitude: '${getLatLong?.longitude}',

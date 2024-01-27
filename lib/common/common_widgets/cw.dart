@@ -287,13 +287,11 @@ class CW {
   }
 
   /// --------------------------Common Refresh Indicator/Progress Bar Collection--------------------------
-  static Widget commonRefreshIndicator(
-      {required Widget child, required RefreshCallback onRefresh}) {
+  static Widget commonRefreshIndicator({required Widget child, required RefreshCallback onRefresh}) {
     return RefreshIndicator(onRefresh: onRefresh, child: child);
   }
 
-  static Widget commonLinearProgressBar(
-          {required double value, double? height}) =>
+  static Widget commonLinearProgressBar({required double value, double? height}) =>
       ClipRRect(
         borderRadius: BorderRadius.circular(20.px),
         child: LinearProgressIndicator(
@@ -304,8 +302,7 @@ class CW {
         ),
       );
 
-  static commonProgressBarView(
-          {Color? color, Color? backgroundColor, double? value}) =>
+  static commonProgressBarView({Color? color, Color? backgroundColor, double? value}) =>
       CircularProgressIndicator(
         backgroundColor: color ?? Col.gray,
         color: backgroundColor ?? Col.inverseSecondary,
@@ -1463,13 +1460,22 @@ class CW {
       );
 
   static commonNoDataFoundText({String? text}) => Center(
-        child: Text(
-          text ?? 'No Data Found!',
-          style: Theme.of(Get.context!)
-              .textTheme
-              .displayLarge
-              ?.copyWith(color: Col.primary),
-          textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+
+            commonNetworkImageView(path: 'assets/images/no_data_found_image.png', isAssetImage: true,height: 250.px,width: 250.px),
+
+            Text(
+              text ?? 'No Data Found!',
+              style: Theme.of(Get.context!)
+                  .textTheme
+                  .displayLarge
+                  ?.copyWith(color: Col.primary),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       );
 

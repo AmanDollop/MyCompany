@@ -51,7 +51,7 @@ class ExperienceController extends GetxController {
   Future<void> callingExperienceApi() async {
     try {
       experienceModal.value =
-      await CAI.getExperienceApi(bodyParams: {AK.action: 'getExperience'});
+      await CAI.getExperienceApi(bodyParams: {AK.action: ApiEndPointAction.getExperience});
       if (experienceModal.value != null) {
         getExperienceDetails = experienceModal.value?.getExperienceDetails;
         print('getExperienceDetails:::: $getExperienceDetails');

@@ -49,7 +49,7 @@ class PromotionController extends GetxController {
   Future<void> callingPromotionApi() async {
     try {
       promotionModal.value =
-          await CAI.getPromotionApi(bodyParams: {AK.action: 'getPromotion'});
+          await CAI.getPromotionApi(bodyParams: {AK.action: ApiEndPointAction.getPromotion});
       if (promotionModal.value != null) {
         getPromotionDetails = promotionModal.value?.getPromotionDetails;
         print('getPromotionDetails:::: $getPromotionDetails');

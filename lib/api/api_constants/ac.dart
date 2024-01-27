@@ -1,7 +1,3 @@
-
-
-import 'package:task/common/common_methods/cm.dart';
-
 class AK {
   ///COMMON Api Key
   static const baseUrl = "baseUrl";
@@ -19,8 +15,6 @@ class AK {
   static const authorization="Authorization";
 
   static const message="message";
-
-  static const action="action";
 
   static const searchString="searchStr";
 
@@ -66,7 +60,6 @@ class AK {
 
   static const otp="otp";
 
-
   static const whatsappCountryCode="whatsapp_country_code";
 
   static const whatsappNumber="whatsapp_number";
@@ -76,7 +69,6 @@ class AK {
   static const currentAddress="current_address";
 
   static const permanentAddress="permanent_address";
-
 
   static const accountHoldersName="account_holders_name";
   static const bankName="bank_name";
@@ -90,16 +82,12 @@ class AK {
   static const esicNo="esic_no";
   static const pfNo="pf_no";
 
-
-
   static const experienceId="experience_id";
   static const companyName="company_name";
   static const designation="designation";
   static const joiningDate="joining_date";
   static const releaseDate="release_date";
   static const companyLocation="company_location";
-
-
 
   static const educationAchievementId = "education_achievement_id";
   static const classAchievement = "class_achievement";
@@ -109,13 +97,10 @@ class AK {
   static const remark = "remark";
   static const createdDate = "created_date";
 
-
   static const twitter = "twitter";
   static const facebook = "facebook";
   static const instagram = "instagram";
   static const linkedin = "linkedin";
-
-
 
   static const lateInReason = "late_in_reason";
   static const punchInLatitude = "punch_in_latitude";
@@ -125,7 +110,6 @@ class AK {
   static const punchInOutOfRangeReason = "punch_in_out_of_range_reason";
   static const punchInImage = "punch_in_image";
   static const shiftType = "shift_type";
-
 
   static const totalWorkingMinutes = "total_working_minutes";
   static const punchOutLatitude = "punch_out_latitude";
@@ -138,7 +122,6 @@ class AK {
   static const productiveWorkingMinutes = "productive_working_minutes";
   static const punchOutRange = "punch_out_range";
 
-
   static const breakTypeId = "break_type_id";
   static const breakStartLatitude = "break_start_latitude";
   static const breakStartLongitude = "break_start_longitude";
@@ -148,14 +131,11 @@ class AK {
   static const attendanceId = "attendance_id";
   static const breakHistoryId = "break_history_id";
 
-
-
-
   static const startDate = "startDate";
   static const endDate = "endDate";
   static const search = "search";
 
-
+  static const action = "action";
 
 }
 
@@ -190,6 +170,79 @@ class AU {
 
 
 
+
+
+}
+
+class ApiEndPointAction{
+
+  static const addBankDetail = "addBankDetail";
+
+  static const addEducation = 'addEducation';
+
+  static const addExperience = 'addExperience';
+
+  static const updateSocialInfo = 'updateSocialInfo';
+
+  static const getBankDetails = 'getBankDetails';
+
+  static const primaryKeySet = 'primaryKeySet';
+
+  static const deleteBankDetail = 'deleteBankDetail';
+
+  static const getCirculars = 'getCirculars';
+
+  static const getCountryCode = 'getCountryCode';
+
+  static const updateContactInfo = 'updateContactInfo';
+
+  static const getDocument = 'getDocument';
+
+  static const updatePersonalInfo = 'updatePersonalInfo';
+
+  static const getBloodGroup = 'getBloodGroup';
+
+  static const getEducationDetails = 'getEducationDetails';
+
+  static const getExperience = 'getExperience';
+
+  static const getBreak = 'getBreak';
+
+  static const getDashboardMenu = 'getDashboardMenu';
+
+  static const getTodayAttendance = 'getTodayAttendance';
+
+  static const attendancePunchIn = 'attendancePunchIn';
+
+  static const attendancePunchOut = 'attendancePunchOut';
+
+  static const breakIn = 'breakIn';
+
+  static const breakOut = 'breakOut';
+
+  static const userSentOtp = 'userSentOtp';
+
+  static const getEmployeeProfileMenu = 'getEmployeeProfileMenu';
+
+  static const getPromotion = 'getPromotion';
+
+  static const getCompanies = 'getCompanies';
+
+  static const getBranches = 'getBranches';
+
+  static const getDepartments = 'getDepartments';
+
+  static const getShifts = 'getShifts';
+
+  static const userRegistration = 'userRegistration';
+
+  static const matchOtp = 'matchOtp';
+
+  static const getCompanyDetail = 'getCompanyDetail';
+
+  static const getUserDetails = 'getUserDetails';
+
+  static const getShiftDetail = 'getShiftDetail';
 
 
 }

@@ -295,7 +295,7 @@ class SignUpController extends GetxController {
   Future<void> registrationApiCalling() async {
     try{
       bodyParamsRegistration = {
-        AK.action: 'userRegistration',
+        AK.action: ApiEndPointAction.userRegistration,
         AK.companyId: companyId.toString(),
         AK.branchId: getYourBranchId.toString(),
         AK.departmentId: getYourDepartmentId.toString(),
@@ -330,7 +330,7 @@ class SignUpController extends GetxController {
   Future<void> callingCountryCodeApi() async {
     try{
       countryCodeModal.value = await CAI.getCountryCodeApi(bodyParams: {
-        AK.action :'getCountryCode',
+        AK.action :ApiEndPointAction.getCountryCode,
       });
       if (countryCodeModal.value != null) {
         countryCodeList = countryCodeModal.value?.countryCode ?? [];

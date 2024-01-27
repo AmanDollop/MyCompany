@@ -300,7 +300,7 @@ class EditProfileController extends GetxController {
   Future<void> callingUpDateProfileApi() async {
    try{
      bodyParamsForUpdateProfile = {
-       AK.action : 'updatePersonalInfo',
+       AK.action : ApiEndPointAction.updatePersonalInfo,
        AK.userFirstName : firstNameController.text.trim(),
        AK.userLastName : lastNameController.text.trim(),
        AK.memberDateOfBirth : dobController.text.trim(),
@@ -335,7 +335,7 @@ class EditProfileController extends GetxController {
 
   Future<void> callingBloodGroupApi() async {
    try{
-     bloodGroupModal.value = await CAI.getBloodGroupApi(bodyParams: {AK.action:'getBloodGroup'});
+     bloodGroupModal.value = await CAI.getBloodGroupApi(bodyParams: {AK.action:ApiEndPointAction.getBloodGroup});
      if(bloodGroupModal.value != null){
        bloodGroup = bloodGroupModal.value?.bloodGroup;
        Map<String, dynamic> bloodGroupData = jsonDecode(bloodGroup??'');

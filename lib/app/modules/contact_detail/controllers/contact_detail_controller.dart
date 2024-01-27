@@ -131,7 +131,7 @@ class ContactDetailController extends GetxController {
   Future<void> callingCountryCodeApi() async {
     try{
       countryCodeModal.value = await CAI.getCountryCodeApi(bodyParams: {
-        AK.action :'getCountryCode',
+        AK.action :ApiEndPointAction.getCountryCode,
       });
       if (countryCodeModal.value != null) {
         countryCodeList = countryCodeModal.value?.countryCode ?? [];
@@ -212,7 +212,7 @@ class ContactDetailController extends GetxController {
   Future<void> callingUpdateContactInfoApi() async {
     try{
       bodyParamsForContactInfo={
-        AK.action:'updateContactInfo',
+        AK.action:ApiEndPointAction.updateContactInfo,
         AK.whatsappCountryCode : countryCode.value,
         AK.whatsappNumber : whatsappController.text.trim().toString(),
         AK.personalEmail : personalEmailController.text.trim().toString(),

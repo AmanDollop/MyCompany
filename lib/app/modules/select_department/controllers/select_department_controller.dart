@@ -60,7 +60,7 @@ class SelectDepartmentController extends GetxController {
     try{
       departmentModal.value = await CAI.departmentApi(bodyParams: {
         AK.companyId :companyId,
-        AK.action :'getDepartments',
+        AK.action :ApiEndPointAction.getDepartments,
         AK.branchId :branchId.value.toString(),
       });
       if (departmentModal.value != null) {

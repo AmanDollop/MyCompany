@@ -271,7 +271,7 @@ class DocumentController extends GetxController {
 
   Future<void> callingGetDocumentApi() async {
     try {
-      bodyParams = {AK.action: 'getDocument'};
+      bodyParams = {AK.action: ApiEndPointAction.getDocument};
       documentModal.value = await CAI.getDocumentApi(bodyParams: bodyParams);
       if (documentModal.value != null) {
         getDocumentDetails = documentModal.value?.getDocumentDetails;

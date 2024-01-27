@@ -25,8 +25,7 @@ class DocumentView extends GetView<DocumentController> {
             child: Obx(() {
               controller.count.value;
               if (controller.documentModal.value != null) {
-                if (controller.getDocumentDetails != null &&
-                    controller.getDocumentDetails!.isNotEmpty) {
+                if (controller.getDocumentDetails != null && controller.getDocumentDetails!.isNotEmpty) {
                   return GridView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                     itemCount: controller.getDocumentDetails?.length,
@@ -122,8 +121,7 @@ class DocumentView extends GetView<DocumentController> {
                   return CW.commonNoDataFoundText();
                 }
               } else {
-                return CW.commonNoDataFoundText(
-                    text: controller.apiResValue.value ? '' : 'No data found!');
+                return CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'No data found!');
               }
             }));
       }),

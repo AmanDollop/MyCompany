@@ -72,7 +72,7 @@ class LoginController extends GetxController {
   Future<void> sendOtpApiCalling() async {
     try{
       bodyParamsSendOtp = {
-        AK.action: 'userSentOtp',
+        AK.action: ApiEndPointAction.userSentOtp,
         AK.userEmail: emailController.text.trim().toString(),
       };
       http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);

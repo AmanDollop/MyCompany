@@ -99,7 +99,7 @@ class AddExperienceController extends GetxController {
   Future<void> callingExperienceApiAdd() async {
     try{
       bodyParamsForUpdateExperienceDetails={
-        AK.action:'addExperience',
+        AK.action : ApiEndPointAction.addExperience,
         AK.experienceId : experienceId.value,
         AK.designation : designationController.text.trim().toString(),
         AK.companyName : companyNameController.text.trim().toString(),

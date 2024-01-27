@@ -56,7 +56,7 @@ class SelectShiftTimeController extends GetxController {
     try{
       shiftTimeModal.value = await CAI.shiftTimeApi(bodyParams: {
         AK.companyId :companyId,
-        AK.action :'getShifts',
+        AK.action :ApiEndPointAction.getShifts,
       });
       if (shiftTimeModal.value != null) {
         shiftTimeList = shiftTimeModal.value?.data ?? [];

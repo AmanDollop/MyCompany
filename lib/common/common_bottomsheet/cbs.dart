@@ -393,11 +393,10 @@ class BottomSheetForOTP extends GetxController {
       otpController.text = '';
       otpController.clear();
       bodyParamsSendOtp = {
-        AK.action: 'userSentOtp',
+        AK.action: ApiEndPointAction.userSentOtp,
         AK.userEmail: email,
       };
-      http.Response? response =
-          await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
       if (response != null && response.statusCode == 200) {
         otpApiResponseMap = jsonDecode(response.body);
         Future.delayed(
@@ -415,22 +414,14 @@ class BottomSheetForOTP extends GetxController {
   static Future<void> matchOtpApiCalling({required String email, required String otp}) async {
     try {
       bodyParamsMatchOtp = {
-        AK.action: 'matchOtp',
+        AK.action: ApiEndPointAction.matchOtp,
         AK.otp: otp,
         AK.userEmail: email,
       };
-
-      userDataModal.value =
-          await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
-
+      userDataModal.value = await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
-
-        print('userData?.token:::::::: ${userData?.token}');
-        await DataBaseHelper().insertInDataBase(data: {
-          DataBaseConstant.userDetail: json.encode(userDataModal.value)
-        }, tableName: DataBaseConstant.tableNameForUserDetail);
-
+        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
         Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
         CM.showSnackBar(message: 'LogIn Successfully');
       } else {
@@ -471,19 +462,14 @@ class BottomSheetForOTP extends GetxController {
                   return false;
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: ListView(
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                        bottom: 34.px, left: 18.px, right: 18.px),
+                    padding: EdgeInsets.only(bottom: 34.px, left: 18.px, right: 18.px),
                     children: [
                       Text(
                         'OTP Verification',
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .displaySmall
-                            ?.copyWith(color: Col.text),
+                        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.text),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 12.px),
@@ -520,17 +506,10 @@ class BottomSheetForOTP extends GetxController {
                         children: [
                           timer.value
                               ? TextButton(
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Theme.of(Get.context!)
-                                          .colorScheme
-                                          .background),
+                                  style: TextButton.styleFrom(foregroundColor: Theme.of(Get.context!).colorScheme.background),
                                   onPressed: () {},
                                   child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600)),
+                                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                                 )
                               : TextButton(
                                   onPressed: () async {
@@ -538,11 +517,7 @@ class BottomSheetForOTP extends GetxController {
                                     await sendOtpApiCalling(email: email);
                                   },
                                   child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600)),
+                                      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
                                 ),
                           timer.value
                               ? Countdown(
@@ -550,9 +525,7 @@ class BottomSheetForOTP extends GetxController {
                                   build: (_, double time) {
                                     return Text(
                                       " in 00:${time.toInt()}",
-                                      style: Theme.of(Get.context!)
-                                          .textTheme
-                                          .titleLarge,
+                                      style: Theme.of(Get.context!).textTheme.titleLarge,
                                     );
                                   },
                                   interval: const Duration(milliseconds: 100),
@@ -615,23 +588,14 @@ class BottomSheetForOTP extends GetxController {
 
   static Future<void> callingGetCompanyDetailApi() async {
     try {
-      companyDetailsModal.value = await CAI
-          .getCompanyDetailsApi(bodyParams: {AK.action: 'getCompanyDetail'});
+      companyDetailsModal.value = await CAI.getCompanyDetailsApi(bodyParams: {AK.action: ApiEndPointAction.getCompanyDetail});
       if (companyDetailsModal.value != null) {
         getCompanyDetails = companyDetailsModal.value?.getCompanyDetails;
         if (getCompanyDetails != null) {
-          if (await DataBaseHelper().isDatabaseHaveData(
-              db: DataBaseHelper.dataBaseHelper,
-              tableName: DataBaseConstant.tableNameForCompanyDetail)) {
-            await DataBaseHelper().insertInDataBase(data: {
-              DataBaseConstant.companyDetail:
-                  json.encode(companyDetailsModal.value)
-            }, tableName: DataBaseConstant.tableNameForCompanyDetail);
+          if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForCompanyDetail)) {
+            await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.companyDetail: json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
           } else {
-            await DataBaseHelper().upDateDataBase(data: {
-              DataBaseConstant.companyDetail:
-                  json.encode(companyDetailsModal.value)
-            }, tableName: DataBaseConstant.tableNameForCompanyDetail);
+            await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.companyDetail: json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
           }
         }
       }
@@ -643,42 +607,16 @@ class BottomSheetForOTP extends GetxController {
   static Future<void> callingGetUserDataApi() async {
     final userDataFromLocalDataBase = ''.obs;
     try {
-      userDataModal.value =
-          await CAI.getUserDataApi(bodyParams: {AK.action: 'getUserDetails'});
+      userDataModal.value = await CAI.getUserDataApi(bodyParams: {AK.action: ApiEndPointAction.getUserDetails});
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
 
-        userDataFromLocalDataBase.value = await DataBaseHelper()
-            .getParticularData(
-                key: DataBaseConstant.userDetail,
-                tableName: DataBaseConstant.tableNameForUserDetail);
-        userData =
-            UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
-                .userDetails;
+        userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDetail, tableName: DataBaseConstant.tableNameForUserDetail);
+        userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
         userDataModal.value?.userDetails?.token = userData?.token;
-        await DataBaseHelper().upDateDataBase(data: {
-          DataBaseConstant.userDetail: json.encode(userDataModal.value)
+        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)
         }, tableName: DataBaseConstant.tableNameForUserDetail);
 
-        // if(userData?.personalInfo != null){
-        //   personalInfo = userData?.personalInfo;
-        //   DataBaseHelper().upDateDataBase(data: personalInfo!.toJson(), tableName: DataBaseConstant.tableNameForPersonalInfo);
-        // }
-        //
-        // if(userData?.contactInfo != null){
-        //   contactInfo = userData?.contactInfo;
-        //   DataBaseHelper().upDateDataBase(data: contactInfo!.toJson(), tableName: DataBaseConstant.tableNameForContactInfo);
-        // }
-        //
-        // if(userData?.jobInfo != null){
-        //   jobInfo = userData?.jobInfo;
-        //   DataBaseHelper().upDateDataBase(data: jobInfo!.toJson(), tableName: DataBaseConstant.tableNameForJobInfo);
-        // }
-        //
-        // if(userData?.socialInfo != null){
-        //   socialInfo = userData?.socialInfo;
-        //   DataBaseHelper().upDateDataBase(data: socialInfo!.toJson(), tableName: DataBaseConstant.tableNameForSocialInfo);
-        // }
       }
     } catch (e) {
       CM.error();
@@ -692,31 +630,24 @@ class BottomSheetForOTP extends GetxController {
     switch (currentDay) {
       case DateTime.monday:
         dayValue.value = '1';
-        print('::::::::::::::::Today is Monday ::::::  $dayValue');
         break;
       case DateTime.tuesday:
         dayValue.value = '2';
-        print('::::::::::::::::Today is Tuesday ::::::  $dayValue');
         break;
       case DateTime.wednesday:
         dayValue.value = '3';
-        print('::::::::::::::::Today is Wednesday ::::::  $dayValue');
         break;
       case DateTime.thursday:
         dayValue.value = '4';
-        print('::::::::::::::::Today is Thursday ::::::  $dayValue');
         break;
       case DateTime.friday:
         dayValue.value = '5';
-        print('::::::::::::::::Today is Friday ::::::  $dayValue');
         break;
       case DateTime.saturday:
         dayValue.value = '6';
-        print('::::::::::::::::Today is Saturday ::::::  $dayValue');
         break;
       case DateTime.sunday:
         dayValue.value = '0';
-        print('::::::::::::::::Today is Sunday ::::::  $dayValue');
         break;
       default:
         print('Failed to determine the current day');
@@ -725,7 +656,7 @@ class BottomSheetForOTP extends GetxController {
   }
 
   static Future<void> callingGetShiftDetailApi() async {
-    bodyParamsForShiftDetail = {AK.action: 'getShiftDetail'};
+    bodyParamsForShiftDetail = {AK.action: ApiEndPointAction.getShiftDetail};
     shiftDetailsModal.value = await CAI.getShiftDetailApi(bodyParams: bodyParamsForShiftDetail);
     if (shiftDetailsModal.value != null) {
       shiftDetails = shiftDetailsModal.value?.shiftDetails;

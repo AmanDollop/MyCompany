@@ -177,7 +177,7 @@ class AddEducationController extends GetxController {
   Future<void> callingAddEducationAndAchievementApi() async {
     try {
       bodyParams = {
-        AK.action: 'addEducation',
+        AK.action: ApiEndPointAction.addEducation,
         AK.educationAchievementId: educationAchievementId.value,
         AK.classAchievement: achievementNameController.text.trim().toString(),
         AK.type: achievementAndEducationType.value,

@@ -49,7 +49,7 @@ class SelectBranceController extends GetxController {
     try{
       branchModel.value = await CAI.branchApi(bodyParams: {
         AK.companyId :companyId,
-        AK.action :'getBranches',
+        AK.action :ApiEndPointAction.getBranches,
       });
       if (branchModel.value != null) {
         branchList = branchModel.value?.data ?? [];

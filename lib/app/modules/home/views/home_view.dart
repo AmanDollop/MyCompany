@@ -235,24 +235,6 @@ class HomeView extends GetView<HomeController> {
     if (controller.linerValue.value.isNaN) {
       return commonCircularProgressBar(value: 0.0);
     } else {
-      if (controller.shiftTime?.totalShiftMinutes != null && controller.shiftTime!.totalShiftMinutes!.isNotEmpty) {
-        controller.total.value = double.parse('${controller.shiftTime?.totalShiftMinutes}');
-        if (controller.checkInValue.value && controller.checkOutValue.value) {
-          if(controller.hours.value!=0) {
-            controller.linerValue.value = (controller.hours.value * 60 / controller.total.value);
-          }else{
-            controller.linerValue.value = (controller.minutes.value  / controller.total.value);
-          }
-        } else {
-          if(controller.currentTimeForTimer.hour !=0 ) {
-            controller.linerValue.value = (controller.currentTimeForTimer.hour * 60 / controller.total.value);
-          }else{
-            controller.linerValue.value = (controller.currentTimeForTimer.minute  / controller.total.value);
-          }
-        }
-        ///This linerValue value calculation mistake
-        print('controller.currentTimeForTimer.hour:::  ${controller.linerValue.value}');
-      }
       return commonCircularProgressBar(value: controller.linerValue.value);
     }
   }

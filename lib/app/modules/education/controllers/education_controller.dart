@@ -61,7 +61,7 @@ class EducationController extends GetxController {
   Future<void> callingGetEducationOrAchievementsApi() async {
     getAchievementsList.clear();
     getEducationList.clear();
-    educationOrAchievementsModal.value = await CAI.getEducationOrAchievementsApi(bodyParams: {AK.action: 'getEducationDetails'});
+    educationOrAchievementsModal.value = await CAI.getEducationOrAchievementsApi(bodyParams: {AK.action: ApiEndPointAction.getEducationDetails});
     if(educationOrAchievementsModal.value != null){
       educationOrAchievementsModal.value?.getEducationDetails?.forEach((element) {
         if(element.type == '1'){

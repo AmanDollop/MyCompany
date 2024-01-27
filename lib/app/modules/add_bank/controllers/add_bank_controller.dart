@@ -115,7 +115,7 @@ class AddBankController extends GetxController {
   Future<void> callingAddBankDetailsApi() async {
     try{
       bodyParamsForUpdateBankDetails={
-        AK.action:'addBankDetail',
+        AK.action : ApiEndPointAction.addBankDetail,
         AK.accountHoldersName : accountHolderNameController.text.trim().toString(),
         AK.bankName : bankNameController.text.trim().toString(),
         AK.bankBranchName : bankBranchNameController.text.trim().toString(),

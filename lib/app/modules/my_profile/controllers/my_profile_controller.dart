@@ -220,7 +220,7 @@ class MyProfileController extends GetxController {
 
   Future<void> callingGetEmployeeDetailsApi() async {
     try {
-      getEmployeeDetailsModal.value = await CAI.getEmployeeDetailsApi(bodyParams: {AK.action: 'getEmployeeProfileMenu'});
+      getEmployeeDetailsModal.value = await CAI.getEmployeeDetailsApi(bodyParams: {AK.action: ApiEndPointAction.getEmployeeProfileMenu});
       if (getEmployeeDetailsModal.value != null) {
         getEmployeeDetails = getEmployeeDetailsModal.value?.getEmployeeDetails;
         if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForProfileMenu)) {

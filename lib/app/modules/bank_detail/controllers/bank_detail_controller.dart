@@ -141,7 +141,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
       rotationValue.value = true;
       rotationController.forward(from: 0.0);
       await Future.delayed(const Duration(seconds: 2),() async {
-        await callingBankRemoveOrSetPrimaryApi(apiActionType: 'primaryKeySet',bankId: getBankList?[index].bankId ?? '',index:index);
+        await callingBankRemoveOrSetPrimaryApi(apiActionType: ApiEndPointAction.primaryKeySet,bankId: getBankList?[index].bankId ?? '',index:index);
       },);
       rotationController.stop();
       rotationValue.value = false;
@@ -154,7 +154,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
 
   Future<void> clickOnRemove({required int index}) async {
     if(getBankList?[index].bankId !=null && getBankList![index].bankId!.isNotEmpty) {
-      await callingBankRemoveOrSetPrimaryApi(apiActionType: 'deleteBankDetail',bankId: getBankList?[index].bankId ?? '',index:index);
+      await callingBankRemoveOrSetPrimaryApi(apiActionType:ApiEndPointAction.deleteBankDetail,bankId: getBankList?[index].bankId ?? '',index:index);
     }
     else{
       CM.error();
@@ -197,7 +197,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
   }
 
   Future<void> callingGetBankDetailApi() async {
-    bodyParamsForGetBanks = {AK.action: "getBankDetails"};
+    bodyParamsForGetBanks = {AK.action: ApiEndPointAction.getBankDetails};
     getBankDetailModal.value = await CAI.getBankDetailApi(bodyParams: bodyParamsForGetBanks);
     if (getBankDetailModal.value != null) {
       getBankList = getBankDetailModal.value?.getBankDetails;

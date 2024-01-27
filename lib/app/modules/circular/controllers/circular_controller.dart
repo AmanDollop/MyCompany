@@ -186,7 +186,7 @@ class CircularController extends GetxController {
       String end = DateFormat('yyyy-MM-dd').format(dateTimeEnd);
 
       bodyParamsForCircularDetail = {
-        AK.action: 'getCirculars',
+        AK.action: ApiEndPointAction.getCirculars,
         AK.limit: limit.toString(),
         AK.offset: offset.toString(),
         AK.search: searchController.text.trim().toString(),

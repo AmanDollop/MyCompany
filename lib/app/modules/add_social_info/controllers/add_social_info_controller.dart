@@ -86,7 +86,7 @@ class AddSocialInfoController extends GetxController {
   Future<void> callingAddSocialInfoApi() async {
     try {
       bodyParams = {
-        AK.action: 'updateSocialInfo',
+        AK.action: ApiEndPointAction.updateSocialInfo,
         AK.twitter: twitterController.text.trim().toString(),
         AK.facebook: facebookController.text.trim().toString(),
         AK.instagram: instagramController.text.trim().toString(),

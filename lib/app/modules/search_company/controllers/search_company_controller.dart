@@ -76,7 +76,7 @@ class SearchCompanyController extends GetxController {
 
   Future<void> searchCompanyApiCalling() async {
     bodyParams = {
-      AK.action: 'getCompanies',
+      AK.action: ApiEndPointAction.getCompanies,
       AK.searchString: searchController.text.trim().toString(),
     };
     searchCompanyModel.value = await CAI.searchCompanyApi(bodyParams: bodyParams);
