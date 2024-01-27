@@ -100,7 +100,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final minutes = 0.obs;
   final seconds = 0.obs;
   final total = 540.obs;
-  final workingMinutes = 0.0.obs;
+  final workingMinutes = 0.obs;
   final linerValue = 0.0.obs;
 
   final key = GlobalKey<FormState>();
@@ -290,8 +290,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
     currentTimeForTimer = DateTime(0, 0, 0, hours.value, minutes.value, seconds.value);
 
+    workingMinutes.value = currentTimeForTimer.hour * 3600 +  currentTimeForTimer.minute * 60;
+
     if(!isTimerStartedValue.value) {
-      isTimerStartedValue.value=true;
+      isTimerStartedValue.value = true;
       timer = Timer.periodic(const Duration(seconds: 1), updateTimeForTimer);
     }
     else{
@@ -311,9 +313,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       } else {
         workingMinutes.value++;
         linerValue.value = workingMinutes.value  / (total.value * 60);
+        print('workingMinutes.value  :::::::  ${workingMinutes.value}      total.value * 60:::::::   ${total.value * 60}');
       }
     }
-       currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
+    currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
        if(breakValue.value){
          DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.breakStartTime}");
 
