@@ -332,11 +332,12 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> clickOnSwitchButton() async {
-    if (await AC.checkFakeLocation()) {
-      await CD.commonAndroidFakeLocationDialog();
-    } else {
-        await punchInAndPunchOutBottomSheetView();
-    }
+    await punchInAndPunchOutBottomSheetView();
+    // if (await AC.checkFakeLocation()) {
+    //   await CD.commonAndroidFakeLocationDialog();
+    // } else {
+    //   await punchInAndPunchOutBottomSheetView();
+    // }
   }
 
   Future<void> punchInAndPunchOutBottomSheetView() async {
