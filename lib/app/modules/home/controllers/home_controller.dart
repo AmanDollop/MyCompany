@@ -313,7 +313,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       } else {
         workingMinutes.value++;
         linerValue.value = workingMinutes.value  / (total.value * 60);
-        print('workingMinutes.value  :::::::  ${workingMinutes.value}      total.value * 60:::::::   ${total.value * 60}');
+        // print('workingMinutes.value  :::::::  ${workingMinutes.value}      total.value * 60:::::::   ${total.value * 60}');
       }
     }
     currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));

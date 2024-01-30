@@ -67,6 +67,7 @@ dependencies:
   google_mlkit_face_detection: ^0.9.0
   flutter_face_api: ^4.1.0
   trust_location: ^2.0.13
+  vibration: ^1.8.4
 #  safe_device: ^1.1.4
 #  detect_fake_location: ^1.0.1
 

@@ -135,8 +135,7 @@ class EducationView extends GetView<EducationController> {
       )
       : CW.commonNoDataFoundText(text: controller.apiResponseValue.value?'':'Education not found!');
 
-  Widget backgroundCardView({required int index}) =>
-      InkWell(
+  Widget backgroundCardView({required int index}) => InkWell(
         onTap: () => controller.clickOnEducationData(index:index),
         borderRadius: BorderRadius.circular(4.px),
         child: Container(

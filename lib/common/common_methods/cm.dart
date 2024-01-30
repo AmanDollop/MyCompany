@@ -18,6 +18,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_geocoder/location_geocoder.dart';
+import 'package:vibration/vibration.dart';
 
 class CM {
 
@@ -62,6 +63,7 @@ class CM {
       Color? backgroundColor,
       bool showCloseIcon = false}) {
     backgroundColor = Col.primary;
+     Vibration.vibrate(duration: 1000);
     if (isFloating) {
       /*var snackBar = SnackBar(
         elevation: .4,
@@ -115,6 +117,7 @@ class CM {
   }
 
   static void error() {
+    Vibration.vibrate(duration: 1000);
     Fluttertoast.showToast(
         msg: 'Something went wrong!',
         toastLength: Toast.LENGTH_LONG,

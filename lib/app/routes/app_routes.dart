@@ -38,6 +38,7 @@ abstract class Routes {
   static const CIRCULAR_DETAIL = _Paths.CIRCULAR_DETAIL;
   static const FACE_DETECTION = _Paths.FACE_DETECTION;
   static const ADD_DOCUMENT = _Paths.ADD_DOCUMENT;
+  static const ATTENDANCE_TRACKER = _Paths.ATTENDANCE_TRACKER;
 }
 
 abstract class _Paths {
@@ -77,4 +78,5 @@ abstract class _Paths {
   static const CIRCULAR_DETAIL = '/circular-detail';
   static const FACE_DETECTION = '/face-detection';
   static const ADD_DOCUMENT = '/add-document';
+  static const ATTENDANCE_TRACKER = '/attendance-tracker';
 }

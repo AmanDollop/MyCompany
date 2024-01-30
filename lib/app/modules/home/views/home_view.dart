@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
+import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -41,14 +42,13 @@ class HomeView extends GetView<HomeController> {
                 inAsyncCall: controller.apiResValue.value,
                 child: ListView(
                   controller: controller.scrollController.value,
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
+                  padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
                   children: [
                     punchInAndPunchOutView(),
                     if (controller.hideBanner.value) SizedBox(height: 16.px),
                     if (controller.hideBanner.value) bannerView(),
                     if (controller.hideUpcomingCelebration.value)
-                      Padding(
+                    Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 12.px, vertical: 14.px),
                         child: upcomingCelebrationsButtonView(),
@@ -57,7 +57,7 @@ class HomeView extends GetView<HomeController> {
                     if (controller.hideMyTeam.value) SizedBox(height: 14.px),
                     if (controller.hideMyTeam.value) myTeamListView(),
                     if (controller.hideMyDepartment.value)
-                      SizedBox(height: 14.px),
+                    SizedBox(height: 14.px),
                     if (controller.hideMyDepartment.value)
                       yourDepartmentListView(),
                     if (controller.hideGallery.value)
@@ -138,13 +138,19 @@ class HomeView extends GetView<HomeController> {
                         width: 120.px,
                         child: circularProgressIndicatorView(),
                       ),
-                      Container(
-                        height: 110.px,
-                        width: 110.px,
-                        decoration: BoxDecoration(
-                            color: Col.inverseSecondary,
-                            shape: BoxShape.circle),
-                        child: circularProgressIndicatorTextView(),
+                      InkWell(
+                        onTap: () {
+                          Get.toNamed(Routes.ATTENDANCE_TRACKER);
+                        },
+                        borderRadius: BorderRadius.circular(55.px),
+                        child: Container(
+                          height: 110.px,
+                          width: 110.px,
+                          decoration: BoxDecoration(
+                              color: Col.inverseSecondary,
+                              shape: BoxShape.circle),
+                          child: circularProgressIndicatorTextView(),
+                        ),
                       ),
                     ],
                   ),
