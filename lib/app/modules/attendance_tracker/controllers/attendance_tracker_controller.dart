@@ -1,10 +1,17 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
+import 'package:task/common/calendar_method/calendar_method.dart';
+
+import '../../../../common/common_methods/cm.dart';
 
 class AttendanceTrackerController extends GetxController {
   final count = 0.obs;
-
+  final menuName = ''.obs;
   List<String> monthNameList = <String>[
     'January',
     'February',
@@ -20,18 +27,21 @@ class AttendanceTrackerController extends GetxController {
     'December',
   ];
   final monthNameValue = 'January'.obs;
-  final monthNameId = ''.obs;
+  final monthNameId = '1'.obs;
 
   List<String> yearList = <String>[
-    '2023',
-    '2024',
-    '2025',
+    (DateFormat('yyyy').format(DateTime.now().subtract(const Duration(days: 365)))),
+    (DateFormat('yyyy').format(DateTime.now())),
+    (DateFormat('yyyy').format(DateTime.now().add(const Duration(days: 365)))),
   ];
 
   final yearValue = '2024'.obs;
 
   DateTime selectedDate = DateTime.now();
   final currentMonth = DateTime.now().obs;
+
+  final currentWeakStartDate = DateTime.now().obs;
+  final currentWeakEndDate = DateTime.now().obs;
 
   final tabBarValue = 'Month'.obs;
 
@@ -46,8 +56,8 @@ class AttendanceTrackerController extends GetxController {
     const Color(0xffFFE9DD),
     const Color(0xffE0F1FF),
     const Color(0xffFFE2D3),
-    const Color(0xffFFDAE7),
-    const Color(0xffFEFFE1),
+    const Color(0xffE4E1ED),
+    const Color(0xffEEEED1),
   ];
 
   final cardTextColorList = [
@@ -61,8 +71,8 @@ class AttendanceTrackerController extends GetxController {
     const Color(0xffAA3B00),
     const Color(0xff249CFF),
     const Color(0xffFF5700),
-    const Color(0xffFC327B),
-    const Color(0xff707205),
+    const Color(0xff4C426C),
+    const Color(0xff6F7106),
   ];
 
   final cardTitleTextList = [
@@ -80,13 +90,42 @@ class AttendanceTrackerController extends GetxController {
     'Punch out Missing',
   ];
 
+  final cardIconsList = [
+    'assets/icons/working_days_icon.png',
+    'assets/icons/present_days_icon.png',
+    'assets/icons/absent_days_icon.png',
+    'assets/icons/late_in_icon.png',
+    'assets/icons/early_out_icon.png',
+    'assets/icons/extra_days_icon.png',
+    'assets/icons/holiday_icon.png',
+    'assets/icons/week_off_icon.png',
+    'assets/icons/leaves_icon.png',
+    'assets/icons/pending_attendance_icon.png',
+    'assets/icons/rejected_attendance_icon.png',
+    'assets/icons/punch_out_missing_icon.png',
+  ];
+
   final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   final monthTotalDaysList = [];
   final dayValue = ''.obs;
 
+  final apiResValue = false.obs;
+  final getMonthlyAttendanceDataModal = Rxn<GetMonthlyAttendanceDataModal>();
+  GetMonthlyAttendance? getMonthlyAttendanceData;
+  Map<String, dynamic> bodyParamsForMonthlyAttendanceApi={};
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    try{
+      menuName.value = Get.arguments[0];
+      currentWeakStartDate.value = CommonCalendarMethods.getPreviousMonday(DateTime.now());
+      monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
+      print('monthNameId:::::  ${monthNameId.value}');
+      await callingGetMonthlyAttendanceDataApi();
+    }catch(e){
+      apiResValue.value=false;
+    }
   }
 
   @override
@@ -101,6 +140,7 @@ class AttendanceTrackerController extends GetxController {
 
   void increment() => count.value++;
 
+
   void clickOnBackButton() {
     Get.back();
   }
@@ -113,36 +153,6 @@ class AttendanceTrackerController extends GetxController {
     tabBarValue.value = 'Week';
   }
 
-  void getMonth() {
-
-    if (monthNameValue.value == 'January') {
-      monthNameId.value = '1';
-    } else if (monthNameValue.value == 'February') {
-      monthNameId.value = '2';
-    } else if (monthNameValue.value == 'March') {
-      monthNameId.value = '3';
-    } else if (monthNameValue.value == 'April') {
-      monthNameId.value = '4';
-    } else if (monthNameValue.value == 'May') {
-      monthNameId.value = '5';
-    } else if (monthNameValue.value == 'June') {
-      monthNameId.value = '6';
-    } else if (monthNameValue.value == 'July') {
-      monthNameId.value = '7';
-    } else if (monthNameValue.value == 'August') {
-      monthNameId.value = '8';
-    } else if (monthNameValue.value == 'September') {
-      monthNameId.value = '9';
-    } else if (monthNameValue.value == 'October') {
-      monthNameId.value = '10';
-    } else if (monthNameValue.value == 'November') {
-      monthNameId.value = '11';
-    } else if (monthNameValue.value == 'December') {
-      monthNameId.value = '12';
-    } else {
-      monthNameId.value = '0';
-    }
-  }
 
   void monthTotalDaysListDataAdd(){
     monthTotalDaysList.clear();
@@ -151,18 +161,48 @@ class AttendanceTrackerController extends GetxController {
     }
   }
 
-  void monthDropDownOnChanged({required String value}) {
+  Future<void> monthDropDownOnChanged({required String value}) async {
     monthNameValue.value = value;
-    getMonth();
+    monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
     currentMonth.value = DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
     monthTotalDaysListDataAdd();
+    await callingGetMonthlyAttendanceDataApi();
   }
 
-  void yearDropDownOnChanged({required String value}) {
+  Future<void> yearDropDownOnChanged({required String value}) async {
+
     yearValue.value = value;
-    getMonth();
+    monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
     currentMonth.value = DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
     monthTotalDaysListDataAdd();
+    await callingGetMonthlyAttendanceDataApi();
   }
+
+  Future<void> callingGetMonthlyAttendanceDataApi() async {
+
+    apiResValue.value = true;
+    try{
+      bodyParamsForMonthlyAttendanceApi = {
+        AK.action : ApiEndPointAction.getMonthlyAttendanceHistoryNew,
+        AK.month : monthNameId.value,
+        AK.year : yearValue.value,
+      };
+      getMonthlyAttendanceDataModal.value = await CAI.getMonthlyAttendanceDataApi(bodyParams: bodyParamsForMonthlyAttendanceApi);
+      print('getMonthlyAttendanceDataModal::::  ${getMonthlyAttendanceDataModal.value}');
+      if(getMonthlyAttendanceDataModal.value != null){
+        getMonthlyAttendanceData = getMonthlyAttendanceDataModal.value?.getMonthlyAttendance;
+        print('getMonthlyAttendanceData:::: ${getMonthlyAttendanceData?.totalWorkingMinutes}');
+
+        apiResValue.value=false;
+      }
+    }catch(e){
+      apiResValue.value=false;
+      print('e:::: $e');
+      CM.error();
+    }
+
+  }
+
+
 
 }

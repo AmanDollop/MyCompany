@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/common/common_packages/shimmer/shimmer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -62,15 +64,12 @@ class HomeView extends GetView<HomeController> {
                       yourDepartmentListView(),
                     if (controller.hideGallery.value)
                       Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.px, right: 12.px, bottom: 4.px),
+                        padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             cardTextView(text: 'Gallery', fontSize: 16.px),
-                            viewAllTextButtonView(
-                                onPressedViewAllButton: () =>
-                                    controller.clickOnGalleryViewAllButton())
+                            viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
                           ],
                         ),
                       ),
@@ -87,8 +86,7 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget punchInAndPunchOutView() {
-    DateTime breakStartTime =
-        controller.getTodayAttendanceDetail?.breakStartTime != null && controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
+    DateTime breakStartTime = controller.getTodayAttendanceDetail?.breakStartTime != null && controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
             ? DateFormat('HH:mm:ss').parse('${controller.getTodayAttendanceDetail?.breakStartTime}')
             : DateTime(0);
     return Column(
@@ -107,8 +105,8 @@ class HomeView extends GetView<HomeController> {
                   width: double.infinity,
                   child: cardTextView(
                       text: controller.currentTimeForBreakTimer.hour != 0
-                          ? '${controller.getTodayAttendanceDetail?.breakTypeName} (${controller.currentTimeForBreakTimer.hour}:${controller.currentTimeForBreakTimer.minute}:${controller.currentTimeForBreakTimer.second})'
-                          : '${controller.getTodayAttendanceDetail?.breakTypeName} (${controller.currentTimeForBreakTimer.minute}:${controller.currentTimeForBreakTimer.second})',
+                          ? '${controller.getTodayAttendanceDetail?.breakTypeName} (${DateFormat('HH:mm:ss').format(controller.currentTimeForBreakTimer)})'
+                          : '${controller.getTodayAttendanceDetail?.breakTypeName} (${DateFormat('mm:ss').format(controller.currentTimeForBreakTimer)})',
                       maxLines: 2,
                       fontSize: 12.px,
                       fontWeight: FontWeight.w600),
@@ -138,19 +136,13 @@ class HomeView extends GetView<HomeController> {
                         width: 120.px,
                         child: circularProgressIndicatorView(),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Get.toNamed(Routes.ATTENDANCE_TRACKER);
-                        },
-                        borderRadius: BorderRadius.circular(55.px),
-                        child: Container(
-                          height: 110.px,
-                          width: 110.px,
-                          decoration: BoxDecoration(
-                              color: Col.inverseSecondary,
-                              shape: BoxShape.circle),
-                          child: circularProgressIndicatorTextView(),
-                        ),
+                      Container(
+                        height: 110.px,
+                        width: 110.px,
+                        decoration: BoxDecoration(
+                            color: Col.inverseSecondary,
+                            shape: BoxShape.circle),
+                        child: circularProgressIndicatorTextView(),
                       ),
                     ],
                   ),
@@ -167,9 +159,7 @@ class HomeView extends GetView<HomeController> {
                     controller.checkInValue.value && controller.checkOutValue.value
                         ? CW.commonElevatedButton(
                             onPressed: () {
-                              CM.showSnackBar(
-                                  message:
-                                      'You have already performed punch in and punch out this day.');
+                              CM.showSnackBar(message: 'You have already performed punch in and punch out this day.');
                             },
                             buttonText: 'Take a Break',
                             // width: 150.px,
@@ -257,32 +247,37 @@ class HomeView extends GetView<HomeController> {
   Widget circularProgressIndicatorTextView() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          circularProgressIndicatorCheckInTextView(firstText: 'Check In -', fontSize: 8.px),
+          circularProgressIndicatorCheckInTextView(firstText: 'Check In', fontSize: 8.px),
           if (controller.checkInValue.value)
-            circularProgressIndicatorCheckInTextView(
-                firstText: '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
-                fontSize: 8.px),
+            circularProgressIndicatorCheckInTextView(firstText: '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})', fontSize: 8.px),
           SizedBox(height: 2.px),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Obx(() {
                 controller.count;
-
                 return circularProgressIndicatorTimeTextView(
-                  firstText: controller.checkInValue.value &&
-                          controller.checkOutValue.value
-                      ? '${controller.hours.value}:${controller.minutes.value}:${controller.seconds.value}'
-                      // : DateFormat('hh:mm:ss').format(DateTime.parse('${controller.currentTimeForTimer}')),
-                  : '${controller.currentTimeForTimer.hour}:${controller.currentTimeForTimer.minute}:${controller.currentTimeForTimer.second}',
+                  firstText: controller.checkInValue.value && controller.checkOutValue.value
+                    ? '${formatWithLeadingZeros(controller.hours.value)}:${formatWithLeadingZeros(controller.minutes.value)}:${formatWithLeadingZeros(controller.seconds.value)}'
+                  : formatTime(controller.currentTimeForTimer),
                 );
               })
             ],
           ),
           SizedBox(height: 4.px),
-          circularProgressIndicatorCheckInTextView(firstText: DateFormat('EEEE, MMM dd').format(DateTime.now()), fontSize: 10.px),
+          circularProgressIndicatorCheckInTextView(firstText: DateFormat('EE, MMM dd').format(controller.currentDateTime), fontSize: 10.px),
         ],
       );
+
+  String formatWithLeadingZeros(int value) {
+    // Use padLeft to add leading zeros
+    return value.toString().padLeft(2, '0');
+  }
+
+  String formatTime(DateTime dateTime) {
+    String formattedTime = DateFormat('HH:mm:ss').format(dateTime);
+    return formattedTime;
+  }
 
   Widget circularProgressIndicatorTimeTextView({required String firstText}) =>
       Text(
@@ -303,12 +298,10 @@ class HomeView extends GetView<HomeController> {
       );
 
   Widget commonSwitchButtonView() {
-    if (controller.checkInValue.value && controller.checkOutValue.value) {
+    if (controller.checkInValue.value && controller.checkOutValue.value ) {
       return GestureDetector(
         onHorizontalDragStart: (details) {
-          CM.showSnackBar(
-              message:
-                  'You have already performed punch in and punch out this day.');
+          CM.showSnackBar(message: 'You have already performed punch in and punch out this day.');
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 500),
@@ -588,8 +581,8 @@ class HomeView extends GetView<HomeController> {
         ),
       );
     } else {
-      return CW.commonNoDataFoundText(
-          text: controller.apiResValue.value ? '' : 'Menus not found!');
+      return controller.apiResValue.value ?
+      const SizedBox() :CW.commonNoDataFoundText(text:'Menus not found!');
     }
   }
 

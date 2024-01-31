@@ -47,6 +47,7 @@ class MyHttp {
         if(showSnackBar) {
           Map<String,dynamic> mapRes = {};
           mapRes = jsonDecode(response.body);
+          print('mapRes:::  ${mapRes}');
           CM.showSnackBar(message: mapRes['message']);
         }
         return response;

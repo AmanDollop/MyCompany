@@ -106,20 +106,19 @@ class AK {
   static const punchInLatitude = "punch_in_latitude";
   static const punchInLongitude = "punch_in_longitude";
   static const punchInRange = "punch_in_range";
+  static const punchLateIn = "late_in";
   static const punchInOutOfRange = "punch_in_out_of_range";
   static const punchInOutOfRangeReason = "punch_in_out_of_range_reason";
   static const punchInImage = "punch_in_image";
   static const shiftType = "shift_type";
 
-  static const totalWorkingMinutes = "total_working_minutes";
   static const punchOutLatitude = "punch_out_latitude";
   static const punchOutLongitude = "punch_out_longitude";
   static const punchOutImage = "punch_out_image";
-  static const remainingWorkingMinutes = "remaining_working_minutes";
   static const earlyOut = "early_out";
+  static const punchOutOutOfRangeReason = "punch_out_out_of_range_reason";
   static const punchOutOutOfRange = "punch_out_out_of_range";
   static const earlyOutReason = "early_out_reason";
-  static const productiveWorkingMinutes = "productive_working_minutes";
   static const punchOutRange = "punch_out_range";
 
   static const breakTypeId = "break_type_id";
@@ -136,6 +135,8 @@ class AK {
   static const search = "search";
 
   static const action = "action";
+
+  static const month = "month";
 
 }
 
@@ -243,6 +244,8 @@ class ApiEndPointAction{
   static const getUserDetails = 'getUserDetails';
 
   static const getShiftDetail = 'getShiftDetail';
+
+  static const getMonthlyAttendanceHistoryNew = 'getMonthlyAttendanceHistoryNew';
 
 
 }

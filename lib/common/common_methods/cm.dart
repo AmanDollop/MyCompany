@@ -63,7 +63,7 @@ class CM {
       Color? backgroundColor,
       bool showCloseIcon = false}) {
     backgroundColor = Col.primary;
-     Vibration.vibrate(duration: 1000);
+     Vibration.vibrate(duration: 500);
     if (isFloating) {
       /*var snackBar = SnackBar(
         elevation: .4,
@@ -117,7 +117,7 @@ class CM {
   }
 
   static void error() {
-    Vibration.vibrate(duration: 1000);
+    Vibration.vibrate(duration: 500);
     Fluttertoast.showToast(
         msg: 'Something went wrong!',
         toastLength: Toast.LENGTH_LONG,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/modules/attendance_tracker/controllers/attendance_tracker_controller.dart';
@@ -32,6 +31,8 @@ class WeekView extends GetView<AttendanceTrackerController> {
           SizedBox(height: 10.px),
           circularProgressBarView(),
           SizedBox(height: 10.px),
+          listViewBuilder(),
+          SizedBox(height: 20.px),
         ],
       );
     });
@@ -39,6 +40,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
 
   Widget commonDropDownView({required Widget dropDownView}) => Expanded(
         child: Container(
+          height: 40.px,
           decoration: BoxDecoration(
               color: Col.gray.withOpacity(.3),
               borderRadius: BorderRadius.circular(6.px)),
@@ -108,6 +110,49 @@ class WeekView extends GetView<AttendanceTrackerController> {
           );
         }).toList(),
       );
+
+  Widget buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: Icon(Icons.keyboard_arrow_left,
+              color: Col.secondary, size: 28.px),
+          onPressed: () {
+            controller.currentWeakStartDate.value = controller
+                .currentWeakStartDate.value
+                .subtract(const Duration(days: 7));
+            controller.currentWeakEndDate.value = controller
+                .currentWeakEndDate.value
+                .subtract(Duration(days: DateTime.now().weekday));
+          },
+        ),
+        SizedBox(width: 10.px),
+        Column(
+          children: [
+            Text(
+              '${controller.currentWeakStartDate.value.day}-${controller.currentWeakEndDate.value.day} ${DateFormat('MMM yyyy').format(DateTime.now())}',
+              style: Theme.of(Get.context!).textTheme.displayLarge,
+            ),
+          ],
+        ),
+        SizedBox(width: 10.px),
+        if (controller.currentWeakEndDate.value.day != DateTime.now().day)
+          IconButton(
+            icon: Icon(Icons.keyboard_arrow_right,
+                color: Col.secondary, size: 28.px),
+            onPressed: () {
+              controller.currentWeakStartDate.value = controller
+                  .currentWeakStartDate.value
+                  .add(const Duration(days: 7));
+              controller.currentWeakEndDate.value = controller
+                  .currentWeakEndDate.value
+                  .add(Duration(days: DateTime.now().weekday));
+            },
+          ),
+      ],
+    );
+  }
 
   Widget commonCircularProgressBar({required double value}) {
     return CircularProgressIndicator(
@@ -194,32 +239,70 @@ class WeekView extends GetView<AttendanceTrackerController> {
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: Icon(Icons.keyboard_arrow_left,
-              color: Col.secondary, size: 28.px),
-          onPressed: () {
-            controller.currentMonth.value = DateTime(
-                controller.currentMonth.value.year,
-                controller.currentMonth.value.month - 1);
-          },
-        ),
-        SizedBox(width: 10.px),
-        Text(
-          '${DateFormat('dd').format(DateTime(controller.currentMonth.value.day).subtract(const Duration(days: 7)),)}-${DateFormat('dd MMM').format(DateTime(controller.currentMonth.value.day,controller.currentMonth.value.month))} ${controller.currentMonth.value.year}',
-          style: Theme.of(Get.context!).textTheme.displayLarge,
-        ),
-        SizedBox(width: 10.px),
-        IconButton(
-          icon: Icon(Icons.keyboard_arrow_right, color: Col.secondary, size: 28.px),
-          onPressed: () {
-            controller.currentMonth.value = DateTime(controller.currentMonth.value.year, controller.currentMonth.value.month + 1);
-          },
-        ),
-      ],
-    );
-  }
+  Widget timeTextView({required String text}) => Text(
+        text,
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
+
+  Widget listViewBuilder() => ListView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: 7,
+    itemBuilder: (context, index) {
+      return listCardView(index:index);
+    },
+  );
+
+  Widget listCardView({required int index}) => Card(
+    color: Col.inverseSecondary,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6.px)
+    ),
+    child: Padding(
+      padding:  EdgeInsets.all(8.px),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleTextView(text: '23rd January 2024'),
+          SizedBox(height: 2.px),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              timeTextView(text: 'Monday',),
+              timeTextView(text: '09 hr 10 min',),
+            ],
+          ),
+          SizedBox(height: 10.px),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    titleTextView(text: 'Total Productive Time'),
+                    SizedBox(height: 2.px),
+                    subTitleTextView(text: '50hr 50 min.'),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    titleTextView(text: 'Extra Hours'),
+                    SizedBox(height: 2.px),
+                    subTitleTextView(text: '50hr 50 min.'),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    ),
+  );
+
 }

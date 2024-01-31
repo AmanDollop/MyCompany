@@ -28,7 +28,7 @@ class CBS {
       bool isDismissible = true,
       bool useSafeArea = true,
       bool isFullScreen = false,
-      bool showDragHandle = true,
+      bool showDragHandle = false,
       bool isCloseOnBack = true,
       Color? backGroundColor,
       Color? barrierColor,
@@ -45,7 +45,7 @@ class CBS {
       isDismissible: isDismissible,
       isScrollControlled: isFullScreen,
       useSafeArea: useSafeArea,
-      backgroundColor: backGroundColor ?? Colors.white,
+      backgroundColor: backGroundColor ?? Colors.transparent,
       barrierColor: barrierColor,
       elevation: elevation ?? 0.px,
       shape: OutlineInputBorder(
@@ -63,38 +63,73 @@ class CBS {
           child: GestureDetector(
             onTap: onTap,
             child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: ClipRRect(
-                borderRadius: showDragHandle
-                    ? BorderRadius.zero
-                    : BorderRadius.only(
-                        topLeft: Radius.circular(cornerRadius ?? 20.px),
-                        topRight: Radius.circular(cornerRadius ?? 20.px),
-                      ),
-                child: ScrollConfiguration(
-                  behavior: ListScrollBehavior(),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: SingleChildScrollView(
+                child: Container(
+                   color: Colors.transparent,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (unScrollWidget != null)
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: showDragHandle ? 0.px : C.margin,
-                              left: horizontalPadding ?? C.margin,
-                              right: horizontalPadding ?? C.margin,
-                              bottom: horizontalPadding ?? C.margin / 2),
-                          child: unScrollWidget,
+                      InkWell(
+                        onTap: (){
+                          Get.back();
+                        },
+                        borderRadius: BorderRadius.circular(17.px),
+                        child: Container(
+                          width: 34.px,
+                          height: 34.px,
+                          decoration: BoxDecoration(
+                            color: Col.secondary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(child: CW.commonNetworkImageView(path: 'assets/icons/cancel_white_icon.png', isAssetImage: true,height: 10.px,width: 10.px)),
                         ),
-                      Flexible(
-                        child: ListView(
-                          padding: EdgeInsets.only(
-                              left: horizontalPadding ?? C.margin,
-                              right: horizontalPadding ?? C.margin,
-                              top: showDragHandle ? 0.px : C.margin,
-                              bottom: horizontalPadding ?? C.margin / 2),
-                          shrinkWrap: true,
-                          children: children ?? [],
+                      ),
+                      SizedBox(height: 10.px),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(cornerRadius ?? 20.px),
+                            topRight: Radius.circular(cornerRadius ?? 20.px),
+                          ),
+                          color: Col.inverseSecondary,
+                        ),
+                        child: SingleChildScrollView(
+                          child: ClipRRect(
+                            borderRadius: showDragHandle
+                                ? BorderRadius.zero
+                                : BorderRadius.only(
+                                    topLeft: Radius.circular(cornerRadius ?? 20.px),
+                                    topRight: Radius.circular(cornerRadius ?? 20.px),
+                                  ),
+                            child: ScrollConfiguration(
+                              behavior: ListScrollBehavior(),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (unScrollWidget != null)
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                          top: showDragHandle ? 0.px : C.margin,
+                                          left: horizontalPadding ?? C.margin,
+                                          right: horizontalPadding ?? C.margin,
+                                          bottom: horizontalPadding ?? C.margin / 2),
+                                      child: unScrollWidget,
+                                    ),
+                                  Flexible(
+                                    child: ListView(
+                                      padding: EdgeInsets.only(
+                                          left: horizontalPadding ?? C.margin,
+                                          right: horizontalPadding ?? C.margin,
+                                          top: showDragHandle ? 0.px : C.margin,
+                                          bottom: horizontalPadding ?? C.margin / 2),
+                                      shrinkWrap: true,
+                                      children: children,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],

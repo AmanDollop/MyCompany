@@ -6,6 +6,8 @@ import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
+import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
@@ -103,4 +105,33 @@ class MenuViewController extends GetxController {
       apiResValue.value = false;
     }
   }
+
+  void clickOnCard({required int index}) {
+
+    if(searchController.text.isNotEmpty){
+      if (getMenuListForSearch[index].menuClick == 'circular') {
+        Get.toNamed(Routes.CIRCULAR, arguments: [getMenuListForSearch[index].menuName]);
+      }else if (getMenuListForSearch[index].menuClick == 'attendance') {
+        Get.toNamed(Routes.ATTENDANCE_TRACKER, arguments: [getMenuListForSearch[index].menuName]);
+      }else if (getMenuListForSearch[index].menuClick == 'task') {
+        Get.toNamed(Routes.TASK, arguments: [getMenuListForSearch[index].menuName]);
+      } else {
+        CM.showSnackBar(message: 'Coming soon');
+      }
+    }else{
+      if (getMenuList[index].menuClick == 'circular') {
+        Get.toNamed(Routes.CIRCULAR, arguments: [getMenuList[index].menuName]);
+      }else if (getMenuList[index].menuClick == 'attendance') {
+        Get.toNamed(Routes.ATTENDANCE_TRACKER, arguments: [getMenuList[index].menuName]);
+      }else if (getMenuList[index].menuClick == 'task') {
+        Get.toNamed(Routes.TASK, arguments: [getMenuList[index].menuName]);
+      } else {
+        CM.showSnackBar(message: 'Coming soon');
+      }
+    }
+
+
+
+  }
+
 }

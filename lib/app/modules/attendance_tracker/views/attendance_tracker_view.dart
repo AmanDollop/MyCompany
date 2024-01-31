@@ -14,31 +14,44 @@ class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CW.commonAppBarView(title: 'Attendance Tracker',isLeading: true,onBackPressed: () => controller.clickOnBackButton(),),
+      appBar: CW.commonAppBarView(title: controller.menuName.value,isLeading: true,onBackPressed: () => controller.clickOnBackButton(),),
       body:Obx(() {
         controller.count.value;
-        return  Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 24.px),
+        ///Tab Bar View For Month And Week
+
+        // return  Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 12.px),
+        //   child: Column(
+        //     children: [
+        //       SizedBox(height: 16.px),
+        //       tabBarView(),
+        //       Expanded(
+        //         child: Padding(
+        //           padding: EdgeInsets.only(top: 16.px),
+        //           child: AnimatedCrossFade(
+        //             crossFadeState:
+        //             controller.tabBarValue.value == 'Month'
+        //                 ? CrossFadeState.showFirst
+        //                 : CrossFadeState.showSecond,
+        //             duration: const Duration(milliseconds: 1000),
+        //             firstCurve: Curves.fastOutSlowIn,
+        //             secondCurve: Curves.fastOutSlowIn,
+        //             firstChild: const MonthView(),
+        //             secondChild: const WeekView(),
+        //           ),
+        //         ),
+        //       ),
+        //       SizedBox(height: 12.px)
+        //     ],
+        //   ),
+        // );
+
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.px),
           child: Column(
             children: [
-              tabBarView(),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 16.px),
-                  child: AnimatedCrossFade(
-                    crossFadeState:
-                    controller.tabBarValue.value == 'Month'
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: const Duration(milliseconds: 1000),
-                    firstCurve: Curves.fastOutSlowIn,
-                    secondCurve: Curves.fastOutSlowIn,
-                    firstChild: const MonthView(),
-                    secondChild: const WeekView(),
-                  ),
-                ),
-              ),
-              SizedBox(height: 12.px)
+              SizedBox(height: 16.px),
+              const Expanded(child: MonthView()),
             ],
           ),
         );

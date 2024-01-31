@@ -1305,8 +1305,8 @@ class CW {
       Color? movementColor}) {
     return Shimmer.fromColors(
       period: duration ?? const Duration(milliseconds: 2000),
-      baseColor: backgroundColor ?? Col.darkGray,
-      highlightColor: movementColor ?? Col.gray,
+      baseColor: backgroundColor ?? Col.primary.withOpacity(.5),
+      highlightColor: movementColor ?? Col.primary.withOpacity(.2),
       enabled: true,
       child: Container(
         width: width,
@@ -1460,24 +1460,19 @@ class CW {
       );
 
   static commonNoDataFoundText({String? text}) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-
-            commonNetworkImageView(path: 'assets/images/no_data_found_image.png', isAssetImage: true,height: 250.px,width: 250.px),
-
-            Text(
-              text ?? 'No Data Found!',
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .displayLarge
-                  ?.copyWith(color: Col.primary),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+        child: commonNetworkImageView(path: 'assets/images/no_data_found_image.png', isAssetImage: true,height: 250.px,width: 250.px),
       );
+
+  // static commonNoDataFoundText({String? text}) => Center(
+  //       child:  Text(
+  //     text ?? 'No Data Found!',
+  //     style: Theme.of(Get.context!)
+  //         .textTheme
+  //         .displayLarge
+  //         ?.copyWith(color: Col.primary),
+  //     textAlign: TextAlign.center,
+  //   ),
+  //     );
 
   static CachedNetworkImage commonCachedNetworkImageView(
       {required String path,

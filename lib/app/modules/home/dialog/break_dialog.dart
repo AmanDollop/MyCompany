@@ -96,15 +96,24 @@ class BreakDialog extends GetView<HomeController> {
                   ),
                 ),
                 SizedBox(height: 6.px),
-                CW.commonElevatedButton(
-                  onPressed: controller.breakTypeIdCheckBoxValue.value != ''
-                      ? () => controller.clickOnConfirmBreakButton()
-                      : () => null,
-                  width: 200.px,
-                  height: 40.px,
-                  buttonText: controller.breakTypeIdCheckBoxValue.value != ''
-                      ? 'Confirm'
-                      : 'Select break type',
+                Center(
+                  child: SizedBox(
+                    width: 200.px,
+                    height: 40.px,
+                    child: CW.commonElevatedButton(
+                      onPressed: controller.breakTypeIdCheckBoxValue.value != ''
+                          ? controller.confirmBreakButtonValue.value
+                          ? () => null
+                          : () => controller.clickOnConfirmBreakButton()
+                          : () => null,
+                      progressBarHeight: 20.px,
+                      progressBarWidth: 20.px,
+                      isLoading: controller.confirmBreakButtonValue.value,
+                      buttonText: controller.breakTypeIdCheckBoxValue.value != ''
+                          ? 'Confirm'
+                          : 'Select break type',
+                    ),
+                  ),
                 )
               ],
             ),

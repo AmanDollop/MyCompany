@@ -47,8 +47,7 @@ class MenuViewView extends GetView<MenuViewController> {
                     () => controller.menusModal.value != null
                         ? controller.getMenuList.isNotEmpty
                             ? Expanded(
-                                child: controller
-                                            .searchController.text.isNotEmpty &&
+                                child: controller.searchController.text.isNotEmpty &&
                                         controller.getMenuListForSearch.isEmpty
                                     ? CW.commonNoDataFoundText(
                                         text: 'Menus not found!')
@@ -96,10 +95,7 @@ class MenuViewView extends GetView<MenuViewController> {
 
   Widget cardTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelSmall
-            ?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
         textAlign: TextAlign.center,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
@@ -118,10 +114,9 @@ class MenuViewView extends GetView<MenuViewController> {
           mainAxisSpacing: 10.px,
         ),
         itemBuilder: (context, index) {
-          Color convertedColor = stringToColor(
-              colorString: '${controller.getMenuList[index].backgroundColor}');
+          Color convertedColor = stringToColor(colorString: '${controller.getMenuList[index].backgroundColor}');
           return InkWell(
-            onTap: () {},
+            onTap: () => controller.clickOnCard(index:index),
             borderRadius: BorderRadius.circular(10.px),
             child: Ink(
               height: 100.px,

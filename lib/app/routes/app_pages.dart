@@ -10,6 +10,8 @@ import '../modules/add_experience/bindings/add_experience_binding.dart';
 import '../modules/add_experience/views/add_experience_view.dart';
 import '../modules/add_social_info/bindings/add_social_info_binding.dart';
 import '../modules/add_social_info/views/add_social_info_view.dart';
+import '../modules/add_task/bindings/add_task_binding.dart';
+import '../modules/add_task/views/add_task_view.dart';
 import '../modules/attendance_tracker/bindings/attendance_tracker_binding.dart';
 import '../modules/attendance_tracker/views/attendance_tracker_view.dart';
 import '../modules/bank_detail/bindings/bank_detail_binding.dart';
@@ -70,6 +72,8 @@ import '../modules/social_info/bindings/social_info_binding.dart';
 import '../modules/social_info/views/social_info_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/task/bindings/task_binding.dart';
+import '../modules/task/views/task_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
 
@@ -262,6 +266,16 @@ class AppPages {
         page: () => const AttendanceTrackerView(),
         binding: AttendanceTrackerBinding(),
         transitionDuration: const Duration(microseconds: 0)),
+    GetPage(
+      name: _Paths.TASK,
+      page: () => const TaskView(),
+      binding: TaskBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_TASK,
+      page: () => const AddTaskView(),
+      binding: AddTaskBinding(),
+    ),
   ];
 }
 

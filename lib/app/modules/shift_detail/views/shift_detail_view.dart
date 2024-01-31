@@ -30,8 +30,8 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
                 children: [
                   Card(
                     elevation: 0,
-                    color: const Color(0xffB9ACD6),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
+                    color: Col.primary.withOpacity(.2),
+                    shape: RoundedRectangleBorder(side: BorderSide(color: Col.primary,width: .5.px),borderRadius: BorderRadius.circular(6.px)),
                     child: Padding(
                       padding: EdgeInsets.all(8.px),
                       child: Column(
@@ -60,7 +60,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
                   ),
                   Card(
                     color: Col.inverseSecondary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
                     child: Padding(
                       padding: EdgeInsets.all(8.px),
                       child: Column(
@@ -381,7 +381,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
 
     return Card(
       color: Col.inverseSecondary,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
       child: Padding(
         padding: EdgeInsets.all(8.px),
         child: Column(

@@ -39,6 +39,8 @@ abstract class Routes {
   static const FACE_DETECTION = _Paths.FACE_DETECTION;
   static const ADD_DOCUMENT = _Paths.ADD_DOCUMENT;
   static const ATTENDANCE_TRACKER = _Paths.ATTENDANCE_TRACKER;
+  static const TASK = _Paths.TASK;
+  static const ADD_TASK = _Paths.ADD_TASK;
 }
 
 abstract class _Paths {
@@ -79,4 +81,6 @@ abstract class _Paths {
   static const FACE_DETECTION = '/face-detection';
   static const ADD_DOCUMENT = '/add-document';
   static const ATTENDANCE_TRACKER = '/attendance-tracker';
+  static const TASK = '/task';
+  static const ADD_TASK = '/add-task';
 }

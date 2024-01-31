@@ -15,6 +15,7 @@ import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
+import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
@@ -752,6 +753,34 @@ class CAI extends GetxController{
           wantInternetFailResponse: true,
           wantShowFailResponse: true)) {
         return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetMonthlyAttendanceDataModal?> getMonthlyAttendanceDataApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetMonthlyAttendanceDataModal? getMonthlyAttendanceDataModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getMonthlyAttendanceDataModal = GetMonthlyAttendanceDataModal.fromJson(jsonDecode(response.body));
+        return getMonthlyAttendanceDataModal;
       } else {
         return null;
       }
