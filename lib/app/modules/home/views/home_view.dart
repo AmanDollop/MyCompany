@@ -51,8 +51,7 @@ class HomeView extends GetView<HomeController> {
                     if (controller.hideBanner.value) bannerView(),
                     if (controller.hideUpcomingCelebration.value)
                     Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.px, vertical: 14.px),
+                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
                         child: upcomingCelebrationsButtonView(),
                       ),
                     appMenusListView(),

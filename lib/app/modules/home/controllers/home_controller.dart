@@ -245,16 +245,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> companyData() async {
     try {
-      companyDetailFromLocalDataBase.value = await DataBaseHelper()
-          .getParticularData(
-              key: DataBaseConstant.companyDetail,
-              tableName: DataBaseConstant.tableNameForCompanyDetail);
-      getCompanyDetails = CompanyDetailsModal.fromJson(
-              jsonDecode(companyDetailFromLocalDataBase.value))
-          .getCompanyDetails;
+      companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
+      getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
       companyId.value = getCompanyDetails?.companyId ?? '';
-      hideUpcomingCelebration.value =
-          getCompanyDetails?.hideUpcomingCelebration ?? false;
+      hideUpcomingCelebration.value = getCompanyDetails?.hideUpcomingCelebration ?? false;
       hideMyDepartment.value = getCompanyDetails?.hideMyDepartment ?? false;
       hideGallery.value = getCompanyDetails?.hideGallery ?? false;
       hideBanner.value = getCompanyDetails?.hideBanner ?? false;
@@ -265,19 +259,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   Future<void> shiftData() async {
     try {
       await BottomSheetForOTP.callingGetShiftDetailApi();
-      shiftDetailFromLocalDataBase.value = await DataBaseHelper()
-          .getParticularData(
-              key: DataBaseConstant.shiftDetails,
-              tableName: DataBaseConstant.tableNameForShiftDetail);
-      shiftDetails = ShiftDetailsModal.fromJson(
-              jsonDecode(shiftDetailFromLocalDataBase.value))
-          .shiftDetails;
-      shiftTimeFromLocalDataBase.value = await DataBaseHelper()
-          .getParticularData(
-              key: DataBaseConstant.shiftTime,
-              tableName: DataBaseConstant.tableNameForShiftDetail);
-      shiftTime =
-          ShiftTime.fromJson(jsonDecode(shiftTimeFromLocalDataBase.value));
+      shiftDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftDetails, tableName: DataBaseConstant.tableNameForShiftDetail);
+      shiftDetails = ShiftDetailsModal.fromJson(jsonDecode(shiftDetailFromLocalDataBase.value)).shiftDetails;
+      shiftTimeFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftTime, tableName: DataBaseConstant.tableNameForShiftDetail);
+      shiftTime = ShiftTime.fromJson(jsonDecode(shiftTimeFromLocalDataBase.value));
     } catch (e) {
       print('e:::shiftTime:::: :::::::   $e');
     }
@@ -332,8 +317,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> startTimer() async {
-    DateTime punchInDateTime = DateTime.parse(
-        "${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
+    DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
 
     DateTime currentTime = await getInternetDateTime();
 
@@ -343,11 +327,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     minutes.value = (difference.inMinutes % 60);
     seconds.value = (difference.inSeconds % 60);
 
-    currentTimeForTimer =
-        DateTime(0, 0, 0, hours.value, minutes.value, seconds.value);
+    currentTimeForTimer = DateTime(0, 0, 0, hours.value, minutes.value, seconds.value);
 
-    workingMinutes.value =
-        currentTimeForTimer.hour * 3600 + currentTimeForTimer.minute * 60;
+    workingMinutes.value = currentTimeForTimer.hour * 3600 + currentTimeForTimer.minute * 60;
 
     if (!isTimerStartedValue.value) {
       isTimerStartedValue.value = true;
@@ -359,8 +341,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> updateTimeForTimer(Timer timer) async {
-    if (shiftTime?.totalShiftMinutes != null &&
-        shiftTime!.totalShiftMinutes!.isNotEmpty) {
+    if (shiftTime?.totalShiftMinutes != null && shiftTime!.totalShiftMinutes!.isNotEmpty) {
       total.value = int.parse('${shiftTime?.totalShiftMinutes}');
       if (checkInValue.value && checkOutValue.value) {
         // linerValue.value = hours.value * 60  / total.value;
@@ -373,8 +354,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
     currentTimeForTimer = currentTimeForTimer.add(const Duration(seconds: 1));
     if (breakValue.value) {
-      DateTime punchInDateTime = DateTime.parse(
-          "${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.breakStartTime}");
+      DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.breakStartTime}");
 
       DateTime currentTime = await getInternetDateTime();
 
@@ -384,10 +364,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       int minutesForBreak = (difference.inMinutes % 60);
       int secondsForBreak = (difference.inSeconds % 60);
 
-      currentTimeForBreakTimer =
-          DateTime(0, 0, 0, hoursForBreak, minutesForBreak, secondsForBreak);
-      currentTimeForBreakTimer =
-          currentTimeForBreakTimer.add(const Duration(seconds: 1));
+      currentTimeForBreakTimer = DateTime(0, 0, 0, hoursForBreak, minutesForBreak, secondsForBreak);
+      currentTimeForBreakTimer = currentTimeForBreakTimer.add(const Duration(seconds: 1));
+
     }
     count.value++;
   }
@@ -783,12 +762,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     };
     menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
     if (menusModal.value != null) {
-      if (await DataBaseHelper().isDatabaseHaveData(
-          db: DataBaseHelper.dataBaseHelper,
-          tableName: DataBaseConstant.tableNameForAppMenu)) {
-        await DataBaseHelper().insertInDataBase(
-            data: {DataBaseConstant.appMenus: json.encode(menusModal.value)},
-            tableName: DataBaseConstant.tableNameForAppMenu);
+      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu)) {
+        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
         menusModal.value?.getMenu?.forEach((element) {
           if (element.isDashboardMenu == '1') {
             isHeadingMenuList.add(element);

@@ -139,13 +139,13 @@ class MonthlyHistory {
   String? extraWorkingMinutes;
   String? remainingWorkingMinutes;
   bool? attendnacePending;
-  bool? attendancePendingMessage;
+  String? attendancePendingMessage;
   bool? attendanceDeclined;
-  bool? attendanceDeclinedMessage;
+  String? attendanceDeclinedMessage;
   String? attendanceId;
   String? totalShiftMinutes;
-  List<AttendanceBreakHistory>? attendanceBreakHistory;
   bool? punchInRequestSent;
+  List<AttendanceBreakHistory>? attendanceBreakHistory;
   String? punchOutMissingMessage;
 
   MonthlyHistory(
@@ -174,8 +174,8 @@ class MonthlyHistory {
         this.attendanceDeclinedMessage,
         this.attendanceId,
         this.totalShiftMinutes,
-        this.attendanceBreakHistory,
         this.punchInRequestSent,
+        this.attendanceBreakHistory,
         this.punchOutMissingMessage});
 
   MonthlyHistory.fromJson(Map<String, dynamic> json) {
@@ -204,13 +204,13 @@ class MonthlyHistory {
     attendanceDeclinedMessage = json['attendance_declined_message'];
     attendanceId = json['attendance_id'];
     totalShiftMinutes = json['total_shift_minutes'];
+    punchInRequestSent = json['punch_in_request_sent'];
     if (json['attendance_break_history'] != null) {
       attendanceBreakHistory = <AttendanceBreakHistory>[];
       json['attendance_break_history'].forEach((v) {
         attendanceBreakHistory!.add(AttendanceBreakHistory.fromJson(v));
       });
     }
-    punchInRequestSent = json['punch_in_request_sent'];
     punchOutMissingMessage = json['punch_out_missing_message'];
   }
 
@@ -241,11 +241,11 @@ class MonthlyHistory {
     data['attendance_declined_message'] = attendanceDeclinedMessage;
     data['attendance_id'] = attendanceId;
     data['total_shift_minutes'] = totalShiftMinutes;
+    data['punch_in_request_sent'] = punchInRequestSent;
     if (attendanceBreakHistory != null) {
       data['attendance_break_history'] =
           attendanceBreakHistory!.map((v) => v.toJson()).toList();
     }
-    data['punch_in_request_sent'] = punchInRequestSent;
     data['punch_out_missing_message'] = punchOutMissingMessage;
     return data;
   }

@@ -154,8 +154,7 @@ class BankDetailView extends GetView<BankDetailController> {
                                     )
                                   ],
                                 ),
-                                crossFadeState:
-                                    controller.downAndUpValue[index] != index.toString()
+                                crossFadeState: controller.downAndUpValue[index] != index.toString()
                                         ? CrossFadeState.showFirst
                                         : CrossFadeState.showSecond,
                                 duration:
@@ -192,8 +191,7 @@ class BankDetailView extends GetView<BankDetailController> {
     );
   }
 
-  Widget bankNameTextView({required String text}) =>
-      Text(text, style: Theme.of(Get.context!).textTheme.bodyLarge);
+  Widget bankNameTextView({required String text}) => Text(text, style: Theme.of(Get.context!).textTheme.bodyLarge);
 
   Widget primaryContainerView() => Container(
         height: 20.px,
@@ -215,8 +213,7 @@ class BankDetailView extends GetView<BankDetailController> {
       imagePath: 'assets/icons/menu_icon.png',
       color: Col.secondary);
 
-  Widget accountNumberTextView({required String text}) =>
-      Text(text.replaceRange(0, text.length - 4, "*" * (text.length - 4)),
+  Widget accountNumberTextView({required String text}) => Text(text.replaceRange(0, text.length - 4, "*" * (text.length - 4)),
           style: Theme.of(Get.context!)
               .textTheme
               .labelSmall

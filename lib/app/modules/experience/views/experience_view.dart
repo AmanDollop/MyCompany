@@ -38,8 +38,7 @@ class ExperienceView extends GetView<ExperienceController> {
                       },
                     )
                   : CW.commonNoDataFoundText()
-              : CW.commonNoDataFoundText(
-                  text: controller.apiResValue.value ? '' : 'No Data Found!'),
+              : CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'No Data Found!'),
         );
       }),
       floatingActionButton: controller.accessType.value != '1' &&
