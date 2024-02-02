@@ -138,6 +138,10 @@ class AK {
 
   static const month = "month";
 
+  static const taskCategoryName = "task_category_name";
+
+  static const searchTaskCategory = "searchTaskCategory";
+
 }
 
 class AU {
@@ -168,6 +172,8 @@ class AU {
   static const endPointCircularControllerApi = "api/CircularController.php";
 
   static const endPointBreakControllerApi = "api/BreakController.php";
+
+  static const endPointTaskControllerApi = "api/TaskController.php";
 
 
 
@@ -246,6 +252,10 @@ class ApiEndPointAction{
   static const getShiftDetail = 'getShiftDetail';
 
   static const getMonthlyAttendanceHistoryNew = 'getMonthlyAttendanceHistoryNew';
+
+  static const addTaskCategory = 'addTaskCategory';
+
+  static  const getTaskCategory = 'getTaskCategory';
 
 
 }

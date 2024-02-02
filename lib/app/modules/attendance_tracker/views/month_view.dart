@@ -19,10 +19,11 @@ class MonthView extends GetView<AttendanceTrackerController> {
         onRefresh: () => controller.monthViewOnRefresh(),
         child: ModalProgress(
             inAsyncCall: controller.apiResValue.value,
-            child: controller.getMonthlyAttendanceDataModal.value != null
+            child: controller.apiResValue.value
+                ? shimmerView()
+                : controller.getMonthlyAttendanceDataModal.value != null
                 ? controller.getMonthlyAttendanceData != null
-                    ? !controller.apiResValue.value
-                        ? ListView(
+                    ? ListView(
                             shrinkWrap: true,
                             physics: const ScrollPhysics(),
                             children: [
@@ -43,13 +44,12 @@ class MonthView extends GetView<AttendanceTrackerController> {
                               cardGridView(),
                               SizedBox(height: 20.px),
                               getDayNames(),
-                              SizedBox(height: 6.px),
+                              SizedBox(height: 14.px),
                               calendarGridView(),
                               SizedBox(height: 20.px),
                             ],
                           )
-                        : const SizedBox()
-                    : Center(child: CW.commonNoDataFoundText())
+                    : Center(child: CW.commonNoDataFoundText(),)
                 : controller.apiResValue.value
                     ? const SizedBox()
                     : CW.commonNoDataFoundText()),
@@ -355,5 +355,52 @@ class MonthView extends GetView<AttendanceTrackerController> {
       return Colors.transparent;
     }
   }
+
+  Widget shimmerView() => ListView(
+    shrinkWrap: true,
+    physics: const ScrollPhysics(),
+    children: [
+      Row(
+        children: [
+          Expanded(child: CW.commonShimmerViewForImage(height: 40.px),),
+          SizedBox(width: 10.px),
+          Expanded(child: CW.commonShimmerViewForImage(height: 40.px),),
+        ],
+      ),
+      SizedBox(height: 10.px),
+      Row(
+        children: [
+          CW.commonShimmerViewForImage(height: 150.px, width: 150.px,radius: 75.px),
+          SizedBox(width: 15.px),
+          Flexible(
+            child: Column(
+              children: [
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+            ],),
+          )
+        ],
+      ),
+      SizedBox(height: 10.px),
+      GridView.builder(
+        itemCount: controller.cardColorList.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 4.px,
+            crossAxisSpacing: 4.px,
+            childAspectRatio: 1.1),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => CW.commonShimmerViewForImage(),
+      ),
+      SizedBox(height: 20.px),
+    ],
+  );
 
 }

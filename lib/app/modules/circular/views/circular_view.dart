@@ -28,55 +28,60 @@ class CircularView extends GetView<CircularController> {
         ),
         body: Obx(() {
           controller.count.value;
-          if(controller.circularDetailModal.value != null){
-            return ModalProgress(
-              inAsyncCall: controller.apiResValue.value,
-              child: CW.commonRefreshIndicator(
-                onRefresh: () => controller.onRefresh(),
-                child: LM(
-                  noMoreWidget: const SizedBox(),
-                  isLastPage: controller.isLastPage.value,
-                  onLoadMore: () => controller.onLoadMore(),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.only(left: 12.px,right: 12.px, top: 12.px),
-                    children: [
-                      circularSearchTextFieldView(),
-                      SizedBox(height: 16.px),
-                      Row(
-                        children: [
-                          Expanded(child: startTextField()),
-                          SizedBox(width: 24.px),
-                          Expanded(child: endTextField())
-                        ],
-                      ),
-                      controller.circularList.isNotEmpty
-                          ? ListView.builder(
-                             shrinkWrap: true,
-                             physics: const NeverScrollableScrollPhysics(),
-                             itemCount: controller.circularList.length,
-                             padding: EdgeInsets.only(top: 20.px),
-                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: index!=controller.circularList.length-1?14.px:0),
-                                child: cardView(index: index),
-                              );
-                        },
-                      )
-                          : SizedBox(
-                        height: 25.h,
-                        child: CW.commonNoDataFoundText(),
-                      ),
-                    ],
+          return ModalProgress(
+            inAsyncCall: controller.apiResValue.value,
+            child: controller.apiResValue.value
+                ? shimmerView()
+                : Obx(() {
+              controller.count.value;
+              if(controller.circularDetailModal.value != null){
+                return CW.commonRefreshIndicator(
+                  onRefresh: () => controller.onRefresh(),
+                  child: LM(
+                    noMoreWidget: const SizedBox(),
+                    isLastPage: controller.isLastPage.value,
+                    onLoadMore: () => controller.onLoadMore(),
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.only(left: 12.px,right: 12.px, top: 12.px),
+                      children: [
+                        circularSearchTextFieldView(),
+                        SizedBox(height: 16.px),
+                        Row(
+                          children: [
+                            Expanded(child: startTextField()),
+                            SizedBox(width: 24.px),
+                            Expanded(child: endTextField())
+                          ],
+                        ),
+                        controller.circularList.isNotEmpty
+                            ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.circularList.length,
+                          padding: EdgeInsets.only(top: 20.px),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: index!=controller.circularList.length-1?14.px:0),
+                              child: cardView(index: index),
+                            );
+                          },
+                        )
+                            : SizedBox(
+                          height: 25.h,
+                          child: CW.commonNoDataFoundText(),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          }
-          else {
-            return CW.commonNoDataFoundText(text: controller.apiResValue.value?'':'No Data Found!');
-          }
+                );
+              }
+              else {
+                return CW.commonNoDataFoundText(text: controller.apiResValue.value?'':'No Data Found!');
+              }
+            }),
+          );
         }),
       ),
     );
@@ -251,5 +256,30 @@ class CircularView extends GetView<CircularController> {
         text,
         style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px),
       );
+
+  Widget shimmerView()=> ListView(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    padding: EdgeInsets.only(left: 12.px,right: 12.px, top: 12.px),
+    children: [
+     CW.commonShimmerViewForImage(height: 44.px),
+      SizedBox(height: 16.px),
+      Row(
+        children: [
+          Expanded(child: CW.commonShimmerViewForImage(height: 44.px),),
+          SizedBox(width: 24.px),
+          Expanded(child: CW.commonShimmerViewForImage(height: 44.px),),
+        ],
+      ),
+      SizedBox(height: 16.px),
+      CW.commonShimmerViewForImage(height: 20.h),
+      SizedBox(height: 10.px),
+      CW.commonShimmerViewForImage(height: 20.h),
+      SizedBox(height: 10.px),
+      CW.commonShimmerViewForImage(height: 20.h),
+      SizedBox(height: 10.px),
+      CW.commonShimmerViewForImage(height: 20.h),
+    ],
+  );
 
 }

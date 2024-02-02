@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/model_progress_bar/model_progress_bar.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -22,27 +20,27 @@ class ExperienceView extends GetView<ExperienceController> {
         controller.count.value;
         return ModalProgress(
           inAsyncCall: controller.apiResValue.value,
-          child: controller.experienceModal.value != null
-              ? controller.getExperienceDetails != null &&
-                      controller.getExperienceDetails!.isNotEmpty
+          child: controller.apiResValue.value
+              ? shimmerView()
+              : controller.experienceModal.value != null
+              ? controller.getExperienceDetails != null && controller.getExperienceDetails!.isNotEmpty
                   ? ListView.builder(
                       itemCount: controller.getExperienceDetails?.length,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 12.px, vertical: 20.px),
+                      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                       itemBuilder: (context, index) {
-                        print(index);
                         return InkWell(
-                          borderRadius: BorderRadius.circular(6.px),
-                            onTap: () => controller.clickOnExperience(index: index),
+                            borderRadius: BorderRadius.circular(6.px),
+                            onTap: () =>
+                                controller.clickOnExperience(index: index),
                             child: cardView(index: index));
                       },
                     )
                   : CW.commonNoDataFoundText()
-              : CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'No Data Found!'),
+              : CW.commonNoDataFoundText(
+              text: controller.apiResValue.value ? '' : 'No Data Found!'),
         );
       }),
-      floatingActionButton: controller.accessType.value != '1' &&
-              controller.isChangeable.value != '1'
+      floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
           ? Padding(
               padding: EdgeInsets.only(bottom: 10.px),
               child: CW.commonOutlineButton(
@@ -102,11 +100,7 @@ class ExperienceView extends GetView<ExperienceController> {
                   children: [
                     Flexible(
                       child: companyNameTextView(
-                          text: controller.getExperienceDetails?[index]
-                                          .companyName !=
-                                      null &&
-                                  controller.getExperienceDetails![index]
-                                      .companyName!.isNotEmpty
+                          text: controller.getExperienceDetails?[index].companyName != null && controller.getExperienceDetails![index].companyName!.isNotEmpty
                               ? '${controller.getExperienceDetails?[index].companyName}'
                               : 'Company name not found!'),
                     ),
@@ -115,25 +109,18 @@ class ExperienceView extends GetView<ExperienceController> {
                   ],
                 ),
                 designationTextView(
-                    text: controller.getExperienceDetails?[index].designation !=
-                                null &&
-                            controller.getExperienceDetails![index].designation!
-                                .isNotEmpty
+                    text: controller.getExperienceDetails?[index].designation != null &&
+                            controller.getExperienceDetails![index].designation!.isNotEmpty
                         ? '${controller.getExperienceDetails?[index].designation}'
                         : 'Designation not found!'),
                 locationTextView(
-                    text: controller.getExperienceDetails?[index].joiningDate !=
-                                null &&
-                            controller.getExperienceDetails![index].joiningDate!
-                                .isNotEmpty
+                    text: controller.getExperienceDetails?[index].joiningDate != null &&
+                            controller.getExperienceDetails![index].joiningDate!.isNotEmpty
                         ? '${controller.getExperienceDetails?[index].joiningDate}'
                         : 'Join date not found!'),
                 locationTextView(
-                    text: controller.getExperienceDetails?[index]
-                                    .companyLocation !=
-                                null &&
-                            controller.getExperienceDetails![index]
-                                .companyLocation!.isNotEmpty
+                    text: controller.getExperienceDetails?[index].companyLocation != null &&
+                            controller.getExperienceDetails![index].companyLocation!.isNotEmpty
                         ? '${controller.getExperienceDetails?[index].companyLocation}'
                         : 'Company location not found!'),
                 SizedBox(height: 16.px),
@@ -178,4 +165,47 @@ class ExperienceView extends GetView<ExperienceController> {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
+
+  Widget shimmerView() => ListView.builder(itemBuilder:(context, index) => Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Column(
+        children: [
+          CW.commonShimmerViewForImage(
+              width: 12.px,
+              height: 12.px,
+              radius: 6.px
+          ),
+          CW.commonShimmerViewForImage(
+            width: 2.5.px,
+            height: 88.px,
+          ),
+        ],
+      ),
+      SizedBox(width: 14.px),
+      Column(
+        children: [
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 24.px,
+          ),
+          SizedBox(height: 5.px),
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 20.px,
+          ),
+          SizedBox(height: 5.px),
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 16.px,
+          ),
+          SizedBox(height: 5.px),
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 16.px,
+          ),
+        ],
+      ),
+    ],
+  ),itemCount: 5,padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),);
 }

@@ -97,6 +97,7 @@ class AttendanceTrackerController extends GetxController {
     'Rejected Attendance',
     'Punch out Missing',
   ];
+
   final cardSubTitleTextList = [];
 
   final cardIconsList = [
@@ -386,6 +387,9 @@ class AttendanceTrackerController extends GetxController {
                   ),
                 if(monthlyHistoryList?[index].attendanceBreakHistory != null &&  monthlyHistoryList![index].attendanceBreakHistory!.isNotEmpty)
                   AnimatedCrossFade(
+                    sizeCurve: Curves.easeInOutCubicEmphasized,
+                    firstCurve: Curves.easeInOutCubicEmphasized,
+                    reverseDuration: const Duration(microseconds: 0),
                     firstChild: const SizedBox(),
                     secondChild: ListView.builder(
                       shrinkWrap: true,

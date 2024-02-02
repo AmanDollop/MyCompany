@@ -24,16 +24,13 @@ class MenuViewView extends GetView<MenuViewController> {
             controller.count.value;
             return ModalProgress(
               inAsyncCall: controller.apiResValue.value,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    color: Col.inverseSecondary,
-                    padding: EdgeInsets.only(
-                      top: 16.px,
-                      right: 12.px,
-                      left: 12.px,
-                    ),
+              child: controller.apiResValue.value
+                  ? menusListViewForShimmer()
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                     Padding(
+                    padding: EdgeInsets.only(top: 16.px, right: 12.px, left: 12.px),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -42,15 +39,12 @@ class MenuViewView extends GetView<MenuViewController> {
                         menusSearchTextFieldView(),
                       ],
                     ),
-                  ),
-                  Obx(
-                    () => controller.menusModal.value != null
+                  ), Obx(
+                    () =>  controller.menusModal.value != null
                         ? controller.getMenuList.isNotEmpty
                             ? Expanded(
-                                child: controller.searchController.text.isNotEmpty &&
-                                        controller.getMenuListForSearch.isEmpty
-                                    ? CW.commonNoDataFoundText(
-                                        text: 'Menus not found!')
+                                child: controller.searchController.text.isNotEmpty && controller.getMenuListForSearch.isEmpty
+                                    ? CW.commonNoDataFoundText(text: 'Menus not found!')
                                     : menusGridView(),
                               )
                             : CW.commonNoDataFoundText(text: 'Menus not found!')
@@ -183,5 +177,39 @@ class MenuViewView extends GetView<MenuViewController> {
 
     // Parse the hexadecimal value and create a Color object
     return Color(int.parse('0xFF$formattedColor'));
+  }
+
+  Widget menusListViewForShimmer() {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 16.px, right: 12.px, left: 12.px),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CW.commonShimmerViewForImage(height: 24.px),
+              SizedBox(height: 10.px),
+              CW.commonShimmerViewForImage(height: 44.px),
+            ],
+          ),
+        ),
+        Expanded(
+          child: GridView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(10.px),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 16,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10.px,
+              mainAxisSpacing: 10.px,
+            ),
+            itemBuilder: (context, index) {
+              return CW.commonShimmerViewForImage(height: 100.px);
+            },
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -22,6 +22,7 @@ import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
+import 'package:task/api/api_model/task_data_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/my_http/my_http.dart';
@@ -788,5 +789,59 @@ class CAI extends GetxController{
       return null;
     }
   }
+
+  static Future<http.Response?> addTaskApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+    Map<String, String> authorization = await userToken();
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointTaskControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<TaskDataModal?> getTaskDataApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    TaskDataModal? getMonthlyAttendanceDataModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointTaskControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getMonthlyAttendanceDataModal = TaskDataModal.fromJson(jsonDecode(response.body));
+        return getMonthlyAttendanceDataModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 
 }

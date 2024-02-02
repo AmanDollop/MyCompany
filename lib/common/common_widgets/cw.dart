@@ -296,7 +296,7 @@ class CW {
         borderRadius: BorderRadius.circular(20.px),
         child: LinearProgressIndicator(
           color: Col.primary,
-          backgroundColor: Col.gray,
+          backgroundColor: Col.gray.withOpacity(.5),
           value: value,
           minHeight: height ?? 10.px,
         ),
@@ -1304,9 +1304,9 @@ class CW {
       Color? backgroundColor,
       Color? movementColor}) {
     return Shimmer.fromColors(
-      period: duration ?? const Duration(milliseconds: 2000),
-      baseColor: backgroundColor ?? Col.primary.withOpacity(.5),
-      highlightColor: movementColor ?? Col.primary.withOpacity(.2),
+      period: duration ?? const Duration(milliseconds: 1000),
+      baseColor: backgroundColor ?? Col.primary.withOpacity(.3),
+      highlightColor: movementColor ?? Col.primary.withOpacity(.02),
       enabled: true,
       child: Container(
         width: width,

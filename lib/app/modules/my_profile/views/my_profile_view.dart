@@ -29,7 +29,9 @@ class MyProfileView extends GetView<MyProfileController> {
               controller.apiResponseValue.value=true;
               await controller.onInit();
             },
-            child: ListView(
+            child: controller.apiResponseValue.value
+                ? shimmerView()
+                : ListView(
               padding: EdgeInsets.zero,
               children: [
                 Padding(
@@ -114,6 +116,7 @@ class MyProfileView extends GetView<MyProfileController> {
                 commonDividerView(),
                 if(controller.hideMyReportingPerson.value)
                 SizedBox(height: 16.px),
+                if(controller.hideMyReportingPerson.value)
                 reportingPersonListView(),
                 SizedBox(height: 16.px),
                 listView(),
@@ -430,4 +433,94 @@ class MyProfileView extends GetView<MyProfileController> {
       }
 
   }
+
+  Widget shimmerView()=> ListView(
+    children: [
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                CW.commonShimmerViewForImage(height: 66.px,width: 66.px,radius: 33.px),
+                SizedBox(width: 10.px),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CW.commonShimmerViewForImage(height: 20.px),
+                      SizedBox(height: 5.px),
+                      CW.commonShimmerViewForImage(height: 20.px),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10.px),
+                CW.commonShimmerViewForImage(height: 28.px,width: 28.px),
+              ],
+            ),
+            SizedBox(height: 20.px),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CW.commonShimmerViewForImage(height: 20.px,width: 150.px),
+                CW.commonShimmerViewForImage(height: 20.px,width: 150.px),
+              ],
+            ),
+            SizedBox(height: 5.px),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CW.commonShimmerViewForImage(height: 20.px,width: 150.px),
+                CW.commonShimmerViewForImage(height: 20.px,width: 150.px),
+              ],
+            ),
+          ],
+        ),
+      ),
+      commonDividerView(),
+      SizedBox(height: 14.px),
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.px),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                CW.commonShimmerViewForImage(height: 24.px,width: 24.px,radius: 12.px),
+                SizedBox(width: 10.px),
+                CW.commonShimmerViewForImage(height: 24.px,width: 24.px,radius: 12.px),
+                SizedBox(width: 10.px),
+                CW.commonShimmerViewForImage(height: 24.px,width: 24.px,radius: 12.px),
+                SizedBox(width: 10.px),
+                CW.commonShimmerViewForImage(height: 24.px,width: 24.px,radius: 12.px),
+              ],
+            ),
+            CW.commonShimmerViewForImage(width: 24.px, height: 24.px),
+          ],
+        ),
+      ),
+      SizedBox(height: 14.px),
+      commonDividerView(),
+      SizedBox(height: 16.px),
+      commonCardForList(
+        titleText: 'Profile Menu',
+        listWidget: GridView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(10.px),
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 10,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10.px,
+            mainAxisSpacing: 10.px,
+          ),
+          itemBuilder: (context, index) {
+            return CW.commonShimmerViewForImage(height: 100.px);
+          },
+        ),
+      ),
+      SizedBox(height: 20.px),
+    ],
+  );
+
 }
