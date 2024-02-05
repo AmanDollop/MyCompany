@@ -139,6 +139,7 @@ class AK {
   static const month = "month";
 
   static const taskCategoryName = "task_category_name";
+  static const taskCategoryId = "task_category_id";
 
   static const searchTaskCategory = "searchTaskCategory";
 
@@ -254,6 +255,8 @@ class ApiEndPointAction{
   static const getMonthlyAttendanceHistoryNew = 'getMonthlyAttendanceHistoryNew';
 
   static const addTaskCategory = 'addTaskCategory';
+
+  static  const deleteTaskCategory = 'deleteTaskCategory';
 
   static  const getTaskCategory = 'getTaskCategory';
 

@@ -20,6 +20,14 @@ import '../common_packages/rating/rating_bar_indicator.dart';
 class CW {
   /// --------------------------Common Button(Elevated,Outline,Text,IconButton) Collection-----------------------
 
+  static apiColorConverterMethod({required String colorString}){
+    String formattedColor =
+    colorString.startsWith('#') ? colorString.substring(1) : colorString;
+
+    // Parse the hexadecimal value and create a Color object
+    return Color(int.parse('0xFF$formattedColor'));
+  }
+
   ///For Full Size Use In Column Not In Row
   static Widget commonElevatedButton(
       {double? height,
@@ -287,11 +295,13 @@ class CW {
   }
 
   /// --------------------------Common Refresh Indicator/Progress Bar Collection--------------------------
-  static Widget commonRefreshIndicator({required Widget child, required RefreshCallback onRefresh}) {
+  static Widget commonRefreshIndicator(
+      {required Widget child, required RefreshCallback onRefresh}) {
     return RefreshIndicator(onRefresh: onRefresh, child: child);
   }
 
-  static Widget commonLinearProgressBar({required double value, double? height}) =>
+  static Widget commonLinearProgressBar(
+          {required double value, double? height}) =>
       ClipRRect(
         borderRadius: BorderRadius.circular(20.px),
         child: LinearProgressIndicator(
@@ -302,10 +312,11 @@ class CW {
         ),
       );
 
-  static commonProgressBarView({Color? color, Color? backgroundColor, double? value}) =>
+  static commonProgressBarView(
+          {Color? color, Color? backgroundColor, double? value}) =>
       CircularProgressIndicator(
-        backgroundColor: color ?? Col.gray,
-        color: backgroundColor ?? Col.inverseSecondary,
+        backgroundColor: backgroundColor ?? Col.gray,
+        color: color ?? Col.inverseSecondary,
         value: value,
         strokeWidth: 3,
       );
@@ -377,15 +388,22 @@ class CW {
         maxLength: maxLength,
         decoration: isUnderlineBorder
             ? InputDecoration(
-                labelText: isSearchLabelText?'':labelText,
-                errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
-                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
+                labelText: isSearchLabelText ? '' : labelText,
+                errorStyle: errorStyle ??
+                    Theme.of(Get.context!)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(color: Col.error),
+                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 hintText: hintText,
                 fillColor: fillColor ?? Col.inverseSecondary,
                 filled: filled ? true : false,
-                contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.bodyMedium,
-                disabledBorder: UnderlineInputBorder(borderSide: isBorder
+                contentPadding: contentPadding ??
+                    EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+                hintStyle:
+                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                disabledBorder: UnderlineInputBorder(
+                    borderSide: isBorder
                         ? BorderSide(color: Col.inverseSecondary, width: 1.px)
                         : BorderSide.none,
                     borderRadius: BorderRadius.circular(
@@ -410,7 +428,8 @@ class CW {
                   borderSide: isBorder
                       ? BorderSide(color: Col.error, width: 1.px)
                       : BorderSide.none,
-                  borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+                  borderRadius:
+                      BorderRadius.circular(borderRadius ?? C.textFieldRadius),
                 ),
                 constraints: labelText != null && labelText.isNotEmpty
                     ? null
@@ -445,7 +464,8 @@ class CW {
                 filled: filled,
                 contentPadding:
                     contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
-                hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                hintStyle:
+                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 disabledBorder: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.gray, width: 1.px)
@@ -596,10 +616,10 @@ class CW {
         height: maxHeight,
         child: Card(
           elevation: elevation ?? 0.px,
+          margin: EdgeInsets.zero,
           color: Col.inverseSecondary,
           shape: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+              borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
               borderSide: BorderSide.none),
           child: TextFormField(
             textInputAction: textInputAction,
@@ -1178,6 +1198,40 @@ class CW {
         trackColor: offColor ?? Col.textGrayColor,
       );
 
+  static Widget commonSwitchButtonView(
+          {required bool value,
+          required GestureTapCallback onChange,
+          double? switchBackgroundHeight,
+          double? switchBackgroundWidth,
+          double? switchBackgroundBorderRadius,
+          double? switchCircleHeight,
+          double? switchCircleWidth,
+          required Color switchBackgroundColor,
+          Color? switchCircleColor}) => InkWell(
+        onTap: onChange,
+        borderRadius:
+            BorderRadius.circular(switchBackgroundBorderRadius ?? 7.px),
+        child: AnimatedContainer(
+          width: switchBackgroundWidth ?? 32.px,
+          height: switchBackgroundHeight ?? 14.px,
+          duration: const Duration(milliseconds: 250),
+          alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+          decoration: BoxDecoration(
+            color: switchBackgroundColor,
+            borderRadius: BorderRadius.circular(switchBackgroundBorderRadius ?? 7.px),
+          ),
+          child: AnimatedContainer(
+            width: switchCircleWidth ?? 10.px,
+            height: switchCircleHeight ?? 10.px,
+            margin: EdgeInsets.all(2.px),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: switchCircleColor ?? Col.inverseSecondary),
+            duration: const Duration(milliseconds: 250),
+          ),
+        ),
+      );
+
   ///For Custom Size Use Inside SizedBox
   static Widget commonRadioView({
     required ValueChanged? onChanged,
@@ -1220,8 +1274,8 @@ class CW {
         activeColor: activeFillColor ?? Col.primary,
         checkColor: checkColor ?? Col.inverseSecondary,
         splashRadius: 24.px,
-        side: BorderSide(color: borderColor ?? Col.darkGray, width: 2.px),
-        shape: shape,
+        side: BorderSide(color: borderColor ?? Col.darkGray, width: 1.5.px),
+        shape: shape?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.px)),
       );
 
   static Widget commonDividerView({
@@ -1230,8 +1284,7 @@ class CW {
     double? wight,
     double? leftPadding,
     double? rightPadding,
-  }) =>
-      Divider(
+  }) => Divider(
         color: color ?? Col.gray,
         height: height ?? 10.px,
         thickness: wight ?? .5.px,
@@ -1254,8 +1307,7 @@ class CW {
           Duration? shimmerDuration,
           Color? shimmerBackgroundColor,
           Color? shimmerMovementColor,
-          String? errorImage}) =>
-      InkWell(
+          String? errorImage}) => InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
         child: ClipRRect(
@@ -1295,6 +1347,16 @@ class CW {
                 ),
         ),
       );
+
+  static Widget commonNoNetworkView() => Center(
+          child:  Text('No Internet Connection!',
+        style: Theme.of(Get.context!)
+            .textTheme
+            .displayLarge
+            ?.copyWith(color: Col.primary),
+        textAlign: TextAlign.center,
+      ),
+        );
 
   static Widget commonShimmerViewForImage(
       {double? width,
@@ -1356,7 +1418,8 @@ class CW {
           Color? color,
           int rattingCount = 5,
           EdgeInsets itemPadding = EdgeInsets.zero,
-          Axis direction = Axis.horizontal}) => RatingBarIndicator(
+          Axis direction = Axis.horizontal}) =>
+      RatingBarIndicator(
         rating: rating,
         itemBuilder: itemBuilder ??
             (context, index) => Icon(
@@ -1383,7 +1446,8 @@ class CW {
     Color? color,
     Color? glowColor,
     Color? unratedColor,
-  }) => RatingBar.builder(
+  }) =>
+      RatingBar.builder(
         initialRating: rating,
         minRating: minRating,
         direction: direction,
@@ -1417,7 +1481,8 @@ class CW {
           double? bottomMargin,
           double? topMargin,
           ScrollController? scrollController,
-          VoidCallback? onTab}) => SingleChildScrollView(
+          VoidCallback? onTab}) =>
+      SingleChildScrollView(
         padding: externalPadding ??
             EdgeInsets.only(top: C.margin, bottom: C.margin + C.margin),
         controller: scrollController,
@@ -1460,7 +1525,11 @@ class CW {
       );
 
   static commonNoDataFoundText({String? text}) => Center(
-        child: commonNetworkImageView(path: 'assets/images/no_data_found_image.png', isAssetImage: true,height: 250.px,width: 250.px),
+        child: commonNetworkImageView(
+            path: 'assets/images/no_data_found_image.png',
+            isAssetImage: true,
+            height: 250.px,
+            width: 250.px),
       );
 
   // static commonNoDataFoundText({String? text}) => Center(

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+
 import '../modules/add_bank/bindings/add_bank_binding.dart';
 import '../modules/add_bank/views/add_bank_view.dart';
 import '../modules/add_document/bindings/add_document_binding.dart';
@@ -9,6 +10,8 @@ import '../modules/add_experience/bindings/add_experience_binding.dart';
 import '../modules/add_experience/views/add_experience_view.dart';
 import '../modules/add_social_info/bindings/add_social_info_binding.dart';
 import '../modules/add_social_info/views/add_social_info_view.dart';
+import '../modules/add_sub_task/bindings/add_sub_task_binding.dart';
+import '../modules/add_sub_task/views/add_sub_task_view.dart';
 import '../modules/all_task/bindings/all_task_binding.dart';
 import '../modules/all_task/views/all_task_view.dart';
 import '../modules/attendance_tracker/bindings/attendance_tracker_binding.dart';
@@ -71,6 +74,8 @@ import '../modules/social_info/bindings/social_info_binding.dart';
 import '../modules/social_info/views/social_info_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/sub_task/bindings/sub_task_binding.dart';
+import '../modules/sub_task/views/sub_task_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
 
@@ -267,6 +272,16 @@ class AppPages {
       name: _Paths.ALL_TASK,
       page: () => const AllTaskView(),
       binding: AllTaskBinding(),
+    ),
+    GetPage(
+      name: _Paths.SUB_TASK,
+      page: () => const SubTaskView(),
+      binding: SubTaskBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_SUB_TASK,
+      page: () => const AddSubTaskView(),
+      binding: AddSubTaskBinding(),
     ),
   ];
 }

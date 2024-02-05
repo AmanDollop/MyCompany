@@ -315,22 +315,29 @@ class MonthView extends GetView<AttendanceTrackerController> {
                 ? () {Vibration.vibrate(duration: 500);}
                 : () => controller.clickOnCalendarGrid(index: index-extra,day:day),
             borderRadius: BorderRadius.circular(20.px),
-            child: Container(
-              height: 30.px,
-              width: 30.px,
-              decoration: BoxDecoration(
-                  color: day == 0
-                      ? Colors.transparent
-                      : calendarGridColorView(index: index - extra),
-                  shape: BoxShape.circle),
-              child: Center(
-                child: Text(
-                  day.toString(),
-                  style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
-                          ? Col.inverseSecondary
-                          : Col.gray),
+            child: Card(
+              margin: EdgeInsets.zero,
+              elevation: calendarGridColorView(index: index - extra) != const Color(0x00000000)
+                  ? 1
+                  : 0,
+              color: day == 0
+                  ? Colors.transparent
+                  : calendarGridColorView(index: index - extra),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.px)
+              ),
+              child: SizedBox(
+                height: 30.px,
+                width: 30.px,
+                child: Center(
+                  child: Text(
+                    day.toString(),
+                    style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
+                            ? calendarGridTextColorView(index: index - extra)
+                            : Col.secondary),
+                  ),
                 ),
               ),
             ),
@@ -341,6 +348,22 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Color calendarGridColorView({required int index}) {
+    if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false) {
+      return const Color(0xffF2FFF3);
+    } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
+      return const Color(0xffDDE0FB);
+    } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
+      return const Color(0xffFFE9DD);
+    } else if (controller.monthlyHistoryList?[index].leave ?? false) {
+      return const Color(0xffE0F1FF);
+    } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
+      return const Color(0xffFFE2D3);
+    } else {
+      return Colors.transparent;
+    }
+  }
+
+  Color calendarGridTextColorView({required int index}) {
     if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false) {
       return const Color(0xff02930D);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {

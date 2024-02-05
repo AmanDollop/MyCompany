@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/modules/attendance_tracker/views/month_view.dart';
-import 'package:task/app/modules/attendance_tracker/views/week_view.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 
@@ -18,7 +16,6 @@ class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
       body:Obx(() {
         controller.count.value;
         ///Tab Bar View For Month And Week
-
         // return  Padding(
         //   padding: EdgeInsets.symmetric(horizontal: 12.px),
         //   child: Column(
@@ -45,7 +42,6 @@ class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
         //     ],
         //   ),
         // );
-
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.px),
           child: Column(

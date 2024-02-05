@@ -156,11 +156,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   void increment() => count.value++;
 
-  double calculateTheLatLongDistanceInMeter(
-      {required double lat1,
-      required double lon1,
-      required double lat2,
-      required double lon2}) {
+  double calculateTheLatLongDistanceInMeter({required double lat1, required double lon1, required double lat2, required double lon2}) {
     const double p = 0.017453292519943295; // Math.PI / 180
     const double earthRadius = 6371.0; // Radius of the Earth in kilometers
     double a = 0.5 -
@@ -394,7 +390,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     DateTime punchOutDateTimeForPunchOut = DateTime.parse("$formattedDateForPunchOut ${shiftTime?.shiftEndTime}");
 
     punchOutDateTimeForPunchOut = punchOutDateTimeForPunchOut.subtract(Duration(minutes: int.parse('${shiftTime?.earlyOutMinutes}')));
-
 
     isEarlyPunchOut.value = currentTimeForPunchOut.isBefore(punchOutDateTimeForPunchOut);
 

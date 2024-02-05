@@ -40,6 +40,8 @@ abstract class Routes {
   static const ADD_DOCUMENT = _Paths.ADD_DOCUMENT;
   static const ATTENDANCE_TRACKER = _Paths.ATTENDANCE_TRACKER;
   static const ALL_TASK = _Paths.ALL_TASK;
+  static const SUB_TASK = _Paths.SUB_TASK;
+  static const ADD_SUB_TASK = _Paths.ADD_SUB_TASK;
 }
 
 abstract class _Paths {
@@ -81,4 +83,6 @@ abstract class _Paths {
   static const ADD_DOCUMENT = '/add-document';
   static const ATTENDANCE_TRACKER = '/attendance-tracker';
   static const ALL_TASK = '/all-task';
+  static const SUB_TASK = '/sub-task';
+  static const ADD_SUB_TASK = '/add-sub-task';
 }

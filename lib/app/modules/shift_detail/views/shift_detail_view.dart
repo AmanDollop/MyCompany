@@ -302,6 +302,20 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
     return outputFormat.format(dateTime);
   }
 
+  String addMinutes({required String time12HourFormat,required int addValue}) {
+    final inputFormat = DateFormat('hh:mm a');
+    final outputFormat = DateFormat('hh:mm a');
+
+    // Parse the input time in 12-hour format
+    DateTime dateTime = inputFormat.parse(time12HourFormat);
+
+      // Subtract minutes
+    dateTime = dateTime.add(Duration(minutes: addValue));
+
+    // Format the adjusted time in 12-hour format
+    return outputFormat.format(dateTime);
+  }
+
   int subtractTimes(String startTimeString, String endTimeString) {
     final inputFormat = DateFormat('hh:mm a');
     final outputFormat = DateFormat('hh:mm a');
@@ -355,7 +369,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
 
     if(controller.shiftTimeList?[index].lateInMinutes!=null&& controller.shiftTimeList![index].lateInMinutes!.isNotEmpty) {
       controller.lateInRelaxationText  = '${controller.shiftTimeList?[index].lateInMinutes}';
-      controller.lateInRelaxationTime = subtractMinutes(time12HourFormat: controller.shiftStartTimeString??'',subtractValue: int.parse(controller.lateInRelaxationText??''));
+      controller.lateInRelaxationTime = addMinutes(time12HourFormat: controller.shiftStartTimeString??'',addValue: int.parse(controller.lateInRelaxationText??''));
     }
 
     if(controller.shiftTimeList?[index].earlyOutMinutes!=null&& controller.shiftTimeList![index].earlyOutMinutes!.isNotEmpty) {
@@ -460,8 +474,7 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
         child: dayTextView(dayText: dayText),
       );
 
-  Widget timeRowView({required String morningTimeText, required String totalTimeText, required String eveningTimeText}) =>
-      Row(
+  Widget timeRowView({required String morningTimeText, required String totalTimeText, required String eveningTimeText}) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           timeTextView(text: morningTimeText),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/all_task/controllers/all_task_controller.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:task/theme/constants/constants.dart';
 
 class AllTaskView extends GetView<AllTaskController> {
   const AllTaskView({Key? key}) : super(key: key);
@@ -31,43 +33,35 @@ class AllTaskView extends GetView<AllTaskController> {
               children: [
                 taskSearchTextFieldView(),
                 SizedBox(height: 16.px),
-                controller.apiResValue.value
-                    ? Expanded(
-                        child: shimmerView(),
-                      )
-                    : Expanded(
-                        child: ModalProgress(
-                          inAsyncCall: controller.apiResValue.value,
-                          child: ListView(
-                            physics: const ScrollPhysics(),
-                            children: [
-                              topCardGridView(),
-                              SizedBox(height: 16.px),
-                              taskCardListView(),
-                              SizedBox(height: 8.h)
-                            ],
-                          ),
-                        ),
-                      ),
+                AC.isConnect.value
+                    ? controller.apiResValue.value
+                        ? Expanded(
+                            child: shimmerView(),
+                          )
+                        : Expanded(
+                            child: ModalProgress(
+                              inAsyncCall: controller.apiResValue.value,
+                              child: ListView(
+                                physics: const ScrollPhysics(),
+                                children: [
+                                  topCardGridView(),
+                                  SizedBox(height: 16.px),
+                                  taskCardListView(),
+                                  SizedBox(height: 8.h)
+                                ],
+                              ),
+                            ),
+                          )
+                    : CW.commonNetworkImageView(
+                        path: C.iNoInternetDialog,
+                        isAssetImage: true,
+                        width: 200.px,
+                        height: 200.px),
               ],
             ),
           );
         }),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: 10.px),
-          child: CW.commonOutlineButton(
-              onPressed: () => controller.clickOnAddNewTaskButton(),
-              child: Icon(
-                Icons.add,
-                color: Col.inverseSecondary,
-                size: 22.px,
-              ),
-              height: 50.px,
-              width: 50.px,
-              backgroundColor: Col.primary,
-              borderColor: Colors.transparent,
-              borderRadius: 25.px),
-        ),
+        floatingActionButton: addTaskFloatingActionButtonView(),
       ),
     );
   }
@@ -101,8 +95,7 @@ class AllTaskView extends GetView<AllTaskController> {
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget cardTitleTextView({required String text, Color? color, double? fontSize}) =>
-      Text(
+  Widget cardTitleTextView({required String text, Color? color, double? fontSize}) => Text(
         text,
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
             fontSize: fontSize ?? 10.px,
@@ -120,9 +113,18 @@ class AllTaskView extends GetView<AllTaskController> {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1.2),
         itemBuilder: (context, index) {
           controller.topGridCardSubTitleTextList.clear();
-          controller.topGridCardSubTitleTextList.insert(0, controller.getTaskDataModal.value?.totalCompleteTask!=null&&controller.getTaskDataModal.value!.totalCompleteTask!.isNotEmpty?'${controller.getTaskDataModal.value?.totalCompleteTask}':'0');
-          controller.topGridCardSubTitleTextList.insert(1, controller.getTaskDataModal.value?.totalDueTask!=null&&controller.getTaskDataModal.value!.totalDueTask!.isNotEmpty?'${controller.getTaskDataModal.value?.totalDueTask}':'0');
-          controller.topGridCardSubTitleTextList.insert(2, controller.getTaskDataModal.value?.totalTodayDueTask!=null&&controller.getTaskDataModal.value!.totalTodayDueTask!.isNotEmpty?'${controller.getTaskDataModal.value?.totalTodayDueTask}':'0');
+          controller.topGridCardSubTitleTextList.insert(0,
+              controller.getTaskDataModal.value?.totalCompleteTask != null || controller.getTaskDataModal.value!.totalCompleteTask != 0
+                  ? '${controller.getTaskDataModal.value?.totalCompleteTask}'
+                  : '0');
+          controller.topGridCardSubTitleTextList.insert(1,
+              controller.getTaskDataModal.value?.totalDueTask != null || controller.getTaskDataModal.value!.totalDueTask != 0
+                  ? '${controller.getTaskDataModal.value?.totalDueTask}'
+                  : '0');
+          controller.topGridCardSubTitleTextList.insert(2,
+              controller.getTaskDataModal.value?.totalTodayDueTask != null || controller.getTaskDataModal.value!.totalTodayDueTask != 0
+                  ? '${controller.getTaskDataModal.value?.totalTodayDueTask}'
+                  : '0');
           return Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.px),
@@ -146,7 +148,9 @@ class AllTaskView extends GetView<AllTaskController> {
                       text: controller.topGridCardTitleTextList[index],
                       color: controller.topGridCardTextColorList[index]),
                   SizedBox(height: 2.px),
-                  subTitleTextView(text: controller.topGridCardSubTitleTextList[index], fontSize: 14.px)
+                  subTitleTextView(
+                      text: controller.topGridCardSubTitleTextList[index],
+                      fontSize: 14.px)
                 ],
               ),
             ),
@@ -155,40 +159,62 @@ class AllTaskView extends GetView<AllTaskController> {
       );
 
   Widget taskCardListView() {
-    if (controller.taskDataList != null && controller.taskDataList!.isNotEmpty) {
+    if (controller.taskCategoryList != null && controller.taskCategoryList!.isNotEmpty) {
       return ListView.builder(
         shrinkWrap: true,
-        itemCount: controller.taskDataList?.length,
+        itemCount: controller.taskCategoryList?.length,
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         itemBuilder: (context, taskCardListViewIndex) {
-          return Card(
-            color: Col.inverseSecondary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  subTitleTextView(
-                      text: controller.taskDataList?[taskCardListViewIndex].taskCategoryName != null &&
-                              controller.taskDataList![taskCardListViewIndex].taskCategoryName!.isNotEmpty
-                          ? '${controller.taskDataList?[taskCardListViewIndex].taskCategoryName}'
-                          : 'Task Name Not Found!',
-                      fontSize: 14.px),
-                  SizedBox(height: 10.px),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CW.commonLinearProgressBar(value: .5, height: 5.px),
-                      ),
-                      SizedBox(width: 10.px),
-                      cardTitleTextView(text: '40%', color: Col.primary)
-                    ],
-                  ),
-                  SizedBox(height: 10.px),
-                  taskCardGridView(taskCardListViewIndex:taskCardListViewIndex),
-                ],
+          return InkWell(
+            onTap: () => controller.clickOnTaskCard(
+                taskCardListViewIndex: taskCardListViewIndex),
+            borderRadius: BorderRadius.circular(6.px),
+            child: Card(
+              color: Col.inverseSecondary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    subTitleTextView(
+                        text: controller.taskCategoryList?[taskCardListViewIndex].taskCategoryName != null && controller.taskCategoryList![taskCardListViewIndex].taskCategoryName!.isNotEmpty
+                            ? '${controller.taskCategoryList?[taskCardListViewIndex].taskCategoryName}'
+                            : 'Task Name Not Found!',
+                        fontSize: 14.px),
+                    SizedBox(height: 10.px),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CW.commonLinearProgressBar(value: .5, height: 5.px),),
+                        SizedBox(width: 10.px),
+                        cardTitleTextView(text: '40%', color: Col.primary)
+                      ],
+                    ),
+                    SizedBox(height: 10.px),
+                    taskCardGridView(taskCardListViewIndex: taskCardListViewIndex),
+                    if (controller.taskCategoryList![taskCardListViewIndex].isEditAllow == true || controller.taskCategoryList![taskCardListViewIndex].isDeleteAllow == true)
+                      SizedBox(height: 10.px),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (controller.taskCategoryList![taskCardListViewIndex].isEditAllow ?? false)
+                          commonCardButtonView(
+                            iconPath: 'assets/icons/edit_pen2_icon.png',
+                            onTap: () => controller.clickOnAddNewTaskButton(taskCardListViewIndex: taskCardListViewIndex),
+                          ),
+                        SizedBox(width: 10.px),
+                        if (controller.taskCategoryList![taskCardListViewIndex].isDeleteAllow ?? false)
+                          commonCardButtonView(
+                            iconPath: 'assets/icons/delete_icon.png',
+                            iconColor: Col.error,
+                            onTap: () => controller.clickOnTaskDeleteButton(taskCardListViewIndex: taskCardListViewIndex),
+                          ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           );
@@ -199,42 +225,66 @@ class AllTaskView extends GetView<AllTaskController> {
     }
   }
 
+  Widget commonCardButtonView({GestureTapCallback? onTap, Color? iconColor, required String iconPath}) => InkWell(
+        borderRadius: BorderRadius.circular(6.px),
+        onTap: onTap,
+        child: Ink(
+          width: 26.px,
+          height: 26.px,
+          decoration: BoxDecoration(
+              color: Col.primary.withOpacity(.1),
+              borderRadius: BorderRadius.circular(4.px)),
+          child: Center(
+            child: CW.commonNetworkImageView(
+                path: iconPath,
+                height: 12.px,
+                width: 12.px,
+                isAssetImage: true,
+                color: iconColor),
+          ),
+        ),
+      );
+
   Widget taskCardGridView({required int taskCardListViewIndex}) {
-    controller.cardGridTitleTextList.clear();
-    controller.cardGridTitleTextList.insert(0, 'Total Task : ${controller.taskDataList?[taskCardListViewIndex].totalTaskCount}');
-    controller.cardGridTitleTextList.insert(1, 'Completed : ${controller.taskDataList?[taskCardListViewIndex].completeTaskCount}');
-    controller.cardGridTitleTextList.insert(2, 'Pending : ${controller.taskDataList?[taskCardListViewIndex].pendingTaskCount}');
-    controller.cardGridTitleTextList.insert(3, 'In Progress : ${controller.taskDataList?[taskCardListViewIndex].inprogressTaskCount}');
-    controller.cardGridTitleTextList.insert(4, 'On Hold : ${controller.taskDataList?[taskCardListViewIndex].onholdTaskCount}');
-    controller.cardGridTitleTextList.insert(5, 'Cancelled : ${controller.taskDataList?[taskCardListViewIndex].cancelTaskCount}');
-    return GridView.builder(
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: controller.cardGridTitleTextList.length,
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.8),
-      itemBuilder: (context, gridViewIndex) {
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6.px),
-          ),
-          color: Col.gray.withOpacity(.2.px),
-          elevation: 0,
-          child: Padding(
-            padding: EdgeInsets.all(6.px),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                cardTitleTextView(
-                    text: controller.cardGridTitleTextList[gridViewIndex],
-                    color: controller.cardGridTextColorList[gridViewIndex]),
-              ],
+    controller.taskCountList = controller.taskCategoryList?[taskCardListViewIndex].taskCount ?? [];
+    if (controller.taskCountList != null && controller.taskCountList!.isNotEmpty) {
+      return GridView.builder(
+        padding: EdgeInsets.zero,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.taskCountList?.length,
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, childAspectRatio: 2.8),
+        itemBuilder: (context, gridViewIndex) {
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6.px),
             ),
-          ),
-        );
-      },
-    );
+            color: Col.gray.withOpacity(.2.px),
+            elevation: 0,
+            child: Padding(
+              padding: EdgeInsets.all(6.px),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  cardTitleTextView(
+                      text:
+                          '${controller.taskCountList?[gridViewIndex].name}: ${controller.taskCountList?[gridViewIndex].count}',
+                      color: controller.taskCountList?[gridViewIndex].name == 'Total Task'
+                          ? Col.primary
+                          : CW.apiColorConverterMethod(
+                              colorString: controller.taskCountList?[gridViewIndex].color ?? ''),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 
   Widget shimmerView() => ListView(
@@ -302,5 +352,21 @@ class AllTaskView extends GetView<AllTaskController> {
             },
           ),
         ],
+      );
+
+  Widget addTaskFloatingActionButtonView() => Padding(
+        padding: EdgeInsets.only(bottom: 10.px),
+        child: CW.commonOutlineButton(
+            onPressed: () => controller.clickOnAddNewTaskButton(),
+            child: Icon(
+              Icons.add,
+              color: Col.inverseSecondary,
+              size: 22.px,
+            ),
+            height: 50.px,
+            width: 50.px,
+            backgroundColor: Col.primary,
+            borderColor: Colors.transparent,
+            borderRadius: 25.px),
       );
 }

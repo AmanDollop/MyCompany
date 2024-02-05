@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
-import 'package:task/common/common_packages/model_progress_bar/model_progress_bar.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import '../controllers/my_profile_controller.dart';
 
@@ -23,6 +22,7 @@ class MyProfileView extends GetView<MyProfileController> {
       body: Obx(() {
         controller.count.value;
         return ModalProgress(
+          isLoader: false,
           inAsyncCall: controller.apiResponseValue.value,
           child: CW.commonRefreshIndicator(
             onRefresh: () async {
@@ -68,7 +68,7 @@ class MyProfileView extends GetView<MyProfileController> {
                           name: controller.email.value != 'null' &&
                                   controller.email.isNotEmpty
                               ? '${controller.email}'
-                              : 'test@gmai.com'),
+                              : 'test@gmail.com'),
                     ],
                   ),
                 ),
@@ -166,14 +166,10 @@ class MyProfileView extends GetView<MyProfileController> {
   }
 
   Widget nameTextView() => Text(
-      controller.userFullName.value != 'null' &&
-              controller.userFullName.isNotEmpty
+      controller.userFullName.value != 'null' && controller.userFullName.isNotEmpty
           ? controller.userFullName.value
           : 'Employee Name',
-      style: Theme.of(Get.context!)
-          .textTheme
-          .bodyLarge
-          ?.copyWith(fontWeight: FontWeight.w600),
+      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
       maxLines: 1,
       overflow: TextOverflow.ellipsis);
 
@@ -400,8 +396,7 @@ class MyProfileView extends GetView<MyProfileController> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () =>
-                    controller.getEmployeeDetails?[index].menuClick != null &&
-                            controller.getEmployeeDetails![index].menuClick!.isNotEmpty
+                    controller.getEmployeeDetails?[index].menuClick != null && controller.getEmployeeDetails![index].menuClick!.isNotEmpty
                         ? controller.clickOnList(listIndex: index)
                         : CM.error(),
                 borderRadius: BorderRadius.circular(8.px),
@@ -417,8 +412,7 @@ class MyProfileView extends GetView<MyProfileController> {
                             controller.getEmployeeDetails![index].profileMenuPhoto!.isNotEmpty
                         ? false
                         : true,
-                    text1: controller.getEmployeeDetails?[index].profileMenuName != null &&
-                            controller.getEmployeeDetails![index].profileMenuName!.isNotEmpty
+                    text1: controller.getEmployeeDetails?[index].profileMenuName != null && controller.getEmployeeDetails![index].profileMenuName!.isNotEmpty
                         ? '${controller.getEmployeeDetails![index].profileMenuName}'
                         : 'Menu Name Not Found!',
                     cardHeight: 100.px),

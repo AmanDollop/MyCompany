@@ -3,13 +3,13 @@ import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/validator/v.dart';
-import 'package:http/http.dart'  as http;
+import 'package:http/http.dart' as http;
 import '../../../../api/api_model/task_data_modal.dart';
-
 
 class AllTaskController extends GetxController {
   final count = 0.obs;
@@ -48,19 +48,9 @@ class AllTaskController extends GetxController {
     'assets/icons/watch_icon.png',
   ];
 
-  final cardGridTitleTextList = [];
-
-  final cardGridTextColorList = [
-    const Color(0xff0717AF),
-    const Color(0xff388E3C),
-    const Color(0xffE09701),
-    const Color(0xff524FFF),
-    const Color(0xff825802),
-    const Color(0xffCE1212),
-  ];
-
   final getTaskDataModal = Rxn<TaskDataModal>();
-  List<CategoryDetails>? taskDataList;
+  List<TaskCategory>? taskCategoryList;
+  List<TaskCount>? taskCountList;
   Map<String, dynamic> bodyParamsForGetTask = {};
 
   Map<String, dynamic> bodyParamsForAddTask = {};
@@ -68,14 +58,14 @@ class AllTaskController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    try{
+    try {
       menuName.value = Get.arguments[0];
       await callingGetTaskDataApi();
-    }catch(e){
+    } catch (e) {
       CM.error();
-      apiResValue.value=false;
+      apiResValue.value = false;
     }
-    apiResValue.value=false;
+    apiResValue.value = false;
   }
 
   @override
@@ -101,25 +91,29 @@ class AllTaskController extends GetxController {
   Future<void> callingGetTaskDataApi() async {
     apiResValue.value = true;
     getTaskDataModal.value = null;
-    taskDataList?.clear();
-    try{
-      bodyParamsForGetTask ={
-        AK.action : ApiEndPointAction.getTaskCategory,
-        AK.searchTaskCategory : taskSearchController.text.trim().toString()
-      };
-      getTaskDataModal.value = await CAI.getTaskDataApi(bodyParams: bodyParamsForGetTask);
-      if(getTaskDataModal.value!=null){
-        taskDataList = getTaskDataModal.value?.categoryDetails;
-      }
-    }catch(e){
+    taskCategoryList?.clear();
+    bodyParamsForGetTask = {
+      AK.action: ApiEndPointAction.getTaskCategory,
+      AK.searchTaskCategory: taskSearchController.text.trim().toString()
+    };
+    getTaskDataModal.value = await CAI.getTaskDataApi(bodyParams: bodyParamsForGetTask);
+    if (getTaskDataModal.value != null) {
+      taskCategoryList = getTaskDataModal.value?.taskCategory;
+    }
+    try {
+
+    } catch (e) {
       print('get task api error::::  $e');
       CM.error();
-      apiResValue.value=false;
+      apiResValue.value = false;
     }
-    apiResValue.value=false;
+    apiResValue.value = false;
   }
 
-  Future<void> clickOnAddNewTaskButton() async {
+  Future<void> clickOnAddNewTaskButton({int? taskCardListViewIndex}) async {
+    if (taskCardListViewIndex != null) {
+      addTaskCategoryController.text = taskCategoryList?[taskCardListViewIndex].taskCategoryName ?? '';
+    }
     await CBS.commonBottomSheet(
       isDismissible: false,
       isFullScreen: true,
@@ -132,7 +126,10 @@ class AllTaskController extends GetxController {
             children: [
               Text(
                 'Add Task Category',
-                style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,fontSize: 14.px),
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(fontWeight: FontWeight.w600, fontSize: 14.px),
               ),
               SizedBox(height: 14.px),
               Form(
@@ -143,15 +140,20 @@ class AllTaskController extends GetxController {
                   isSearchLabelText: true,
                   hintText: 'Enter Task Category',
                   controller: addTaskCategoryController,
-                  validator: (value) => V.isValid(value: value, title: 'Please enter task category'),
+                  validator: (value) => V.isValid(
+                      value: value, title: 'Please enter task category'),
                 ),
               ),
               SizedBox(height: 14.px),
               CW.commonElevatedButton(
                 onPressed: createTaskButtonValue.value
                     ? () => null
-                    : () => clickOnCreateTaskButton(addTaskCategoryControllerValue:addTaskCategoryController.text.trim().toString()),
-                buttonText: 'Create',
+                    : () => taskCardListViewIndex != null
+                    ? clickOnUpdateTaskButton(taskCategoryId: taskCategoryList?[taskCardListViewIndex].taskCategoryId??'',addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString())
+                    : clickOnCreateTaskButton(addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString()),
+                buttonText: taskCardListViewIndex != null
+                    ? 'Update Task'
+                    : 'Create Task',
                 isLoading: createTaskButtonValue.value,
               ),
               SizedBox(height: 20.px),
@@ -160,39 +162,76 @@ class AllTaskController extends GetxController {
         })
       ],
     ).whenComplete(() {
-      createTaskButtonValue.value=false;
+      createTaskButtonValue.value = false;
       addTaskCategoryController.clear();
     });
   }
 
   Future<void> clickOnCreateTaskButton({required String addTaskCategoryControllerValue}) async {
-    if(key.currentState!.validate()){
+    print('addTaskCategoryControllerValue::::: $addTaskCategoryController');
+    if (key.currentState!.validate()) {
       createTaskButtonValue.value = true;
-      await callingAddTaskApi(addTaskCategoryControllerValue:addTaskCategoryControllerValue);
+      bodyParamsForAddTask.clear();
+      bodyParamsForAddTask = {
+        AK.action: ApiEndPointAction.addTaskCategory,
+        AK.taskCategoryName: addTaskCategoryControllerValue,
+      };
+      await callingAddTaskApi();
+      Get.back();
     }
   }
 
-  Future<void> callingAddTaskApi({required String addTaskCategoryControllerValue}) async {
-    try{
-      bodyParamsForAddTask ={
-        AK.action : ApiEndPointAction.addTaskCategory,
-        AK.taskCategoryName : addTaskCategoryControllerValue,
+  Future<void> clickOnUpdateTaskButton({required String taskCategoryId,required String addTaskCategoryControllerValue}) async {
+    print('taskCategoryId:::::: $taskCategoryId');
+    if (key.currentState!.validate()) {
+      createTaskButtonValue.value = true;
+      bodyParamsForAddTask.clear();
+      bodyParamsForAddTask = {
+        AK.action: ApiEndPointAction.addTaskCategory,
+        AK.taskCategoryId: taskCategoryId,
+        AK.taskCategoryName: addTaskCategoryControllerValue,
       };
+      await callingAddTaskApi();
+      Get.back();
+    }
+  }
+
+  Future<void> callingAddTaskApi() async {
+    try {
       http.Response? response = await CAI.addTaskApi(bodyParams: bodyParamsForAddTask);
-      if(response != null && response.statusCode == 200){
-        createTaskButtonValue.value=false;
-        Get.back();
+      if (response != null && response.statusCode == 200) {
+        createTaskButtonValue.value = false;
         await callingGetTaskDataApi();
-      }else{
+      } else {
         CM.error();
-        createTaskButtonValue.value=false;
-        Get.back();
+        createTaskButtonValue.value = false;
       }
-    }catch(e){
+    } catch (e) {
       print('add task error::: $e');
       CM.error();
-      createTaskButtonValue.value=false;
-      Get.back();
+      createTaskButtonValue.value = false;
+    }
+  }
+
+  Future<void> clickOnTaskDeleteButton({required int taskCardListViewIndex}) async {
+    print('::::  ${taskCategoryList?[taskCardListViewIndex].taskCategoryId}');
+    bodyParamsForAddTask.clear();
+    bodyParamsForAddTask = {
+      AK.action: ApiEndPointAction.deleteTaskCategory,
+      AK.taskCategoryId: taskCategoryList?[taskCardListViewIndex].taskCategoryId ?? ''
+    };
+    await callingAddTaskApi();
+  }
+
+  void clickOnTaskCard({required int taskCardListViewIndex}) {
+    if (taskCategoryList?[taskCardListViewIndex].taskCategoryId != null &&
+        taskCategoryList![taskCardListViewIndex].taskCategoryId!.isNotEmpty) {
+      Get.toNamed(Routes.SUB_TASK, arguments: [
+        taskCategoryList?[taskCardListViewIndex].taskCategoryId,
+        taskCategoryList?[taskCardListViewIndex].taskCategoryName
+      ]);
+    } else {
+      CM.showSnackBar(message: 'Sub task not found');
     }
   }
 }

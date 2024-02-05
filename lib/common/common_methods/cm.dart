@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -19,8 +21,48 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_geocoder/location_geocoder.dart';
 import 'package:vibration/vibration.dart';
+import 'package:path/path.dart' as path;
 
 class CM {
+
+  static  String getDocumentType({required String filePath}) {
+    String extension = path.extension(filePath).toLowerCase();
+    switch (extension) {
+      case '.jpg':
+      case '.jpeg':
+      case '.png':
+        return 'Image';
+      case '.pdf':
+        return 'PDF';
+      case '.doc':
+      case '.docx':
+        return 'Word Document';
+      case '.xls':
+      case '.xlsx':
+        return 'Excel Document';
+      case '.ppt':
+      case '.pptx':
+        return 'PowerPoint Document';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  static String getDocumentTypeLogo({required String fileType}){
+    if(fileType == 'Image'){
+      return fileType;
+    }else if(fileType == 'PDF'){
+      return 'assets/images/pdf_log_image.png';
+    }else if(fileType == 'Word Document'){
+      return 'assets/images/document_log_image.png';
+    }else if(fileType == 'Excel Document'){
+      return 'assets/images/excel_log_image.png';
+    }else if(fileType == 'PowerPoint Document'){
+      return 'assets/images/ppt_log_image.png';
+    }else {
+      return fileType;
+    }
+  }
 
   ///  flutter pub add internet_connection_checker -- For Check Internet
   static Future<bool> internetConnectionCheckerMethod() async {

@@ -25,7 +25,9 @@ class BankDetailView extends GetView<BankDetailController> {
           },
           child: ModalProgress(
             inAsyncCall: controller.apiResValue.value,
-            child: controller.getBankDetailModal.value != null
+            child: controller.apiResValue.value
+                ? shimmerView()
+                : controller.getBankDetailModal.value != null
                 ? controller.getBankList != null && controller.getBankList!.isNotEmpty
                     ? ListView.builder(
                       // physics: const ScrollPhysics(),
@@ -48,8 +50,7 @@ class BankDetailView extends GetView<BankDetailController> {
                           elevation: 0,
                           margin: EdgeInsets.only(bottom: index==controller.getBankList!.length-1?60.px :10.px),
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(left: 12.px),
@@ -271,5 +272,52 @@ class BankDetailView extends GetView<BankDetailController> {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       );
+
+  Widget shimmerView()=> ListView.builder(
+      shrinkWrap: true,
+      itemCount: 5,
+      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+      itemBuilder:(context, index) => Card(
+        color: Col.inverseSecondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.px),
+          side: BorderSide(
+              color:Col.gray,
+              width: .5.px),
+        ),
+        elevation: 0,
+        margin: EdgeInsets.only(bottom: 10.px),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10.px),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.px),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CW.commonShimmerViewForImage(height: 25.px,width: 250.px),
+                  CW.commonShimmerViewForImage(height: 20.px,width: 5.px)
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(12.px),
+              child: CW.commonShimmerViewForImage(height: 18.px,width: 150.px),
+            ),
+            commonDividerView(),
+            Padding(
+              padding: EdgeInsets.all(12.px),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CW.commonShimmerViewForImage(height: 25.px,width: 200.px),
+                  CW.commonShimmerViewForImage(height: 20.px,width: 20.px)
+                ],
+              ),
+            ),
+          ],
+        ),
+      ), );
 
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:task/common/common_packages/model_progress_bar/model_progress_bar.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import '../controllers/experience_controller.dart';
 
@@ -20,6 +20,7 @@ class ExperienceView extends GetView<ExperienceController> {
         controller.count.value;
         return ModalProgress(
           inAsyncCall: controller.apiResValue.value,
+          isLoader: false,
           child: controller.apiResValue.value
               ? shimmerView()
               : controller.experienceModal.value != null

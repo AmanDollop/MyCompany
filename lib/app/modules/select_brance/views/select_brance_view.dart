@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
-
-import '../../../../common/common_packages/model_progress_bar/model_progress_bar.dart';
 import '../controllers/select_brance_controller.dart';
 
 class SelectBranceView extends GetView<SelectBranceController> {

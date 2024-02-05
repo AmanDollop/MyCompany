@@ -1,15 +1,11 @@
 import 'dart:math';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
-import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
-import 'package:task/common/common_packages/shimmer/shimmer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -322,8 +318,7 @@ class HomeView extends GetView<HomeController> {
             ?.copyWith(fontSize: 18.px),
       );
 
-  Widget circularProgressIndicatorCheckInTextView({required String firstText, double? fontSize}) =>
-      Text(
+  Widget circularProgressIndicatorCheckInTextView({required String firstText, double? fontSize}) => Text(
         firstText,
         style: Theme
             .of(Get.context!)
@@ -482,8 +477,7 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) =>
-      Card(
+  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
         color: Col.inverseSecondary,
         shadowColor: Col.secondary.withOpacity(.1),
@@ -542,7 +536,7 @@ class HomeView extends GetView<HomeController> {
             mainAxisSpacing: 10.px,
           ),
           itemBuilder: (context, index) {
-            Color convertedColor = stringToColor(
+            Color convertedColor = CW.apiColorConverterMethod(
                 colorString:
                 '${controller.isHeadingMenuList[index].backgroundColor}');
             return InkWell(
@@ -630,15 +624,6 @@ class HomeView extends GetView<HomeController> {
       return controller.apiResValue.value ?
       const SizedBox() : CW.commonNoDataFoundText(text: 'Menus not found!');
     }
-  }
-
-  Color stringToColor({required String colorString}) {
-    // Remove the '#' from the color code
-    String formattedColor =
-    colorString.startsWith('#') ? colorString.substring(1) : colorString;
-
-    // Parse the hexadecimal value and create a Color object
-    return Color(int.parse('0xFF$formattedColor'));
   }
 
   Widget myTeamListView() =>

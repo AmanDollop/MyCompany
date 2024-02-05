@@ -418,12 +418,12 @@ class AttendanceTrackerController extends GetxController {
                             ),
                             SizedBox(height: 5.px),
                             Text(
-                              '${attendanceBreakHistory?[index].breakStartTime} - ${attendanceBreakHistory?[index].breakEndTime}',
+                              '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime} - ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}',
                               style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
                             ),
-                            if(monthlyHistoryList?[index].attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
+                            if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
                               SizedBox(height: 10.px),
-                            if(monthlyHistoryList?[index].attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
+                            if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
                               Center(
                                 child: Dash(
                                     direction: Axis.horizontal,
@@ -432,7 +432,7 @@ class AttendanceTrackerController extends GetxController {
                                     dashThickness: .5.px,
                                     dashColor: Col.secondary),
                               ),
-                            if(monthlyHistoryList?[index].attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
+                            if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
                             SizedBox(height: 10.px),
                           ],
                         );

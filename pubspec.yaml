@@ -68,6 +68,8 @@ dependencies:
   flutter_face_api: ^4.1.0
   google_maps_flutter: ^2.5.3
   vibration: ^1.8.4
+  dotted_border: ^2.1.0
+  file_picker: ^6.1.1
 #  trust_location: ^2.0.13
 #  safe_device: ^1.1.4
 #  detect_fake_location: ^1.0.1

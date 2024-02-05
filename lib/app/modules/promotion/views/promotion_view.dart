@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:task/common/common_packages/model_progress_bar/model_progress_bar.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 
 import '../controllers/promotion_controller.dart';

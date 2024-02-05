@@ -13,6 +13,7 @@ import 'dart:ui';
 class ModalProgress extends StatelessWidget {
   /// A required [bool]to toggle the loading animation.
   final bool inAsyncCall;
+  final bool isLoader;
 
   /// A [double] value which states how opaque the loading overlay should be, defaults to 0.3
   final double opacity;
@@ -44,6 +45,7 @@ class ModalProgress extends StatelessWidget {
     this.progressIndicator ,
     this.offset,
     this.dismissible = false,
+    this.isLoader = false,
     required this.child,
     this.blur = 0.0,
   }) : super(key: key);
@@ -76,6 +78,7 @@ class ModalProgress extends StatelessWidget {
             child: ModalBarrier(dismissible: dismissible, color: Theme.of(context).brightness==Brightness.light?Colors.black:color),
           ),
         ),*/
+        if(isLoader)
         layOutProgressIndicator,
       ],
     );
