@@ -49,9 +49,12 @@ class AllTaskController extends GetxController {
   ];
 
   final getTaskDataModal = Rxn<TaskDataModal>();
-  List<TaskCategory>? taskCategoryList;
+  List<TaskCategory> taskCategoryList = [];
   List<TaskCount>? taskCountList;
   Map<String, dynamic> bodyParamsForGetTask = {};
+  final isLastPage = false.obs;
+  String limit = '10';
+  final offset = 0.obs;
 
   Map<String, dynamic> bodyParamsForAddTask = {};
 
@@ -59,6 +62,7 @@ class AllTaskController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     try {
+      apiResValue.value = true;
       menuName.value = Get.arguments[0];
       await callingGetTaskDataApi();
     } catch (e) {
@@ -89,19 +93,31 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> callingGetTaskDataApi() async {
-    apiResValue.value = true;
-    getTaskDataModal.value = null;
-    taskCategoryList?.clear();
-    bodyParamsForGetTask = {
-      AK.action: ApiEndPointAction.getTaskCategory,
-      AK.searchTaskCategory: taskSearchController.text.trim().toString()
-    };
-    getTaskDataModal.value = await CAI.getTaskDataApi(bodyParams: bodyParamsForGetTask);
-    if (getTaskDataModal.value != null) {
-      taskCategoryList = getTaskDataModal.value?.taskCategory;
-    }
-    try {
 
+    try {
+      // getTaskDataModal.value = null;
+      // taskCategoryList.clear();
+      bodyParamsForGetTask = {
+        AK.limit: limit.toString(),
+        AK.offset: offset.toString(),
+        AK.action: ApiEndPointAction.getTaskCategory,
+        AK.search: taskSearchController.text.trim().toString()
+      };
+      getTaskDataModal.value = await CAI.getTaskDataApi(bodyParams: bodyParamsForGetTask);
+      // if (offset.value == 0) {
+      //   apiResValue.value = true;
+      //   taskCategoryList.clear();
+      //   taskCountList?.clear();
+      //   isLastPage.value = false;
+      // }
+      if (getTaskDataModal.value != null) {
+        if(getTaskDataModal.value?.taskCategory != null && getTaskDataModal.value!.taskCategory!.isNotEmpty) {
+          taskCategoryList.addAll(getTaskDataModal.value?.taskCategory ?? []);
+          print('taskCategoryList::: ${taskCategoryList.length}');
+        }else {
+          isLastPage.value = true;
+        }
+      }
     } catch (e) {
       print('get task api error::::  $e');
       CM.error();
@@ -112,7 +128,7 @@ class AllTaskController extends GetxController {
 
   Future<void> clickOnAddNewTaskButton({int? taskCardListViewIndex}) async {
     if (taskCardListViewIndex != null) {
-      addTaskCategoryController.text = taskCategoryList?[taskCardListViewIndex].taskCategoryName ?? '';
+      addTaskCategoryController.text = taskCategoryList[taskCardListViewIndex].taskCategoryName ?? '';
     }
     await CBS.commonBottomSheet(
       isDismissible: false,
@@ -149,7 +165,7 @@ class AllTaskController extends GetxController {
                 onPressed: createTaskButtonValue.value
                     ? () => null
                     : () => taskCardListViewIndex != null
-                    ? clickOnUpdateTaskButton(taskCategoryId: taskCategoryList?[taskCardListViewIndex].taskCategoryId??'',addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString())
+                    ? clickOnUpdateTaskButton(taskCategoryId: taskCategoryList[taskCardListViewIndex].taskCategoryId??'',addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString())
                     : clickOnCreateTaskButton(addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString()),
                 buttonText: taskCardListViewIndex != null
                     ? 'Update Task'
@@ -201,6 +217,12 @@ class AllTaskController extends GetxController {
       http.Response? response = await CAI.addTaskApi(bodyParams: bodyParamsForAddTask);
       if (response != null && response.statusCode == 200) {
         createTaskButtonValue.value = false;
+        apiResValue.value = true;
+        offset.value = 0;
+        isLastPage.value = false;
+        getTaskDataModal.value = null;
+        taskCategoryList.clear();
+        taskCountList?.clear();
         await callingGetTaskDataApi();
       } else {
         CM.error();
@@ -214,24 +236,36 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> clickOnTaskDeleteButton({required int taskCardListViewIndex}) async {
-    print('::::  ${taskCategoryList?[taskCardListViewIndex].taskCategoryId}');
+    print('::::  ${taskCategoryList[taskCardListViewIndex].taskCategoryId}');
     bodyParamsForAddTask.clear();
     bodyParamsForAddTask = {
       AK.action: ApiEndPointAction.deleteTaskCategory,
-      AK.taskCategoryId: taskCategoryList?[taskCardListViewIndex].taskCategoryId ?? ''
+      AK.taskCategoryId: taskCategoryList[taskCardListViewIndex].taskCategoryId ?? ''
     };
     await callingAddTaskApi();
   }
 
   void clickOnTaskCard({required int taskCardListViewIndex}) {
-    if (taskCategoryList?[taskCardListViewIndex].taskCategoryId != null &&
-        taskCategoryList![taskCardListViewIndex].taskCategoryId!.isNotEmpty) {
+    if (taskCategoryList[taskCardListViewIndex].taskCategoryId != null &&
+        taskCategoryList[taskCardListViewIndex].taskCategoryId!.isNotEmpty) {
       Get.toNamed(Routes.SUB_TASK, arguments: [
-        taskCategoryList?[taskCardListViewIndex].taskCategoryId,
-        taskCategoryList?[taskCardListViewIndex].taskCategoryName
+        taskCategoryList[taskCardListViewIndex].taskCategoryId,
+        taskCategoryList[taskCardListViewIndex].taskCategoryName
       ]);
     } else {
       CM.showSnackBar(message: 'Sub task not found');
     }
   }
+
+  Future<void> onLoadMore() async {
+    offset.value = offset.value + 1;
+    try {
+      if(int.parse(limit) <= taskCategoryList.length) {
+        await callingGetTaskDataApi();
+      }
+    } catch (e) {
+      CM.error();
+    }
+  }
+
 }

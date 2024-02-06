@@ -13,7 +13,6 @@ import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
-
 import '../../../../api/api_model/user_data_modal.dart';
 
 class MyProfileController extends GetxController {

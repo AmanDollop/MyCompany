@@ -2,8 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class MyHttp {
   static Future<http.Response?> getMethod(
@@ -50,6 +55,14 @@ class MyHttp {
           print('mapRes:::  ${mapRes}');
           CM.showSnackBar(message: mapRes['message']);
         }
+        if(response.statusCode == 401){
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
+          await CM.setString(key: AK.baseUrl, value: '');
+          Get.offAllNamed(Routes.SEARCH_COMPANY);
+        }
         return response;
       } catch (e) {
         if (kDebugMode) print("ERROR:: $e");
@@ -90,6 +103,7 @@ class MyHttp {
           multipartRequest.files.add(getUserProfileImageFile(image: image, userProfileImageKey: userProfileImageKey));
           http.StreamedResponse response = await multipartRequest.send();
           res = await http.Response.fromStream(response);
+
         } catch (e) {
           if (kDebugMode) print("ERROR:: $e");
            if (kDebugMode) print("CALLING:: Server Down");
@@ -100,6 +114,14 @@ class MyHttp {
         // ignore: unnecessary_null_comparison
         if (res != null) {
           if (kDebugMode) print("CALLING:: ${res.body}");
+          if(res.statusCode == 401){
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
+            await CM.setString(key: AK.baseUrl, value: '');
+            Get.offAllNamed(Routes.SEARCH_COMPANY);
+          }
           return res;
         } else {
           return null;
@@ -213,7 +235,14 @@ class MyHttp {
           Map<String,dynamic> mapRes = {};
           mapRes = jsonDecode(res.body);
           CM.showSnackBar(message: mapRes['message']);
-
+          if(res.statusCode == 401){
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+            await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
+            await CM.setString(key: AK.baseUrl, value: '');
+            Get.offAllNamed(Routes.SEARCH_COMPANY);
+          }
           return res;
         } else {
           return null;

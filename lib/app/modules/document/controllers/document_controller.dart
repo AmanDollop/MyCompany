@@ -221,8 +221,7 @@ class DocumentController extends GetxController {
     }
   }
 
-  Widget commonRowForBottomSheet({required String imagePath,required String text,required GestureTapCallback onTap}) =>
-      SizedBox(
+  Widget commonRowForBottomSheet({required String imagePath,required String text,required GestureTapCallback onTap}) => SizedBox(
         height: 35.px,
         child: InkWell(
           onTap: onTap,
@@ -277,8 +276,7 @@ class DocumentController extends GetxController {
         getDocumentDetails = documentModal.value?.getDocumentDetails;
         getDocumentDetails?.forEach((element) {
           if (element.documentFile!.contains('.pdf')) {
-            pdfControllerList.value = {
-              '${element.documentFile}': PdfViewerController()
+              pdfControllerList.value = {'${element.documentFile}': PdfViewerController()
             };
           }
         });
@@ -300,7 +298,7 @@ class DocumentController extends GetxController {
         options: Options(
           responseType: ResponseType.bytes,
           followRedirects: false,
-          receiveTimeout: const Duration(seconds: 0),
+          receiveTimeout:  const Duration(seconds: 0),
         ),
       );
       var file = File(savePath);

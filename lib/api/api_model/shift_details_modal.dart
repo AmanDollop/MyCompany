@@ -111,8 +111,10 @@ class ShiftTime {
   String? lunchBreakEndTime;
   String? teaBreakStartTime;
   String? teaBreakEndTime;
-  String? secondTeaBreakStartTime;
-  String? secondTeaBreakEndTime;
+  String? maximumLunchBreak;
+  String? maximumTeaBreak;
+  String? maximumDinnerBreak;
+  String? maximumOtherBreak;
   String? dinnerBreakStartTime;
   String? dinnerBreakEndTime;
   String? halfDayAfterTime;
@@ -133,8 +135,10 @@ class ShiftTime {
         this.lunchBreakEndTime,
         this.teaBreakStartTime,
         this.teaBreakEndTime,
-        this.secondTeaBreakStartTime,
-        this.secondTeaBreakEndTime,
+        this.maximumLunchBreak,
+        this.maximumTeaBreak,
+        this.maximumDinnerBreak,
+        this.maximumOtherBreak,
         this.dinnerBreakStartTime,
         this.dinnerBreakEndTime,
         this.halfDayAfterTime,
@@ -155,8 +159,10 @@ class ShiftTime {
     lunchBreakEndTime = json['lunch_break_end_time'];
     teaBreakStartTime = json['tea_break_start_time'];
     teaBreakEndTime = json['tea_break_end_time'];
-    secondTeaBreakStartTime = json['second_tea_break_start_time'];
-    secondTeaBreakEndTime = json['second_tea_break_end_time'];
+    maximumLunchBreak = json['maximum_lunch_break'];
+    maximumTeaBreak = json['maximum_tea_break'];
+    maximumDinnerBreak = json['maximum_dinner_break'];
+    maximumOtherBreak = json['maximum_other_break'];
     dinnerBreakStartTime = json['dinner_break_start_time'];
     dinnerBreakEndTime = json['dinner_break_end_time'];
     halfDayAfterTime = json['half_day_after_time'];
@@ -179,8 +185,10 @@ class ShiftTime {
     data['lunch_break_end_time'] = lunchBreakEndTime;
     data['tea_break_start_time'] = teaBreakStartTime;
     data['tea_break_end_time'] = teaBreakEndTime;
-    data['second_tea_break_start_time'] = secondTeaBreakStartTime;
-    data['second_tea_break_end_time'] = secondTeaBreakEndTime;
+    data['maximum_lunch_break'] = maximumLunchBreak;
+    data['maximum_tea_break'] = maximumTeaBreak;
+    data['maximum_dinner_break'] = maximumDinnerBreak;
+    data['maximum_other_break'] = maximumOtherBreak;
     data['dinner_break_start_time'] = dinnerBreakStartTime;
     data['dinner_break_end_time'] = dinnerBreakEndTime;
     data['half_day_after_time'] = halfDayAfterTime;

@@ -44,7 +44,7 @@ class TaskCategory {
   String? taskCategoryName;
   bool? isEditAllow;
   bool? isDeleteAllow;
-  int? taskPercentage;
+  String? taskPercentage;
   List<TaskCount>? taskCount;
 
   TaskCategory(

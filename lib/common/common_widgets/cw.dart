@@ -1558,23 +1558,18 @@ class CW {
       Color? imageColor}) {
     return CachedNetworkImage(
       imageUrl: path,
-      imageBuilder: (context, imageProvider) => InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(radius ?? 0.px),
-        child: Ink(
-          height: height,
-          width: width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius ?? 0.px),
-            image: DecorationImage(
-              image: imageProvider,
-              fit: fit,
-            ),
+      imageBuilder: (context, imageProvider) => Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(radius ?? 0.px),
+          image: DecorationImage(
+            image: imageProvider,
+            fit: fit,
           ),
         ),
       ),
-      placeholder: loadingBuilder ??
-          (context, url) {
+      placeholder: loadingBuilder ?? (context, url) {
             return CW.commonShimmerViewForImage(
                 height: height,
                 width: width,
@@ -1592,4 +1587,72 @@ class CW {
       ),
     );
   }
+
+
+  static Widget commonCachedNetworkImageView1({
+    required String path,
+    double? height,
+    double? width,
+    double? radius,
+    BoxFit fit = BoxFit.fill,
+    GestureTapCallback? onTap,
+    PlaceholderWidgetBuilder? loadingBuilder,
+    Duration? shimmerDuration,
+    Color? shimmerBackgroundColor,
+    Color? shimmerMovementColor,
+    String? errorImage,
+    Color? imageColor,
+    bool apiResValue = false
+  }) {
+    return CachedNetworkImage(
+      imageUrl: path,
+      imageBuilder: (context, imageProvider) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(radius ?? 0),
+        child: Ink(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(radius ?? 0),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: fit,
+            ),
+          ),
+        ),
+      ),
+      placeholder: loadingBuilder ?? (context, url) {
+        final count = 0.obs;
+            if(apiResValue) {
+              count.value++;
+              return commonShimmerViewForImage(
+              height: height,
+              width: width,
+              radius: radius,
+              backgroundColor: shimmerBackgroundColor,
+              duration: shimmerDuration,
+              movementColor: shimmerMovementColor,
+            );
+            }else{
+              count.value++;
+              return commonShimmerViewForImage(
+                height: height,
+                width: width,
+                radius: radius,
+                backgroundColor: shimmerBackgroundColor,
+                duration: shimmerDuration,
+                movementColor: shimmerMovementColor,
+              );
+            }
+          },
+      errorWidget: (context, url, error) => Image.asset(
+        errorImage ?? 'assets/images/default_image.jpg',
+        height: height,
+        width: width,
+        color: imageColor,
+        fit: fit,
+      ),
+    );
+  }
+
 }

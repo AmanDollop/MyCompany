@@ -1,7 +1,12 @@
-import 'dart:math';
+import 'dart:async';
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task/api/api_constants/ac.dart';
@@ -12,6 +17,7 @@ import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
+
 
 class CircularController extends GetxController {
   final count = 0.obs;
@@ -34,6 +40,11 @@ class CircularController extends GetxController {
   String limit = '10';
   final offset = 0.obs;
   Map<String, dynamic> bodyParamsForCircularDetail = {};
+  final docType = ''.obs;
+
+  Timer? searchOnStoppedTyping;
+
+  final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
 
   @override
   Future<void> onInit() async {
@@ -113,9 +124,31 @@ class CircularController extends GetxController {
     }
   }
 
-  Future<void> clickOnImageView({required int index}) async {
+  Future<void> clickOnImageView({required int index,}) async {
     if (circularList[index].attachment != null && circularList[index].attachment!.isNotEmpty) {
-      if (circularList[index].attachment!.contains('.pdf')) {
+
+      String docTypeValue = CM.getDocumentType(filePath: '${circularList[index].attachment}');
+
+      if (docTypeValue == 'Image') {
+        await showGeneralDialog(
+          context: Get.context!,
+          barrierColor: Col.inverseSecondary,
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return Material(
+              child: Center(
+                child: InteractiveViewer(
+                  child: SafeArea(
+                    child: commonContainerForImage(
+                      networkImage: '${AU.baseUrlAllApisImage}${circularList[index].attachment}',
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }
+      else if(docTypeValue == 'PDF'){
         await showGeneralDialog(
           context: Get.context!,
           pageBuilder: (context, animation, secondaryAnimation) => Material(
@@ -129,25 +162,14 @@ class CircularController extends GetxController {
           ),
         );
       }
-      else {
-        await showGeneralDialog(
-          context: Get.context!,
-          barrierColor: Col.inverseSecondary,
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return Material(
-              child: Center(
-                child: InteractiveViewer(
-                  child: SafeArea(
-                    child: commonContainerForImage(
-                      networkImage:
-                          '${AU.baseUrlAllApisImage}${circularList[index].attachment}',
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
+      else{
+        if (!await launcher.launchUrl(
+          '${AU.baseUrlAllApisImage}${circularList[index].attachment}',
+          const LaunchOptions(mode: PreferredLaunchMode.inAppBrowserView),
+        )) {
+          throw Exception('Could not launch ${AU.baseUrlAllApisImage}${circularList[index].attachment}');
+        }
+
       }
     }
   }
@@ -177,12 +199,10 @@ class CircularController extends GetxController {
 
   Future<void> callingCircularDetailApi() async {
     try {
-      DateTime dateTimeStart = DateFormat('d MMM yyyy')
-          .parse(startController.text.trim().toString());
+      DateTime dateTimeStart = DateFormat('d MMM yyyy').parse(startController.text.trim().toString());
       String start = DateFormat('yyyy-MM-dd').format(dateTimeStart);
 
-      DateTime dateTimeEnd =
-          DateFormat('d MMM yyyy').parse(endController.text.trim().toString());
+      DateTime dateTimeEnd = DateFormat('d MMM yyyy').parse(endController.text.trim().toString());
       String end = DateFormat('yyyy-MM-dd').format(dateTimeEnd);
 
       bodyParamsForCircularDetail = {
@@ -193,17 +213,15 @@ class CircularController extends GetxController {
         AK.startDate: start,
         AK.endDate: end,
       };
-      circularDetailModal.value = await CAI.getCircularDetailApi(
-          bodyParams: bodyParamsForCircularDetail);
+      circularDetailModal.value = await CAI.getCircularDetailApi(bodyParams: bodyParamsForCircularDetail);
       if (offset.value == 0) {
+        apiResValue.value = true;
         circularList.clear();
         isLastPage.value = false;
       }
       if (circularDetailModal.value != null) {
-        if (circularDetailModal.value?.circular != null &&
-            circularDetailModal.value!.circular!.isNotEmpty) {
+        if (circularDetailModal.value?.circular != null && circularDetailModal.value!.circular!.isNotEmpty) {
           circularList.addAll(circularDetailModal.value?.circular ?? []);
-          print('circularList:::::::::: ${circularList.length}');
         } else {
           isLastPage.value = true;
         }
@@ -214,10 +232,19 @@ class CircularController extends GetxController {
     apiResValue.value = false;
   }
 
-  Future<void> searchOnChange({required String value}) async {
+  Future<void> searchOnChange({String? value}) async {
     try {
-      circularList.clear();
-      await callingCircularDetailApi();
+
+      if (value != null) {
+        const duration = Duration(milliseconds: 800); // set the duration that you want call search() after that.
+        if (searchOnStoppedTyping != null) {
+          searchOnStoppedTyping?.cancel(); // clear timer
+        }
+        searchOnStoppedTyping = Timer(duration, () async {
+          circularList.clear();
+          await callingCircularDetailApi();
+        });
+      }
     } catch (e) {
       CM.error();
     }
@@ -239,3 +266,4 @@ class CircularController extends GetxController {
     await onInit();
   }
 }
+

@@ -22,6 +22,7 @@ import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
+import 'package:task/api/api_model/sub_task_filter_data_modal.dart';
 import 'package:task/api/api_model/task_data_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -835,6 +836,34 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getMonthlyAttendanceDataModal = TaskDataModal.fromJson(jsonDecode(response.body));
         return getMonthlyAttendanceDataModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<SubTaskFilterDataModal?> getSubTaskFilterDataApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    SubTaskFilterDataModal? getSubTaskFilterDataModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointTaskControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getSubTaskFilterDataModal = SubTaskFilterDataModal.fromJson(jsonDecode(response.body));
+        return getSubTaskFilterDataModal;
       } else {
         return null;
       }

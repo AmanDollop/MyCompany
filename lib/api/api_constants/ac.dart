@@ -141,8 +141,6 @@ class AK {
   static const taskCategoryName = "task_category_name";
   static const taskCategoryId = "task_category_id";
 
-  static const searchTaskCategory = "searchTaskCategory";
-
 }
 
 class AU {
@@ -259,6 +257,8 @@ class ApiEndPointAction{
   static  const deleteTaskCategory = 'deleteTaskCategory';
 
   static  const getTaskCategory = 'getTaskCategory';
+
+  static  const getTaskStatus = 'getTaskStatus';
 
 
 }

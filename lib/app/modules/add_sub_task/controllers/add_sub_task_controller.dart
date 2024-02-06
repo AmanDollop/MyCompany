@@ -66,7 +66,6 @@ class AddSubTaskController extends GetxController {
       }
     }
 
-
   }
 
   void clickOnAddAndUpdateButton() {

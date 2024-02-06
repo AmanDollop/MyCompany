@@ -4,6 +4,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/all_task/controllers/all_task_controller.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/common/common_packages/load_more/lm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -41,14 +42,19 @@ class AllTaskView extends GetView<AllTaskController> {
                         : Expanded(
                             child: ModalProgress(
                               inAsyncCall: controller.apiResValue.value,
-                              child: ListView(
-                                physics: const ScrollPhysics(),
-                                children: [
-                                  topCardGridView(),
-                                  SizedBox(height: 16.px),
-                                  taskCardListView(),
-                                  SizedBox(height: 8.h)
-                                ],
+                              child: LM(
+                                noMoreWidget: const SizedBox(),
+                                isLastPage: controller.isLastPage.value,
+                                onLoadMore: () => controller.onLoadMore(),
+                                child: ListView(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  children: [
+                                    topCardGridView(),
+                                    SizedBox(height: 16.px),
+                                    taskCardListView(),
+                                  ],
+                                ),
                               ),
                             ),
                           )
@@ -114,15 +120,15 @@ class AllTaskView extends GetView<AllTaskController> {
         itemBuilder: (context, index) {
           controller.topGridCardSubTitleTextList.clear();
           controller.topGridCardSubTitleTextList.insert(0,
-              controller.getTaskDataModal.value?.totalCompleteTask != null || controller.getTaskDataModal.value!.totalCompleteTask != 0
+              controller.getTaskDataModal.value?.totalCompleteTask != null || controller.getTaskDataModal.value!.totalCompleteTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalCompleteTask}'
                   : '0');
           controller.topGridCardSubTitleTextList.insert(1,
-              controller.getTaskDataModal.value?.totalDueTask != null || controller.getTaskDataModal.value!.totalDueTask != 0
+              controller.getTaskDataModal.value?.totalDueTask != null || controller.getTaskDataModal.value!.totalDueTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalDueTask}'
                   : '0');
           controller.topGridCardSubTitleTextList.insert(2,
-              controller.getTaskDataModal.value?.totalTodayDueTask != null || controller.getTaskDataModal.value!.totalTodayDueTask != 0
+              controller.getTaskDataModal.value?.totalTodayDueTask != null || controller.getTaskDataModal.value!.totalTodayDueTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalTodayDueTask}'
                   : '0');
           return Card(
@@ -159,16 +165,19 @@ class AllTaskView extends GetView<AllTaskController> {
       );
 
   Widget taskCardListView() {
-    if (controller.taskCategoryList != null && controller.taskCategoryList!.isNotEmpty) {
+    if (controller.taskCategoryList.isNotEmpty) {
+      double commonLinearProgressBarValue = 0.0;
       return ListView.builder(
         shrinkWrap: true,
-        itemCount: controller.taskCategoryList?.length,
+        itemCount: controller.taskCategoryList.length,
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         itemBuilder: (context, taskCardListViewIndex) {
+          if(controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty){
+            commonLinearProgressBarValue = /*double.parse('${controller.taskCategoryList?[taskCardListViewIndex].taskPercentage}')*/80.0 / 100;
+          }
           return InkWell(
-            onTap: () => controller.clickOnTaskCard(
-                taskCardListViewIndex: taskCardListViewIndex),
+            onTap: () => controller.clickOnTaskCard(taskCardListViewIndex: taskCardListViewIndex),
             borderRadius: BorderRadius.circular(6.px),
             child: Card(
               color: Col.inverseSecondary,
@@ -179,33 +188,33 @@ class AllTaskView extends GetView<AllTaskController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     subTitleTextView(
-                        text: controller.taskCategoryList?[taskCardListViewIndex].taskCategoryName != null && controller.taskCategoryList![taskCardListViewIndex].taskCategoryName!.isNotEmpty
-                            ? '${controller.taskCategoryList?[taskCardListViewIndex].taskCategoryName}'
+                        text: controller.taskCategoryList[taskCardListViewIndex].taskCategoryName != null && controller.taskCategoryList[taskCardListViewIndex].taskCategoryName!.isNotEmpty
+                            ? '${controller.taskCategoryList[taskCardListViewIndex].taskCategoryName}'
                             : 'Task Name Not Found!',
                         fontSize: 14.px),
                     SizedBox(height: 10.px),
                     Row(
                       children: [
                         Expanded(
-                          child: CW.commonLinearProgressBar(value: .5, height: 5.px),),
+                          child: CW.commonLinearProgressBar(value: commonLinearProgressBarValue, height: 5.px),),
                         SizedBox(width: 10.px),
-                        cardTitleTextView(text: '40%', color: Col.primary)
+                        cardTitleTextView(text: '80%', color: Col.primary)
                       ],
                     ),
                     SizedBox(height: 10.px),
                     taskCardGridView(taskCardListViewIndex: taskCardListViewIndex),
-                    if (controller.taskCategoryList![taskCardListViewIndex].isEditAllow == true || controller.taskCategoryList![taskCardListViewIndex].isDeleteAllow == true)
+                    if (controller.taskCategoryList[taskCardListViewIndex].isEditAllow == true || controller.taskCategoryList[taskCardListViewIndex].isDeleteAllow == true)
                       SizedBox(height: 10.px),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        if (controller.taskCategoryList![taskCardListViewIndex].isEditAllow ?? false)
+                        if (controller.taskCategoryList[taskCardListViewIndex].isEditAllow ?? false)
                           commonCardButtonView(
                             iconPath: 'assets/icons/edit_pen2_icon.png',
                             onTap: () => controller.clickOnAddNewTaskButton(taskCardListViewIndex: taskCardListViewIndex),
                           ),
                         SizedBox(width: 10.px),
-                        if (controller.taskCategoryList![taskCardListViewIndex].isDeleteAllow ?? false)
+                        if (controller.taskCategoryList[taskCardListViewIndex].isDeleteAllow ?? false)
                           commonCardButtonView(
                             iconPath: 'assets/icons/delete_icon.png',
                             iconColor: Col.error,
@@ -246,15 +255,14 @@ class AllTaskView extends GetView<AllTaskController> {
       );
 
   Widget taskCardGridView({required int taskCardListViewIndex}) {
-    controller.taskCountList = controller.taskCategoryList?[taskCardListViewIndex].taskCount ?? [];
+    controller.taskCountList = controller.taskCategoryList[taskCardListViewIndex].taskCount ?? [];
     if (controller.taskCountList != null && controller.taskCountList!.isNotEmpty) {
       return GridView.builder(
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.taskCountList?.length,
         shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, childAspectRatio: 2.8),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.8),
         itemBuilder: (context, gridViewIndex) {
           return Card(
             shape: RoundedRectangleBorder(
@@ -269,12 +277,10 @@ class AllTaskView extends GetView<AllTaskController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   cardTitleTextView(
-                      text:
-                          '${controller.taskCountList?[gridViewIndex].name}: ${controller.taskCountList?[gridViewIndex].count}',
-                      color: controller.taskCountList?[gridViewIndex].name == 'Total Task'
+                      text: '${controller.taskCountList?[gridViewIndex].name}: ${controller.taskCountList?[gridViewIndex].count}',
+                      color: controller.taskCountList?[gridViewIndex].color == '' || controller.taskCountList?[gridViewIndex].color == null && controller.taskCountList![gridViewIndex].color!.isNotEmpty
                           ? Col.primary
-                          : CW.apiColorConverterMethod(
-                              colorString: controller.taskCountList?[gridViewIndex].color ?? ''),
+                          : CW.apiColorConverterMethod(colorString: controller.taskCountList?[gridViewIndex].color ?? ''),
                   ),
                 ],
               ),

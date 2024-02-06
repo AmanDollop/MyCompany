@@ -49,10 +49,11 @@ class MonthView extends GetView<AttendanceTrackerController> {
                               SizedBox(height: 20.px),
                             ],
                           )
-                    : Center(child: CW.commonNoDataFoundText(),)
-                : controller.apiResValue.value
+                    : Center(child: CW.commonNoDataFoundText(),
+            ) : controller.apiResValue.value
                     ? const SizedBox()
-                    : CW.commonNoDataFoundText()),
+                    : CW.commonNoDataFoundText(),
+        ),
       );
     });
   }
@@ -268,12 +269,14 @@ class MonthView extends GetView<AttendanceTrackerController> {
         ),
       );
 
-  Widget getDayNames() {
+  Widget getDayNames({bool shimmerValue = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         for (var day in controller.days)
-          Text(
+          shimmerValue
+              ? CW.commonShimmerViewForImage(height: 20.px,width: 40.px)
+              : Text(
             day,
             style: Theme.of(Get.context!).textTheme.titleLarge,
           ),
@@ -421,6 +424,21 @@ class MonthView extends GetView<AttendanceTrackerController> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) => CW.commonShimmerViewForImage(),
+      ),
+      SizedBox(height: 20.px),
+      getDayNames(shimmerValue: true),
+      SizedBox(height: 20.px),
+      GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          crossAxisSpacing: 10.px,
+          mainAxisSpacing: 10.px,
+        ),
+        itemCount: 31,
+        itemBuilder: (context, index) {
+          return CW.commonShimmerViewForImage(height: 31.px, width: 30.px,radius: 20.px);
+        },
       ),
       SizedBox(height: 20.px),
     ],

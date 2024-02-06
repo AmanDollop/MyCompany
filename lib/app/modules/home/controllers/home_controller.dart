@@ -269,12 +269,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       if (isDatabaseHaveDataForAppMenu.value) {
         await callingMenusApi();
       } else {
-        appMenuFromLocalDataBase.value = await DataBaseHelper()
-            .getParticularData(
-                key: DataBaseConstant.appMenus,
-                tableName: DataBaseConstant.tableNameForAppMenu);
-        menusModal.value =
-            MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
+        appMenuFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus, tableName: DataBaseConstant.tableNameForAppMenu);
+        menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
         menusModal.value?.getMenu?.forEach((element) {
           if (element.isDashboardMenu == '1') {
             isHeadingMenuList.add(element);

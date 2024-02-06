@@ -22,7 +22,9 @@ class DocumentView extends GetView<DocumentController> {
         controller.count.value;
         return ModalProgress(
             inAsyncCall: controller.apiResValue.value,
-            child: Obx(() {
+            child: controller.apiResValue.value
+                ? shimmerView()
+                : Obx(() {
               controller.count.value;
               if (controller.documentModal.value != null) {
                 if (controller.getDocumentDetails != null && controller.getDocumentDetails!.isNotEmpty) {
@@ -145,4 +147,58 @@ class DocumentView extends GetView<DocumentController> {
           : const SizedBox(),
     );
   }
+
+  Widget shimmerView(){
+    return GridView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+      itemCount: 10,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisExtent: 130.px,
+          crossAxisSpacing: 14.px,
+          mainAxisSpacing: 14.px),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () => controller.clickOnDocument(index: index,context: context),
+          borderRadius: BorderRadius.circular(6.px),
+          child: Ink(
+            decoration: BoxDecoration(
+              color: Col.inverseSecondary,
+              boxShadow: [
+                BoxShadow(color: Col.gray, blurRadius: .5)
+              ],
+              borderRadius: BorderRadius.circular(6.px),
+            ),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(6.px),
+                    topLeft: Radius.circular(6.px),
+                  ),
+                  child: CW.commonShimmerViewForImage(height: 84.px, width: double.infinity),
+                ),
+                SizedBox(height: 10.px),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.px),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CW.commonShimmerViewForImage(width: 16.px,height: 16.px),
+                      SizedBox(width: 6.px),
+                       CW.commonShimmerViewForImage(width: 100.px,height: 16.px),
+                      SizedBox(width: 6.px),
+                      CW.commonShimmerViewForImage(width: 5.px,height: 16.px),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

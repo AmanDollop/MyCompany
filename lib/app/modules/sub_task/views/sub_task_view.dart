@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/app_controller/ac.dart';
+import 'package:task/app/modules/sub_task/views/sub_task_shimmer_view.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -37,7 +38,7 @@ class SubTaskView extends GetView<SubTaskController> {
                         SizedBox(height: 16.px),
                         controller.apiResValue.value
                             ? Expanded(
-                                child: shimmerView(),
+                                child: SubTaskShimmerView.shimmerView(),
                               )
                             : Expanded(
                                 child: ListView(
@@ -110,65 +111,66 @@ class SubTaskView extends GetView<SubTaskController> {
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget filterCardGridView() => GridView.builder(
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: controller.filterGridCardTitleTextList.length,
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, childAspectRatio: 2.6),
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              controller.count.value = 0;
-              controller.filterValueList.value =
-                  controller.filterGridCardTitleTextList[index];
-              controller.count.value++;
-            },
-            borderRadius: BorderRadius.circular(6.px),
-            child: Container(
-              margin: EdgeInsets.all(4.px),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: controller.filterValueList.value ==
-                            controller.filterGridCardTitleTextList[index]
-                        ? Col.primary
-                        : Colors.transparent,
-                    width: 1.px),
-                borderRadius: BorderRadius.circular(6.px),
-                color: controller.filterValueList.value ==
-                        controller.filterGridCardTitleTextList[index]
-                    ? Col.primary.withOpacity(.2)
-                    : Col.gray.withOpacity(.2),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(6.px),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 10.px,
-                      width: 10.px,
-                      decoration: BoxDecoration(
-                          color: controller.filterValueList.value ==
-                                  controller.filterGridCardTitleTextList[index]
+  Widget filterCardGridView() {
+    if(controller.getSubTaskFilterDataModal.value != null){
+      if(controller.subTaskFilterList != null && controller.subTaskFilterList!.isNotEmpty){
+        return GridView.builder(
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.subTaskFilterList?.length,
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, childAspectRatio: 2.6),
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () => controller.clickOnSubTaskFilterCard(index:index),
+              borderRadius: BorderRadius.circular(6.px),
+              child: Container(
+                margin: EdgeInsets.all(4.px),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: controller.filterValueList[index] == controller.subTaskFilterList?[index].taskStatusName
+                          ? CW.apiColorConverterMethod(colorString: '${controller.subTaskFilterList?[index].taskStatusColor}')
+                          : Colors.transparent,
+                      width: 1.px),
+                  borderRadius: BorderRadius.circular(6.px),
+                  color: controller.filterValueList[index] == controller.subTaskFilterList?[index].taskStatusName
+                      ? CW.apiColorConverterMethod(colorString: '${controller.subTaskFilterList?[index].taskStatusColor}').withOpacity(.2)
+                      : Col.gray.withOpacity(.2),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(6.px),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 10.px,
+                        width: 10.px,
+                        decoration: BoxDecoration(
+                            color: controller.filterValueList[index] == controller.subTaskFilterList?[index].taskStatusName
+                                ? CW.apiColorConverterMethod(colorString: '${controller.subTaskFilterList?[index].taskStatusColor}')
+                                : Col.gray.withOpacity(.5),
+                            shape: BoxShape.circle),
+                      ),
+                      SizedBox(width: 4.px),
+                      cardTitleTextView(
+                          text: '${controller.subTaskFilterList?[index].taskStatusName}',
+                          color: controller.filterValueList.value == controller.subTaskFilterList?[index].taskStatusName
                               ? Col.primary
-                              : Col.gray.withOpacity(.5),
-                          shape: BoxShape.circle),
-                    ),
-                    SizedBox(width: 4.px),
-                    cardTitleTextView(
-                        text: controller.filterGridCardTitleTextList[index],
-                        color: controller.filterValueList.value ==
-                                controller.filterGridCardTitleTextList[index]
-                            ? Col.primary
-                            : Col.secondary),
-                  ],
+                              : Col.secondary),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      );
+            );
+          },
+        );
+      }else{
+        return const SizedBox();
+      }
+    }else{
+      return const SizedBox();
+    }
+  }
 
   Widget subTaskCardListView() => ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
@@ -428,190 +430,4 @@ class SubTaskView extends GetView<SubTaskController> {
             borderRadius: 25.px),
       );
 
-  Widget shimmerView() => ListView(
-    physics: const ScrollPhysics(),
-    children: [
-      Card(
-        color: Col.inverseSecondary,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
-        child: Padding(
-          padding: EdgeInsets.all(4.px),
-          child: GridView.builder(
-            padding: EdgeInsets.all(6.px),
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.filterGridCardTitleTextList.length,
-            shrinkWrap: true,
-            gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.6,crossAxisSpacing: 10.px,mainAxisSpacing: 10.px),
-            itemBuilder: (context, index) => CW.commonShimmerViewForImage(),
-          ),
-        ),
-      ),
-      SizedBox(height: 16.px),
-      ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: 10,
-        itemBuilder: (context, index) => Card(
-          color: Col.inverseSecondary,
-          margin: EdgeInsets.only(bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 44.px,
-                margin: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: Col.primary.withOpacity(.1),
-                  border: Border.all(color: Col.primary, width: 1.px),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(6.px),
-                    topLeft: Radius.circular(6.px),
-                  ),
-                ),
-                padding: EdgeInsets.only(left: 10.px),
-                child: Row(
-                  children: [
-                    CW.commonShimmerViewForImage(height: 25.px,width: 200.px),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CW.commonShimmerViewForImage(height: 50.px,width: 50.px,radius: 25.px),
-                    SizedBox(width: 10.px),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CW.commonShimmerViewForImage(height: 15.px,width: 80.px),
-                              CW.commonShimmerViewForImage(height: 15.px,width: 150.px),
-                            ],
-                          ),
-                          SizedBox(height: 5.px),
-                          CW.commonShimmerViewForImage(height: 18.px,width: 250.px),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
-              Padding(
-                padding: EdgeInsets.all(10.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CW.commonShimmerViewForImage(height: 15.px,width: 80.px),
-                              SizedBox(height: 5.px),
-                              CW.commonShimmerViewForImage(height: 20.px,width: 250.px),
-                            ],
-                          ),
-                          SizedBox(height: 10.px),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CW.commonShimmerViewForImage(height: 15.px,width: 80.px),
-                              SizedBox(height: 5.px),
-                              CW.commonShimmerViewForImage(height: 20.px,width: 250.px),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    CW.commonShimmerViewForImage(height: 40.px,width: 40.px,radius: 20.px)
-                  ],
-                ),
-              ),
-              CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
-              Padding(
-                padding: EdgeInsets.all(10.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CW.commonShimmerViewForImage(height: 15.px,width: 100.px),
-                              SizedBox(height: 5.px),
-                              Row(
-                                children: [
-                                  CW.commonShimmerViewForImage(height: 10.px,width: 10.px,radius: 5.px),
-                                  SizedBox(width: 4.px),
-                                  CW.commonShimmerViewForImage(height: 10.px,width: 60.px,radius: 4.px),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 10.px),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CW.commonShimmerViewForImage(height: 15.px,width: 100.px),
-                              SizedBox(height: 5.px),
-                              Row(
-                                children: [
-                                  CW.commonShimmerViewForImage(height: 10.px,width: 10.px,radius: 5.px),
-                                  SizedBox(width: 4.px),
-                                  CW.commonShimmerViewForImage(height: 10.px,width: 60.px,radius: 4.px),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        CW.commonShimmerViewForImage(height: 15.px,width: 60.px),
-                        SizedBox(height: 4.px),
-                        CW.commonShimmerViewForImage(height: 15.px,width: 32.px),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10.px),
-                child: Row(
-                  children: [
-                    CW.commonShimmerViewForImage(height: 30.px,width: 30.px),
-                    SizedBox(width: 10.px),
-                    CW.commonShimmerViewForImage(height: 30.px,width: 30.px),
-                    SizedBox(width: 10.px),
-                    CW.commonShimmerViewForImage(height: 30.px,width: 30.px),
-                    SizedBox(width: 10.px),
-                    CW.commonShimmerViewForImage(height: 30.px,width: 30.px),
-                    SizedBox(width: 10.px),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-      SizedBox(height: 8.h)
-    ],
-  );
 }

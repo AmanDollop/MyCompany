@@ -30,6 +30,7 @@ class CircularView extends GetView<CircularController> {
           controller.count.value;
           return ModalProgress(
             inAsyncCall: controller.apiResValue.value,
+            isLoader: false,
             child: controller.apiResValue.value
                 ? shimmerView()
                 : Obx(() {
@@ -69,8 +70,8 @@ class CircularView extends GetView<CircularController> {
                           },
                         )
                             : SizedBox(
-                          height: 25.h,
-                          child: CW.commonNoDataFoundText(),
+                              height: 60.h,
+                              child: CW.commonNoDataFoundText(),
                         ),
                       ],
                     ),
@@ -152,58 +153,60 @@ class CircularView extends GetView<CircularController> {
         ),
       );
 
-  Widget cardView({required int index}) => Container(
-    decoration: BoxDecoration(
-        color: Col.inverseSecondary,
-        borderRadius: BorderRadius.circular(6.px),
-        boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 12.px, right: 12.px),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              cardTitleTextView(text: '${controller.circularList[index].title}'),
-              viewMoreButtonView(index: index),
-            ],
+  Widget cardView({required int index}) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Col.inverseSecondary,
+          borderRadius: BorderRadius.circular(6.px),
+          boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 12.px, right: 12.px),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                cardTitleTextView(text: '${controller.circularList[index].title}'),
+                viewMoreButtonView(index: index),
+              ],
+            ),
           ),
-        ),
-        CW.commonDividerView(color: Col.gray),
-        SizedBox(height: 6.px),
-        Padding(
-          padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 12.px),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              cardDetailTextView(
-                text: '${controller.circularList[index].description}',
-              ),
-              SizedBox(height: 12.px),
-              imageView(index:index),
-              SizedBox(height: 12.px),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        cardTitleTextView(text: '${controller.circularList[index].createdByName}'),
-                        SizedBox(height: 6.px),
-                        cardDateTextView(text: '${controller.circularList[index].createdDate}')
-                      ],
+          CW.commonDividerView(color: Col.gray),
+          SizedBox(height: 6.px),
+          Padding(
+            padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 12.px),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                cardDetailTextView(
+                  text: '${controller.circularList[index].description}',
+                ),
+                SizedBox(height: 12.px),
+                imageView(index:index),
+                SizedBox(height: 12.px),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          cardTitleTextView(text: '${controller.circularList[index].createdByName}'),
+                          SizedBox(height: 6.px),
+                          cardDateTextView(text: '${controller.circularList[index].createdDate}')
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 
   Widget cardTitleTextView({required String text, TextAlign? textAlign}) => Text(
         text,
@@ -243,14 +246,20 @@ class CircularView extends GetView<CircularController> {
     );
   }
 
-  Widget imageView({required int index}) => InkWell(
-    onTap: () => controller.clickOnImageView(index:index),
-    child: CW.commonNetworkImageView(
-        path: '${AU.baseUrlAllApisImage}${controller.circularList[index].attachment}',
-        isAssetImage: false,
-        height: 40.px,
-        width: 40.px),
-  );
+  Widget imageView({required int index}) {
+    controller.docType.value = CM.getDocumentTypeLogo(fileType: CM.getDocumentType(filePath: '${controller.circularList[index].attachment}'));
+    print('controller.docType.value:::: ${controller.docType.value}');
+    return InkWell(
+      onTap: () => controller.clickOnImageView(index:index),
+      child: CW.commonNetworkImageView(
+          path: controller.docType.value == 'Image'?'${AU.baseUrlAllApisImage}${controller.circularList[index].attachment}':controller.docType.value,
+          isAssetImage: controller.docType.value == 'Image'?false:true,
+          height: 40.px,
+          width: 40.px),
+    );
+  }
+
+
 
   Widget cardDateTextView({required String text}) => Text(
         text,
@@ -272,13 +281,59 @@ class CircularView extends GetView<CircularController> {
         ],
       ),
       SizedBox(height: 16.px),
-      CW.commonShimmerViewForImage(height: 20.h),
-      SizedBox(height: 10.px),
-      CW.commonShimmerViewForImage(height: 20.h),
-      SizedBox(height: 10.px),
-      CW.commonShimmerViewForImage(height: 20.h),
-      SizedBox(height: 10.px),
-      CW.commonShimmerViewForImage(height: 20.h),
+      ListView.builder(padding: EdgeInsets.zero,physics: const NeverScrollableScrollPhysics(),itemCount: 3,shrinkWrap: true,itemBuilder: (context, index) => Container(
+        margin: EdgeInsets.only(bottom: 14.px),
+        decoration: BoxDecoration(
+            color: Col.inverseSecondary,
+            borderRadius: BorderRadius.circular(6.px),
+            boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 12.px, right: 12.px,top: 10.px),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CW.commonShimmerViewForImage(height: 25.px,width: 200.px),
+                  CW.commonShimmerViewForImage(height: 20.px,width: 80.px),
+                ],
+              ),
+            ),
+            CW.commonDividerView(color: Col.gray),
+            SizedBox(height: 6.px),
+            Padding(
+              padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 12.px),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CW.commonShimmerViewForImage(height: 16.px,width: double.infinity.px),
+                  SizedBox(height: 5.px),
+                  CW.commonShimmerViewForImage(height: 16.px,width: 250.px),
+                  SizedBox(height: 12.px),
+                  CW.commonShimmerViewForImage(height: 40.px,width: 40.px),
+                  SizedBox(height: 12.px),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CW.commonShimmerViewForImage(height: 20.px,width: 100.px),
+                            SizedBox(height: 6.px),
+                            CW.commonShimmerViewForImage(height: 20.px,width: 150.px)
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),)
     ],
   );
 

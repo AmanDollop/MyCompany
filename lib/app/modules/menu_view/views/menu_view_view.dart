@@ -144,13 +144,14 @@ class MenuViewView extends GetView<MenuViewController> {
                         borderRadius: BorderRadius.circular(6.px),
                       ),
                       child: Center(
-                        child: CW.commonNetworkImageView(
-                          isAssetImage: false,
-                          path: controller.searchController.text.isNotEmpty
-                              ? '${AU.baseUrlForSearchCompanyImage}${controller.getMenuListForSearch[index].menuImage}'
-                              : '${AU.baseUrlForSearchCompanyImage}${controller.getMenuList[index].menuImage}',
+                        child: SizedBox(
                           width: 22.px,
                           height: 22.px,
+                          child: CW.commonCachedNetworkImageView(
+                            path: controller.searchController.text.isNotEmpty
+                                ? '${AU.baseUrlForSearchCompanyImage}${controller.getMenuListForSearch[index].menuImage}'
+                                : '${AU.baseUrlForSearchCompanyImage}${controller.getMenuList[index].menuImage}',
+                          ),
                         ),
                       ),
                     ),
