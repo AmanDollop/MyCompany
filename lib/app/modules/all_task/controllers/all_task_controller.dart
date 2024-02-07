@@ -88,6 +88,14 @@ class AllTaskController extends GetxController {
     Get.back();
   }
 
+  onRefresh() async {
+    offset.value = 0;
+    getTaskDataModal.value = null;
+    taskCountList?.clear();
+    taskCategoryList.clear();
+    await onInit();
+  }
+
   Future<void> taskSearchOnChange({required String value}) async {
     await callingGetTaskDataApi();
   }

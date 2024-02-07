@@ -79,34 +79,31 @@ class CircularController extends GetxController {
   }
 
   Future<void> clickOnStartTextField() async {
-    await CDT
-        .iosPicker(
+     await CDT.iosPicker1(
             context: Get.context!,
             dateController: startController,
             initialDate: startController.text.isNotEmpty
                 ? DateFormat('dd MMM yyyy').parse(startController.text)
-                : DateTime.now())
-        .whenComplete(() async {
-      CM.unFocusKeyBoard();
-      apiResValue.value = true;
-      offset.value = 0;
-      await callingCircularDetailApi();
-      apiResValue.value = false;
-    }).then((value) {
-      print('val:::::  $value');
-    });
+                : DateTime.now(),
+     ).whenComplete(() async {
+       CM.unFocusKeyBoard();
+       apiResValue.value = true;
+       offset.value = 0;
+       await callingCircularDetailApi();
+       apiResValue.value = false;
+     });
+
   }
 
   Future<void> clickOnEndTextField() async {
-    CDT
-        .iosPicker(
+   await CDT.iosPicker1(
             context: Get.context!,
             dateController: endController,
             firstDate: DateFormat('dd MMM yyyy').parse(startController.text),
             initialDate: endController.text.isNotEmpty
                 ? DateFormat('dd MMM yyyy').parse(endController.text)
-                : DateTime.now())
-        .whenComplete(() async {
+                : DateTime.now(),
+   ).whenComplete(() async {
       CM.unFocusKeyBoard();
       apiResValue.value = true;
       offset.value = 0;

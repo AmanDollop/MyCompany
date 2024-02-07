@@ -22,6 +22,7 @@ import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/shift_time_modal.dart';
+import 'package:task/api/api_model/sub_task_data_modal.dart';
 import 'package:task/api/api_model/sub_task_filter_data_modal.dart';
 import 'package:task/api/api_model/task_data_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
@@ -512,6 +513,34 @@ class CAI extends GetxController{
     }
   }
 
+  static Future<http.Response?> addDocumentApi({
+    required Map<String, dynamic> bodyParams,
+    File? filePath
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await userToken(stringToken: true);
+
+    http.Response? response = await MyHttp.multipartRequest(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        userProfileImageKey: AK.documentFile,
+        image: filePath,
+        multipartRequestType: 'POST',
+        token: '$token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   static Future<ExperienceModal?> getExperienceApi({
     required Map<String, dynamic> bodyParams,
   }) async {
@@ -864,6 +893,34 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getSubTaskFilterDataModal = SubTaskFilterDataModal.fromJson(jsonDecode(response.body));
         return getSubTaskFilterDataModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<SubTaskDataModal?> getSubTaskDataApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    SubTaskDataModal? getSubTaskDataModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointTaskControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getSubTaskDataModal = SubTaskDataModal.fromJson(jsonDecode(response.body));
+        return getSubTaskDataModal;
       } else {
         return null;
       }

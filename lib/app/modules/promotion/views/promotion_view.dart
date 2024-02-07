@@ -21,14 +21,14 @@ class PromotionView extends GetView<PromotionController> {
         controller.count.value;
         return ModalProgress(
           inAsyncCall: controller.apiResValue.value,
-          child: controller.promotionModal.value != null
-              ? controller.getPromotionDetails != null &&
-                      controller.getPromotionDetails!.isNotEmpty
+          child: controller.apiResValue.value
+              ? shimmerView()
+              : controller.promotionModal.value != null
+              ? controller.getPromotionDetails != null && controller.getPromotionDetails!.isNotEmpty
                   ? ListView.builder(
                       itemCount: controller.getPromotionDetails?.length,
                       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                       itemBuilder: (context, index) {
-                        print(index);
                         return cardView(index: index);
                       },
                     )
@@ -127,5 +127,48 @@ class PromotionView extends GetView<PromotionController> {
     maxLines: 1,
     overflow: TextOverflow.ellipsis,
   );
+
+  Widget shimmerView() => ListView.builder(itemBuilder:(context, index) => Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Column(
+        children: [
+          CW.commonShimmerViewForImage(
+              width: 12.px,
+              height: 12.px,
+              radius: 6.px
+          ),
+          CW.commonShimmerViewForImage(
+            width: 2.5.px,
+            height: 88.px,
+          ),
+        ],
+      ),
+      SizedBox(width: 14.px),
+      Column(
+        children: [
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 24.px,
+          ),
+          SizedBox(height: 5.px),
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 20.px,
+          ),
+          SizedBox(height: 5.px),
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 16.px,
+          ),
+          SizedBox(height: 5.px),
+          CW.commonShimmerViewForImage(
+            width: 150.px,
+            height: 16.px,
+          ),
+        ],
+      ),
+    ],
+  ),itemCount: 5,padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),);
 
 }

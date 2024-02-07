@@ -117,53 +117,50 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         labelText: 'Enter Sub Task',
         hintText: 'Enter Sub Task',
         controller: controller.subTaskNameController,
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter sub task'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter sub task'),
       );
 
   Widget selectPriorityTextFormFiled() => CW.commonTextField(
       labelText: 'Select Priority',
       hintText: 'Select Priority',
       controller: controller.selectPriorityController,
-      validator: (value) =>
-          V.isValid(value: value, title: 'Please select priority'),
+      validator: (value) => V.isValid(value: value, title: 'Please select priority'),
       readOnly: true,
-      suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary));
+      suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
+    onTap: () => controller.clickOnSelectPriorityTextFormFiled(),
+  );
 
   Widget taskStartDateTextFormFiled() => CW.commonTextField(
       labelText: 'Task Start Date',
       hintText: 'Task Start Date',
       controller: controller.taskStartDateController,
-      validator: (value) =>
-          V.isValid(value: value, title: 'Please select task start date'),
-      suffixIcon: suffixIconForTextFormFiled(
-          iconPath: 'assets/icons/working_days_icon.png'),
-      readOnly: true);
+      validator: (value) => V.isValid(value: value, title: 'Please select task start date'),
+      suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/working_days_icon.png'),
+      readOnly: true,
+    onTap: () => controller.clickOnTaskStartDateTextFormFiled(),
+  );
 
   Widget dueStartDateTextFormFiled() => CW.commonTextField(
       labelText: 'Task Due Date',
       hintText: 'Task Due Date',
       controller: controller.taskDueDateController,
-      validator: (value) =>
-          V.isValid(value: value, title: 'Please select task due date'),
-      suffixIcon: suffixIconForTextFormFiled(
-          iconPath: 'assets/icons/working_days_icon.png'),
-      readOnly: true);
+      validator: (value) => V.isValid(value: value, title: 'Please select task due date'),
+      suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/working_days_icon.png'),
+      readOnly: true,
+    onTap: () => controller.clickOnTaskDueDateTextFormFiled(),
+  );
 
   Widget dueTimeTextFormFiled() => CW.commonTextField(
       labelText: 'Due Time',
       hintText: 'Due Time',
       controller: controller.dueTimeController,
-      validator: (value) =>
-          V.isValid(value: value, title: 'Please select due time'),
-      suffixIcon:
-          suffixIconForTextFormFiled(iconPath: 'assets/icons/watch_icon.png'),
-      readOnly: true);
+      validator: (value) => V.isValid(value: value, title: 'Please select due time'),
+      suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/watch_icon.png'),
+      readOnly: true,
+    onTap: () => controller.clickOnDueTimeTextFormFiled(),
+  );
 
-  Widget commonCheckBoxView(
-          {required String text,
-          required bool value,
-          required ValueChanged<bool?>? onChanged}) =>
+  Widget commonCheckBoxView({required String text, required bool value, required ValueChanged<bool?>? onChanged}) =>
       Container(
         padding: EdgeInsets.only(
             left: 20.px, top: 12.px, bottom: 12.px, right: 12.px),
@@ -189,7 +186,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
   Widget remarkTextFormFiled() => CW.commonTextFieldForMultiline(
       labelText: 'Remark',
       hintText: 'Remark',
-      controller: controller.subTaskNameController,
+      controller: controller.remarkController,
       maxLines: 3);
 
   Widget attachFile() {

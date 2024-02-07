@@ -30,7 +30,11 @@ class AK {
 
   static const userLastName="user_last_name";
 
-  static const userProfilePic="user_profile_pic";
+  static const userProfilePic = "user_profile_pic";
+
+  static const documentFile = "document_file";
+
+  static const documentName = "document_name";
 
   static const memberDateOfBirth = "member_date_of_birth";
 
@@ -204,6 +208,8 @@ class ApiEndPointAction{
 
   static const getDocument = 'getDocument';
 
+  static const addDocument = 'addDocument';
+
   static const updatePersonalInfo = 'updatePersonalInfo';
 
   static const getBloodGroup = 'getBloodGroup';
@@ -259,6 +265,8 @@ class ApiEndPointAction{
   static  const getTaskCategory = 'getTaskCategory';
 
   static  const getTaskStatus = 'getTaskStatus';
+
+  static  const getTask = 'getTask';
 
 
 }

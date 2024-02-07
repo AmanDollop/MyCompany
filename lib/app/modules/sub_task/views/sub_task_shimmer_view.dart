@@ -4,9 +4,11 @@ import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 
 class SubTaskShimmerView {
-  static Widget shimmerView() => ListView(
+  static Widget shimmerView({required bool apiResValue,required bool apiResValueForSubTaskFilter, required bool apiResValueForSubTask}) => ListView(
+    shrinkWrap: true,
     physics: const ScrollPhysics(),
     children: [
+      if(apiResValueForSubTaskFilter || apiResValue)
       Card(
         color: Col.inverseSecondary,
         margin: EdgeInsets.zero,
@@ -18,12 +20,14 @@ class SubTaskShimmerView {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: 5,
             shrinkWrap: true,
-            gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.6,crossAxisSpacing: 10.px,mainAxisSpacing: 10.px),
+            gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 3,crossAxisSpacing: 10.px,mainAxisSpacing: 10.px),
             itemBuilder: (context, index) => CW.commonShimmerViewForImage(),
           ),
         ),
       ),
+      if(apiResValueForSubTaskFilter || apiResValue)
       SizedBox(height: 16.px),
+      if(apiResValueForSubTask || apiResValue)
       ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -187,6 +191,7 @@ class SubTaskShimmerView {
           ),
         ),
       ),
+      if(apiResValueForSubTask || apiResValue)
       SizedBox(height: 8.h)
     ],
   );

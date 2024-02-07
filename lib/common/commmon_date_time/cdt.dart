@@ -177,4 +177,128 @@ class CDT {
 
     return formattedDate;
   }
+
+  static Future<String> iosPicker1({
+    DateTime? lastDate,
+    DateTime? firstDate,
+    DateTime? initialDate,
+    int? minimumYear,
+    int? maximumYear,
+    required BuildContext context,
+    VoidCallback? clickOnSelect,
+    double? height,
+    double? borderRadius,
+    Color? backgroundColor,
+    bool use24hFormat = false,
+    bool showDayOfWeek = false,
+    CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
+    DatePickerDateOrder order = DatePickerDateOrder.dmy,
+    TextEditingController? dateController
+  })  async {
+    String formattedDate = DateFormat('dd MMM yyyy').format(DateTime.now());
+
+    await CBS.commonBottomSheet(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10.px, bottom: 10.px),
+          child: Ink(
+            decoration: BoxDecoration(
+              color: Col.inverseSecondary,
+              borderRadius: BorderRadius.circular(20.px),
+              border: Border.all(color: Col.secondary, width: 1.px),
+            ),
+            child: Column(
+              children: [
+                CupertinoTheme(
+                  data: const CupertinoThemeData(
+                    textTheme: CupertinoTextThemeData(
+                      dateTimePickerTextStyle: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    height: height ?? MediaQuery.of(context).size.height / 3.5,
+                    child: CupertinoDatePicker(
+                      initialDateTime:  initialDate ?? DateTime(DateTime.now().year - 18),
+                      minimumDate: firstDate ?? DateTime(1900),
+                      maximumDate: lastDate ?? DateTime.now(),
+                      onDateTimeChanged: (value) {
+                        formattedDate = DateFormat('dd MMM yyyy').format(value);
+                        // dateController?.text = formattedDate;
+                      },
+                      minimumYear: minimumYear ?? DateTime.now().year - 123,
+                      maximumYear: maximumYear ?? DateTime.now().year,
+
+                      showDayOfWeek: showDayOfWeek,
+                      use24hFormat: use24hFormat,
+                      mode: mode,
+                      dateOrder: order,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {
+                Get.back();
+              },
+              borderRadius: BorderRadius.circular(10.px),
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Col.inverseSecondary,
+                  borderRadius: BorderRadius.circular(10.px),
+                  border: Border.all(color: Col.secondary, width: 1.px),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
+                  child: Center(
+                    child: Text(
+                      C.textCancel,
+                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: clickOnSelect ?? () {
+                    dateController?.text = formattedDate;
+                    Get.back();
+                  },
+              borderRadius: BorderRadius.circular(10.px),
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Col.inverseSecondary,
+                  borderRadius: BorderRadius.circular(10.px),
+                  border: Border.all(color: Col.secondary, width: 1.px),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
+                  child: Center(
+                    child: Text(
+                      C.textSelect,
+                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20.px),
+      ],
+      backGroundColor: Colors.transparent,
+      showDragHandle: false,
+      isDismissible: false,
+    );
+
+    return formattedDate;
+  }
+
 }

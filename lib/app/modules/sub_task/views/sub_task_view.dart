@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/sub_task/views/sub_task_shimmer_view.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -19,6 +21,7 @@ class SubTaskView extends GetView<SubTaskController> {
         CM.unFocusKeyBoard();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: CW.commonAppBarView(
           title: controller.taskName.value,
           isLeading: true,
@@ -28,41 +31,54 @@ class SubTaskView extends GetView<SubTaskController> {
           controller.count.value;
           return AC.isConnect.value
               ? ModalProgress(
-                isLoader: false,
-                inAsyncCall: controller.apiResValue.value,
-                child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
-                    child: Column(
-                      children: [
-                        subTaskSearchTextFieldView(),
-                        SizedBox(height: 16.px),
-                        controller.apiResValue.value
-                            ? Expanded(
-                                child: SubTaskShimmerView.shimmerView(),
-                              )
-                            : Expanded(
-                                child: ListView(
-                                  physics: const ScrollPhysics(),
-                                  children: [
-                                    Card(
-                                      color: Col.inverseSecondary,
-                                      margin: EdgeInsets.zero,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(4.px),
-                                        child: filterCardGridView(),
-                                      ),
-                                    ),
-                                    SizedBox(height: 16.px),
-                                    subTaskCardListView(),
-                                    SizedBox(height: 8.h)
-                                  ],
+                  isLoader: false,
+                  inAsyncCall: controller.apiResValue.value,
+                  child: CW.commonRefreshIndicator(
+                    onRefresh: () => controller.onRefresh(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
+                      child: Column(
+                        children: [
+                          subTaskSearchTextFieldView(),
+                          SizedBox(height: 16.px),
+                          controller.apiResValue.value
+                              ? Expanded(
+                                  child: SubTaskShimmerView.shimmerView(
+                                      apiResValue: controller.apiResValue.value,
+                                      apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value,
+                                      apiResValueForSubTask: controller.apiResValueForSubTask.value),
+                                )
+                              : Expanded(
+                                  child: ListView(
+                                    physics: const ScrollPhysics(),
+                                    children: [
+                                      controller.apiResValueForSubTaskFilter.value
+                                          ? SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value)
+                                          : Card(
+                                              color: Col.inverseSecondary,
+                                              margin: EdgeInsets.zero,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(4.px),
+                                                child: filterCardGridView(),
+                                              ),
+                                            ),
+                                      SizedBox(height: 16.px),
+                                      controller.apiResValueForSubTask.value
+                                          ? SubTaskShimmerView.shimmerView(
+                                              apiResValue: controller.apiResValue.value,
+                                              apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value,
+                                              apiResValueForSubTask: controller.apiResValueForSubTask.value)
+                                          : subTaskCardListView(),
+                                      SizedBox(height: 8.h)
+                                    ],
+                                  ),
                                 ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-              )
+                )
               : CW.commonNoNetworkView();
         }),
         floatingActionButton: AC.isConnect.value
@@ -112,8 +128,8 @@ class SubTaskView extends GetView<SubTaskController> {
       );
 
   Widget filterCardGridView() {
-    if(controller.getSubTaskFilterDataModal.value != null){
-      if(controller.subTaskFilterList != null && controller.subTaskFilterList!.isNotEmpty){
+    if (controller.getSubTaskFilterDataModal.value != null) {
+      if (controller.subTaskFilterList != null && controller.subTaskFilterList!.isNotEmpty) {
         return GridView.builder(
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
@@ -123,7 +139,7 @@ class SubTaskView extends GetView<SubTaskController> {
               crossAxisCount: 3, childAspectRatio: 2.6),
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () => controller.clickOnSubTaskFilterCard(index:index),
+              onTap: () => controller.clickOnSubTaskFilterCard(index: index),
               borderRadius: BorderRadius.circular(6.px),
               child: Container(
                 margin: EdgeInsets.all(4.px),
@@ -154,9 +170,7 @@ class SubTaskView extends GetView<SubTaskController> {
                       SizedBox(width: 4.px),
                       cardTitleTextView(
                           text: '${controller.subTaskFilterList?[index].taskStatusName}',
-                          color: controller.filterValueList.value == controller.subTaskFilterList?[index].taskStatusName
-                              ? Col.primary
-                              : Col.secondary),
+                          color: Col.secondary),
                     ],
                   ),
                 ),
@@ -164,235 +178,285 @@ class SubTaskView extends GetView<SubTaskController> {
             );
           },
         );
-      }else{
+      } else {
         return const SizedBox();
       }
-    }else{
+    } else {
       return const SizedBox();
     }
   }
 
-  Widget subTaskCardListView() => ListView.builder(
+  Widget subTaskCardListView() {
+    if (controller.subTaskList != null && controller.subTaskList!.isNotEmpty) {
+      return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: 10,
+        itemCount: controller.subTaskList?.length,
         itemBuilder: (context, index) => Card(
           color: Col.inverseSecondary,
           margin: EdgeInsets.only(bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
-          child: InkWell(
-            onTap: () => controller.clickOnCard(index:index),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 44.px,
-                  margin: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                    color: Col.primary.withOpacity(.1),
-                    border: Border.all(color: Col.primary, width: 1.px),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(6.px),
-                      topLeft: Radius.circular(6.px),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 44.px,
+                margin: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  color: Col.primary.withOpacity(.1),
+                  border: Border.all(color: Col.primary, width: 1.px),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(6.px),
+                    topLeft: Radius.circular(6.px),
+                  ),
+                ),
+                padding: EdgeInsets.only(left: 10.px),
+                child: Row(
+                  children: [
+                    cardTitleTextView(
+                        text: controller.subTaskList?[index].taskName != null && controller.subTaskList![index].taskName!.isNotEmpty
+                            ? '${controller.subTaskList?[index].taskName}'
+                            : 'Not Found!',
+                        fontSize: 14.px),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10.px),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 50.px,
+                      height: 50.px,
+                      margin: EdgeInsets.zero,
+                      decoration: BoxDecoration(
+                        color: Col.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: controller.subTaskList?[index].userProfile != null && controller.subTaskList![index].userProfile!.isNotEmpty
+                            ? ClipRRect(
+                              borderRadius: BorderRadius.circular(25.px),
+                              child: CW.commonNetworkImageView(
+                                  path: '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
+                                  isAssetImage: false),
+                            )
+                            : Text(
+                                controller.subTaskList?[index].shortName != null && controller.subTaskList![index].shortName!.isNotEmpty
+                                    ? '${controller.subTaskList?[index].shortName}'
+                                    : '?',
+                                style: Theme.of(Get.context!)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(color: Col.inverseSecondary),
+                              ),
+                      ),
                     ),
-                  ),
-                  padding: EdgeInsets.only(left: 10.px),
-                  child: Row(
-                    children: [
-                      cardTitleTextView(text: 'Sub Task Name', fontSize: 14.px),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(10.px),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 50.px,
-                        height: 50.px,
-                        margin: EdgeInsets.zero,
-                        decoration: BoxDecoration(
-                            color: Col.primary.withOpacity(.1),
-                            shape: BoxShape.circle,
-                            image: const DecorationImage(
-                                image: AssetImage('assets/images/profile.png'),
-                                fit: BoxFit.cover)),
-                      ),
-                      SizedBox(width: 10.px),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                cardTitleTextView(
-                                    text: 'Assign By', color: Col.gray),
-                                cardTitleTextView(
-                                    text: '05:38, 31st Jan 2024',
-                                    color: Col.gray),
-                              ],
-                            ),
-                            subTitleTextView(text: 'Rashmi Rajput'),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                CW.commonDividerView(
-                    height: 0.px, color: Col.gray.withOpacity(.5)),
-                Padding(
-                  padding: EdgeInsets.all(10.px),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                cardTitleTextView(
-                                    text: 'Start Date', color: Col.gray),
-                                subTitleTextView(text: '05:38 AM, 31 Jan 2024'),
-                              ],
-                            ),
-                            SizedBox(height: 10.px),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                cardTitleTextView(
-                                    text: 'Due Date', color: Col.gray),
-                                subTitleTextView(text: '05:38 AM, 31 Jan 2024'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40.px,
-                        height: 40.px,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CW.commonProgressBarView(
-                                value: .5,
-                                backgroundColor: Col.gray,
-                                color: Col.primary),
-                            cardTitleTextView(text: '50%', fontSize: 8.px)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                CW.commonDividerView(
-                    height: 0.px, color: Col.gray.withOpacity(.5)),
-                Padding(
-                  padding: EdgeInsets.all(10.px),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                cardTitleTextView(
-                                    text: 'Priority', color: Col.gray),
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 10.px,
-                                      width: 10.px,
-                                      decoration: BoxDecoration(
-                                          color: Col.gray.withOpacity(.5),
-                                          shape: BoxShape.circle),
-                                    ),
-                                    SizedBox(width: 4.px),
-                                    cardTitleTextView(
-                                        text: 'High', color: Col.secondary),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 10.px),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                cardTitleTextView(
-                                    text: 'Status', color: Col.gray),
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 10.px,
-                                      width: 10.px,
-                                      decoration: BoxDecoration(
-                                          color: Col.gray.withOpacity(.5),
-                                          shape: BoxShape.circle),
-                                    ),
-                                    SizedBox(width: 4.px),
-                                    cardTitleTextView(
-                                        text: 'Pending', color: Col.secondary),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                    SizedBox(width: 10.px),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          cardTitleTextView(text: 'My Day', color: Col.gray),
-                          SizedBox(height: 4.px),
-                          CW.commonSwitchButtonView(
-                            onChange: () {
-                              controller.switchValue.value =
-                                  !controller.switchValue.value;
-                              controller.count.value++;
-                            },
-                            value: controller.switchValue.value,
-                            switchBackgroundColor: controller.switchValue.value
-                                ? Col.primary
-                                : Col.gray,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              cardTitleTextView(text: 'Assign By', color: Col.gray),
+                              cardTitleTextView(
+                                  text: controller.subTaskList?[index].createdDate != null && controller.subTaskList![index].createdDate!.isNotEmpty
+                                      ? DateFormat('HH:mm, d MMM y').format(
+                                          DateTime.parse('${controller.subTaskList?[index].createdDate}'))
+                                      : 'Not Found!',
+                                  color: Col.gray),
+                            ],
+                          ),
+                          subTitleTextView(
+                              text: controller.subTaskList?[index].userName != null && controller.subTaskList![index].userName!.isNotEmpty
+                                  ? '${controller.subTaskList?[index].userName}'
+                                  : 'Not found!'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
+              Padding(
+                padding: EdgeInsets.all(10.px),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              cardTitleTextView(text: 'Start Date', color: Col.secondary),
+                              subTitleTextView(
+                                  text: controller.subTaskList?[index].taskStartDate != null && controller.subTaskList![index].taskStartDate!.isNotEmpty
+                                      ? DateFormat('d MMM y').format(DateTime.parse('${controller.subTaskList?[index].taskStartDate}'))
+                                      : 'Not Found!'),
+                            ],
+                          ),
+                          SizedBox(height: 10.px),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              cardTitleTextView(text: 'Due Date', color: Col.gray),
+                              subTitleTextView(
+                                  text: controller.subTaskList?[index].taskDueDate != null && controller.subTaskList![index].taskDueDate!.isNotEmpty
+                                      ? DateFormat('d MMM y').format(DateTime.parse('${controller.subTaskList?[index].taskDueDate}'))
+                                      : 'Not Found!'),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      width: 40.px,
+                      height: 40.px,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CW.commonProgressBarView(
+                              value: .5,
+                              backgroundColor: Col.gray,
+                              color: Col.primary),
+                          cardTitleTextView(text: '50%', fontSize: 8.px)
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.all(10.px),
-                  child: Row(
-                    children: [
+              ),
+              CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
+              Padding(
+                padding: EdgeInsets.all(10.px),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              cardTitleTextView(text: 'Priority', color: Col.gray),
+                              Row(
+                                children: [
+                                  Container(
+                                    height: 10.px,
+                                    width: 10.px,
+                                    decoration: BoxDecoration(
+                                        color: Col.secondary.withOpacity(.5),
+                                        shape: BoxShape.circle),
+                                  ),
+                                  SizedBox(width: 4.px),
+                                  cardTitleTextView(
+                                      text: controller.subTaskList?[index].taskPriority != null && controller.subTaskList![index].taskPriority!.isNotEmpty
+                                          ? '${controller.subTaskList?[index].taskPriority}'
+                                          : 'Not Found!',
+                                      color: Col.secondary),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 10.px),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              cardTitleTextView(text: 'Status', color: Col.gray),
+                              Row(
+                                children: [
+                                  Container(
+                                    height: 10.px,
+                                    width: 10.px,
+                                    decoration: BoxDecoration(
+                                        color: controller.subTaskList?[index].taskStatusColor != '' ||
+                                                controller.subTaskList?[index].taskStatusColor != null && controller.subTaskList![index].taskStatusColor!.isNotEmpty
+                                            ? CW.apiColorConverterMethod(
+                                                colorString: '${controller.subTaskList?[index].taskStatusColor}')
+                                            : Col.secondary,
+                                        shape: BoxShape.circle),
+                                  ),
+                                  SizedBox(width: 4.px),
+                                  cardTitleTextView(
+                                      text: controller.subTaskList?[index].taskStatus != null && controller.subTaskList![index].taskStatus!.isNotEmpty
+                                          ? '${controller.subTaskList?[index].taskStatus}'
+                                          : 'Not Found!',
+                                      color: controller.subTaskList?[index].taskStatusColor != '' ||
+                                              controller.subTaskList?[index].taskStatusColor != null && controller.subTaskList![index].taskStatusColor!.isNotEmpty
+                                          ? CW.apiColorConverterMethod(
+                                              colorString: '${controller.subTaskList?[index].taskStatusColor}')
+                                          : Col.secondary),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        cardTitleTextView(text: 'My Day', color: Col.gray),
+                        SizedBox(height: 4.px),
+                        CW.commonSwitchButtonView(
+                          onChange: () {
+                            controller.switchValue.value = !controller.switchValue.value;
+                            controller.count.value++;
+                          },
+                          value: controller.switchValue.value,
+                          switchBackgroundColor: controller.switchValue.value
+                              ? Col.primary
+                              : Col.gray,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10.px),
+                child: Row(
+                  children: [
+                    if (controller.subTaskList?[index].isEditAllow ?? false)
                       commonCardButtonView(
-                          iconPath: 'assets/icons/edit_pen2_icon.png'),
+                        iconPath: 'assets/icons/edit_pen2_icon.png',
+                        onTap: () => controller.clickOnSubTaskEditButton(index: index),
+                      ),
+                    if (controller.subTaskList?[index].isEditAllow ?? false)
                       SizedBox(width: 10.px),
+                    if (controller.subTaskList?[index].isDeleteAllow ?? false)
                       commonCardButtonView(
                           iconPath: 'assets/icons/delete_icon.png',
                           iconColor: Col.error),
+                    if (controller.subTaskList?[index].isDeleteAllow ?? false)
                       SizedBox(width: 10.px),
-                      commonCardButtonView(
-                          iconPath: 'assets/icons/time_line_icon.png'),
-                      SizedBox(width: 10.px),
-                      commonCardButtonView(
-                          iconPath: 'assets/icons/document_icon.png'),
-                      SizedBox(width: 10.px),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                    commonCardButtonView(
+                        iconPath: 'assets/icons/time_line_icon.png'),
+                    SizedBox(width: 10.px),
+                    commonCardButtonView(
+                        iconPath: 'assets/icons/document_icon.png'),
+                    SizedBox(width: 10.px),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       );
+    } else {
+      return SizedBox(
+        height: 50.h,
+        child: CW.commonNoDataFoundText(),
+      );
+    }
+  }
 
   Widget commonCardButtonView({GestureTapCallback? onTap, Color? iconColor, required String iconPath}) => InkWell(
         borderRadius: BorderRadius.circular(6.px),
@@ -429,5 +493,4 @@ class SubTaskView extends GetView<SubTaskController> {
             borderColor: Colors.transparent,
             borderRadius: 25.px),
       );
-
 }

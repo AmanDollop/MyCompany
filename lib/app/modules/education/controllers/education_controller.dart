@@ -59,8 +59,6 @@ class EducationController extends GetxController {
   }
 
   Future<void> callingGetEducationOrAchievementsApi() async {
-    getAchievementsList.clear();
-    getEducationList.clear();
     educationOrAchievementsModal.value = await CAI.getEducationOrAchievementsApi(bodyParams: {AK.action: ApiEndPointAction.getEducationDetails});
     if(educationOrAchievementsModal.value != null){
       educationOrAchievementsModal.value?.getEducationDetails?.forEach((element) {
@@ -70,13 +68,7 @@ class EducationController extends GetxController {
           getEducationList.add(element);
         }
       });
-
     }
-  }
-
-  Future<void> clickOnAddViewButton() async {
-    await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['Add ${tabBarValue.value}',tabBarValue.value]);
-   onInit();
   }
 
   Future<void> clickOnEducationData({required int index}) async {
@@ -86,6 +78,11 @@ class EducationController extends GetxController {
 
   Future<void> clickOnAchievementsData({required int index}) async {
     await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['UpDate ${tabBarValue.value}',getAchievementsList[index]]);
+    onInit();
+  }
+
+  Future<void> clickOnAddViewButton() async {
+    await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['Add ${tabBarValue.value}',tabBarValue.value]);
     onInit();
   }
 

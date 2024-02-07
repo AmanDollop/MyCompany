@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/sub_task_data_modal.dart';
 import 'package:task/api/api_model/sub_task_filter_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
@@ -11,7 +12,9 @@ class SubTaskController extends GetxController {
   final count = 0.obs;
   final taskId = ''.obs;
   final taskName = 'Task Name'.obs;
-  final apiResValue = false.obs;
+  final apiResValue = true.obs;
+  final apiResValueForSubTaskFilter = true.obs;
+  final apiResValueForSubTask = true.obs;
   final switchValue = false.obs;
 
   final taskSearchController = TextEditingController();
@@ -22,18 +25,22 @@ class SubTaskController extends GetxController {
   List<TaskStatus>? subTaskFilterList;
   Map<String, dynamic> bodyParamsForGetSubTaskFilter = {};
 
+  final getSubTaskDataModal = Rxn<SubTaskDataModal>();
+  List<TaskDetails>? subTaskList;
+  Map<String, dynamic> bodyParamsForGetSubTask = {};
+
   @override
   Future<void> onInit() async {
     super.onInit();
     try{
-      apiResValue.value=true;
       taskId.value = Get.arguments[0];
       taskName.value = Get.arguments[1];
-      await callingGetTaskDataApi();
+      await callingGetSubTaskFilterApi();
+      await callingGetSubTaskApi();
     }catch(e){
-      apiResValue.value=false;
+      apiResValue.value = false;
     }
-    apiResValue.value=false;
+    apiResValue.value = false;
   }
 
   @override
@@ -52,9 +59,16 @@ class SubTaskController extends GetxController {
     Get.back();
   }
 
+  onRefresh() async {
+    apiResValue.value = true;
+    apiResValueForSubTaskFilter.value = true;
+    apiResValueForSubTask.value = true;
+    await onInit();
+  }
+
   Future<void> subTaskSearchOnChange({required String value}) async {}
 
-  void clickOnSubTaskFilterCard({required int index}) {
+  Future<void> clickOnSubTaskFilterCard({required int index}) async {
     count.value = 0;
     if(filterValueList.contains(subTaskFilterList?[index].taskStatusName)){
       print('11111:::  $filterValueList');
@@ -65,17 +79,21 @@ class SubTaskController extends GetxController {
       filterValueList.removeAt(index);
       filterValueList.insert(index, subTaskFilterList?[index].taskStatusName);
     }
-
+    await callingGetSubTaskApi();
     count.value++;
   }
 
-  void clickOnCard({required int index}) {
-    Get.toNamed(Routes.ADD_SUB_TASK,arguments: ['Update Sub Task']);
+  void clickOnSubTaskEditButton({required int index}) {
+    if(subTaskList?[index] != null) {
+      Get.toNamed(Routes.ADD_SUB_TASK,arguments: ['Update Sub Task',subTaskList?[index]]);
+    }else{
+      CM.showSnackBar(message: 'Something went wrong!');
+    }
   }
 
-  Future<void> callingGetTaskDataApi() async {
+  Future<void> callingGetSubTaskFilterApi() async {
     try {
-      apiResValue.value = true;
+      apiResValueForSubTaskFilter.value = true;
       getSubTaskFilterDataModal.value = null;
       subTaskFilterList?.clear();
       bodyParamsForGetSubTaskFilter = {
@@ -97,11 +115,33 @@ class SubTaskController extends GetxController {
         });
       }
     } catch (e) {
+      print('get sub task filter api error::::  $e');
+      CM.error();
+      apiResValueForSubTaskFilter.value = false;
+    }
+    apiResValueForSubTaskFilter.value = false;
+  }
+
+  Future<void> callingGetSubTaskApi() async {
+    try {
+      apiResValueForSubTask.value=true;
+      getSubTaskDataModal.value = null;
+      subTaskList?.clear();
+      bodyParamsForGetSubTask = {
+        AK.action: ApiEndPointAction.getTask,
+        AK.taskCategoryId: taskId.value,
+      };
+      getSubTaskDataModal.value = await CAI.getSubTaskDataApi(bodyParams: bodyParamsForGetSubTask);
+      if (getSubTaskDataModal.value != null) {
+        subTaskList = getSubTaskDataModal.value?.taskDetails;
+        print('subTaskList:::::: ${subTaskList?.length}');
+      }
+    } catch (e) {
       print('get sub task api error::::  $e');
       CM.error();
-      apiResValue.value = false;
+      apiResValueForSubTask.value = false;
     }
-    apiResValue.value = false;
+    apiResValueForSubTask.value = false;
   }
 
   void clickOnAddNewSubTaskButton() {

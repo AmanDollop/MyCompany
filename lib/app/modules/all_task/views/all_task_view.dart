@@ -42,18 +42,21 @@ class AllTaskView extends GetView<AllTaskController> {
                         : Expanded(
                             child: ModalProgress(
                               inAsyncCall: controller.apiResValue.value,
-                              child: LM(
-                                noMoreWidget: const SizedBox(),
-                                isLastPage: controller.isLastPage.value,
-                                onLoadMore: () => controller.onLoadMore(),
-                                child: ListView(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  children: [
-                                    topCardGridView(),
-                                    SizedBox(height: 16.px),
-                                    taskCardListView(),
-                                  ],
+                              child: CW.commonRefreshIndicator(
+                                onRefresh: () => controller.onRefresh(),
+                                child: LM(
+                                  noMoreWidget: const SizedBox(),
+                                  isLastPage: controller.isLastPage.value,
+                                  onLoadMore: () => controller.onLoadMore(),
+                                  child: ListView(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    children: [
+                                      topCardGridView(),
+                                      SizedBox(height: 16.px),
+                                      taskCardListView(),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -120,15 +123,15 @@ class AllTaskView extends GetView<AllTaskController> {
         itemBuilder: (context, index) {
           controller.topGridCardSubTitleTextList.clear();
           controller.topGridCardSubTitleTextList.insert(0,
-              controller.getTaskDataModal.value?.totalCompleteTask != null || controller.getTaskDataModal.value!.totalCompleteTask!.isNotEmpty
+              controller.getTaskDataModal.value?.totalCompleteTask != null && controller.getTaskDataModal.value!.totalCompleteTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalCompleteTask}'
                   : '0');
           controller.topGridCardSubTitleTextList.insert(1,
-              controller.getTaskDataModal.value?.totalDueTask != null || controller.getTaskDataModal.value!.totalDueTask!.isNotEmpty
+              controller.getTaskDataModal.value?.totalDueTask != null && controller.getTaskDataModal.value!.totalDueTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalDueTask}'
                   : '0');
           controller.topGridCardSubTitleTextList.insert(2,
-              controller.getTaskDataModal.value?.totalTodayDueTask != null || controller.getTaskDataModal.value!.totalTodayDueTask!.isNotEmpty
+              controller.getTaskDataModal.value?.totalTodayDueTask != null && controller.getTaskDataModal.value!.totalTodayDueTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalTodayDueTask}'
                   : '0');
           return Card(

@@ -18,41 +18,43 @@ class MonthView extends GetView<AttendanceTrackerController> {
       return CW.commonRefreshIndicator(
         onRefresh: () => controller.monthViewOnRefresh(),
         child: ModalProgress(
-            inAsyncCall: controller.apiResValue.value,
-            child: controller.apiResValue.value
-                ? shimmerView()
-                : controller.getMonthlyAttendanceDataModal.value != null
-                ? controller.getMonthlyAttendanceData != null
-                    ? ListView(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            children: [
-                              Row(
-                                children: [
-                                  commonDropDownView(
-                                    dropDownView: monthDropDownView(),
-                                  ),
-                                  SizedBox(width: 10.px),
-                                  commonDropDownView(
-                                    dropDownView: yearDropDownView(),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10.px),
-                              circularProgressBarView(),
-                              SizedBox(height: 10.px),
-                              cardGridView(),
-                              SizedBox(height: 20.px),
-                              getDayNames(),
-                              SizedBox(height: 14.px),
-                              calendarGridView(),
-                              SizedBox(height: 20.px),
-                            ],
-                          )
-                    : Center(child: CW.commonNoDataFoundText(),
-            ) : controller.apiResValue.value
-                    ? const SizedBox()
-                    : CW.commonNoDataFoundText(),
+          inAsyncCall: controller.apiResValue.value,
+          child: controller.apiResValue.value
+              ? shimmerView()
+              : controller.getMonthlyAttendanceDataModal.value != null
+                  ? controller.getMonthlyAttendanceData != null
+                      ? ListView(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          children: [
+                            Row(
+                              children: [
+                                commonDropDownView(
+                                  dropDownView: monthDropDownView(),
+                                ),
+                                SizedBox(width: 10.px),
+                                commonDropDownView(
+                                  dropDownView: yearDropDownView(),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.px),
+                            circularProgressBarView(),
+                            SizedBox(height: 10.px),
+                            cardGridView(),
+                            SizedBox(height: 20.px),
+                            getDayNames(),
+                            SizedBox(height: 14.px),
+                            calendarGridView(),
+                            SizedBox(height: 20.px),
+                          ],
+                        )
+                      : Center(
+                          child: CW.commonNoDataFoundText(),
+                        )
+                  : controller.apiResValue.value
+                      ? const SizedBox()
+                      : CW.commonNoDataFoundText(),
         ),
       );
     });
@@ -165,13 +167,15 @@ class MonthView extends GetView<AttendanceTrackerController> {
                     titleTextView(text: 'Total time', color: Col.secondary),
                     SizedBox(height: 2.px),
                     subTitleTextView(
-                        text: '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
+                        text:
+                            '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
                     SizedBox(height: 5.px),
                     titleTextView(
                         text: 'Monthly Hours Spent', color: Col.secondary),
                     SizedBox(height: 2.px),
                     subTitleTextView(
-                        text: '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
+                        text:
+                            '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
                   ],
                 ),
               ),
@@ -185,15 +189,21 @@ class MonthView extends GetView<AttendanceTrackerController> {
             children: [
               titleTextView(text: 'Total Productive Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
+              subTitleTextView(
+                  text:
+                      '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Extra Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
+              subTitleTextView(
+                  text:
+                      '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Remaining Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') % 60}min'),
+              subTitleTextView(
+                  text:
+                      '${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') % 60}min'),
             ],
           ),
         ),
@@ -275,19 +285,22 @@ class MonthView extends GetView<AttendanceTrackerController> {
       children: [
         for (var day in controller.days)
           shimmerValue
-              ? CW.commonShimmerViewForImage(height: 20.px,width: 40.px)
+              ? CW.commonShimmerViewForImage(height: 20.px, width: 40.px)
               : Text(
-            day,
-            style: Theme.of(Get.context!).textTheme.titleLarge,
-          ),
+                  day,
+                  style: Theme.of(Get.context!).textTheme.titleLarge,
+                ),
       ],
     );
   }
 
   Widget calendarGridView() {
-    var daysInMonth = DateTime(controller.currentMonth.value.year, controller.currentMonth.value.month + 1, 0).day;
+    var daysInMonth = DateTime(controller.currentMonth.value.year,
+            controller.currentMonth.value.month + 1, 0)
+        .day;
 
-    var t = '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
+    var t =
+        '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
     DateTime parsedDate = DateFormat("d-M-yyyy").parse(t);
 
     var extra = parsedDate.weekday == 7 ? 0 : parsedDate.weekday;
@@ -314,9 +327,21 @@ class MonthView extends GetView<AttendanceTrackerController> {
           return const SizedBox();
         } else {
           return InkWell(
-            onTap: controller.monthlyHistoryList?[index-extra].weekOff == true || calendarGridColorView(index: index - extra) == const Color(0x00000000)
-                ? () {Vibration.vibrate(duration: 500);}
-                : () => controller.clickOnCalendarGrid(index: index-extra,day:day),
+            onTap: () {
+              if (controller.monthlyHistoryList?[index - extra].present == true && controller.monthlyHistoryList?[index - extra].attendnacePending == false) {
+                controller.clickOnCalendarGrid(index: index - extra, day: day);
+              } else if (controller.monthlyHistoryList?[index - extra].holiday ?? false) {
+                CM.showSnackBar(message: 'Holiday');
+              } else if (controller.monthlyHistoryList?[index - extra].weekOff ?? false) {
+                CM.showSnackBar(message: 'Week Off');
+              } else if (controller.monthlyHistoryList?[index - extra].leave ?? false) {
+                CM.showSnackBar(message: 'Leave');
+              } else if (controller.monthlyHistoryList?[index - extra].attendnacePending ?? false) {
+                controller.clickOnCalendarGrid(index: index - extra, day: day);
+              } else {
+                CM.showSnackBar(message: 'This date data not available!');
+              }
+            },
             borderRadius: BorderRadius.circular(20.px),
             child: Card(
               margin: EdgeInsets.zero,
@@ -326,9 +351,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
               color: day == 0
                   ? Colors.transparent
                   : calendarGridColorView(index: index - extra),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.px)
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.px)),
               child: SizedBox(
                 height: 30.px,
                 width: 30.px,
@@ -336,10 +359,10 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   child: Text(
                     day.toString(),
                     style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
-                            ? calendarGridTextColorView(index: index - extra)
-                            : Col.secondary),
+                            fontWeight: FontWeight.w500,
+                            color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
+                                    ? calendarGridTextColorView(index: index - extra)
+                                    : Col.secondary),
                   ),
                 ),
               ),
@@ -351,7 +374,8 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Color calendarGridColorView({required int index}) {
-    if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false) {
+    if (controller.monthlyHistoryList?[index].present == true &&
+        controller.monthlyHistoryList?[index].attendnacePending == false) {
       return const Color(0xffF2FFF3);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
       return const Color(0xffDDE0FB);
@@ -383,65 +407,70 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Widget shimmerView() => ListView(
-    shrinkWrap: true,
-    physics: const ScrollPhysics(),
-    children: [
-      Row(
-        children: [
-          Expanded(child: CW.commonShimmerViewForImage(height: 40.px),),
-          SizedBox(width: 10.px),
-          Expanded(child: CW.commonShimmerViewForImage(height: 40.px),),
-        ],
-      ),
-      SizedBox(height: 10.px),
-      Row(
-        children: [
-          CW.commonShimmerViewForImage(height: 150.px, width: 150.px,radius: 75.px),
-          SizedBox(width: 15.px),
-          Flexible(
-            child: Column(
-              children: [
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-            ],),
-          )
-        ],
-      ),
-      SizedBox(height: 10.px),
-      GridView.builder(
-        itemCount: controller.cardColorList.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 4.px,
-            crossAxisSpacing: 4.px,
-            childAspectRatio: 1.1),
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => CW.commonShimmerViewForImage(),
-      ),
-      SizedBox(height: 20.px),
-      getDayNames(shimmerValue: true),
-      SizedBox(height: 20.px),
-      GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          crossAxisSpacing: 10.px,
-          mainAxisSpacing: 10.px,
-        ),
-        itemCount: 31,
-        itemBuilder: (context, index) {
-          return CW.commonShimmerViewForImage(height: 31.px, width: 30.px,radius: 20.px);
-        },
-      ),
-      SizedBox(height: 20.px),
-    ],
-  );
+        physics: const ScrollPhysics(),
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: CW.commonShimmerViewForImage(height: 40.px),
+              ),
+              SizedBox(width: 10.px),
+              Expanded(
+                child: CW.commonShimmerViewForImage(height: 40.px),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.px),
+          Row(
+            children: [
+              CW.commonShimmerViewForImage(height: 150.px, width: 150.px, radius: 75.px),
+              SizedBox(width: 15.px),
+              Flexible(
+                child: Column(
+                  children: [
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                  ],
+                ),
+              )
+            ],
+          ),
+          SizedBox(height: 10.px),
+          GridView.builder(
+            itemCount: controller.cardColorList.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 4.px,
+                crossAxisSpacing: 4.px,
+                childAspectRatio: 1.1),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => CW.commonShimmerViewForImage(),
+          ),
+          SizedBox(height: 20.px),
+          getDayNames(shimmerValue: true),
+          SizedBox(height: 20.px),
+          GridView.builder(
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 7,
+              crossAxisSpacing: 10.px,
+              mainAxisSpacing: 10.px,
+            ),
+            itemCount: 31,
+            itemBuilder: (context, index) {
+              return CW.commonShimmerViewForImage(height: 31.px, width: 30.px, radius: 20.px);
+            },
+          ),
+          SizedBox(height: 20.px),
+        ],
+      );
 
 }

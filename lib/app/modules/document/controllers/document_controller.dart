@@ -36,7 +36,11 @@ class DocumentController extends GetxController {
   final pdfProgressBarValue = 0.0.obs;
   final pdfProgressBarPerValue = '0 %'.obs;
   final pdfDownloadLocalPath = ''.obs;
+
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
+
+  final docType = ''.obs;
+  final docTypeLogo = ''.obs;
 
   @override
   Future<void> onInit() async {
@@ -66,7 +70,8 @@ class DocumentController extends GetxController {
 
   Future<void> clickOnDocument({required int index, required BuildContext context}) async {
     if (getDocumentDetails?[index].documentFile != null && getDocumentDetails![index].documentFile!.isNotEmpty) {
-      if (getDocumentDetails![index].documentFile!.contains('.pdf')) {
+      String docTypeLocal = CM.getDocumentType(filePath: '${getDocumentDetails?[index].documentFile}');
+      if (docTypeLocal == 'PDF') {
         await showGeneralDialog(
           context: context,
           pageBuilder: (context, animation, secondaryAnimation) => Material(
@@ -80,7 +85,7 @@ class DocumentController extends GetxController {
           ),
         );
       }
-      else {
+      else if(docTypeLocal == 'Image'){
         await showGeneralDialog(
           context: context,
           barrierColor: Col.inverseSecondary,
@@ -99,6 +104,14 @@ class DocumentController extends GetxController {
             );
           },
         );
+      }
+      else{
+        if (!await launcher.launchUrl(
+          '${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}',
+          const LaunchOptions(mode: PreferredLaunchMode.inAppBrowserView),
+        )) {
+          throw Exception('Could not launch ${AU.baseUrlAllApisImage}${getDocumentDetails?[index].documentFile}');
+        }
       }
     }
   }

@@ -65,7 +65,7 @@ class CW {
               child: SizedBox(
                 height: progressBarHeight ?? 24.px,
                 width: progressBarWidth ?? 24.px,
-                child: CW.commonProgressBarView(color: Col.primary),
+                child: CW.commonProgressBarView(color: Col.inverseSecondary,backgroundColor: Col.gray),
               ),
             )
           : child ??
