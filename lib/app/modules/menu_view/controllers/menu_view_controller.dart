@@ -66,8 +66,6 @@ class MenuViewController extends GetxController {
 
     getMenuList = menusModal.value?.getMenu??[];
 
-    print('getMenuList::::: ${getMenuList.length}');
-
   }
 
   willPop() {

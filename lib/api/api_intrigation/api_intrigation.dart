@@ -929,5 +929,33 @@ class CAI extends GetxController{
     }
   }
 
+  static Future<http.Response?> addSubTaskApi({
+    required Map<String, dynamic> bodyParams,
+    File? filePath
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await userToken(stringToken: true);
+
+    http.Response? response = await MyHttp.multipartRequest(
+        url: '$baseUrl${AU.endPointTaskControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        userProfileImageKey: AK.taskAttachment,
+        image: filePath,
+        multipartRequestType: 'POST',
+        token: '$token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 
 }

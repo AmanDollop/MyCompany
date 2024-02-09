@@ -52,7 +52,7 @@ class AddDocumentController extends GetxController {
     );
 
     if(result.value != null){
-      imageFile.value = await pickFilePickerResultAndConvertFile(result1: result.value);
+      imageFile.value = await CM.pickFilePickerResultAndConvertFile(result1: result.value);
       print('imageFile.value::::: ${imageFile.value}');
       if(result.value?.paths != null && result.value!.paths.isNotEmpty){
         for (var element in result.value!.paths) {
@@ -68,21 +68,7 @@ class AddDocumentController extends GetxController {
     docType.value = '';
   }
 
-  Future<File?> pickFilePickerResultAndConvertFile({FilePickerResult? result1}) async {
-    if (result1 != null) {
-      // Extract file from the result
-      PlatformFile file = result1.files.first;
 
-      // Convert PlatformFile to File
-      File convertedFile = File(file.path!);
-
-      print('convertedFile:::: $convertedFile');
-      // Return the converted File
-      return convertedFile;
-    } else {
-      return null;
-    }
-  }
 
   Future<void> clickOnAddAndUpdateButton() async {
     CM.unFocusKeyBoard();

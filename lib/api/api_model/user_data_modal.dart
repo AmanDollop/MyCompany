@@ -26,17 +26,16 @@ class UserDetails {
   ContactInfo? contactInfo;
   JobInfo? jobInfo;
   SocialInfo? socialInfo;
-  String? token;
   MyFace? myFace;
+  String? token;
 
   UserDetails(
       {this.personalInfo,
-      this.contactInfo,
-      this.jobInfo,
-      this.socialInfo,
-      this.token,
-      this.myFace,
-      });
+        this.contactInfo,
+        this.jobInfo,
+        this.socialInfo,
+        this.myFace,
+        this.token});
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     personalInfo = json['personal_info'] != null
@@ -45,14 +44,15 @@ class UserDetails {
     contactInfo = json['contact_info'] != null
         ? ContactInfo.fromJson(json['contact_info'])
         : null;
-    jobInfo =
-        json['job_info'] != null ? JobInfo.fromJson(json['job_info']) : null;
+    jobInfo = json['job_info'] != null
+        ? JobInfo.fromJson(json['job_info'])
+        : null;
     socialInfo = json['social_info'] != null
         ? SocialInfo.fromJson(json['social_info'])
         : null;
-    token = json['token'];
     myFace =
     json['my_face'] != null ? MyFace.fromJson(json['my_face']) : null;
+    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,17 +69,17 @@ class UserDetails {
     if (socialInfo != null) {
       data['social_info'] = socialInfo!.toJson();
     }
-    data['token'] = token;
     if (myFace != null) {
       data['my_face'] = myFace!.toJson();
     }
+    data['token'] = token;
     return data;
   }
 }
 
 class PersonalInfo {
+  String? userId;
   String? userFirstName;
-  String? userMiddleName;
   String? userLastName;
   String? userFullName;
   String? gender;
@@ -91,24 +91,23 @@ class PersonalInfo {
   String? languageKnown;
   String? shortName;
 
-  PersonalInfo({
-    this.userFirstName,
-    this.userMiddleName,
-    this.userLastName,
-    this.userFullName,
-    this.gender,
-    this.bloodGroup,
-    this.userProfilePic,
-    this.memberDateOfBirth,
-    this.hobbiesAndInterest,
-    this.skills,
-    this.languageKnown,
-    this.shortName,
-  });
+  PersonalInfo(
+      {this.userId,
+        this.userFirstName,
+        this.userLastName,
+        this.userFullName,
+        this.gender,
+        this.bloodGroup,
+        this.userProfilePic,
+        this.memberDateOfBirth,
+        this.hobbiesAndInterest,
+        this.skills,
+        this.languageKnown,
+        this.shortName});
 
   PersonalInfo.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
     userFirstName = json['user_first_name'];
-    userMiddleName = json['user_middle_name'];
     userLastName = json['user_last_name'];
     userFullName = json['user_full_name'];
     gender = json['gender'];
@@ -123,8 +122,8 @@ class PersonalInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
     data['user_first_name'] = userFirstName;
-    data['user_middle_name'] = userMiddleName;
     data['user_last_name'] = userLastName;
     data['user_full_name'] = userFullName;
     data['gender'] = gender;
@@ -157,19 +156,19 @@ class ContactInfo {
 
   ContactInfo(
       {this.countryCode,
-      this.userMobile,
-      this.whatsappCountryCode,
-      this.whatsappNumber,
-      this.personalEmail,
-      this.userEmail,
-      this.currentAddress,
-      this.permanentAddress,
-      this.userMobilePrivacy,
-      this.whatsappNumberPrivacy,
-      this.userEmailPrivacy,
-      this.personalEmailPrivacy,
-      this.currentAddressPrivacy,
-      this.permanentAddressPrivacy});
+        this.userMobile,
+        this.whatsappCountryCode,
+        this.whatsappNumber,
+        this.personalEmail,
+        this.userEmail,
+        this.currentAddress,
+        this.permanentAddress,
+        this.userMobilePrivacy,
+        this.whatsappNumberPrivacy,
+        this.userEmailPrivacy,
+        this.personalEmailPrivacy,
+        this.currentAddressPrivacy,
+        this.permanentAddressPrivacy});
 
   ContactInfo.fromJson(Map<String, dynamic> json) {
     countryCode = json['country_code'];
@@ -221,14 +220,14 @@ class JobInfo {
 
   JobInfo(
       {this.userDesignation,
-      this.dateOfJoining,
-      this.employeeId,
-      this.employeeType,
-      this.employeeTypeView,
-      this.branchName,
-      this.departmentName,
-      this.branchId,
-      this.departmentId});
+        this.dateOfJoining,
+        this.employeeId,
+        this.employeeType,
+        this.employeeTypeView,
+        this.branchName,
+        this.departmentName,
+        this.branchId,
+        this.departmentId});
 
   JobInfo.fromJson(Map<String, dynamic> json) {
     userDesignation = json['user_designation'];
@@ -266,10 +265,10 @@ class SocialInfo {
 
   SocialInfo(
       {this.twitter,
-      this.linkedin,
-      this.instagram,
-      this.facebook,
-      this.socialLinksPrivacy});
+        this.linkedin,
+        this.instagram,
+        this.facebook,
+        this.socialLinksPrivacy});
 
   SocialInfo.fromJson(Map<String, dynamic> json) {
     twitter = json['twitter'];

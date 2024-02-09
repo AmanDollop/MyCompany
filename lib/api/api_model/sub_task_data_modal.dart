@@ -25,6 +25,7 @@ class SubTaskDataModal {
 }
 
 class TaskDetails {
+  String? assignUserId;
   String? taskId;
   String? taskName;
   String? taskNote;
@@ -43,11 +44,13 @@ class TaskDetails {
   String? subTaskPercentage;
   String? isSelfAddedTask;
   String? userName;
+  String? userDesignation;
   String? userProfile;
   String? shortName;
 
   TaskDetails(
-      {this.taskId,
+      {this.assignUserId,
+        this.taskId,
         this.taskName,
         this.taskNote,
         this.createdDate,
@@ -65,10 +68,12 @@ class TaskDetails {
         this.subTaskPercentage,
         this.isSelfAddedTask,
         this.userName,
+        this.userDesignation,
         this.userProfile,
         this.shortName});
 
   TaskDetails.fromJson(Map<String, dynamic> json) {
+    assignUserId = json['assign_user_id'];
     taskId = json['task_id'];
     taskName = json['task_name'];
     taskNote = json['task_note'];
@@ -87,12 +92,14 @@ class TaskDetails {
     subTaskPercentage = json['sub_task_percentage'];
     isSelfAddedTask = json['is_self_added_task'];
     userName = json['user_name'];
+    userDesignation = json['user_designation'];
     userProfile = json['user_profile'];
     shortName = json['short_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['assign_user_id'] = assignUserId;
     data['task_id'] = taskId;
     data['task_name'] = taskName;
     data['task_note'] = taskNote;
@@ -111,6 +118,7 @@ class TaskDetails {
     data['sub_task_percentage'] = subTaskPercentage;
     data['is_self_added_task'] = isSelfAddedTask;
     data['user_name'] = userName;
+    data['user_designation'] = userDesignation;
     data['user_profile'] = userProfile;
     data['short_name'] = shortName;
     return data;

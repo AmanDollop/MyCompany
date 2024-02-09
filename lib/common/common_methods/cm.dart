@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:location/location.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
@@ -24,6 +25,22 @@ import 'package:vibration/vibration.dart';
 import 'package:path/path.dart' as path;
 
 class CM {
+
+  static Future<File?> pickFilePickerResultAndConvertFile({FilePickerResult? result1}) async {
+    if (result1 != null) {
+      // Extract file from the result
+      PlatformFile file = result1.files.first;
+
+      // Convert PlatformFile to File
+      File convertedFile = File(file.path!);
+
+      print('convertedFile:::: $convertedFile');
+      // Return the converted File
+      return convertedFile;
+    } else {
+      return null;
+    }
+  }
 
   static  String getDocumentType({required String filePath}) {
     String extension = path.extension(filePath).toLowerCase();
@@ -60,7 +77,7 @@ class CM {
     }else if(fileType == 'PowerPoint Document'){
       return 'assets/images/ppt_log_image.png';
     }else {
-      return fileType;
+      return 'assets/images/default_image.jpg';
     }
   }
 

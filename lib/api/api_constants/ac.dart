@@ -144,6 +144,19 @@ class AK {
 
   static const taskCategoryName = "task_category_name";
   static const taskCategoryId = "task_category_id";
+  static const statusFilter = "status_filter";
+  static const taskId = "task_id";
+  static const taskStatus = "task_status";
+  static const taskTimelineDescription = "task_timeline_description";
+
+  static const taskAttachment = "task_attachment";
+  static const taskPriority = "task_priority";
+  static const taskStartDate = "task_start_date";
+  static const taskDueDate = "task_due_date";
+  static const taskDueTime = "task_due_time";
+  static const taskName = "task_name";
+  static const taskNote = "task_note";
+  static const taskAssignTo = "task_assign_to";
 
 }
 
@@ -262,11 +275,17 @@ class ApiEndPointAction{
 
   static  const deleteTaskCategory = 'deleteTaskCategory';
 
+  static  const deleteTask = 'deleteTask';
+
+  static  const changeTaskStatus = 'changeTaskStatus';
+
   static  const getTaskCategory = 'getTaskCategory';
 
   static  const getTaskStatus = 'getTaskStatus';
 
   static  const getTask = 'getTask';
+
+  static  const addTask = 'addTask';
 
 
 }

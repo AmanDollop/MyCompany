@@ -438,8 +438,7 @@ class AttendanceTrackerController extends GetxController {
                     crossFadeState: bottomSheetBreakListValue.value
                         ? CrossFadeState.showSecond
                         : CrossFadeState.showFirst,
-                    duration:
-                    const Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     secondCurve: Curves.easeInOutSine,
                   ),
               ],

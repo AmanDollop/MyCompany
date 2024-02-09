@@ -5,6 +5,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/validator/v.dart';
@@ -89,6 +90,7 @@ class AllTaskController extends GetxController {
   }
 
   onRefresh() async {
+    CM.unFocusKeyBoard();
     offset.value = 0;
     getTaskDataModal.value = null;
     taskCountList?.clear();
@@ -97,11 +99,14 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> taskSearchOnChange({required String value}) async {
+    count.value++;
+    taskCategoryList.clear();
+    offset.value = 0;
+    apiResValue.value= true;
     await callingGetTaskDataApi();
   }
 
   Future<void> callingGetTaskDataApi() async {
-
     try {
       // getTaskDataModal.value = null;
       // taskCategoryList.clear();
@@ -119,10 +124,10 @@ class AllTaskController extends GetxController {
       //   isLastPage.value = false;
       // }
       if (getTaskDataModal.value != null) {
-        if(getTaskDataModal.value?.taskCategory != null && getTaskDataModal.value!.taskCategory!.isNotEmpty) {
+        if (getTaskDataModal.value?.taskCategory != null && getTaskDataModal.value!.taskCategory!.isNotEmpty) {
           taskCategoryList.addAll(getTaskDataModal.value?.taskCategory ?? []);
           print('taskCategoryList::: ${taskCategoryList.length}');
-        }else {
+        } else {
           isLastPage.value = true;
         }
       }
@@ -135,6 +140,7 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> clickOnAddNewTaskButton({int? taskCardListViewIndex}) async {
+    CM.unFocusKeyBoard();
     if (taskCardListViewIndex != null) {
       addTaskCategoryController.text = taskCategoryList[taskCardListViewIndex].taskCategoryName ?? '';
     }
@@ -173,8 +179,20 @@ class AllTaskController extends GetxController {
                 onPressed: createTaskButtonValue.value
                     ? () => null
                     : () => taskCardListViewIndex != null
-                    ? clickOnUpdateTaskButton(taskCategoryId: taskCategoryList[taskCardListViewIndex].taskCategoryId??'',addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString())
-                    : clickOnCreateTaskButton(addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString()),
+                        ? clickOnUpdateTaskButton(
+                            taskCategoryId:
+                                taskCategoryList[taskCardListViewIndex]
+                                        .taskCategoryId ??
+                                    '',
+                            addTaskCategoryControllerValue:
+                                addTaskCategoryController.text
+                                    .trim()
+                                    .toString())
+                        : clickOnCreateTaskButton(
+                            addTaskCategoryControllerValue:
+                                addTaskCategoryController.text
+                                    .trim()
+                                    .toString()),
                 buttonText: taskCardListViewIndex != null
                     ? 'Update Task'
                     : 'Create Task',
@@ -192,6 +210,7 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> clickOnCreateTaskButton({required String addTaskCategoryControllerValue}) async {
+    CM.unFocusKeyBoard();
     print('addTaskCategoryControllerValue::::: $addTaskCategoryController');
     if (key.currentState!.validate()) {
       createTaskButtonValue.value = true;
@@ -205,7 +224,8 @@ class AllTaskController extends GetxController {
     }
   }
 
-  Future<void> clickOnUpdateTaskButton({required String taskCategoryId,required String addTaskCategoryControllerValue}) async {
+  Future<void> clickOnUpdateTaskButton({required String taskCategoryId, required String addTaskCategoryControllerValue}) async {
+    CM.unFocusKeyBoard();
     print('taskCategoryId:::::: $taskCategoryId');
     if (key.currentState!.validate()) {
       createTaskButtonValue.value = true;
@@ -222,7 +242,8 @@ class AllTaskController extends GetxController {
 
   Future<void> callingAddTaskApi() async {
     try {
-      http.Response? response = await CAI.addTaskApi(bodyParams: bodyParamsForAddTask);
+      http.Response? response =
+          await CAI.addTaskApi(bodyParams: bodyParamsForAddTask);
       if (response != null && response.statusCode == 200) {
         createTaskButtonValue.value = false;
         apiResValue.value = true;
@@ -244,16 +265,24 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> clickOnTaskDeleteButton({required int taskCardListViewIndex}) async {
+    CM.unFocusKeyBoard();
     print('::::  ${taskCategoryList[taskCardListViewIndex].taskCategoryId}');
-    bodyParamsForAddTask.clear();
-    bodyParamsForAddTask = {
-      AK.action: ApiEndPointAction.deleteTaskCategory,
-      AK.taskCategoryId: taskCategoryList[taskCardListViewIndex].taskCategoryId ?? ''
-    };
-    await callingAddTaskApi();
+    CD.commonIosDeleteConfirmationDialog(
+      clickOnCancel: () => Get.back(),
+      clickOnDelete: () async {
+        bodyParamsForAddTask.clear();
+        bodyParamsForAddTask = {
+          AK.action: ApiEndPointAction.deleteTaskCategory,
+          AK.taskCategoryId: taskCategoryList[taskCardListViewIndex].taskCategoryId ?? ''
+        };
+        await callingAddTaskApi();
+        Get.back();
+      },
+    );
   }
 
   void clickOnTaskCard({required int taskCardListViewIndex}) {
+    CM.unFocusKeyBoard();
     if (taskCategoryList[taskCardListViewIndex].taskCategoryId != null &&
         taskCategoryList[taskCardListViewIndex].taskCategoryId!.isNotEmpty) {
       Get.toNamed(Routes.SUB_TASK, arguments: [
@@ -266,14 +295,14 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> onLoadMore() async {
+    CM.unFocusKeyBoard();
     offset.value = offset.value + 1;
     try {
-      if(int.parse(limit) <= taskCategoryList.length) {
+      if (int.parse(limit) <= taskCategoryList.length) {
         await callingGetTaskDataApi();
       }
     } catch (e) {
       CM.error();
     }
   }
-
 }

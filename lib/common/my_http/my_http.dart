@@ -55,6 +55,7 @@ class MyHttp {
           print('mapRes:::  ${mapRes}');
           CM.showSnackBar(message: mapRes['message']);
         }
+        print('response.statusCode::::  ${response.statusCode}');
         if(response.statusCode == 401){
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
           await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);

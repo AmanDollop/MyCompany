@@ -37,6 +37,8 @@ class C {
   static const textGallery = "Gallery";
   static const textLogOutDialogTitle = "Logout";
   static const textLogOutDialogContent = "Are you sure you want to logout?";
+  static const textDeleteDialogTitle = "Delete";
+  static const textDeleteDialogContent = "Are you sure you want to delete?";
   static const textCancel = "Cancel";
   static const textLogout = "Logout";
   static const textExitDialogTitle = "Exit";

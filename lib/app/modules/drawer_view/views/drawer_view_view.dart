@@ -51,18 +51,14 @@ class DrawerViewView extends GetView<DrawerViewController> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 userNameTextView(
-                                    text: controller.userFullName.value !=
-                                                'null' &&
-                                            controller
-                                                .userFullName.value.isNotEmpty
+                                    text: controller.userFullName.value != 'null' && controller.userFullName.value.isNotEmpty
                                         ? controller.userFullName.value
                                         : 'Employee Name',
                                     color: Col.inverseSecondary,
                                     fontSize: 16.px),
                                 SizedBox(height: 2.px),
                                 userDetailTextView(
-                                  text: controller.developer.value != 'null' &&
-                                          controller.developer.value.isNotEmpty
+                                  text: controller.developer.value != 'null' && controller.developer.value.isNotEmpty
                                       ? controller.developer.value
                                       : 'Designation',
                                 ),

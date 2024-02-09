@@ -92,6 +92,20 @@ class CD {
         isDismiss: isDismiss);
   }
 
+  static Future<void> commonIosDeleteConfirmationDialog(
+      {required VoidCallback clickOnCancel,
+      required VoidCallback clickOnDelete,
+      bool isDismiss = true}) async {
+    await CD.commonIosAlertDialogBox(
+        title: C.textDeleteDialogTitle,
+        content: C.textDeleteDialogContent,
+        clickOnLeftButton: clickOnCancel,
+        clickOnRightButton: clickOnDelete,
+        leftButtonTitle: C.textCancel,
+        rightButtonTitle: C.textDeleteDialogTitle,
+        isDismiss: isDismiss);
+  }
+
   static Future<void> commonIosExitAppDialog(
       {required VoidCallback clickOnCancel,
       required VoidCallback clickOnExit,

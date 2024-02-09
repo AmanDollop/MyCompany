@@ -28,14 +28,15 @@ class TaskStatus {
   String? taskStatusName;
   String? taskStatusColor;
   String? taskActualStatus;
+  bool isSelected = false;
 
-  TaskStatus(
-      {this.taskStatusName, this.taskStatusColor, this.taskActualStatus});
+  TaskStatus({this.taskStatusName, this.taskStatusColor, this.taskActualStatus});
 
   TaskStatus.fromJson(Map<String, dynamic> json) {
     taskStatusName = json['task_status_name'];
     taskStatusColor = json['task_status_color'];
     taskActualStatus = json['task_actual_status'];
+    isSelected = false;
   }
 
   Map<String, dynamic> toJson() {

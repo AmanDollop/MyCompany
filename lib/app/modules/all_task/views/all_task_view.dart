@@ -78,7 +78,7 @@ class AllTaskView extends GetView<AllTaskController> {
   Widget taskSearchTextFieldView() => CW.commonTextField(
         isBorder: true,
         isSearchLabelText: true,
-        hintText: 'Search Task',
+        hintText: 'Search Task Category',
         controller: controller.taskSearchController,
         onChanged: (value) => controller.taskSearchOnChange(value: value),
         prefixIcon: SizedBox(

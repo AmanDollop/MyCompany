@@ -13,12 +13,10 @@ class MenuViewView extends GetView<MenuViewController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: WillPopScope(
-        onWillPop: () => controller.willPop(),
+    return WillPopScope(
+      onWillPop: () => controller.willPop(),
+      child: GestureDetector(
+        onTap: () => CM.unFocusKeyBoard(),
         child: Scaffold(
           body: Obx(() {
             controller.count.value;

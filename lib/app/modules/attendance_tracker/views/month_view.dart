@@ -93,8 +93,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
         ),
         onChanged: (String? value) =>
             controller.monthDropDownOnChanged(value: value ?? ''),
-        items: controller.monthNameList
-            .map<DropdownMenuItem<String>>((String value) {
+        items: controller.monthNameList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
