@@ -225,7 +225,7 @@ class EditProfileView extends GetView<EditProfileController> {
       );
 
   Widget userDetailTextView() => Text(
-    controller.skill.value.isNotEmpty?'${controller.skill.value} Developer':'Developer',
+    controller.userDesignation.value.isNotEmpty?controller.userDesignation.value:'Developer',
         style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px),
         maxLines: 2,
         textAlign: TextAlign.center,

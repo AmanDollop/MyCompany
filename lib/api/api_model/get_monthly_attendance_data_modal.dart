@@ -23,17 +23,17 @@ class GetMonthlyAttendanceDataModal {
 
 class GetMonthlyAttendance {
   List<MonthlyHistory>? monthlyHistory;
-  String? month;
-  String? year;
   String? totalMonthlyTime;
   String? totalWorkingMinutes;
-  String? totalShortLeave;
   String? totalRemainingMinutes;
+  String? totalSpendMinutes;
+  String? totalProductiveWorkingMinutes;
   String? totalExtraMinutes;
   String? totalWorkingDays;
   String? totalPresent;
   String? totalAbsent;
   String? lateIn;
+  String? isLeave;
   String? earlyOut;
   String? totalExtraDays;
   String? totalHolidays;
@@ -44,17 +44,17 @@ class GetMonthlyAttendance {
 
   GetMonthlyAttendance(
       {this.monthlyHistory,
-        this.month,
-        this.year,
         this.totalMonthlyTime,
         this.totalWorkingMinutes,
-        this.totalShortLeave,
         this.totalRemainingMinutes,
+        this.totalSpendMinutes,
+        this.totalProductiveWorkingMinutes,
         this.totalExtraMinutes,
         this.totalWorkingDays,
         this.totalPresent,
         this.totalAbsent,
         this.lateIn,
+        this.isLeave,
         this.earlyOut,
         this.totalExtraDays,
         this.totalHolidays,
@@ -70,17 +70,17 @@ class GetMonthlyAttendance {
         monthlyHistory!.add(MonthlyHistory.fromJson(v));
       });
     }
-    month = json['month'];
-    year = json['year'];
     totalMonthlyTime = json['total_monthly_time'];
     totalWorkingMinutes = json['total_working_minutes'];
-    totalShortLeave = json['total_short_leave'];
     totalRemainingMinutes = json['total_remaining_minutes'];
+    totalSpendMinutes = json['total_spend_minutes'];
+    totalProductiveWorkingMinutes = json['total_productive_working_minutes'];
     totalExtraMinutes = json['total_extra_minutes'];
     totalWorkingDays = json['total_working_days'];
     totalPresent = json['total_present'];
     totalAbsent = json['total_absent'];
     lateIn = json['late_in'];
+    isLeave = json['is_leave'];
     earlyOut = json['early_out'];
     totalExtraDays = json['total_extra_days'];
     totalHolidays = json['total_holidays'];
@@ -96,17 +96,18 @@ class GetMonthlyAttendance {
       data['monthly_history'] =
           monthlyHistory!.map((v) => v.toJson()).toList();
     }
-    data['month'] = month;
-    data['year'] = year;
     data['total_monthly_time'] = totalMonthlyTime;
     data['total_working_minutes'] = totalWorkingMinutes;
-    data['total_short_leave'] = totalShortLeave;
     data['total_remaining_minutes'] = totalRemainingMinutes;
+    data['total_spend_minutes'] = totalSpendMinutes;
+    data['total_productive_working_minutes'] =
+        totalProductiveWorkingMinutes;
     data['total_extra_minutes'] = totalExtraMinutes;
     data['total_working_days'] = totalWorkingDays;
     data['total_present'] = totalPresent;
     data['total_absent'] = totalAbsent;
     data['late_in'] = lateIn;
+    data['is_leave'] = isLeave;
     data['early_out'] = earlyOut;
     data['total_extra_days'] = totalExtraDays;
     data['total_holidays'] = totalHolidays;
@@ -144,6 +145,7 @@ class MonthlyHistory {
   String? attendanceDeclinedMessage;
   String? attendanceId;
   String? totalShiftMinutes;
+  String? totalWorkingMinutes;
   bool? punchInRequestSent;
   List<AttendanceBreakHistory>? attendanceBreakHistory;
   String? punchOutMissingMessage;
@@ -174,6 +176,7 @@ class MonthlyHistory {
         this.attendanceDeclinedMessage,
         this.attendanceId,
         this.totalShiftMinutes,
+        this.totalWorkingMinutes,
         this.punchInRequestSent,
         this.attendanceBreakHistory,
         this.punchOutMissingMessage});
@@ -204,6 +207,7 @@ class MonthlyHistory {
     attendanceDeclinedMessage = json['attendance_declined_message'];
     attendanceId = json['attendance_id'];
     totalShiftMinutes = json['total_shift_minutes'];
+    totalWorkingMinutes = json['total_working_minutes'];
     punchInRequestSent = json['punch_in_request_sent'];
     if (json['attendance_break_history'] != null) {
       attendanceBreakHistory = <AttendanceBreakHistory>[];
@@ -241,6 +245,7 @@ class MonthlyHistory {
     data['attendance_declined_message'] = attendanceDeclinedMessage;
     data['attendance_id'] = attendanceId;
     data['total_shift_minutes'] = totalShiftMinutes;
+    data['total_working_minutes'] = totalWorkingMinutes;
     data['punch_in_request_sent'] = punchInRequestSent;
     if (attendanceBreakHistory != null) {
       data['attendance_break_history'] =

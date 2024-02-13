@@ -33,8 +33,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
                 Form(
                   key: controller.key,
                   child: ListView(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 12.px, vertical: 16.px),
+                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
                     children: [
                       subTaskTextFormFiled(),
                       SizedBox(height: 10.px),
@@ -98,11 +97,11 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
       );
 
   Widget subTaskTextFormFiled() => CW.commonTextField(
-        labelText: 'Enter Sub Task',
-        hintText: 'Enter Sub Task',
+        labelText: 'Enter Task',
+        hintText: 'Enter Task',
         controller: controller.subTaskNameController,
         validator: (value) =>
-            V.isValid(value: value, title: 'Please enter sub task'),
+            V.isValid(value: value, title: 'Please enter task'),
       );
 
   Widget selectPriorityTextFormFiled() => CW.commonTextField(

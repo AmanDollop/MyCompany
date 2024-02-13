@@ -41,6 +41,7 @@ class EditProfileController extends GetxController {
   final mobileNumber = ''.obs;
   final dob = ''.obs;
   final skill = ''.obs;
+  final userDesignation = ''.obs;
 
   final genderText = ['Male', 'Female'];
   final genderIndexValue = '-1'.obs;
@@ -53,6 +54,7 @@ class EditProfileController extends GetxController {
   UserDetails? userData;
   PersonalInfo? personalInfo;
   ContactInfo? contactInfo;
+  JobInfo? jobInfo;
 
   Map<String, dynamic> bodyParamsForGetUserDate = {};
 
@@ -96,6 +98,7 @@ class EditProfileController extends GetxController {
 
     personalInfo=userData?.personalInfo;
     contactInfo=userData?.contactInfo;
+    jobInfo = userData?.jobInfo;
 
       userFullName.value = personalInfo?.userFullName??'';
 
@@ -126,22 +129,23 @@ class EditProfileController extends GetxController {
       }
 
       skillsController.text = personalInfo?.skills??'';
-      skill.value = personalInfo?.skills??'';
 
-      languageKnownController.text = personalInfo?.languageKnown??'';
 
-      bloodGroupController.text = personalInfo?.bloodGroup??'';
-      bloodGroupValue.value = personalInfo?.bloodGroup??'';
+    languageKnownController.text = personalInfo?.languageKnown??'';
 
-      emailController.text = contactInfo?.userEmail??'';
+    bloodGroupController.text = personalInfo?.bloodGroup??'';
+    bloodGroupValue.value = personalInfo?.bloodGroup??'';
 
-      mobileNumber.value = contactInfo?.userMobile??'';
+    emailController.text = contactInfo?.userEmail??'';
 
-      countryCode.value = contactInfo?.countryCode??'';
+    mobileNumber.value = contactInfo?.userMobile??'';
 
-      if (countryCode.value != 'null' && countryCode.value.isNotEmpty && mobileNumber.value != 'null' && mobileNumber.value.isNotEmpty) {
+    countryCode.value = contactInfo?.countryCode??'';
+
+    if (countryCode.value != 'null' && countryCode.value.isNotEmpty && mobileNumber.value != 'null' && mobileNumber.value.isNotEmpty) {
       mobileNumberController.text = '${countryCode.value} ${mobileNumber.value}';
     }
+    userDesignation.value = jobInfo?.userDesignation??'';
 
   }
 

@@ -242,8 +242,7 @@ class AllTaskController extends GetxController {
 
   Future<void> callingAddTaskApi() async {
     try {
-      http.Response? response =
-          await CAI.addTaskApi(bodyParams: bodyParamsForAddTask);
+      http.Response? response = await CAI.addTaskApi(bodyParams: bodyParamsForAddTask);
       if (response != null && response.statusCode == 200) {
         createTaskButtonValue.value = false;
         apiResValue.value = true;

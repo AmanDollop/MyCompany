@@ -98,7 +98,7 @@ class SubTaskController extends GetxController {
     bodyParamsForGetSubTask = {
       AK.action: ApiEndPointAction.getTask,
       AK.taskCategoryId: taskCategoryId.value,
-      AK.statusFilter: selectedStatusFilterIds.join(', '),
+      AK.statusFilter: selectedStatusFilterIds.join(','),
     };
     await callingGetSubTaskApi(filterValue: true);
     count.value++;
@@ -195,7 +195,7 @@ class SubTaskController extends GetxController {
             Text(
               selectPriorityValue.value.isNotEmpty
                   ? selectPriorityValue.value
-                  : 'Select Priority*',
+                  : 'Select Status*',
               style: selectPriorityValue.value.isNotEmpty
                   ? Theme.of(Get.context!).textTheme.titleLarge
                   : Theme.of(Get.context!).textTheme.titleMedium,
@@ -333,6 +333,14 @@ class SubTaskController extends GetxController {
     );
   }
 
+  void clickOnTimeLineButton({required int index}){
+    if(subTaskList?[index] != null) {
+      Get.toNamed(Routes.TASK_TIME_LINE,arguments: [subTaskList?[index]]);
+    }else{
+      CM.error();
+    }
+  }
+
   Future<void> callingGetSubTaskFilterApi({bool forPriorityValue = false}) async {
     try {
       if (!forPriorityValue) {
@@ -423,6 +431,5 @@ class SubTaskController extends GetxController {
     apiResValue.value = true;
     onInit();
   }
-
 
 }

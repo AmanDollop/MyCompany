@@ -98,7 +98,7 @@ class CD {
       bool isDismiss = true}) async {
     await CD.commonIosAlertDialogBox(
         title: C.textDeleteDialogTitle,
-        content: C.textDeleteDialogContent,
+        content: '${C.textDeleteDialogContent}',
         clickOnLeftButton: clickOnCancel,
         clickOnRightButton: clickOnDelete,
         leftButtonTitle: C.textCancel,

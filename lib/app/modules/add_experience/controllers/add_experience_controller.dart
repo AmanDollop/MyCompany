@@ -55,8 +55,12 @@ class AddExperienceController extends GetxController {
   void setDefaultData() {
     designationController.text = getExperienceDetails?.designation ?? 'Designation not found!';
     companyNameController.text = getExperienceDetails?.companyName ?? 'Company name not found!';
-    joiningDateController.text = getExperienceDetails?.joiningDate ?? 'Joining date not found!';
-    releaseDateController.text = getExperienceDetails?.releaseDate ?? 'Release date not found!';
+    if(getExperienceDetails?.joiningDate!=null&& getExperienceDetails!.joiningDate!.isNotEmpty) {
+      joiningDateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse('${getExperienceDetails?.joiningDate}'));
+    }
+    if(getExperienceDetails?.releaseDate!=null&& getExperienceDetails!.releaseDate!.isNotEmpty) {
+      releaseDateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse('${getExperienceDetails?.releaseDate}'));
+    }
     locationController.text = getExperienceDetails?.companyLocation ?? 'Company location not found!';
     remarkController.text = getExperienceDetails?.remark ?? 'Remark not found!';
     experienceId.value = getExperienceDetails?.experienceId ?? '';

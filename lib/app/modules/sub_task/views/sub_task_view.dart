@@ -34,48 +34,25 @@ class SubTaskView extends GetView<SubTaskController> {
                   child: CW.commonRefreshIndicator(
                     onRefresh: () => controller.onRefresh(),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 16.px, horizontal: 12.px),
+                      padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
                       child: Column(
                         children: [
                           subTaskSearchTextFieldView(),
                           SizedBox(height: 16.px),
                           controller.apiResValue.value
                               ? Expanded(
-                                  child: SubTaskShimmerView.shimmerView(
-                                      apiResValue: controller.apiResValue.value,
-                                      apiResValueForSubTaskFilter: controller
-                                          .apiResValueForSubTaskFilter.value,
-                                      apiResValueForSubTask: controller
-                                          .apiResValueForSubTask.value),
+                                  child: SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value),
                                 )
                               : Expanded(
                                   child: ListView(
                                     physics: const ScrollPhysics(),
                                     children: [
-                                      controller
-                                              .apiResValueForSubTaskFilter.value
-                                          ? SubTaskShimmerView.shimmerView(
-                                              apiResValue:
-                                                  controller.apiResValue.value,
-                                              apiResValueForSubTaskFilter:
-                                                  controller
-                                                      .apiResValueForSubTaskFilter
-                                                      .value,
-                                              apiResValueForSubTask: controller
-                                                  .apiResValueForSubTask.value)
+                                      controller.apiResValueForSubTaskFilter.value
+                                          ? SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value)
                                           : filterCardGridView(),
                                       SizedBox(height: 16.px),
                                       controller.apiResValueForSubTask.value
-                                          ? SubTaskShimmerView.shimmerView(
-                                              apiResValue:
-                                                  controller.apiResValue.value,
-                                              apiResValueForSubTaskFilter:
-                                                  controller
-                                                      .apiResValueForSubTaskFilter
-                                                      .value,
-                                              apiResValueForSubTask: controller
-                                                  .apiResValueForSubTask.value)
+                                          ? SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value)
                                           : subTaskCardListView(),
                                       SizedBox(height: 8.h)
                                     ],
@@ -408,8 +385,7 @@ class SubTaskView extends GetView<SubTaskController> {
               text: controller.subTaskList?[index].taskDueDate != null &&
                       controller.subTaskList![index].taskDueDate!.isNotEmpty
                   ? DateFormat('d MMM y').format(
-                      DateTime.parse(
-                          '${controller.subTaskList?[index].taskDueDate}'),
+                      DateTime.parse('${controller.subTaskList?[index].taskDueDate}'),
                     )
                   : 'Not Found!'),
         ],
@@ -571,13 +547,13 @@ class SubTaskView extends GetView<SubTaskController> {
               commonCardButtonView(
                 iconPath: 'assets/icons/delete_icon.png',
                 iconColor: Col.error,
-                onTap: () =>
-                    controller.clickOnDeleteSubTaskButton(index: index),
+                onTap: () => controller.clickOnDeleteSubTaskButton(index: index),
               ),
             if (controller.subTaskList?[index].isDeleteAllow ?? false)
               SizedBox(width: 10.px),
             commonCardButtonView(
               iconPath: 'assets/icons/time_line_icon.png',
+              onTap: () => controller.clickOnTimeLineButton(index: index),
             ),
             SizedBox(width: 10.px),
             commonCardButtonView(

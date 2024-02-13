@@ -16,6 +16,7 @@ import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
+import 'package:task/api/api_model/get_task_time_line_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
@@ -957,5 +958,32 @@ class CAI extends GetxController{
     }
   }
 
+  static Future<GetTaskTimeLineModal?> getTaskTimeLineApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetTaskTimeLineModal? getTaskTimeLineModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointTaskControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getTaskTimeLineModal = GetTaskTimeLineModal.fromJson(jsonDecode(response.body));
+        return getTaskTimeLineModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
 }

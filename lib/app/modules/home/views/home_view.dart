@@ -68,18 +68,12 @@ class HomeView extends GetView<HomeController> {
                                 yourDepartmentListView(),
                               if (controller.hideGallery.value)
                                 Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 12.px, right: 12.px, bottom: 4.px),
+                                  padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      cardTextView(
-                                          text: 'Gallery', fontSize: 16.px),
-                                      viewAllTextButtonView(
-                                          onPressedViewAllButton: () =>
-                                              controller
-                                                  .clickOnGalleryViewAllButton())
+                                      cardTextView(text: 'Gallery', fontSize: 16.px),
+                                      viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
                                     ],
                                   ),
                                 ),
@@ -100,10 +94,8 @@ class HomeView extends GetView<HomeController> {
 
   Widget punchInAndPunchOutView() {
     DateTime breakStartTime =
-        controller.getTodayAttendanceDetail?.breakStartTime != null &&
-                controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
-            ? DateFormat('HH:mm:ss')
-                .parse('${controller.getTodayAttendanceDetail?.breakStartTime}')
+        controller.getTodayAttendanceDetail?.breakStartTime != null && controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
+            ? DateFormat('HH:mm:ss').parse('${controller.getTodayAttendanceDetail?.breakStartTime}')
             : DateTime(0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,9 +168,7 @@ class HomeView extends GetView<HomeController> {
                     controller.checkInValue.value && controller.checkOutValue.value
                         ? CW.commonElevatedButton(
                             onPressed: () {
-                              CM.showSnackBar(
-                                  message:
-                                      'You have already performed punch in and punch out this day.');
+                              CM.showSnackBar(message: 'You have already performed punch in and punch out this day.');
                             },
                             buttonText: 'Take a Break',
                             // width: 150.px,
@@ -188,23 +178,18 @@ class HomeView extends GetView<HomeController> {
                           )
                         : controller.breakValue.value
                             ? Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       cardTextView(text: 'Break time'),
-                                      cardTextView(
-                                          text: DateFormat('hh:mm:ss a')
-                                              .format(breakStartTime),
+                                      cardTextView(text: DateFormat('hh:mm:ss a').format(breakStartTime),
                                           fontSize: 12.px),
                                     ],
                                   ),
                                   InkWell(
-                                    onTap: () =>
-                                        controller.clickOnBreakEndButton(),
+                                    onTap: () => controller.clickOnBreakEndButton(),
                                     borderRadius: BorderRadius.circular(4.px),
                                     child: Column(
                                       children: [
@@ -218,8 +203,7 @@ class HomeView extends GetView<HomeController> {
                                               color: Col.inverseSecondary,
                                               size: 16.px),
                                         ),
-                                        cardTextView(
-                                            text: 'End', color: Col.primary),
+                                        cardTextView(text: 'End', color: Col.primary),
                                       ],
                                     ),
                                   ),
@@ -270,8 +254,7 @@ class HomeView extends GetView<HomeController> {
               firstText: 'Check In', fontSize: 8.px),
           if (controller.checkInValue.value)
             circularProgressIndicatorCheckInTextView(
-                firstText:
-                    '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
+                firstText: '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
                 fontSize: 8.px),
           SizedBox(height: 2.px),
           Row(
@@ -279,9 +262,9 @@ class HomeView extends GetView<HomeController> {
             children: [
               Obx(() {
                 controller.count;
+                // print('::::test:::${formatWithLeadingZeros(controller.hours.value)}');
                 return circularProgressIndicatorTimeTextView(
-                  firstText: controller.checkInValue.value &&
-                          controller.checkOutValue.value
+                  firstText: controller.checkInValue.value && controller.checkOutValue.value
                       ? '${formatWithLeadingZeros(controller.hours.value)}:${formatWithLeadingZeros(controller.minutes.value)}:${formatWithLeadingZeros(controller.seconds.value)}'
                       : formatTime(controller.currentTimeForTimer),
                 );

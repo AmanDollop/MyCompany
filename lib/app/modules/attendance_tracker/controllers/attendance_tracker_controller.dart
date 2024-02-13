@@ -6,6 +6,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
+import 'package:task/app/modules/attendance_tracker/views/month_view.dart';
 import 'package:task/common/calendar_method/calendar_method.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_widgets/cw.dart';
@@ -173,20 +174,16 @@ class AttendanceTrackerController extends GetxController {
 
   Future<void> monthDropDownOnChanged({required String value}) async {
     monthNameValue.value = value;
-    monthNameId.value =
-        CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
-    currentMonth.value =
-        DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
+    monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
+    currentMonth.value = DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
     monthTotalDaysListDataAdd();
     await callingGetMonthlyAttendanceDataApi();
   }
 
   Future<void> yearDropDownOnChanged({required String value}) async {
     yearValue.value = value;
-    monthNameId.value =
-        CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
-    currentMonth.value =
-        DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
+    monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
+    currentMonth.value = DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
     monthTotalDaysListDataAdd();
     await callingGetMonthlyAttendanceDataApi();
   }
@@ -206,12 +203,9 @@ class AttendanceTrackerController extends GetxController {
         AK.month: monthNameId.value,
         AK.year: yearValue.value,
       };
-      getMonthlyAttendanceDataModal.value =
-          await CAI.getMonthlyAttendanceDataApi(
-              bodyParams: bodyParamsForMonthlyAttendanceApi);
+      getMonthlyAttendanceDataModal.value = await CAI.getMonthlyAttendanceDataApi(bodyParams: bodyParamsForMonthlyAttendanceApi);
       if (getMonthlyAttendanceDataModal.value != null) {
-        getMonthlyAttendanceData =
-            getMonthlyAttendanceDataModal.value?.getMonthlyAttendance;
+        getMonthlyAttendanceData = getMonthlyAttendanceDataModal.value?.getMonthlyAttendance;
         setDataInCard();
         monthlyHistoryList = getMonthlyAttendanceData?.monthlyHistory;
         print('monthlyHistoryList:::: ${monthlyHistoryList?.length}');
@@ -225,25 +219,21 @@ class AttendanceTrackerController extends GetxController {
   }
 
   void setDataInCard() {
-    cardSubTitleTextList.insert(0, getMonthlyAttendanceData?.totalWorkingDays);
-    cardSubTitleTextList.insert(1, getMonthlyAttendanceData?.totalPresent);
-    cardSubTitleTextList.insert(2, getMonthlyAttendanceData?.totalAbsent);
-    cardSubTitleTextList.insert(3, getMonthlyAttendanceData?.lateIn);
-    cardSubTitleTextList.insert(4, getMonthlyAttendanceData?.earlyOut);
-    cardSubTitleTextList.insert(5, getMonthlyAttendanceData?.totalExtraDays);
-    cardSubTitleTextList.insert(6, getMonthlyAttendanceData?.totalHolidays);
-    cardSubTitleTextList.insert(7, getMonthlyAttendanceData?.totalWeekOff);
-    cardSubTitleTextList.insert(8, getMonthlyAttendanceData?.totalShortLeave);
-    cardSubTitleTextList.insert(
-        9, getMonthlyAttendanceData?.totalPendingAttendance);
-    cardSubTitleTextList.insert(
-        10, getMonthlyAttendanceData?.totalRejectedAttendance);
-    cardSubTitleTextList.insert(
-        11, getMonthlyAttendanceData?.totalPunchOutMissing);
+    cardSubTitleTextList.insert(0, getMonthlyAttendanceData?.totalWorkingDays??'0');
+    cardSubTitleTextList.insert(1, getMonthlyAttendanceData?.totalPresent??'0');
+    cardSubTitleTextList.insert(2, getMonthlyAttendanceData?.totalAbsent??'0');
+    cardSubTitleTextList.insert(3, getMonthlyAttendanceData?.lateIn??'0');
+    cardSubTitleTextList.insert(4, getMonthlyAttendanceData?.earlyOut??'0');
+    cardSubTitleTextList.insert(5, getMonthlyAttendanceData?.totalExtraDays??'0');
+    cardSubTitleTextList.insert(6, getMonthlyAttendanceData?.totalHolidays??'0');
+    cardSubTitleTextList.insert(7, getMonthlyAttendanceData?.totalWeekOff??'0');
+    cardSubTitleTextList.insert(8, getMonthlyAttendanceData?.isLeave??'0');
+    cardSubTitleTextList.insert(9, getMonthlyAttendanceData?.totalPendingAttendance??'0');
+    cardSubTitleTextList.insert(10, getMonthlyAttendanceData?.totalRejectedAttendance??'0');
+    cardSubTitleTextList.insert(11, getMonthlyAttendanceData?.totalPunchOutMissing??'0');
   }
 
   String calculateTime({required String startDateTimeString,required String endDateTimeString}){
-   print('startDateTimeString:::::  $startDateTimeString   ,  endDateTimeString:::::  $endDateTimeString');
     DateTime startTime = DateTime.parse(startDateTimeString);
     DateTime endTime = DateTime.parse(endDateTimeString);
 
@@ -284,174 +274,188 @@ class AttendanceTrackerController extends GetxController {
     await CBS.commonBottomSheet(
       isDismissible: false,
       children: [
-        Text(
-          DateFormat('EEEE, d MMM y').format(dateTime),
-          style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
-        ),
-        SizedBox(height: 16.px),
-        Card(
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6.px),
-          ),
-          color: Col.primary,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                commonCardTimeTextView(
-                    title: 'Productive Hours',
-                    subTitle: '${1300 ~/ 60}hr ${1300 % 60}min'),
-                commonCardTimeVerticalDividerView(),
-                commonCardTimeTextView(
-                    title: 'Total Hours',
-                    subTitle: '${2600 ~/ 60}hr ${2600 % 60}min'),
-                commonCardTimeVerticalDividerView(),
-                commonCardTimeTextView(
-                    title: 'Extra Hours',
-                    subTitle: '${1600 ~/ 60}hr ${1600 % 60}min'),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: 16.px),
-        if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
-            && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-            || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
-            && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
         Obx(() {
           count.value;
-          return Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Col.primary,width: .5.px),
-                borderRadius: BorderRadius.circular(6.px)
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
-            child: Column(
-              children: [
-                if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
-                    && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-                    || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
-                        && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          return Column(
+            children: [
+              Text(
+                DateFormat('EEEE, d MMM y').format(dateTime),
+                style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
+              ),
+              if (monthlyHistoryList?[index].present == true)
+              SizedBox(height: 16.px),
+              if (monthlyHistoryList?[index].present == true)
+              Card(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.px),
+                ),
+                color: Col.primary,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      commonTextForCheckInOrCheckOutView(
-                        title: 'Punch In',
-                        subTitle: monthlyHistoryList?[index].punchInDate != '0000-00-00' && monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
-                            ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchInDate}'))
-                            : '0000-00-00',
-                        timeText: monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-                            ? '${monthlyHistoryList?[index].punchInTime}'
-                            : 'NIL',
-                      ),
-                      commonTextForCheckInOrCheckOutView(
-                        title: 'Punch Out',
-                        subTitle: monthlyHistoryList?[index].punchOutDate != '0000-00-00' && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
-                            ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchOutDate}'))
-                            : "0000-00-00",
-                        timeText: monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty
-                            ? '${monthlyHistoryList?[index].punchOutTime}'
-                            : "NIL",
-                      ),
-                      commonTextForCheckInOrCheckOutView(title: 'Total Hours', timeText: totalHours ?? 'NIL'),
+                      commonCardTimeTextView(title: 'Productive Hours', subTitle: '${1300 ~/ 60}hr ${1300 % 60}min'),
+                      commonCardTimeVerticalDividerView(),
+                      commonCardTimeTextView(title: 'Total Hours', subTitle: '${2600 ~/ 60}hr ${2600 % 60}min'),
+                      commonCardTimeVerticalDividerView(),
+                      commonCardTimeTextView(title: 'Extra Hours', subTitle: '${1600 ~/ 60}hr ${1600 % 60}min'),
                     ],
                   ),
-                if(monthlyHistoryList?[index].attendanceBreakHistory != null &&  monthlyHistoryList![index].attendanceBreakHistory!.isNotEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Dash(
-                          direction: Axis.horizontal,
-                          length: 62.w,
-                          dashLength: 5.px,
-                          dashThickness: .5.px,
-                          dashColor: Col.secondary),
-                      CW.commonTextButton(
-                        onPressed: (){
-                          bottomSheetBreakListValue.value = !bottomSheetBreakListValue.value;
-                        },
-                        child: Row(
-                          children: [
-                            Text('Show Break',style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary,fontSize: 10.px),),
-                            Icon(bottomSheetBreakListValue.value?Icons.arrow_drop_up:Icons.arrow_drop_down,size: 22.px,color: Col.primary,)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                if(monthlyHistoryList?[index].attendanceBreakHistory != null &&  monthlyHistoryList![index].attendanceBreakHistory!.isNotEmpty)
-                  AnimatedCrossFade(
-                    sizeCurve: Curves.easeInOutCubicEmphasized,
-                    firstCurve: Curves.easeInOutCubicEmphasized,
-                    reverseDuration: const Duration(microseconds: 0),
-                    firstChild: const SizedBox(),
-                    secondChild: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: monthlyHistoryList?[index].attendanceBreakHistory?.length,
-                      itemBuilder: (context, attendanceBreakHistoryIndex) {
-                        List<AttendanceBreakHistory>? attendanceBreakHistory = monthlyHistoryList?[index].attendanceBreakHistory;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakTypeName}',
-                                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') ~/ 60 != 0
-                                      ? '${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') ~/ 60} hr ${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') % 60} min'
-                                      : '${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') % 60} min',
-                                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: Col.primary),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5.px),
-                            Text(
-                              '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime} - ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}',
-                              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
-                            ),
-                            if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
-                              SizedBox(height: 10.px),
-                            if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
-                              Center(
-                                child: Dash(
-                                    direction: Axis.horizontal,
-                                    length: 86.w,
-                                    dashLength: 5.px,
-                                    dashThickness: .5.px,
-                                    dashColor: Col.secondary),
-                              ),
-                            if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
-                            SizedBox(height: 10.px),
-                          ],
-                        );
-                      },
+                ),
+              ),
+              if (monthlyHistoryList?[index].present == true)
+              SizedBox(height: 16.px),
+              if (monthlyHistoryList?[index].present == true)
+              if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
+                  && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
+                  || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
+                  && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
+                Obx(() {
+                  count.value;
+                  return Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Col.primary,width: .5.px),
+                        borderRadius: BorderRadius.circular(6.px)
                     ),
-                    crossFadeState: bottomSheetBreakListValue.value
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 500),
-                    secondCurve: Curves.easeInOutSine,
-                  ),
-              ],
-            ),
+                    padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
+                    child: Column(
+                      children: [
+                        if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
+                            && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
+                            || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
+                                && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              commonTextForCheckInOrCheckOutView(
+                                title: 'Punch In',
+                                subTitle: monthlyHistoryList?[index].punchInDate != '0000-00-00' && monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
+                                    ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchInDate}'))
+                                    : '0000-00-00',
+                                timeText: monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
+                                    ? '${monthlyHistoryList?[index].punchInTime}'
+                                    : 'NIL',
+                              ),
+                              commonTextForCheckInOrCheckOutView(
+                                title: 'Punch Out',
+                                subTitle: monthlyHistoryList?[index].punchOutDate != '0000-00-00' && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
+                                    ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchOutDate}'))
+                                    : "0000-00-00",
+                                timeText: monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty
+                                    ? '${monthlyHistoryList?[index].punchOutTime}'
+                                    : "NIL",
+                              ),
+                              commonTextForCheckInOrCheckOutView(title: 'Total Hours', timeText: totalHours ?? 'NIL'),
+                            ],
+                          ),
+                        if(monthlyHistoryList?[index].attendanceBreakHistory != null &&  monthlyHistoryList![index].attendanceBreakHistory!.isNotEmpty)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Dash(
+                                  direction: Axis.horizontal,
+                                  length: 62.w,
+                                  dashLength: 5.px,
+                                  dashThickness: .5.px,
+                                  dashColor: Col.secondary),
+                              CW.commonTextButton(
+                                onPressed: (){
+                                  bottomSheetBreakListValue.value = !bottomSheetBreakListValue.value;
+                                },
+                                child: Row(
+                                  children: [
+                                    Text('Show Break',style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.primary,fontSize: 10.px),),
+                                    Icon(bottomSheetBreakListValue.value?Icons.arrow_drop_up:Icons.arrow_drop_down,size: 22.px,color: Col.primary,)
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        if(monthlyHistoryList?[index].attendanceBreakHistory != null &&  monthlyHistoryList![index].attendanceBreakHistory!.isNotEmpty)
+                          AnimatedCrossFade(
+                            sizeCurve: Curves.easeInOutCubicEmphasized,
+                            firstCurve: Curves.easeInOutCubicEmphasized,
+                            reverseDuration: const Duration(microseconds: 0),
+                            firstChild: const SizedBox(),
+                            secondChild: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: monthlyHistoryList?[index].attendanceBreakHistory?.length,
+                              itemBuilder: (context, attendanceBreakHistoryIndex) {
+                                List<AttendanceBreakHistory>? attendanceBreakHistory = monthlyHistoryList?[index].attendanceBreakHistory;
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakTypeName}',
+                                          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                                        ),
+                                        Text(
+                                          int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') ~/ 60 != 0
+                                              ? '${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') ~/ 60} hr ${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') % 60} min'
+                                              : '${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') % 60} min',
+                                          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: Col.primary),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5.px),
+                                    Text(
+                                      '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime} - ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}',
+                                      style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+                                    ),
+                                    if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
+                                      SizedBox(height: 10.px),
+                                    if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
+                                      Center(
+                                        child: Dash(
+                                            direction: Axis.horizontal,
+                                            length: 86.w,
+                                            dashLength: 5.px,
+                                            dashThickness: .5.px,
+                                            dashColor: Col.secondary),
+                                      ),
+                                    if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
+                                      SizedBox(height: 10.px),
+                                  ],
+                                );
+                              },
+                            ),
+                            crossFadeState: bottomSheetBreakListValue.value
+                                ? CrossFadeState.showSecond
+                                : CrossFadeState.showFirst,
+                            duration: const Duration(milliseconds: 500),
+                            secondCurve: Curves.easeInOutSine,
+                          ),
+                      ],
+                    ),
+                  );
+                }),
+              if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
+                SizedBox(height: 16.px),
+              Text(
+                monthlyHistoryList?[index].attendnacePending ?? false
+                    ? 'Attendance Pending'
+                    : monthlyHistoryList?[index].weekOff ?? false
+                    ? 'Week Off'
+                    : monthlyHistoryList?[index].holiday ?? false
+                    ? 'Holiday'
+                    : '' ,
+                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: const MonthView().calendarGridTextColorView(index: index)),
+                ),
+              if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
+                SizedBox(height: 20.px),
+              if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
+              CW.commonElevatedButton(onPressed: () => clickOnRequestForAttendanceButton(index:index),buttonText: 'Request for Attendance')
+            ],
           );
         }),
-        if (monthlyHistoryList?[index].attendnacePending ?? false)
-        SizedBox(height: 16.px),
-        if (monthlyHistoryList?[index].attendnacePending ?? false)
-        Text(
-            'Attendance Pending',
-            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: const Color(0xffE09701)),
-          ),
         SizedBox(height: 30.px),
       ],
     ).whenComplete(() {
@@ -461,6 +465,8 @@ class AttendanceTrackerController extends GetxController {
     bottomSheetBreakListValue.value = false;
     calendarGridClickValue.value = false;
   }
+
+  void clickOnRequestForAttendanceButton({required int index}) {}
 
   Widget commonCardTimeTextView({required String title, required String subTitle}) =>
       Column(

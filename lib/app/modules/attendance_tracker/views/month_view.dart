@@ -165,16 +165,11 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   children: [
                     titleTextView(text: 'Total time', color: Col.secondary),
                     SizedBox(height: 2.px),
-                    subTitleTextView(
-                        text:
-                            '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
+                    subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
                     SizedBox(height: 5.px),
-                    titleTextView(
-                        text: 'Monthly Hours Spent', color: Col.secondary),
+                    titleTextView(text: 'Monthly Hours Spent', color: Col.secondary),
                     SizedBox(height: 2.px),
-                    subTitleTextView(
-                        text:
-                            '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
+                    subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalSpendMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalSpendMinutes ?? '') % 60}min'),
                   ],
                 ),
               ),
@@ -188,21 +183,15 @@ class MonthView extends GetView<AttendanceTrackerController> {
             children: [
               titleTextView(text: 'Total Productive Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(
-                  text:
-                      '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
+              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes ?? '') % 60}min'),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Extra Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(
-                  text:
-                      '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
+              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Remaining Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(
-                  text:
-                      '${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') % 60}min'),
+              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') % 60}min'),
             ],
           ),
         ),
@@ -265,13 +254,9 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   width: 20.px,
                 ),
                 SizedBox(height: 5.px),
-                cardTitleTextView(
-                    text: controller.cardTitleTextList[index],
-                    color: controller.cardTextColorList[index]),
+                cardTitleTextView(text: controller.cardTitleTextList[index], color: controller.cardTextColorList[index]),
                 SizedBox(height: 2.px),
-                subTitleTextView(
-                    text: controller.cardSubTitleTextList[index],
-                    fontSize: 14.px)
+                subTitleTextView(text: controller.cardSubTitleTextList[index], fontSize: 14.px)
               ],
             ),
           ),
@@ -294,12 +279,9 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Widget calendarGridView() {
-    var daysInMonth = DateTime(controller.currentMonth.value.year,
-            controller.currentMonth.value.month + 1, 0)
-        .day;
+    var daysInMonth = DateTime(controller.currentMonth.value.year, controller.currentMonth.value.month + 1, 0).day;
 
-    var t =
-        '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
+    var t = '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
     DateTime parsedDate = DateFormat("d-M-yyyy").parse(t);
 
     var extra = parsedDate.weekday == 7 ? 0 : parsedDate.weekday;
@@ -320,6 +302,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
         mainAxisSpacing: 10.px,
       ),
       itemCount: daysInMonth,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final day = controller.monthTotalDaysList[index];
         if (day == 0) {
@@ -330,8 +313,10 @@ class MonthView extends GetView<AttendanceTrackerController> {
               if (controller.monthlyHistoryList?[index - extra].present == true && controller.monthlyHistoryList?[index - extra].attendnacePending == false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
               } else if (controller.monthlyHistoryList?[index - extra].holiday ?? false) {
+                controller.clickOnCalendarGrid(index: index - extra, day: day);
                 CM.showSnackBar(message: 'Holiday');
               } else if (controller.monthlyHistoryList?[index - extra].weekOff ?? false) {
+                controller.clickOnCalendarGrid(index: index - extra, day: day);
                 CM.showSnackBar(message: 'Week Off');
               } else if (controller.monthlyHistoryList?[index - extra].leave ?? false) {
                 CM.showSnackBar(message: 'Leave');
@@ -373,8 +358,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Color calendarGridColorView({required int index}) {
-    if (controller.monthlyHistoryList?[index].present == true &&
-        controller.monthlyHistoryList?[index].attendnacePending == false) {
+    if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false) {
       return const Color(0xffF2FFF3);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
       return const Color(0xffDDE0FB);

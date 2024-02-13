@@ -76,6 +76,8 @@ import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/sub_task/bindings/sub_task_binding.dart';
 import '../modules/sub_task/views/sub_task_view.dart';
+import '../modules/task_time_line/bindings/task_time_line_binding.dart';
+import '../modules/task_time_line/views/task_time_line_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
 
@@ -282,6 +284,11 @@ class AppPages {
       name: _Paths.ADD_SUB_TASK,
       page: () => const AddSubTaskView(),
       binding: AddSubTaskBinding(),
+    ),
+    GetPage(
+      name: _Paths.TASK_TIME_LINE,
+      page: () => const TaskTimeLineView(),
+      binding: TaskTimeLineBinding(),
     ),
   ];
 }

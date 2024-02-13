@@ -141,13 +141,11 @@ class AddBankView extends GetView<AddBankController> {
         controller: controller.bankNameController,
         labelText: 'Bank Name',
         hintText: 'Bank Name',
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter bank name'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter bank name'),
       );
 
   Widget bankBranchNameTextField() => CW.commonTextField(
@@ -155,13 +153,11 @@ class AddBankView extends GetView<AddBankController> {
         controller: controller.bankBranchNameController,
         labelText: 'Bank Branch Name',
         hintText: 'Bank Branch Name',
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter bank branch name'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter bank branch name'),
       );
 
   Widget accountNoTextField() => CW.commonTextField(
@@ -206,8 +202,7 @@ class AddBankView extends GetView<AddBankController> {
         controller: controller.ifscCodeController,
         labelText: 'IFSC Code',
         hintText: 'IFSC Code',
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -220,13 +215,11 @@ class AddBankView extends GetView<AddBankController> {
         controller: controller.customerIDCRNNoController,
         labelText: 'Customer ID/CRN No',
         hintText: 'Customer ID/CRN No',
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter customer ID/CRN no'),
+        // validator: (value) => V.isValid(value: value, title: 'Please enter customer ID/CRN no'),
       );
 
   Widget esicNoTextField() => CW.commonTextField(
@@ -234,13 +227,11 @@ class AddBankView extends GetView<AddBankController> {
         controller: controller.esicNoController,
         labelText: 'ESIC No',
         hintText: 'ESIC No',
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter ESIC no'),
+        // validator: (value) => V.isValid(value: value, title: 'Please enter ESIC no'),
       );
 
   Widget panCardNoTextField() {
@@ -253,7 +244,7 @@ class AddBankView extends GetView<AddBankController> {
       onChanged: (value) {
         controller.count.value++;
       },
-      validator: (value) => V.isValid(value: value, title: 'Please enter pan card no.'),
+      // validator: (value) => V.isValid(value: value, title: 'Please enter pan card no.'),
     );
   }
 
@@ -262,13 +253,11 @@ class AddBankView extends GetView<AddBankController> {
         controller: controller.pFUANNoController,
         labelText: 'PF/UAN No',
         hintText: 'PF/UAN No',
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/contact_phone_icon.png'),
+        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/contact_phone_icon.png'),
         onChanged: (value) {
           controller.count.value++;
         },
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter PF/UAN no'),
+        // validator: (value) => V.isValid(value: value, title: 'Please enter PF/UAN no'),
       );
 
   Widget accountTypeLabelTextView({required String text}) => Text(

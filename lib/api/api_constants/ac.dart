@@ -147,7 +147,9 @@ class AK {
   static const statusFilter = "status_filter";
   static const taskId = "task_id";
   static const taskStatus = "task_status";
+  static const taskTimelineStatus = "task_timeline_status";
   static const taskTimelineDescription = "task_timeline_description";
+  static const taskTimelineDate = "task_timeline_date";
 
   static const taskAttachment = "task_attachment";
   static const taskPriority = "task_priority";
@@ -286,6 +288,10 @@ class ApiEndPointAction{
   static  const getTask = 'getTask';
 
   static  const addTask = 'addTask';
+
+  static  const getTimeline = 'getTimeline';
+
+  static  const addTaskTimeline = 'addTaskTimeline';
 
 
 }
