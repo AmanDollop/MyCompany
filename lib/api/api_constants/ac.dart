@@ -160,6 +160,8 @@ class AK {
   static const taskNote = "task_note";
   static const taskAssignTo = "task_assign_to";
 
+  static const taskTimelineId = "task_timeline_id";
+
 }
 
 class AU {
@@ -292,6 +294,8 @@ class ApiEndPointAction{
   static  const getTimeline = 'getTimeline';
 
   static  const addTaskTimeline = 'addTaskTimeline';
+
+  static  const deleteTimeline = 'deleteTimeline';
 
 
 }

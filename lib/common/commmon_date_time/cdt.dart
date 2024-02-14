@@ -44,11 +44,119 @@ class CDT {
             primarySwatch: CM.getMaterialColor(color: Col.primary),
           ),
           child: MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(alwaysUse24HourFormat: use24HourTime),
+              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: use24HourTime),
               child: child ?? const SizedBox()),
         );
       },
+    );
+
+    return pickedTime;
+  }
+
+  static Future<TimeOfDay?> iosTimePicker({
+    required BuildContext context,
+    DateTime? initialDateTime,
+  }) async {
+    TimeOfDay? pickedTime;
+    pickedTime = await showCupertinoModalPopup(
+      context: Get.context!,
+      builder: (_) => Container(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: (){
+                Get.back();
+              },
+              child: Container(
+                width: 34.px,
+                height: 34.px,
+                decoration: BoxDecoration(
+                  color: Col.secondary,
+                  shape: BoxShape.circle,
+                ),
+                child:  Center(child: Icon(Icons.close,color: Col.inverseSecondary,size: 16.px),),
+              ),
+            ),
+            SizedBox(height: 10.px),
+            Container(
+              height: 250,
+              padding: EdgeInsets.all(16.px),
+              decoration: BoxDecoration(
+                color: Col.inverseSecondary,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular( 20.px),
+                  topRight: Radius.circular(20.px),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.time,
+                      initialDateTime: initialDateTime ?? DateTime.now(),
+                      onDateTimeChanged: (DateTime dateTime) {
+                        pickedTime = TimeOfDay.fromDateTime(dateTime);
+                        print("Selected time: $pickedTime");
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 10.px),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Col.inverseSecondary,
+                            borderRadius: BorderRadius.circular(10.px),
+                            border: Border.all(color: Col.secondary, width: 1.px),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
+                            child: Center(
+                              child: Text(
+                                C.textCancel,
+                                style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap:  () {
+                          Get.back();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Col.inverseSecondary,
+                            borderRadius: BorderRadius.circular(10.px),
+                            border: Border.all(color: Col.secondary, width: 1.px),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
+                            child: Center(
+                              child: Text(
+                                C.textSelect,
+                                style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.px),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
 
     return pickedTime;

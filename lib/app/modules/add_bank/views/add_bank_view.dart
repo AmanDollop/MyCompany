@@ -50,11 +50,11 @@ class AddBankView extends GetView<AddBankController> {
                       SizedBox(height: 20.px),
                       iFSCCodeTextField(),
                       SizedBox(height: 20.px),
+                      panCardNoTextField(),
+                      SizedBox(height: 20.px),
                       customerIDCRNNoTextField(),
                       SizedBox(height: 20.px),
                       esicNoTextField(),
-                      SizedBox(height: 20.px),
-                      panCardNoTextField(),
                       SizedBox(height: 20.px),
                       pFUANNoTextField(),
                       SizedBox(height: 20.px),
@@ -78,7 +78,7 @@ class AddBankView extends GetView<AddBankController> {
                               ],
                             );
                           },
-                          itemCount: 2,
+                          itemCount: controller.accountTypeText.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           scrollDirection: Axis.horizontal),
@@ -244,7 +244,7 @@ class AddBankView extends GetView<AddBankController> {
       onChanged: (value) {
         controller.count.value++;
       },
-      // validator: (value) => V.isValid(value: value, title: 'Please enter pan card no.'),
+      validator: (value) => V.isValid(value: value, title: 'Please enter pan card no.'),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/sub_task_data_modal.dart';
@@ -13,6 +14,7 @@ import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 class SubTaskController extends GetxController {
   final count = 0.obs;
@@ -45,6 +47,8 @@ class SubTaskController extends GetxController {
 
   final descriptionController = TextEditingController();
   final updatePriorityButtonValue = false.obs;
+
+  final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
 
   @override
   Future<void> onInit() async {
@@ -90,9 +94,13 @@ class SubTaskController extends GetxController {
     CM.unFocusKeyBoard();
     count.value = 0;
 
-    subTaskFilterList?[index].isSelected = !subTaskFilterList![index].isSelected;
+    subTaskFilterList?[index].isSelected =
+        !subTaskFilterList![index].isSelected;
 
-    selectedStatusFilterIds = [for (var e in subTaskFilterList!) if (e.isSelected) e.taskActualStatus];
+    selectedStatusFilterIds = [
+      for (var e in subTaskFilterList!)
+        if (e.isSelected) e.taskActualStatus
+    ];
 
     bodyParamsForGetSubTask.clear();
     bodyParamsForGetSubTask = {
@@ -132,13 +140,15 @@ class SubTaskController extends GetxController {
               firstCurve: Curves.easeInOutCubicEmphasized,
               reverseDuration: const Duration(microseconds: 0),
               firstChild: InkWell(
-                onTap: () => bottomSheetSelectPriorityValue.value = !bottomSheetSelectPriorityValue.value,
+                onTap: () => bottomSheetSelectPriorityValue.value =
+                    !bottomSheetSelectPriorityValue.value,
                 child: commonRowForSelectPriorityView(),
               ),
               secondChild: Column(
                 children: [
                   InkWell(
-                    onTap: () => bottomSheetSelectPriorityValue.value = !bottomSheetSelectPriorityValue.value,
+                    onTap: () => bottomSheetSelectPriorityValue.value =
+                        !bottomSheetSelectPriorityValue.value,
                     child: commonRowForSelectPriorityView(),
                   ),
                   SizedBox(height: 10.px),
@@ -166,10 +176,13 @@ class SubTaskController extends GetxController {
           return CW.commonElevatedButton(
               onPressed: updatePriorityButtonValue.value
                   ? () => null
-                  : () => clickOnPriorityUpdateButton(taskId:taskId,taskStatus: selectPriorityId.value,description: descriptionController.text.trim().toString()),
+                  : () => clickOnPriorityUpdateButton(
+                      taskId: taskId,
+                      taskStatus: selectPriorityId.value,
+                      description:
+                          descriptionController.text.trim().toString()),
               buttonText: 'Update',
-              isLoading: updatePriorityButtonValue.value
-          );
+              isLoading: updatePriorityButtonValue.value);
         }),
         SizedBox(height: 20.px),
       ],
@@ -201,7 +214,8 @@ class SubTaskController extends GetxController {
                   : Theme.of(Get.context!).textTheme.titleMedium,
             ),
             InkWell(
-              onTap: () => bottomSheetSelectPriorityValue.value = !bottomSheetSelectPriorityValue.value,
+              onTap: () => bottomSheetSelectPriorityValue.value =
+                  !bottomSheetSelectPriorityValue.value,
               child: Icon(
                   bottomSheetSelectPriorityValue.value
                       ? Icons.arrow_drop_up
@@ -229,7 +243,8 @@ class SubTaskController extends GetxController {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: subTaskFilterListForPriority?.length,
               shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.6),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, childAspectRatio: 2.6),
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () => clickOnPriorityStatusFilterCard(index: index),
@@ -255,7 +270,8 @@ class SubTaskController extends GetxController {
                             height: 10.px,
                             width: 10.px,
                             decoration: BoxDecoration(
-                                color: selectPriorityValue.value == subTaskFilterListForPriority?[index].taskStatusName
+                                color: selectPriorityValue.value ==
+                                        subTaskFilterListForPriority?[index].taskStatusName
                                     ? CW.apiColorConverterMethod(colorString: '${subTaskFilterListForPriority?[index].taskStatusColor}')
                                     : Col.gray.withOpacity(.5),
                                 shape: BoxShape.circle),
@@ -282,12 +298,14 @@ class SubTaskController extends GetxController {
   }
 
   void clickOnPriorityStatusFilterCard({required int index}) {
-    selectPriorityId.value = subTaskFilterListForPriority?[index].taskActualStatus ?? '';
-    selectPriorityValue.value = subTaskFilterListForPriority?[index].taskStatusName ?? '';
+    selectPriorityId.value =
+        subTaskFilterListForPriority?[index].taskActualStatus ?? '';
+    selectPriorityValue.value =
+        subTaskFilterListForPriority?[index].taskStatusName ?? '';
     count.value++;
   }
 
-  Future<void> clickOnPriorityUpdateButton({required String taskId,required String taskStatus,required String description}) async {
+  Future<void> clickOnPriorityUpdateButton({required String taskId, required String taskStatus, required String description}) async {
     updatePriorityButtonValue.value = true;
     bodyParamsForDeleteSubTask.clear();
     bodyParamsForDeleteSubTask = {
@@ -333,10 +351,10 @@ class SubTaskController extends GetxController {
     );
   }
 
-  void clickOnTimeLineButton({required int index}){
-    if(subTaskList?[index] != null) {
-      Get.toNamed(Routes.TASK_TIME_LINE,arguments: [subTaskList?[index]]);
-    }else{
+  void clickOnTimeLineButton({required int index}) {
+    if (subTaskList?[index] != null) {
+      Get.toNamed(Routes.TASK_TIME_LINE, arguments: [subTaskList?[index]]);
+    } else {
       CM.error();
     }
   }
@@ -351,23 +369,23 @@ class SubTaskController extends GetxController {
           AK.action: ApiEndPointAction.getTaskStatus,
         };
       }
-      getSubTaskFilterDataModal.value = await CAI.getSubTaskFilterDataApi(bodyParams: bodyParamsForGetSubTaskFilter);
+      getSubTaskFilterDataModal.value = await CAI.getSubTaskFilterDataApi(
+          bodyParams: bodyParamsForGetSubTaskFilter);
       if (getSubTaskFilterDataModal.value != null) {
         if (forPriorityValue) {
           subTaskFilterListForPriority?.clear();
-          subTaskFilterListForPriority = getSubTaskFilterDataModal.value?.taskStatus;
+          subTaskFilterListForPriority =
+              getSubTaskFilterDataModal.value?.taskStatus;
         } else {
           subTaskFilterList = getSubTaskFilterDataModal.value?.taskStatus;
           subTaskFilterList?.forEach((element) {
             if (element.taskStatusName == 'Pending') {
               element.isSelected = true;
               selectedStatusFilterIds.add(element.taskActualStatus);
-            }
-            else if (element.taskStatusName == 'In Progress') {
+            } else if (element.taskStatusName == 'In Progress') {
               element.isSelected = true;
               selectedStatusFilterIds.add(element.taskActualStatus);
-            }
-            else if (element.taskStatusName == 'On Hold') {
+            } else if (element.taskStatusName == 'On Hold') {
               element.isSelected = true;
               selectedStatusFilterIds.add(element.taskActualStatus);
             }
@@ -387,13 +405,14 @@ class SubTaskController extends GetxController {
       apiResValueForSubTask.value = true;
       getSubTaskDataModal.value = null;
       subTaskList?.clear();
-      if(!filterValue){
+      if (!filterValue) {
         bodyParamsForGetSubTask = {
           AK.action: ApiEndPointAction.getTask,
           AK.taskCategoryId: taskCategoryId.value,
         };
       }
-      getSubTaskDataModal.value = await CAI.getSubTaskDataApi(bodyParams: bodyParamsForGetSubTask);
+      getSubTaskDataModal.value =
+          await CAI.getSubTaskDataApi(bodyParams: bodyParamsForGetSubTask);
       if (getSubTaskDataModal.value != null) {
         subTaskList = getSubTaskDataModal.value?.taskDetails;
         print('subTaskList:::::: ${subTaskList?.length}');
@@ -408,7 +427,8 @@ class SubTaskController extends GetxController {
 
   Future<void> callingTaskApi() async {
     try {
-      http.Response? response = await CAI.addTaskApi(bodyParams: bodyParamsForDeleteSubTask);
+      http.Response? response =
+          await CAI.addTaskApi(bodyParams: bodyParamsForDeleteSubTask);
       if (response != null && response.statusCode == 200) {
         apiResValueForSubTask.value = true;
         await callingGetSubTaskApi();
@@ -430,6 +450,76 @@ class SubTaskController extends GetxController {
         arguments: ['Add Task', taskCategoryId.value]);
     apiResValue.value = true;
     onInit();
+  }
+
+  Future<void> clickOnTaskAttachmentButton({required int index}) async {
+    String attachmentType = CM.getDocumentType(filePath: '${subTaskList?[index].taskAttachment}');
+    print(':::::: $attachmentType');
+
+    if (attachmentType == 'PDF') {
+      await showGeneralDialog(
+        context: Get.context!,
+        pageBuilder: (context, animation, secondaryAnimation) => Material(
+          child: InteractiveViewer(
+            child: SafeArea(
+              child: SfPdfViewer.network(
+                '${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}',
+              ),
+            ),
+          ),
+        ),
+      );
+    } else if (attachmentType == 'Image') {
+      await showGeneralDialog(
+        context: Get.context!,
+        barrierColor: Col.inverseSecondary,
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return Material(
+            child: Center(
+              child: InteractiveViewer(
+                child: SafeArea(
+                  child: commonContainerForImage(
+                    networkImage:
+                        '${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}',
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      if (!await launcher.launchUrl(
+        '${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}',
+        const LaunchOptions(mode: PreferredLaunchMode.inAppBrowserView),
+      )) {
+        throw Exception(
+            'Could not launch ${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}');
+      }
+    }
+  }
+
+  Widget commonContainerForImage({required String networkImage}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 0.px, vertical: 4.px),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(3.px),
+        child: Image.network(
+          networkImage,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.px),
+                child: CW.commonShimmerViewForImage(),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) => CW.commonNetworkImageView(height: 150.px,width: 250.px, path: 'assets/images/default_image.jpg', isAssetImage: true),
+        ),
+      ),
+    );
   }
 
 }

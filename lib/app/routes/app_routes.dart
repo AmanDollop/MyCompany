@@ -43,6 +43,7 @@ abstract class Routes {
   static const SUB_TASK = _Paths.SUB_TASK;
   static const ADD_SUB_TASK = _Paths.ADD_SUB_TASK;
   static const TASK_TIME_LINE = _Paths.TASK_TIME_LINE;
+  static const PENALTY = _Paths.PENALTY;
 }
 
 abstract class _Paths {
@@ -87,4 +88,5 @@ abstract class _Paths {
   static const SUB_TASK = '/sub-task';
   static const ADD_SUB_TASK = '/add-sub-task';
   static const TASK_TIME_LINE = '/task-time-line';
+  static const PENALTY = '/penalty';
 }

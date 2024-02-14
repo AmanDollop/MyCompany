@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
@@ -17,6 +18,7 @@ import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:task/theme/constants/constants.dart';
 
 class AddSubTaskController extends GetxController {
   final count = 0.obs;
@@ -249,7 +251,7 @@ class AddSubTaskController extends GetxController {
           ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text)
           : DateTime.now(),
       lastDate: taskDueDateController.text.isNotEmpty
-          ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text)
+          ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text).add(const Duration(days: 20))
           : DateTime.now().add(const Duration(days: 20)),
     ).whenComplete(() async {
       CM.unFocusKeyBoard();
@@ -275,6 +277,7 @@ class AddSubTaskController extends GetxController {
         dueTimeController.text = '${value.hour}:${value.minute}';
       }
     });
+
   }
 
   Future<void> clickOnAttachFileButton() async {
@@ -314,19 +317,27 @@ class AddSubTaskController extends GetxController {
 
   Future<void> callingAddSubTaskApi() async {
     try {
+
+      DateTime taskStartDate = DateFormat('d MMM yyyy').parse(taskStartDateController.text.trim().toString());
+      String start = DateFormat('yyyy-MM-dd').format(taskStartDate);
+
+      DateTime taskDueDate = DateFormat('d MMM yyyy').parse(taskDueDateController.text.trim().toString());
+      String dueDate = DateFormat('yyyy-MM-dd').format(taskDueDate);
+
       print('userId.value:::: ${userId.value}');
       bodyParamsForAddSubTask = {
         AK.action: ApiEndPointAction.addTask,
         AK.taskCategoryId: taskCategoryId.value,
         AK.taskId: subTaskList?.taskId ?? '',
         AK.taskPriority: selectPriorityController.text.trim().toString(),
-        AK.taskStartDate: taskStartDateController.text.trim().toString(),
-        AK.taskDueDate: taskDueDateController.text.trim().toString(),
+        AK.taskStartDate: start,
+        AK.taskDueDate: dueDate,
         AK.taskDueTime: dueTimeController.text.trim().toString(),
         AK.taskName: subTaskNameController.text.trim().toString(),
         AK.taskNote: remarkController.text.trim().toString(),
         AK.taskAssignTo: userId.value,
       };
+      print('imageFile.value::::: ${imageFile.value}');
       http.Response? response = await CAI.addSubTaskApi(bodyParams: bodyParamsForAddSubTask, filePath: imageFile.value);
       if (response != null && response.statusCode == 200) {
         addSubTaskButtonValue.value = false;

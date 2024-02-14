@@ -273,9 +273,11 @@ class AttendanceTrackerController extends GetxController {
     calendarGridClickValue.value = true;
     await CBS.commonBottomSheet(
       isDismissible: false,
+      isFullScreen: true,
       children: [
         Obx(() {
           count.value;
+          print('monthlyHistoryList?[index].punchInDate:::::${monthlyHistoryList?[index].punchInDate} ${DateTime.now()}');
           return Column(
             children: [
               Text(
@@ -308,10 +310,8 @@ class AttendanceTrackerController extends GetxController {
               if (monthlyHistoryList?[index].present == true)
               SizedBox(height: 16.px),
               if (monthlyHistoryList?[index].present == true)
-              if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
-                  && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-                  || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
-                  && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
+              if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
+                  || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
                 Obx(() {
                   count.value;
                   return Container(
@@ -335,8 +335,8 @@ class AttendanceTrackerController extends GetxController {
                                 subTitle: monthlyHistoryList?[index].punchInDate != '0000-00-00' && monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
                                     ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchInDate}'))
                                     : '0000-00-00',
-                                timeText: monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-                                    ? '${monthlyHistoryList?[index].punchInTime}'
+                                timeText: monthlyHistoryList?[index].punchInDate != '0000-00-00' && monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
+                                    ? DateFormat('hh:mm a').format(DateTime.parse('${monthlyHistoryList?[index].punchInDate} ${monthlyHistoryList?[index].punchInTime}'))
                                     : 'NIL',
                               ),
                               commonTextForCheckInOrCheckOutView(
@@ -344,8 +344,8 @@ class AttendanceTrackerController extends GetxController {
                                 subTitle: monthlyHistoryList?[index].punchOutDate != '0000-00-00' && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
                                     ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchOutDate}'))
                                     : "0000-00-00",
-                                timeText: monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty
-                                    ? '${monthlyHistoryList?[index].punchOutTime}'
+                                timeText: monthlyHistoryList?[index].punchOutDate != '0000-00-00' && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty
+                                    ? DateFormat('hh:mm a').format(DateTime.parse('${monthlyHistoryList?[index].punchOutDate} ${monthlyHistoryList?[index].punchOutTime}'))
                                     : "NIL",
                               ),
                               commonTextForCheckInOrCheckOutView(title: 'Total Hours', timeText: totalHours ?? 'NIL'),
@@ -382,7 +382,7 @@ class AttendanceTrackerController extends GetxController {
                             firstChild: const SizedBox(),
                             secondChild: ListView.builder(
                               shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
+                              physics: const ScrollPhysics(),
                               itemCount: monthlyHistoryList?[index].attendanceBreakHistory?.length,
                               itemBuilder: (context, attendanceBreakHistoryIndex) {
                                 List<AttendanceBreakHistory>? attendanceBreakHistory = monthlyHistoryList?[index].attendanceBreakHistory;
@@ -407,7 +407,7 @@ class AttendanceTrackerController extends GetxController {
                                     ),
                                     SizedBox(height: 5.px),
                                     Text(
-                                      '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime} - ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}',
+                                      '${DateFormat('hh:mm a').format(DateTime.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime}'))} - ${DateFormat('hh:mm a').format(DateTime.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}'))}',
                                       style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
                                     ),
                                     if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
@@ -439,7 +439,7 @@ class AttendanceTrackerController extends GetxController {
                 }),
               if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
                 SizedBox(height: 16.px),
-              Text(
+                Text(
                 monthlyHistoryList?[index].attendnacePending ?? false
                     ? 'Attendance Pending'
                     : monthlyHistoryList?[index].weekOff ?? false

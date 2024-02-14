@@ -7,7 +7,6 @@ import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
-import 'package:vibration/vibration.dart';
 
 class MonthView extends GetView<AttendanceTrackerController> {
   const MonthView({Key? key}) : super(key: key);
@@ -335,7 +334,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
               color: day == 0
                   ? Colors.transparent
                   : calendarGridColorView(index: index - extra),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.px)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.px)),
               child: SizedBox(
                 height: 30.px,
                 width: 30.px,

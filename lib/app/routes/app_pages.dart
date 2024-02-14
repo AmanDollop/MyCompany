@@ -54,6 +54,8 @@ import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/otp_verification/bindings/otp_verification_binding.dart';
 import '../modules/otp_verification/views/otp_verification_view.dart';
+import '../modules/penalty/bindings/penalty_binding.dart';
+import '../modules/penalty/views/penalty_view.dart';
 import '../modules/personal_info/bindings/personal_info_binding.dart';
 import '../modules/personal_info/views/personal_info_view.dart';
 import '../modules/promotion/bindings/promotion_binding.dart';
@@ -289,6 +291,11 @@ class AppPages {
       name: _Paths.TASK_TIME_LINE,
       page: () => const TaskTimeLineView(),
       binding: TaskTimeLineBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENALTY,
+      page: () => const PenaltyView(),
+      binding: PenaltyBinding(),
     ),
   ];
 }

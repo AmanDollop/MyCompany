@@ -177,7 +177,7 @@ class AllTaskView extends GetView<AllTaskController> {
         padding: EdgeInsets.zero,
         itemBuilder: (context, taskCardListViewIndex) {
           if(controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty){
-            commonLinearProgressBarValue = /*double.parse('${controller.taskCategoryList?[taskCardListViewIndex].taskPercentage}')*/80.0 / 100;
+            commonLinearProgressBarValue = double.parse('${controller.taskCategoryList[taskCardListViewIndex].taskPercentage}') / 100;
           }
           return InkWell(
             onTap: () => controller.clickOnTaskCard(taskCardListViewIndex: taskCardListViewIndex),
@@ -201,7 +201,12 @@ class AllTaskView extends GetView<AllTaskController> {
                         Expanded(
                           child: CW.commonLinearProgressBar(value: commonLinearProgressBarValue, height: 5.px),),
                         SizedBox(width: 10.px),
-                        cardTitleTextView(text: '80%', color: Col.primary)
+                        cardTitleTextView(
+                            text: controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null
+                                && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty
+                            ? '${controller.taskCategoryList[taskCardListViewIndex].taskPercentage}%'
+                            : '0%', color: Col.primary,
+                        )
                       ],
                     ),
                     SizedBox(height: 10.px),

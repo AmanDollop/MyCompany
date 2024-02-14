@@ -187,7 +187,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 assignTextView(text: 'Assign To'),
-                addAssignButtonView()
+                // addAssignButtonView()
               ],
             ),
             SizedBox(height: 5.px),
@@ -208,7 +208,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
                           : 'Designation'),
                 ],
               ),
-              trailing: removeButtonView(),
+              // trailing: removeButtonView(),
             ),
           ],
         ),
@@ -312,13 +312,12 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
   Widget selectedImageView() {
     if (controller.pageName.value == 'Update Task') {
       return Center(
-        child: controller.docType.value == 'Image'
+        child: controller.docType.value == 'Unknown'
+            ? attachRowTextView()
+            : controller.docType.value == 'Image'
             ? controller.imagePathFoeAdd.value.isNotEmpty
-                ? fileImageAndNetworkImageView(
-                    isFileImage: true,
-                    imagePath: controller.imagePathFoeAdd.value)
-                : fileImageAndNetworkImageView(
-                    imagePath: controller.imagePathFoeUpDate.value)
+                ? fileImageAndNetworkImageView(isFileImage: true, imagePath: controller.imagePathFoeAdd.value)
+                : fileImageAndNetworkImageView(imagePath: controller.imagePathFoeUpDate.value)
             : docImageView(imagePath: controller.docLogo.value),
       );
     } else {

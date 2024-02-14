@@ -1,17 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_task_time_line_modal.dart';
 import 'package:task/api/api_model/sub_task_data_modal.dart';
-import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
-import 'package:task/data_base/data_base_constant/data_base_constant.dart';
-import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class TaskTimeLineController extends GetxController {
 
@@ -19,23 +14,17 @@ class TaskTimeLineController extends GetxController {
 
   TaskDetails? subTaskList;
 
-  final sendMessageController = TextEditingController();
+  final scrollController = ScrollController();
 
-  List<bool> t =[
-    true,
-    false,
-    true,
-    false,
-    true,
-    false,
-    true,
-    false,
-  ];
+  final sendMessageController = TextEditingController();
 
   final apiResValue = true.obs;
 
   final getTaskTimeLineModal = Rxn<GetTaskTimeLineModal>();
-  List<TimeLine>? timeLineList;
+  // List<TimeLine>? timeLineList;
+
+  Map<DateTime, List<TimeLine>> timeLineList = {};
+
   Map<String,dynamic> bodyParamsForGetTaskTimeLine = {};
 
   Map<String,dynamic> bodyParamsForAddTaskTimeLine = {};
@@ -45,6 +34,14 @@ class TaskTimeLineController extends GetxController {
     super.onInit();
     subTaskList = Get.arguments[0];
     await callingGetSubTaskApi();
+    scrollController.addListener(() async {
+      print('addListener::::::::::::');
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        count.value=0;
+        await callingGetSubTaskApi();
+        count.value++;
+      }
+    });
   }
 
   @override
@@ -68,13 +65,11 @@ class TaskTimeLineController extends GetxController {
       count.value=0;
       bodyParamsForGetTaskTimeLine = {
           AK.action: ApiEndPointAction.getTimeline,
-          // AK.taskId:  '69',
           AK.taskId: subTaskList?.taskId ?? '',
         };
       getTaskTimeLineModal.value = await CAI.getTaskTimeLineApi(bodyParams: bodyParamsForGetTaskTimeLine);
       if (getTaskTimeLineModal.value != null) {
-        timeLineList = getTaskTimeLineModal.value?.timeLine;
-        print('getTaskTimeLineModal.value?.isTaskTimeLineActive::: ${getTaskTimeLineModal.value?.isTaskTimeLineActive}');
+        timeLineList = groupMessagesByDay(messagesDetailData: getTaskTimeLineModal.value?.timeLine ?? []);
         count.value++;
       }
     } catch (e) {
@@ -85,11 +80,43 @@ class TaskTimeLineController extends GetxController {
     apiResValue.value = false;
   }
 
-  void clickOnMessageView({required int index}) {
-    CD.commonIosDeleteConfirmationDialog(clickOnCancel: () => Get.back(), clickOnDelete: () => clickOnDeleteMessageButton(),);
+  Map<DateTime, List<TimeLine>> groupMessagesByDay({required List<TimeLine> messagesDetailData}) {
+
+    Map<DateTime, List<TimeLine>> groupedMessages = {};
+
+    for (var message in messagesDetailData) {
+      DateTime date = DateTime(DateTime.parse('${message.taskTimelineDate}').year, DateTime.parse('${message.taskTimelineDate}').month, DateTime.parse('${message.taskTimelineDate}').day);
+
+      if (!groupedMessages.containsKey(date)) {
+        groupedMessages[date] = [];
+      }
+
+      groupedMessages[date]!.add(message);
+    }
+    return reverseGroupedMessages(groupedMessages: groupedMessages);
   }
 
-  void clickOnDeleteMessageButton() {
+  Map<DateTime, List<TimeLine>> reverseGroupedMessages({required Map<DateTime, List<TimeLine>> groupedMessages}) {
+    List<MapEntry<DateTime, List<TimeLine>>> entries = groupedMessages.entries.toList();
+    entries = entries.reversed.toList();
+
+    Map<DateTime, List<TimeLine>> reversedGroupedMessages = {};
+    for (var entry in entries) {
+      reversedGroupedMessages[entry.key] = entry.value;
+    }
+    return reversedGroupedMessages;
+  }
+
+  void clickOnMessageView({required String messageId}) {
+    CD.commonIosDeleteConfirmationDialog(clickOnCancel: () => Get.back(), clickOnDelete: () => clickOnDeleteMessageButton(messageId: messageId),);
+  }
+
+  Future<void> clickOnDeleteMessageButton({required String messageId}) async {
+    bodyParamsForAddTaskTimeLine = {
+      AK.action: ApiEndPointAction.deleteTimeline,
+      AK.taskTimelineId: messageId,
+    };
+    await callingAddTaskTimeLineApi();
     Get.back();
   }
 
@@ -97,7 +124,6 @@ class TaskTimeLineController extends GetxController {
     if(sendMessageController.text.isNotEmpty){
       bodyParamsForAddTaskTimeLine = {
         AK.action: ApiEndPointAction.addTaskTimeline,
-        // AK.taskId:  '69',
         AK.taskId: subTaskList?.taskId ?? '',
         AK.taskTimelineStatus: subTaskList?.taskStatus ?? '',
         AK.taskTimelineDate: '${DateTime.now()}',

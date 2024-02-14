@@ -16,7 +16,6 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
   final count = 0.obs;
   final downAndUpValue = [];
 
-  final aNumber = '123456789999'.obs;
   late AnimationController rotationController;
 
   final rotationValue = false.obs;
@@ -129,6 +128,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
       getBankDetailsForUpDate = getBankList?[index];
       Get.back();
       await Get.toNamed(Routes.ADD_BANK, arguments: ['UpDate Bank Detail', getBankDetailsForUpDate]);
+      downAndUpValue.clear();
       onInit();
     } else {
       CM.error();
@@ -193,6 +193,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
 
   Future<void> clickOnAddNewBankAccountButton() async {
     await Get.toNamed(Routes.ADD_BANK, arguments: ['Add Bank']);
+    downAndUpValue.clear();
     onInit();
   }
 

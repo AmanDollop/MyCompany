@@ -36,7 +36,7 @@ class AddBankController extends GetxController {
 
   final accountTypeText = ['Saving','Current'];
   final accountTypeIndexValue = '0'.obs;
-  final accountType = ''.obs;
+  final accountType = 'saving'.obs;
 
 
 
@@ -96,7 +96,13 @@ class AddBankController extends GetxController {
     panCardNoController.text = getBankDetails?.panCardNo??'Data not found!';
     pFUANNoController.text = getBankDetails?.pfNo??'Data not found!';
     bankId = getBankDetails?.bankId??'';
-    accountType.value = getBankDetails?.accountType??'';
+     accountType.value = getBankDetails?.accountType ?? '';
+    if(accountType.value == 'current') {
+      accountTypeIndexValue.value = '1';
+    }else{
+      accountTypeIndexValue.value = '0';
+    }
+    print('accountType.value::::: ${accountType.value}');
   }
 
   void clickOnBackButton() {
@@ -114,6 +120,7 @@ class AddBankController extends GetxController {
 
   Future<void> callingAddBankDetailsApi() async {
     try{
+      print('accountType.value::::: ${accountType.value}');
       bodyParamsForUpdateBankDetails={
         AK.action : ApiEndPointAction.addBankDetail,
         AK.accountHoldersName : accountHolderNameController.text.trim().toString(),

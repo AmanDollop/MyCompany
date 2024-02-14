@@ -5,6 +5,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
+import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
@@ -422,6 +423,12 @@ class BottomSheetForOTP extends GetxController {
 
   static Map<String, dynamic> bodyParamsMatchOtp = {};
 
+  static final menusModal = Rxn<MenusModal>();
+  static List<GetMenu> isHeadingMenuList = [];
+  static Map<String, dynamic> bodyParamsForMenusApi = {};
+
+  static final companyDetailFromLocalDataBase = ''.obs;
+
   static Future<void> sendOtpApiCalling({required String email}) async {
     timer.value = !timer.value;
     try {
@@ -457,6 +464,9 @@ class BottomSheetForOTP extends GetxController {
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
         await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
+        companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
+        getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
+        await callingMenusApi(companyId: getCompanyDetails?.companyId ?? '');
         Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
         CM.showSnackBar(message: 'LogIn Successfully');
       } else {
@@ -709,4 +719,25 @@ class BottomSheetForOTP extends GetxController {
       }
     }
   }
+
+  static  Future<void> callingMenusApi({required String companyId}) async {
+    bodyParamsForMenusApi = {
+      AK.action: ApiEndPointAction.getDashboardMenu,
+      AK.companyId: companyId
+    };
+    menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
+    if (menusModal.value != null) {
+      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu)) {
+        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
+        menusModal.value?.getMenu?.forEach((element) {
+          if (element.isDashboardMenu == '1') {
+            isHeadingMenuList.add(element);
+          }
+        });
+      } else {
+        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
+      }
+    }
+  }
+
 }

@@ -230,9 +230,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     try {
       await companyData();
       await shiftData();
-      await appMenusData();
       await callingGetTodayAttendanceApi();
       await callingGetBreakDetailsApi();
+      await appMenusData();
     } catch (e) {
       apiResValue.value = false;
     }
@@ -267,7 +267,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   Future<void> appMenusData() async {
     try {
       if (isDatabaseHaveDataForAppMenu.value) {
-        await callingMenusApi();
+        await BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
       } else {
         appMenuFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus, tableName: DataBaseConstant.tableNameForAppMenu);
         menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
@@ -276,7 +276,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
             isHeadingMenuList.add(element);
           }
         });
-        await callingMenusApi();
+        await BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
       }
     } catch (e) {}
   }
@@ -502,7 +502,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(6.px)
                 ),
                 child: Padding(
-                  padding:  EdgeInsets.all(8.px),
+                  padding: EdgeInsets.all(isLatePunchIn.value ? 8.px : 0.px),
                   child: Column(
                     children: [
                       !checkInValue.value
@@ -745,28 +745,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   void clickOnGalleryViewAllButton() {}
 
-  Future<void> callingMenusApi() async {
-    bodyParamsForMenusApi = {
-      AK.action: ApiEndPointAction.getDashboardMenu,
-      AK.companyId: companyId.value
-    };
-    menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
-    if (menusModal.value != null) {
-      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu)) {
-        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
-        menusModal.value?.getMenu?.forEach((element) {
-          if (element.isDashboardMenu == '1') {
-            isHeadingMenuList.add(element);
-          }
-        });
-      } else {
-        await DataBaseHelper().upDateDataBase(
-            data: {DataBaseConstant.appMenus: json.encode(menusModal.value)},
-            tableName: DataBaseConstant.tableNameForAppMenu);
-      }
-    }
-  }
-
   Future<DateTime> getInternetDateTime() async {
     final response =
         await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
@@ -822,7 +800,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     apiResValue.value = true;
     getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
     if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')) {
-      punchInOutOfRange = '1';
+      punchInOutOfRange = '0';
     }
     try {
       bodyParamsForAttendancePunchInApi = {
@@ -874,7 +852,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
 
     if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')) {
-      punchInOutOfRange = '1';
+      punchInOutOfRange = '0';
     }
 
     try {

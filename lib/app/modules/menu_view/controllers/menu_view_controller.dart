@@ -113,6 +113,8 @@ class MenuViewController extends GetxController {
         Get.toNamed(Routes.ATTENDANCE_TRACKER, arguments: [getMenuListForSearch[index].menuName]);
       }else if (getMenuListForSearch[index].menuClick == 'task') {
         Get.toNamed(Routes.ALL_TASK, arguments: [getMenuListForSearch[index].menuName]);
+      }else if (getMenuListForSearch[index].menuClick == 'penalty') {
+        Get.toNamed(Routes.PENALTY, arguments: [getMenuListForSearch[index].menuName]);
       } else {
         CM.showSnackBar(message: 'Coming soon');
       }
@@ -123,6 +125,8 @@ class MenuViewController extends GetxController {
         Get.toNamed(Routes.ATTENDANCE_TRACKER, arguments: [getMenuList[index].menuName]);
       }else if (getMenuList[index].menuClick == 'task') {
         Get.toNamed(Routes.ALL_TASK, arguments: [getMenuList[index].menuName]);
+      }else if (getMenuList[index].menuClick == 'penalty') {
+        Get.toNamed(Routes.PENALTY, arguments: [getMenuList[index].menuName]);
       } else {
         CM.showSnackBar(message: 'Coming soon');
       }

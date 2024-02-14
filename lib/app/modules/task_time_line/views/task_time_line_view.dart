@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
+import 'package:task/api/api_model/get_task_time_line_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -31,52 +32,66 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
               alignment: Alignment.bottomCenter,
               children: [
                 controller.getTaskTimeLineModal.value != null
-                    ? controller.timeLineList != null && controller.timeLineList!.isNotEmpty
+                    ? controller.timeLineList.isNotEmpty
                         ? Column(
                           children: [
                             Expanded(
                               child: ListView.builder(
+                                  controller: controller.scrollController,
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
-                                  itemCount: controller.timeLineList?.length,
+                                  itemCount: controller.timeLineList.length,
                                   physics: const ScrollPhysics(),
                                   reverse: true,
                                   itemBuilder: (context, index) {
+
+                                    final date = controller.timeLineList.keys.toList()[index];
+                                    final dateMessages = controller.timeLineList[date]!;
+
                                     return Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 8.px,
-                                          right: 8.px,
-                                          top: 8.px,
-                                          bottom: index == 0 ? 90.px : 8.px),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment:controller.timeLineList?[index].isSender== false? MainAxisAlignment.start : MainAxisAlignment.end,
+                                      padding: EdgeInsets.only(left: 8.px, right: 8.px, top: 8.px, bottom: index == 0 ? 90.px : 8.px),
+                                      child: Column(
                                         children: [
-                                          if (controller.timeLineList?[index].isSender== false)
-                                            senderProfileView(index: index),
-                                          ChatContainerView(
-                                            onLongPress:controller.timeLineList?[index].isDeleteAllow ?? false
-                                                ? () => controller.clickOnMessageView(index:index)
-                                                : () => null,
-                                            widget: Column(
-                                              crossAxisAlignment: controller.timeLineList?[index].isSender == true
-                                                  ? CrossAxisAlignment.end
-                                                  : CrossAxisAlignment.start,
+                                          dateContainerView(index:index,date:date),
+                                          SizedBox(height: 10.px),
+                                          ...dateMessages.map((messageDetail) {
+                                            return Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: messageDetail.isSender == false? MainAxisAlignment.start : MainAxisAlignment.end,
                                               children: [
-                                                if (controller.timeLineList?[index].isSender == false)
-                                                  senderNameTextView(index: index),
-                                                if (controller.timeLineList?[index].isSender == false)
-                                                SizedBox(height: 5.px),
-                                                commonTextForMessageView(index: index),
-                                                SizedBox(height: 2.px),
-                                                commonTimeTextView(index: index),
+                                                if (messageDetail.isSender == false)
+                                                  senderProfileView(index: index,messageDetail:messageDetail),
+                                                ChatContainerView(
+                                                  onLongPress: messageDetail.isDeleteAllow ?? false
+                                                      ? () => controller.clickOnMessageView(messageId:messageDetail.taskTimelineId ?? '')
+                                                      : () => null,
+                                                  widget: Column(
+                                                    crossAxisAlignment: messageDetail.isSender == true
+                                                        ? CrossAxisAlignment.end
+                                                        : CrossAxisAlignment.start,
+                                                    children: [
+                                                      if (messageDetail.isSender == false)
+                                                        senderNameTextView(index: index,messageDetail:messageDetail),
+                                                      if (messageDetail.isSender == false)
+                                                        SizedBox(height: 5.px),
+                                                      if(messageDetail.taskTimelineStatus != '5')
+                                                      commonTextForStatusMessageView(index: index,messageDetail:messageDetail),
+                                                      if(messageDetail.taskTimelineStatus != '5')
+                                                      SizedBox(height: 5.px),
+                                                      if(messageDetail.taskTimelineDescription != null && messageDetail.taskTimelineDescription!.isNotEmpty)
+                                                      commonTextForMessageView(index: index,messageDetail:messageDetail),
+                                                      SizedBox(height: 2.px),
+                                                      commonTimeTextView(index: index,messageDetail:messageDetail),
+                                                    ],
+                                                  ),
+                                                  color: messageDetail.isSender ?? false
+                                                      ? Col.gray.withOpacity(.2.px)
+                                                      : Col.primary.withOpacity(.1.px),
+                                                  isSender: messageDetail.isSender ?? false,
+                                                ),
                                               ],
-                                            ),
-                                            color: controller.timeLineList?[index].isSender ?? false
-                                                ? Col.gray.withOpacity(.2.px)
-                                                : Col.primary.withOpacity(.1.px),
-                                            isSender: controller.timeLineList?[index].isSender ?? false,
-                                          ),
+                                            );
+                                          }).toList(),
                                         ],
                                       ),
                                     );
@@ -104,52 +119,71 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
     );
   }
 
-  Widget senderProfileView({required int index}) => Container(
+  Widget dateContainerView({required int index, required DateTime date}) => Container(
+    padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 4.px),
+    decoration: BoxDecoration(
+        color: Col.primary.withOpacity(.2),
+        borderRadius: BorderRadius.circular(4.px)
+    ),
+    child: Text(DateFormat('d MMM y').format(DateTime.parse('$date')),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 10.px)
+    ),
+  );
+
+  Widget senderProfileView({required int index, required TimeLine messageDetail}) => Container(
         height: 36.px,
         width: 36.px,
         margin: EdgeInsets.zero,
         padding: EdgeInsets.zero,
         decoration: BoxDecoration(color: Col.primary.withOpacity(.2.px), shape: BoxShape.circle),
         child: Center(
-          child: controller.timeLineList?[index].userProfile != null && controller.timeLineList![index].userProfile!.isNotEmpty
+          child: messageDetail.userProfile != null && messageDetail.userProfile!.isNotEmpty
               ? ClipRRect(
               borderRadius: BorderRadius.circular(18.px),
                 child: CW.commonNetworkImageView(
-                    path: '${AU.baseUrlAllApisImage}${controller.timeLineList?[index].userProfile}',
+                    path: '${AU.baseUrlAllApisImage}${messageDetail.userProfile}',
                     isAssetImage: false,
                     errorImage: 'assets/images/profile.png',
                     height: 36.px,
                     width: 36.px),
               )
-              : Text('${controller.timeLineList?[index].shortName}',
+              : Text('${messageDetail.shortName}',
                   style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.primary),
           ),
         ),
       );
 
-  Widget senderNameTextView({required int index}) => Text(
-    controller.timeLineList?[index].userName != null && controller.timeLineList![index].userName!.isNotEmpty
-        ? '${controller.timeLineList?[index].userName}'
+  Widget senderNameTextView({required int index, required TimeLine messageDetail}) => Text(
+    messageDetail.userName != null && messageDetail.userName!.isNotEmpty
+        ? '${messageDetail.userName}'
         : 'Not found!',
         style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px),
       );
 
-  Widget commonTextForMessageView({required int index,int? maxLine,Color, color}) => Text(
-        controller.timeLineList?[index].taskTimelineDescription != null && controller.timeLineList![index].taskTimelineDescription!.isNotEmpty
-            ? '${controller.timeLineList?[index].taskTimelineDescription}'
-            : 'Status : ${controller.timeLineList?[index].taskTimelineDescription}',
+  Widget commonTextForStatusMessageView({required int index,int? maxLine, required TimeLine messageDetail}) => Text(
+        messageDetail.taskStatusName != null && messageDetail.taskStatusName!.isNotEmpty
+            ? 'Status : ${messageDetail.taskStatusName}'
+            : 'Not found!',
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color:color ?? controller.timeLineList?[index].taskTimelineDescription != null && controller.timeLineList![index].taskTimelineDescription!.isNotEmpty
-                  ? Col.secondary
-                  : CW.apiColorConverterMethod(colorString: '${controller.timeLineList?[index].taskStatusColor}'),
+              color: messageDetail.taskStatusColor != null && messageDetail.taskStatusColor!.isNotEmpty
+                  ? CW.apiColorConverterMethod(colorString: '${messageDetail.taskStatusColor}')
+                  : Col.secondary,
             ),
        maxLines: maxLine,
       );
 
-  Widget commonTimeTextView({required int index}) => Text(
-    controller.timeLineList?[index].taskTimelineDate != null && controller.timeLineList![index].taskTimelineDate!.isNotEmpty
-        ? DateFormat('hh:mm a').format(DateTime.parse('${controller.timeLineList?[index].taskTimelineDate}'))
+  Widget commonTextForMessageView({required int index,int? maxLine, required TimeLine messageDetail}) => Text(
+             '${messageDetail.taskTimelineDescription}',
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+       maxLines: maxLine,
+      );
+
+  Widget commonTimeTextView({required int index, required TimeLine messageDetail}) => Text(
+    messageDetail.taskTimelineDate != null && messageDetail.taskTimelineDate!.isNotEmpty
+        ? DateFormat('hh:mm a').format(DateTime.parse('${messageDetail.taskTimelineDate}'))
         :'?',
         style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontSize: 8.px),
         textAlign: TextAlign.end,
@@ -196,6 +230,8 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
           ),
         ),
       );
+
+
 }
 
 class ChatContainerView extends StatelessWidget {

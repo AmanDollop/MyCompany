@@ -73,16 +73,22 @@ class EducationController extends GetxController {
 
   Future<void> clickOnEducationData({required int index}) async {
     await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['UpDate ${tabBarValue.value}',getEducationList[index]]);
+    getAchievementsList.clear();
+    getEducationList.clear();
     onInit();
   }
 
   Future<void> clickOnAchievementsData({required int index}) async {
     await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['UpDate ${tabBarValue.value}',getAchievementsList[index]]);
+    getAchievementsList.clear();
+    getEducationList.clear();
     onInit();
   }
 
   Future<void> clickOnAddViewButton() async {
     await Get.toNamed(Routes.ADD_EDUCATION,arguments: ['Add ${tabBarValue.value}',tabBarValue.value]);
+    getAchievementsList.clear();
+    getEducationList.clear();
     onInit();
   }
 
