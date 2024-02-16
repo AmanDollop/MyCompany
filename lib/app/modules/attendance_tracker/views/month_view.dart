@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/modules/attendance_tracker/controllers/attendance_tracker_controller.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -81,7 +82,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
       );
 
   Widget monthDropDownView() => DropdownButton<String>(
-        value: controller.monthNameValue.value,
+        value: controller.monthNameForMonthViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
@@ -91,8 +92,8 @@ class MonthView extends GetView<AttendanceTrackerController> {
           color: Colors.transparent,
         ),
         onChanged: (String? value) =>
-            controller.monthDropDownOnChanged(value: value ?? ''),
-        items: controller.monthNameList.map<DropdownMenuItem<String>>((String value) {
+            controller.monthDropDownOnChangedForMonth(value: value ?? ''),
+        items: controller.monthNameForMonthViewList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
@@ -106,7 +107,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
       );
 
   Widget yearDropDownView() => DropdownButton<String>(
-        value: controller.yearValue.value,
+        value: controller.yearForMonthViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
@@ -116,9 +117,9 @@ class MonthView extends GetView<AttendanceTrackerController> {
           color: Colors.transparent,
         ),
         onChanged: (String? value) =>
-            controller.yearDropDownOnChanged(value: value ?? ''),
+            controller.yearDropDownOnChangedForMonth(value: value ?? ''),
         items:
-            controller.yearList.map<DropdownMenuItem<String>>((String value) {
+            controller.yearForMonthViewList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
@@ -164,11 +165,11 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   children: [
                     titleTextView(text: 'Total time', color: Col.secondary),
                     SizedBox(height: 2.px),
-                    subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalMonthlyTime ?? '') % 60}min'),
+                    subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalMonthlyTime}')),
                     SizedBox(height: 5.px),
                     titleTextView(text: 'Monthly Hours Spent', color: Col.secondary),
                     SizedBox(height: 2.px),
-                    subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalSpendMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalSpendMinutes ?? '') % 60}min'),
+                    subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalSpendMinutes}')),
                   ],
                 ),
               ),
@@ -182,15 +183,15 @@ class MonthView extends GetView<AttendanceTrackerController> {
             children: [
               titleTextView(text: 'Total Productive Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes ?? '') % 60}min'),
+              subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes}')),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Extra Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalExtraMinutes ?? '') % 60}min'),
+              subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalExtraMinutes}')),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Remaining Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(text: '${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') ~/ 60}hr ${int.parse(controller.getMonthlyAttendanceData?.totalRemainingMinutes ?? '') % 60}min'),
+              subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalRemainingMinutes}')),
             ],
           ),
         ),

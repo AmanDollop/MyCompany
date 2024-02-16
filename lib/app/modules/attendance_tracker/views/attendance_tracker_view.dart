@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/modules/attendance_tracker/views/month_view.dart';
+import 'package:task/app/modules/attendance_tracker/views/week_view.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 
@@ -16,41 +17,40 @@ class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
       body:Obx(() {
         controller.count.value;
         ///Tab Bar View For Month And Week
-        // return  Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 12.px),
-        //   child: Column(
-        //     children: [
-        //       SizedBox(height: 16.px),
-        //       tabBarView(),
-        //       Expanded(
-        //         child: Padding(
-        //           padding: EdgeInsets.only(top: 16.px),
-        //           child: AnimatedCrossFade(
-        //             crossFadeState:
-        //             controller.tabBarValue.value == 'Month'
-        //                 ? CrossFadeState.showFirst
-        //                 : CrossFadeState.showSecond,
-        //             duration: const Duration(milliseconds: 1000),
-        //             firstCurve: Curves.fastOutSlowIn,
-        //             secondCurve: Curves.fastOutSlowIn,
-        //             firstChild: const MonthView(),
-        //             secondChild: const WeekView(),
-        //           ),
-        //         ),
-        //       ),
-        //       SizedBox(height: 12.px)
-        //     ],
-        //   ),
-        // );
-        return Padding(
+        return  Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.px),
           child: Column(
             children: [
               SizedBox(height: 16.px),
-              const Expanded(child: MonthView()),
+              tabBarView(),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16.px),
+                  child: AnimatedCrossFade(
+                    crossFadeState: controller.tabBarValue.value == 'Month'
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 1000),
+                    firstCurve: Curves.fastOutSlowIn,
+                    secondCurve: Curves.fastOutSlowIn,
+                    firstChild: const MonthView(),
+                    secondChild: const WeekView(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 12.px)
             ],
           ),
         );
+        // return Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 12.px),
+        //   child: Column(
+        //     children: [
+        //       SizedBox(height: 16.px),
+        //       const Expanded(child: MonthView()),
+        //     ],
+        //   ),
+        // );
       })
     );
   }

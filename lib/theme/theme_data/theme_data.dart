@@ -25,7 +25,6 @@ class AppThemeData {
           minThumbLength: 100.px,
 
         ),*/
-
       // Slider Theme
       /* sliderTheme: SliderThemeData(
           trackHeight: 8.px,
@@ -33,6 +32,7 @@ class AppThemeData {
           inactiveTickMarkColor: Col.primaryColor,
           inactiveTrackColor: Col.primaryColor,
         ),*/
+
       useMaterial3: true,
       textTheme: CommonTextTheme().textTheme(fontFamily: fontFamily),
       primaryColor: Col.primaryColor,

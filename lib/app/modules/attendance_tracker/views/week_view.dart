@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/modules/attendance_tracker/controllers/attendance_tracker_controller.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
+import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 
 class WeekView extends GetView<AttendanceTrackerController> {
@@ -12,28 +15,57 @@ class WeekView extends GetView<AttendanceTrackerController> {
   Widget build(BuildContext context) {
     return Obx(() {
       controller.count.value;
-      return ListView(
-        shrinkWrap: true,
-        children: [
-          Row(
-            children: [
-              commonDropDownView(
-                dropDownView: monthDropDownView(),
-              ),
-              SizedBox(width: 10.px),
-              commonDropDownView(
-                dropDownView: yearDropDownView(),
-              ),
-            ],
-          ),
-          SizedBox(height: 10.px),
-          buildHeader(),
-          SizedBox(height: 10.px),
-          circularProgressBarView(),
-          SizedBox(height: 10.px),
-          listViewBuilder(),
-          SizedBox(height: 20.px),
-        ],
+      return ModalProgress(
+        inAsyncCall: controller.apiResValue.value,
+        child: controller.apiResValue.value
+            ? shimmerView()
+            : controller.getWeeklyAttendanceDataModal.value != null
+            ? Column(
+                children: [
+                  Row(
+                    children: [
+                      commonDropDownView(
+                        dropDownView: monthDropDownView(),
+                      ),
+                      SizedBox(width: 10.px),
+                      commonDropDownView(
+                        dropDownView: yearDropDownView(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.px),
+                  controller.weeklyHistoryList != null && controller.weeklyHistoryList!.isNotEmpty
+                      ? Expanded(
+                         // height: MediaQuery.of(context).size.height * 0.72,
+                          child: PageView.builder(
+                            scrollDirection: Axis.horizontal,
+                            controller: controller.pageController,
+                            physics: const ScrollPhysics(),
+                            itemCount: controller.weeklyHistoryList?.length,
+                            itemBuilder: (context, index) {
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 1000),
+                                curve: Curves.easeInOut,
+                                // alignment: Alignment.center,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    buildHeader(index: index),
+                                    SizedBox(height: 10.px),
+                                    circularProgressBarView(index: index),
+                                    SizedBox(height: 10.px),
+                                    listViewBuilder(index: index),
+                                    SizedBox(height: 20.px),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : CW.commonNoDataFoundText()
+                ],
+              )
+            : CW.commonNoDataFoundText(),
       );
     });
   }
@@ -60,7 +92,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
       );
 
   Widget monthDropDownView() => DropdownButton<String>(
-        value: controller.monthNameValue.value,
+        value: controller.monthNameForWeekViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
@@ -70,8 +102,8 @@ class WeekView extends GetView<AttendanceTrackerController> {
           color: Colors.transparent,
         ),
         onChanged: (String? value) =>
-            controller.monthDropDownOnChanged(value: value ?? ''),
-        items: controller.monthNameList
+            controller.monthDropDownOnChangedForWeek(value: value ?? ''),
+        items: controller.monthNameForMonthViewList
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -86,7 +118,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
       );
 
   Widget yearDropDownView() => DropdownButton<String>(
-        value: controller.yearValue.value,
+        value: controller.yearForWeekViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
@@ -95,10 +127,8 @@ class WeekView extends GetView<AttendanceTrackerController> {
           height: 0,
           color: Colors.transparent,
         ),
-        onChanged: (String? value) =>
-            controller.yearDropDownOnChanged(value: value ?? ''),
-        items:
-            controller.yearList.map<DropdownMenuItem<String>>((String value) {
+        onChanged: (String? value) => controller.yearDropDownOnChangedForWeek(value: value ?? ''),
+        items: controller.yearForMonthViewList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
@@ -111,43 +141,39 @@ class WeekView extends GetView<AttendanceTrackerController> {
         }).toList(),
       );
 
-  Widget buildHeader() {
+  Widget buildHeader({required int index}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          icon: Icon(Icons.keyboard_arrow_left,
-              color: Col.secondary, size: 28.px),
-          onPressed: () {
-            controller.currentWeakStartDate.value = controller
-                .currentWeakStartDate.value
-                .subtract(const Duration(days: 7));
-            controller.currentWeakEndDate.value = controller
-                .currentWeakEndDate.value
-                .subtract(Duration(days: DateTime.now().weekday));
-          },
+        if (index > 0)
+          IconButton(
+            icon: Icon(Icons.keyboard_arrow_left,
+                color: Col.secondary, size: 28.px),
+            onPressed: () {
+              // controller.pageController.previousPage(
+              //   duration: const Duration(milliseconds: 500),
+              //   curve: Curves.easeInOut,
+              // );
+              controller.pageController.jumpToPage(0);
+              controller.count.value--;
+            },
+          ),
+        SizedBox(width: 10.px),
+        Text(
+          '${controller.weeklyHistoryList?[index].week}',
+          style: Theme.of(Get.context!).textTheme.displayLarge,
         ),
         SizedBox(width: 10.px),
-        Column(
-          children: [
-            Text(
-              '${controller.currentWeakStartDate.value.day}-${controller.currentWeakEndDate.value.day} ${DateFormat('MMM yyyy').format(DateTime.now())}',
-              style: Theme.of(Get.context!).textTheme.displayLarge,
-            ),
-          ],
-        ),
-        SizedBox(width: 10.px),
-        if (controller.currentWeakEndDate.value.day != DateTime.now().day)
+        if (index < controller.weeklyHistoryList!.length - 1)
           IconButton(
             icon: Icon(Icons.keyboard_arrow_right,
                 color: Col.secondary, size: 28.px),
             onPressed: () {
-              controller.currentWeakStartDate.value = controller
-                  .currentWeakStartDate.value
-                  .add(const Duration(days: 7));
-              controller.currentWeakEndDate.value = controller
-                  .currentWeakEndDate.value
-                  .add(Duration(days: DateTime.now().weekday));
+              controller.pageController.nextPage(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+              controller.count.value++;
             },
           ),
       ],
@@ -163,7 +189,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
     );
   }
 
-  Widget circularProgressBarView() => Row(
+  Widget circularProgressBarView({required int index}) => Row(
         children: [
           SizedBox(
             height: 150.px,
@@ -186,12 +212,12 @@ class WeekView extends GetView<AttendanceTrackerController> {
                     children: [
                       titleTextView(text: 'Total time', color: Col.secondary),
                       SizedBox(height: 2.px),
-                      subTitleTextView(text: '140 hr'),
+                      subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
                       SizedBox(height: 5.px),
                       titleTextView(
                           text: 'Total Spend Time', color: Col.secondary),
                       SizedBox(height: 2.px),
-                      subTitleTextView(text: '20 hr 20 min')
+                      subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalSpendMinutes}'))
                     ],
                   ),
                 ),
@@ -205,15 +231,15 @@ class WeekView extends GetView<AttendanceTrackerController> {
               children: [
                 titleTextView(text: 'Total Productive Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(text: '50hr 50 min.'),
+                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
                 SizedBox(height: 5.px),
                 titleTextView(text: 'Total Extra Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(text: '50hr 50 min.'),
+                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekExtraMinutes}')),
                 SizedBox(height: 5.px),
                 titleTextView(text: 'Total Remaining Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(text: '50 min.'),
+                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekRemainingMinutes}')),
               ],
             ),
           ),
@@ -222,10 +248,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
 
   Widget titleTextView({required String text, Color? color}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelMedium
-            ?.copyWith(fontSize: 10.px, color: color),
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, color: color),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -246,63 +269,145 @@ class WeekView extends GetView<AttendanceTrackerController> {
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget listViewBuilder() => ListView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: 7,
-    itemBuilder: (context, index) {
-      return listCardView(index:index);
-    },
-  );
+  Widget listViewBuilder({required int index}) {
+    controller.weekDayHistoryList =
+        controller.weeklyHistoryList?[index].history;
+    if (controller.weekDayHistoryList != null &&
+        controller.weekDayHistoryList!.isNotEmpty) {
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.weekDayHistoryList?.length,
+        itemBuilder: (context, weekDayIndex) {
+          return listCardView(weekDayIndex: weekDayIndex);
+        },
+      );
+    } else {
+      return SizedBox(
+        height: 40.h,
+        child: CW.commonNoDataFoundText(),
+      );
+    }
+  }
 
-  Widget listCardView({required int index}) => Card(
-    color: Col.inverseSecondary,
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6.px)
-    ),
-    child: Padding(
-      padding:  EdgeInsets.all(8.px),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleTextView(text: '23rd January 2024'),
-          SizedBox(height: 2.px),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget listCardView({required int weekDayIndex}) => Card(
+        color: Col.inverseSecondary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
+        child: Padding(
+          padding: EdgeInsets.all(8.px),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              timeTextView(text: 'Monday',),
-              timeTextView(text: '09 hr 10 min',),
+              titleTextView(text: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.weekDayHistoryList?[weekDayIndex].attendanceDate}')),
+              SizedBox(height: 2.px),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  timeTextView(
+                    text: '${controller.weekDayHistoryList?[weekDayIndex].dayName}',
+                  ),
+                  timeTextView(
+                    text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].totalWorkingMinutes}'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.px),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        titleTextView(text: 'Total Productive Time'),
+                        SizedBox(height: 2.px),
+                        subTitleTextView(
+                            text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].productiveWorkingMinutes}'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        titleTextView(text: 'Extra Hours'),
+                        SizedBox(height: 2.px),
+                        subTitleTextView(
+                          text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].extraWorkingMinutes}'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        titleTextView(text: 'Remaining Time'),
+                        SizedBox(height: 2.px),
+                        subTitleTextView(
+                          text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].remainingWorkingMinutes}'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
-          SizedBox(height: 10.px),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    titleTextView(text: 'Total Productive Time'),
-                    SizedBox(height: 2.px),
-                    subTitleTextView(text: '50hr 50 min.'),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    titleTextView(text: 'Extra Hours'),
-                    SizedBox(height: 2.px),
-                    subTitleTextView(text: '50hr 50 min.'),
-                  ],
-                ),
-              ),
-            ],
+        ),
+      );
+
+  Widget shimmerView() => ListView(
+    shrinkWrap: true,
+    physics: const ScrollPhysics(),
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: CW.commonShimmerViewForImage(height: 40.px),
+          ),
+          SizedBox(width: 10.px),
+          Expanded(
+            child: CW.commonShimmerViewForImage(height: 40.px),
+          ),
+        ],
+      ),
+      SizedBox(height: 10.px),
+      Row(
+        children: [
+          CW.commonShimmerViewForImage(height: 150.px, width: 150.px, radius: 75.px),
+          SizedBox(width: 15.px),
+          Flexible(
+            child: Column(
+              children: [
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+                CW.commonShimmerViewForImage(height: 20.px),
+                SizedBox(height: 5.px),
+              ],
+            ),
           )
         ],
       ),
-    ),
+      SizedBox(height: 10.px),
+      ListView.builder(
+        itemCount: 7,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => Padding(
+          padding: EdgeInsets.only(bottom: 12.px),
+          child: CW.commonShimmerViewForImage(height: 70.px,width: double.infinity),
+        ),
+      ),
+      SizedBox(height: 20.px),
+    ],
   );
-
 }

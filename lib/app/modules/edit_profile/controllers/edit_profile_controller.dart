@@ -11,6 +11,7 @@ import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/image_picker/ip.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
@@ -85,10 +86,6 @@ class EditProfileController extends GetxController {
 
   void increment() => count.value++;
 
-  String formatDate(DateTime date) {
-    final formatter = DateFormat('dd MMM yyyy');
-    return formatter.format(date);
-  }
 
   Future<void> setDefaultData() async {
 
@@ -123,8 +120,7 @@ class EditProfileController extends GetxController {
 
       dob.value = personalInfo?.memberDateOfBirth??'';
       if(dob.value.isNotEmpty){
-        DateTime inputDate = DateTime.parse(dob.value);
-        String formattedDate = formatDate(inputDate);
+        String formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: dob.value);
         dobController.text = formattedDate.toString();
       }
 

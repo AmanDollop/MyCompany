@@ -18,6 +18,8 @@ import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
 import 'package:task/api/api_model/get_task_time_line_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
+import 'package:task/api/api_model/get_weekly_attendance_data_modal.dart';
+import 'package:task/api/api_model/holiday_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
 import 'package:task/api/api_model/search_company_modal.dart';
@@ -813,6 +815,87 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getMonthlyAttendanceDataModal = GetMonthlyAttendanceDataModal.fromJson(jsonDecode(response.body));
         return getMonthlyAttendanceDataModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<HolidayModal?> getHolidayApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    HolidayModal? holidayModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        holidayModal= HolidayModal.fromJson(jsonDecode(response.body));
+        return holidayModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetWeeklyAttendanceDataModal?> getWeeklyAttendanceDataApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetWeeklyAttendanceDataModal? getWeeklyAttendanceDataModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getWeeklyAttendanceDataModal = GetWeeklyAttendanceDataModal.fromJson(jsonDecode(response.body));
+        return getWeeklyAttendanceDataModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> addAttendanceApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+    Map<String, String> authorization = await userToken();
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
       } else {
         return null;
       }

@@ -40,8 +40,7 @@ class HomeView extends GetView<HomeController> {
                 inAsyncCall: controller.apiResValue.value,
                 child: ListView(
                   controller: controller.scrollController.value,
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
+                  padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
                   children: [
                     punchInAndPunchOutView(),
                     controller.apiResValue.value
@@ -51,17 +50,18 @@ class HomeView extends GetView<HomeController> {
                             children: [
                               if (controller.hideBanner.value)
                                 SizedBox(height: 16.px),
-                              if (controller.hideBanner.value) bannerView(),
+                              if (controller.hideBanner.value)
+                                bannerView(),
                               if (controller.hideUpcomingCelebration.value)
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12.px, vertical: 14.px),
+                                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
                                   child: upcomingCelebrationsButtonView(),
                                 ),
                               appMenusListView(),
                               if (controller.hideMyTeam.value)
                                 SizedBox(height: 14.px),
-                              if (controller.hideMyTeam.value) myTeamListView(),
+                              if (controller.hideMyTeam.value)
+                                myTeamListView(),
                               if (controller.hideMyDepartment.value)
                                 SizedBox(height: 14.px),
                               if (controller.hideMyDepartment.value)
@@ -101,7 +101,7 @@ class HomeView extends GetView<HomeController> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (controller.breakValue.value)
-          Padding(
+        Padding(
             padding: EdgeInsets.only(right: 12.px, left: 12.px),
             child: Card(
               elevation: 0,
@@ -133,8 +133,7 @@ class HomeView extends GetView<HomeController> {
                     height: 180.px,
                     width: 180.px,
                     child: CustomPaint(
-                      painter: MyClockPainter(
-                          currentTime: controller.currentTimeForTimer),
+                      painter: MyClockPainter(currentTime: controller.currentTimeForTimer),
                     ),
                   ),
                   Stack(
@@ -310,8 +309,7 @@ class HomeView extends GetView<HomeController> {
       return GestureDetector(
         onHorizontalDragStart: (details) {
           CM.showSnackBar(
-              message:
-                  'You have already performed punch in and punch out this day.');
+              message: 'You have already performed punch in and punch out this day.');
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 500),
@@ -355,10 +353,12 @@ class HomeView extends GetView<HomeController> {
       );
     } else {
       return GestureDetector(
-        onHorizontalDragStart: (details) {
-          controller.clickOnSwitchButton();
-        },
-        onTap: () => controller.clickOnSwitchButton(),
+        onHorizontalDragStart: controller.checkInAndCheckOutButtonValue.value
+            ? (details) => null
+            : (details) => controller.clickOnSwitchButton(),
+        onTap: controller.checkInAndCheckOutButtonValue.value
+            ? () => null
+            : () => controller.clickOnSwitchButton(),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 500),
           // width: 150.px,
@@ -493,100 +493,109 @@ class HomeView extends GetView<HomeController> {
       );
 
   Widget appMenusListView() {
-    if (controller.isHeadingMenuList.isNotEmpty) {
-      return commonCard(
-        titleText: 'App Menu',
-        listWidget: GridView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.all(10.px),
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.isHeadingMenuList.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 10.px,
-            mainAxisSpacing: 10.px,
-          ),
-          itemBuilder: (context, index) {
-            Color convertedColor = CW.apiColorConverterMethod(colorString: '${controller.isHeadingMenuList[index].backgroundColor}');
-            return InkWell(
-              onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                height: 100.px,
-                padding: EdgeInsets.only(left: 3.px),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 24.px,
-                      color: Col.secondary.withOpacity(.05),
-                    )
-                  ],
-                  color: convertedColor,
-                  borderRadius: BorderRadius.circular(8.px),
-                ),
-                child: Ink(
-                  padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
-                  decoration: BoxDecoration(
-                    color: Col.inverseSecondary,
-                    borderRadius: BorderRadius.circular(6.px),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 40.px,
-                        height: 40.px,
-                        padding: EdgeInsets.all(2.px),
-                        decoration: BoxDecoration(
-                          color: convertedColor,
-                          borderRadius: BorderRadius.circular(6.px),
-                        ),
-                        child: Center(
-                          child:
+    return Obx(() {
+      controller.count.value;
+      if(controller.menusModal.value != null){
+        if (controller.isHeadingMenuList.isNotEmpty) {
+          return commonCard(
+            titleText: 'App Menu',
+            listWidget: GridView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.all(10.px),
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.isHeadingMenuList.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10.px,
+                mainAxisSpacing: 10.px,
+              ),
+              itemBuilder: (context, index) {
+                Color convertedColor = CW.apiColorConverterMethod(colorString: '${controller.isHeadingMenuList[index].backgroundColor}');
+                return InkWell(
+                  onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
+                  borderRadius: BorderRadius.circular(10.px),
+                  child: Ink(
+                    height: 100.px,
+                    padding: EdgeInsets.only(left: 3.px),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 24.px,
+                          color: Col.secondary.withOpacity(.05),
+                        )
+                      ],
+                      color: convertedColor,
+                      borderRadius: BorderRadius.circular(8.px),
+                    ),
+                    child: Ink(
+                      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
+                      decoration: BoxDecoration(
+                        color: Col.inverseSecondary,
+                        borderRadius: BorderRadius.circular(6.px),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 40.px,
+                            height: 40.px,
+                            padding: EdgeInsets.all(2.px),
+                            decoration: BoxDecoration(
+                              color: convertedColor,
+                              borderRadius: BorderRadius.circular(6.px),
+                            ),
+                            child: Center(
+                              child:
                               controller.isHeadingMenuList[index].menuImage == null && controller.isHeadingMenuList[index].menuImage!.isEmpty
                                   ? CW.commonNetworkImageView(
-                                      path: 'assets/images/default_image.jpg',
-                                      isAssetImage: true,
-                                      width: 44.px,
-                                      height: 44.px,
-                                    )
+                                path: 'assets/images/default_image.jpg',
+                                isAssetImage: true,
+                                width: 44.px,
+                                height: 44.px,
+                              )
                                   : SizedBox(
-                                      width: 22.px,
-                                      height: 22.px,
-                                      child: CW.commonCachedNetworkImageView(
-                                        path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
-                                      ),
-                                    ),
-                        ),
-                      ),
-                      SizedBox(height: 10.px),
-                      Flexible(
-                        child: Text(
-                          '${controller.isHeadingMenuList[index].menuName}',
-                          style: Theme.of(Get.context!)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(
+                                width: 22.px,
+                                height: 22.px,
+                                child: CW.commonCachedNetworkImageView(
+                                  path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10.px),
+                          Flexible(
+                            child: Text(
+                              '${controller.isHeadingMenuList[index].menuName}',
+                              style: Theme.of(Get.context!)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(
                                   fontWeight: FontWeight.w700, fontSize: 10.px),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                        ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    } else {
-      return controller.apiResValue.value
-          ? const SizedBox()
-          : CW.commonNoDataFoundText(text: 'Menus not found!');
-    }
+                );
+              },
+            ),
+          );
+        } else {
+          return controller.apiResValue.value
+              ? const SizedBox()
+              : CW.commonNoDataFoundText(text: 'Menus not found!');
+        }
+      }else {
+        return controller.apiResValue.value
+            ? const SizedBox()
+            : CW.commonNoDataFoundText(text: 'Menus not found!');
+      }
+    });
   }
 
   Widget myTeamListView() => commonCard(

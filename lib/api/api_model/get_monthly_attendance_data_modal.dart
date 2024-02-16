@@ -149,6 +149,7 @@ class MonthlyHistory {
   bool? punchInRequestSent;
   List<AttendanceBreakHistory>? attendanceBreakHistory;
   String? punchOutMissingMessage;
+  String? productiveWorkingMinutes;
 
   MonthlyHistory(
       {this.date,
@@ -179,7 +180,9 @@ class MonthlyHistory {
         this.totalWorkingMinutes,
         this.punchInRequestSent,
         this.attendanceBreakHistory,
-        this.punchOutMissingMessage});
+        this.punchOutMissingMessage,
+        this.productiveWorkingMinutes,
+      });
 
   MonthlyHistory.fromJson(Map<String, dynamic> json) {
     date = json['date'];
@@ -209,6 +212,7 @@ class MonthlyHistory {
     totalShiftMinutes = json['total_shift_minutes'];
     totalWorkingMinutes = json['total_working_minutes'];
     punchInRequestSent = json['punch_in_request_sent'];
+    productiveWorkingMinutes = json['productive_working_minutes'];
     if (json['attendance_break_history'] != null) {
       attendanceBreakHistory = <AttendanceBreakHistory>[];
       json['attendance_break_history'].forEach((v) {
@@ -247,6 +251,7 @@ class MonthlyHistory {
     data['total_shift_minutes'] = totalShiftMinutes;
     data['total_working_minutes'] = totalWorkingMinutes;
     data['punch_in_request_sent'] = punchInRequestSent;
+    data['productive_working_minutes'] = productiveWorkingMinutes;
     if (attendanceBreakHistory != null) {
       data['attendance_break_history'] =
           attendanceBreakHistory!.map((v) => v.toJson()).toList();

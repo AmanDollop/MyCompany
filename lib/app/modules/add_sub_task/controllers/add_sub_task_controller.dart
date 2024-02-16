@@ -12,13 +12,12 @@ import 'package:task/api/api_model/sub_task_data_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
-import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/theme/colors/colors.dart';
-import 'package:task/theme/constants/constants.dart';
 
 class AddSubTaskController extends GetxController {
   final count = 0.obs;
@@ -96,9 +95,10 @@ class AddSubTaskController extends GetxController {
   void setDefaultData() {
     subTaskNameController.text = subTaskList?.taskName ?? '';
     selectPriorityController.text = subTaskList?.taskPriority ?? '';
-    taskStartDateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse('${subTaskList?.taskStartDate}'));
-    taskDueDateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse('${subTaskList?.taskDueDate}'));
-    dueTimeController.text = subTaskList?.taskDueTime ?? '-';
+    taskStartDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${subTaskList?.taskStartDate}');
+    taskDueDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${subTaskList?.taskDueDate}');
+    dueTimeController.text =  CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${subTaskList?.taskDueDate} ${subTaskList?.taskDueTime}');
+
     remarkController.text = subTaskList?.taskNote ?? '';
     docType.value = CM.getDocumentType(filePath: '${subTaskList?.taskAttachment}');
     docLogo.value = CM.getDocumentTypeLogo(fileType: docType.value);
@@ -258,24 +258,33 @@ class AddSubTaskController extends GetxController {
     });
   }
 
-  TimeOfDay convertToTimeOfDay(String timeString) {
-    List<String> parts = timeString.split(':');
-    int hour = int.parse(parts[0]);
-    int minute = int.parse(parts[1]);
-    return TimeOfDay(hour: hour, minute: minute);
-  }
-
-  void clickOnDueTimeTextFormFiled() {
-    CDT.androidTimePicker(
+  Future<void> clickOnDueTimeTextFormFiled() async {
+    // CDT.androidTimePicker(
+    //   context: Get.context!,
+    //   initialTime: dueTimeController.text.isNotEmpty
+    //       ? convertToTimeOfDay(dueTimeController.text)
+    //       : TimeOfDay.now(),
+    // ).then((value) {
+    //   CM.unFocusKeyBoard();
+    //   if(value != null){
+    //     dueTimeController.text = '${value.hour}:${value.minute}';
+    //   }
+    // });
+    await CDT.iosPicker1(
       context: Get.context!,
-      initialTime: dueTimeController.text.isNotEmpty
-          ? convertToTimeOfDay(dueTimeController.text)
-          : TimeOfDay.now(),
-    ).then((value) {
+      dateController: dueTimeController,
+      mode: CupertinoDatePickerMode.time,
+      firstDate: dueTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(dueTimeController.text)
+          : DateTime.now(),
+      initialDate: dueTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(dueTimeController.text)
+          : DateTime.now(),
+      lastDate: dueTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(dueTimeController.text).add(const Duration(hours: 12))
+          : DateTime.now().add(const Duration(hours: 12)),
+    ).whenComplete(() async {
       CM.unFocusKeyBoard();
-      if(value != null){
-        dueTimeController.text = '${value.hour}:${value.minute}';
-      }
     });
 
   }
@@ -318,20 +327,13 @@ class AddSubTaskController extends GetxController {
   Future<void> callingAddSubTaskApi() async {
     try {
 
-      DateTime taskStartDate = DateFormat('d MMM yyyy').parse(taskStartDateController.text.trim().toString());
-      String start = DateFormat('yyyy-MM-dd').format(taskStartDate);
-
-      DateTime taskDueDate = DateFormat('d MMM yyyy').parse(taskDueDateController.text.trim().toString());
-      String dueDate = DateFormat('yyyy-MM-dd').format(taskDueDate);
-
-      print('userId.value:::: ${userId.value}');
       bodyParamsForAddSubTask = {
         AK.action: ApiEndPointAction.addTask,
         AK.taskCategoryId: taskCategoryId.value,
         AK.taskId: subTaskList?.taskId ?? '',
         AK.taskPriority: selectPriorityController.text.trim().toString(),
-        AK.taskStartDate: start,
-        AK.taskDueDate: dueDate,
+        AK.taskStartDate: CMForDateTime.dateTimeFormatForApi(dateTime: taskStartDateController.text.trim().toString()),
+        AK.taskDueDate: CMForDateTime.dateTimeFormatForApi(dateTime: taskDueDateController.text.trim().toString()),
         AK.taskDueTime: dueTimeController.text.trim().toString(),
         AK.taskName: subTaskNameController.text.trim().toString(),
         AK.taskNote: remarkController.text.trim().toString(),

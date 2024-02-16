@@ -1,13 +1,15 @@
 class GetTaskTimeLineModal {
   String? message;
+  String? timelineMsg;
   bool? isTaskTimeLineActive;
   List<TimeLine>? timeLine;
 
   GetTaskTimeLineModal(
-      {this.message, this.isTaskTimeLineActive, this.timeLine});
+      {this.message, this.timelineMsg, this.isTaskTimeLineActive, this.timeLine});
 
   GetTaskTimeLineModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
+    timelineMsg = json['timelineMsg'];
     isTaskTimeLineActive = json['isTaskTimeLineActive'];
     if (json['timeLine'] != null) {
       timeLine = <TimeLine>[];
@@ -20,6 +22,7 @@ class GetTaskTimeLineModal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
+    data['timelineMsg'] = timelineMsg;
     data['isTaskTimeLineActive'] = isTaskTimeLineActive;
     if (timeLine != null) {
       data['timeLine'] = timeLine!.map((v) => v.toJson()).toList();

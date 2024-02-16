@@ -162,6 +162,14 @@ class AK {
 
   static const taskTimelineId = "task_timeline_id";
 
+
+  static const punchInDate = "punch_in_date";
+  static const punchInTime = "punch_in_time";
+  static const punchOutDate = "punch_out_date";
+  static const punchOutTime = "punch_out_time";
+  static const attendanceReason = "attendance_reason";
+
+
 }
 
 class AU {
@@ -275,6 +283,10 @@ class ApiEndPointAction{
 
   static const getMonthlyAttendanceHistoryNew = 'getMonthlyAttendanceHistoryNew';
 
+  static const getWeeklyAttendanceHistoryNew = 'getWeeklyAttendanceHistoryNew';
+
+  static const addAttendance = 'addAttendance';
+
   static const addTaskCategory = 'addTaskCategory';
 
   static  const deleteTaskCategory = 'deleteTaskCategory';
@@ -296,6 +308,8 @@ class ApiEndPointAction{
   static  const addTaskTimeline = 'addTaskTimeline';
 
   static  const deleteTimeline = 'deleteTimeline';
+
+  static  const getHolidays = 'getHolidays';
 
 
 }

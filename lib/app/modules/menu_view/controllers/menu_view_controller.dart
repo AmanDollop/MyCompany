@@ -12,6 +12,7 @@ import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 
 class MenuViewController extends GetxController {
+
   final count = 0.obs;
 
   final searchController = TextEditingController();
@@ -70,6 +71,7 @@ class MenuViewController extends GetxController {
 
   willPop() {
     selectedBottomNavigationIndex.value = 0;
+    count.value++;
   }
 
  /* Future<void> callingMenusApi() async {
@@ -105,7 +107,6 @@ class MenuViewController extends GetxController {
   }
 
   void clickOnCard({required int index}) {
-
     if(searchController.text.isNotEmpty){
       if (getMenuListForSearch[index].menuClick == 'circular') {
         Get.toNamed(Routes.CIRCULAR, arguments: [getMenuListForSearch[index].menuName]);
@@ -115,10 +116,13 @@ class MenuViewController extends GetxController {
         Get.toNamed(Routes.ALL_TASK, arguments: [getMenuListForSearch[index].menuName]);
       }else if (getMenuListForSearch[index].menuClick == 'penalty') {
         Get.toNamed(Routes.PENALTY, arguments: [getMenuListForSearch[index].menuName]);
+      }else if (getMenuListForSearch[index].menuClick == 'holiday') {
+        Get.toNamed(Routes.HOLIDAY, arguments: [getMenuListForSearch[index].menuName]);
       } else {
         CM.showSnackBar(message: 'Coming soon');
       }
-    }else{
+    }
+    else{
       if (getMenuList[index].menuClick == 'circular') {
         Get.toNamed(Routes.CIRCULAR, arguments: [getMenuList[index].menuName]);
       }else if (getMenuList[index].menuClick == 'attendance') {
@@ -127,13 +131,12 @@ class MenuViewController extends GetxController {
         Get.toNamed(Routes.ALL_TASK, arguments: [getMenuList[index].menuName]);
       }else if (getMenuList[index].menuClick == 'penalty') {
         Get.toNamed(Routes.PENALTY, arguments: [getMenuList[index].menuName]);
+      }else if (getMenuList[index].menuClick == 'holiday') {
+        Get.toNamed(Routes.HOLIDAY, arguments: [getMenuList[index].menuName]);
       } else {
         CM.showSnackBar(message: 'Coming soon');
       }
     }
-
-
-
   }
 
 }

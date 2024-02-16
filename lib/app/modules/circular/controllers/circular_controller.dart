@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -52,8 +53,8 @@ class CircularController extends GetxController {
     try {
       menuName.value = Get.arguments[0];
       newDate = currentDate.subtract(const Duration(days: 30));
-      startController.text = DateFormat('dd MMM yyyy').format(newDate ?? currentDate);
-      endController.text = DateFormat('dd MMM yyyy').format(currentDate);
+      startController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${newDate ?? currentDate}');
+      endController.text = CMForDateTime.dateFormatForDateMonthYear(date: '$currentDate');
       await callingCircularDetailApi();
     } catch (e) {
       print('e::::::::  $e');
@@ -196,19 +197,14 @@ class CircularController extends GetxController {
 
   Future<void> callingCircularDetailApi() async {
     try {
-      DateTime dateTimeStart = DateFormat('d MMM yyyy').parse(startController.text.trim().toString());
-      String start = DateFormat('yyyy-MM-dd').format(dateTimeStart);
-
-      DateTime dateTimeEnd = DateFormat('d MMM yyyy').parse(endController.text.trim().toString());
-      String end = DateFormat('yyyy-MM-dd').format(dateTimeEnd);
 
       bodyParamsForCircularDetail = {
         AK.action: ApiEndPointAction.getCirculars,
         AK.limit: limit.toString(),
         AK.offset: offset.toString(),
         AK.search: searchController.text.trim().toString(),
-        AK.startDate: start,
-        AK.endDate: end,
+        AK.startDate: CMForDateTime.dateTimeFormatForApi(dateTime: startController.text.trim().toString()),
+        AK.endDate: CMForDateTime.dateTimeFormatForApi(dateTime: endController.text.trim().toString()),
       };
       circularDetailModal.value = await CAI.getCircularDetailApi(bodyParams: bodyParamsForCircularDetail);
       if (offset.value == 0) {

@@ -45,9 +45,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final getBreakDetailsModal = Rxn<GetBreakDetailsModal>();
   List<GetBreakDetails>? getBreakDetailsList;
 
+  final checkInAndCheckOutButtonValue = false.obs;
   final checkInValue = false.obs;
-
   final checkOutValue = false.obs;
+  final punchInAndPunchOutButtonValue = false.obs;
+  final confirmBreakButtonValue = false.obs;
 
   final bannerIndex = 0.obs;
 
@@ -113,11 +115,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final image = Rxn<File?>();
   late AnimationController rotationController;
   String punchInOutOfRange = '0';
+
   final isLatePunchIn = false.obs;
-
-  final punchInAndPunchOutButtonValue = false.obs;
-  final confirmBreakButtonValue = false.obs;
-
   final isEarlyPunchOut = false.obs;
 
   final initialPosition = const CameraPosition(target: LatLng(0, 0)).obs;
@@ -274,9 +273,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         menusModal.value?.getMenu?.forEach((element) {
           if (element.isDashboardMenu == '1') {
             isHeadingMenuList.add(element);
+            print('isHeadingMenuList:::::: ${element.menuName}');
           }
         });
-        await BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
+        /*await*/ BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
       }
     } catch (e) {}
   }
@@ -298,8 +298,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingGetBreakDetailsApi() async {
     try {
-      getBreakDetailsModal.value = await CAI.getBreakDetailsApi(
-          bodyParams: {AK.action: ApiEndPointAction.getBreak});
+      getBreakDetailsModal.value = await CAI.getBreakDetailsApi(bodyParams: {AK.action: ApiEndPointAction.getBreak});
       if (getBreakDetailsModal.value != null) {
         getBreakDetailsList = getBreakDetailsModal.value?.getBreakDetails;
       }
@@ -322,6 +321,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     currentTimeForTimer = DateTime(0, 0, 0, hours.value, minutes.value, seconds.value);
 
     workingMinutes.value = currentTimeForTimer.hour * 3600 + currentTimeForTimer.minute * 60;
+    print('workingMinutes.value::::: ${workingMinutes.value}');
 
     if (!isTimerStartedValue.value) {
       isTimerStartedValue.value = true;
@@ -364,7 +364,13 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> clickOnSwitchButton() async {
-    await punchInAndPunchOutBottomSheetView();
+    checkInAndCheckOutButtonValue.value = true;
+    try{
+      await punchInAndPunchOutBottomSheetView();
+    }catch(e){
+      checkInAndCheckOutButtonValue.value = false;
+    }
+    checkInAndCheckOutButtonValue.value = false;
   }
 
   Future<void> punchInAndPunchOutBottomSheetView() async {
@@ -663,6 +669,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         SizedBox(height: 20.px),
       ],
     ).whenComplete(() {
+      checkInAndCheckOutButtonValue.value = false;
       punchInAndPunchOutButtonValue.value=false;
       apiResValue.value=false;
       lateInAndLateOutRangeController.clear();
@@ -766,32 +773,40 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> callingGetTodayAttendanceApi() async {
-    bodyParamsForGetTodayAttendanceApi = {
-      AK.action: ApiEndPointAction.getTodayAttendance,
-    };
-    getTodayAttendanceModal.value = await CAI.getTodayAttendanceApi(bodyParams: bodyParamsForGetTodayAttendanceApi);
-    if (getTodayAttendanceModal.value != null) {
-      getTodayAttendanceDetail = getTodayAttendanceModal.value?.getTodayAttendance;
-      checkOutValue.value = getTodayAttendanceDetail?.isPunchOut ?? false;
-      checkInValue.value = getTodayAttendanceDetail?.isPunchIn ?? false;
-      breakValue.value = getTodayAttendanceDetail?.isBreak ?? false;
-      if (checkInValue.value && checkOutValue.value) {
-        DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
-        DateTime punchOutDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchOutDate} ${getTodayAttendanceDetail?.punchOutTime}");
-        Duration difference = punchOutDateTime.difference(punchInDateTime);
-        hours.value = difference.inHours;
-        minutes.value = (difference.inMinutes % 60);
-        seconds.value = (difference.inSeconds % 60);
-        timer.cancel();
-      }
+    try{
+      bodyParamsForGetTodayAttendanceApi = {
+        AK.action: ApiEndPointAction.getTodayAttendance,
+      };
+      getTodayAttendanceModal.value = await CAI.getTodayAttendanceApi(bodyParams: bodyParamsForGetTodayAttendanceApi);
+      if (getTodayAttendanceModal.value != null) {
+        getTodayAttendanceDetail = getTodayAttendanceModal.value?.getTodayAttendance;
+        checkOutValue.value = getTodayAttendanceDetail?.isPunchOut ?? false;
+        checkInValue.value = getTodayAttendanceDetail?.isPunchIn ?? false;
+        breakValue.value = getTodayAttendanceDetail?.isBreak ?? false;
+        if (checkInValue.value && checkOutValue.value) {
+          DateTime punchInDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchInDate} ${getTodayAttendanceDetail?.punchInTime}");
+          DateTime punchOutDateTime = DateTime.parse("${getTodayAttendanceDetail?.punchOutDate} ${getTodayAttendanceDetail?.punchOutTime}");
+          Duration difference = punchOutDateTime.difference(punchInDateTime);
+          hours.value = difference.inHours;
+          minutes.value = (difference.inMinutes % 60);
+          seconds.value = (difference.inSeconds % 60);
+          workingMinutes.value = hours.value * 3600 + minutes.value * 60;
 
-      else {
-        if (checkInValue.value) {
-          startTimer();
+          linerValue.value = workingMinutes.value / (total.value * 60);
+          timer.isActive;
+          timer.cancel();
         }
+        else {
+          if (checkInValue.value) {
+            startTimer();
+          }
+        }
+        getLatLogDistanceInMeterMethod();
+        print('i:::: ${punchInAndPunchOutRange.value}');
       }
-      getLatLogDistanceInMeterMethod();
-      print('i:::: ${punchInAndPunchOutRange.value}');
+    }catch(e){
+      print('e::::: $e');
+      apiResValue.value=false;
     }
   }
 

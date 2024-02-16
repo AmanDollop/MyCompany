@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
@@ -53,13 +54,15 @@ class CDT {
     return pickedTime;
   }
 
+
   static Future<TimeOfDay?> iosTimePicker({
     required BuildContext context,
-    DateTime? initialDateTime,
+    DateTime? initialTime,
+    bool use24HourTime = false,
   }) async {
     TimeOfDay? pickedTime;
     pickedTime = await showCupertinoModalPopup(
-      context: Get.context!,
+      context: context,
       builder: (_) => Container(
         color: Colors.transparent,
         child: Column(
@@ -95,10 +98,9 @@ class CDT {
                   Expanded(
                     child: CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.time,
-                      initialDateTime: initialDateTime ?? DateTime.now(),
+                      initialDateTime: initialTime ?? DateTime.now(),
                       onDateTimeChanged: (DateTime dateTime) {
                         pickedTime = TimeOfDay.fromDateTime(dateTime);
-                        print("Selected time: $pickedTime");
                       },
                     ),
                   ),
@@ -129,7 +131,7 @@ class CDT {
                       ),
                       GestureDetector(
                         onTap:  () {
-                          Get.back();
+                          Navigator.of(context).pop(pickedTime);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -158,7 +160,6 @@ class CDT {
         ),
       ),
     );
-
     return pickedTime;
   }
 
@@ -179,7 +180,7 @@ class CDT {
     DatePickerDateOrder order = DatePickerDateOrder.dmy,
     TextEditingController? dateController
   }) async {
-    String formattedDate = DateFormat('dd MMM yyyy').format(DateTime.now());
+    String formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
 
     CBS.commonBottomSheet(
       children: [
@@ -208,7 +209,7 @@ class CDT {
                       minimumDate: firstDate ?? DateTime(1900),
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
-                        formattedDate = DateFormat('dd MMM yyyy').format(value);
+                        formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '$value');
                         // dateController?.text = formattedDate;
                       },
                       minimumYear: minimumYear ?? DateTime.now().year - 123,
@@ -303,7 +304,12 @@ class CDT {
     DatePickerDateOrder order = DatePickerDateOrder.dmy,
     TextEditingController? dateController
   })  async {
-    String formattedDate = DateFormat('dd MMM yyyy').format(DateTime.now());
+    String formattedDate;
+    if(mode == CupertinoDatePickerMode.time){
+      formattedDate = CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${DateTime.now()}');
+    }else{
+      formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
+    }
 
     await CBS.commonBottomSheet(
       children: [
@@ -318,10 +324,10 @@ class CDT {
             child: Column(
               children: [
                 CupertinoTheme(
-                  data: const CupertinoThemeData(
+                  data:  CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.px,
                       ),
                     ),
                   ),
@@ -332,7 +338,12 @@ class CDT {
                       minimumDate: firstDate ?? DateTime(1900),
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
-                        formattedDate = DateFormat('dd MMM yyyy').format(value);
+
+                        if(mode == CupertinoDatePickerMode.time){
+                          formattedDate = CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '$value');
+                        }else{
+                          formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '$value');
+                        }
                         // dateController?.text = formattedDate;
                       },
                       minimumYear: minimumYear ?? DateTime.now().year - 123,

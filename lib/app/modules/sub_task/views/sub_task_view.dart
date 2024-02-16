@@ -37,8 +37,8 @@ class SubTaskView extends GetView<SubTaskController> {
                       padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
                       child: Column(
                         children: [
-                          subTaskSearchTextFieldView(),
-                          SizedBox(height: 16.px),
+                          // subTaskSearchTextFieldView(),
+                          // SizedBox(height: 16.px),
                           controller.apiResValue.value
                               ? Expanded(
                                   child: SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value),

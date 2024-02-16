@@ -5,6 +5,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
 
@@ -56,10 +57,10 @@ class AddExperienceController extends GetxController {
     designationController.text = getExperienceDetails?.designation ?? 'Designation not found!';
     companyNameController.text = getExperienceDetails?.companyName ?? 'Company name not found!';
     if(getExperienceDetails?.joiningDate!=null&& getExperienceDetails!.joiningDate!.isNotEmpty) {
-      joiningDateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse('${getExperienceDetails?.joiningDate}'));
+      joiningDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${getExperienceDetails?.joiningDate}');
     }
     if(getExperienceDetails?.releaseDate!=null&& getExperienceDetails!.releaseDate!.isNotEmpty) {
-      releaseDateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse('${getExperienceDetails?.releaseDate}'));
+      releaseDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${getExperienceDetails?.releaseDate}');
     }
     locationController.text = getExperienceDetails?.companyLocation ?? 'Company location not found!';
     remarkController.text = getExperienceDetails?.remark ?? 'Remark not found!';

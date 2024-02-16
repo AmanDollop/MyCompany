@@ -38,6 +38,8 @@ import '../modules/experience/bindings/experience_binding.dart';
 import '../modules/experience/views/experience_view.dart';
 import '../modules/face_detection/bindings/face_detection_binding.dart';
 import '../modules/face_detection/views/face_detection_view.dart';
+import '../modules/holiday/bindings/holiday_binding.dart';
+import '../modules/holiday/views/holiday_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/job_info/bindings/job_info_binding.dart';
@@ -296,6 +298,11 @@ class AppPages {
       name: _Paths.PENALTY,
       page: () => const PenaltyView(),
       binding: PenaltyBinding(),
+    ),
+    GetPage(
+      name: _Paths.HOLIDAY,
+      page: () => const HolidayView(),
+      binding: HolidayBinding(),
     ),
   ];
 }

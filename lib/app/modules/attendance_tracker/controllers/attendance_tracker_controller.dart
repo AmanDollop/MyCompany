@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:get/get.dart';
@@ -6,18 +7,23 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
+import 'package:task/api/api_model/get_weekly_attendance_data_modal.dart';
 import 'package:task/app/modules/attendance_tracker/views/month_view.dart';
 import 'package:task/common/calendar_method/calendar_method.dart';
+import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
-
+import 'package:task/validator/v.dart';
 import '../../../../common/common_methods/cm.dart';
+import 'package:http/http.dart' as http;
+
 
 class AttendanceTrackerController extends GetxController {
   final count = 0.obs;
   final menuName = ''.obs;
-  List<String> monthNameList = [
+  List<String> monthNameForMonthViewList = [
     'January',
     'February',
     'March',
@@ -31,23 +37,23 @@ class AttendanceTrackerController extends GetxController {
     'November',
     'December',
   ];
-  final monthNameValue = 'January'.obs;
-  final monthNameId = '1'.obs;
+  final monthNameForMonthViewValue = 'January'.obs;
+  final yearForMonthViewValue = '2024'.obs;
 
-  List<String> yearList = <String>[
-    (DateFormat('yyyy')
-        .format(DateTime.now().subtract(const Duration(days: 365)))),
-    (DateFormat('yyyy').format(DateTime.now())),
-    (DateFormat('yyyy').format(DateTime.now().add(const Duration(days: 365)))),
+  final monthNameIdForMonthView = '1'.obs;
+
+  List<String> yearForMonthViewList = <String>[
+    DateFormat('yyyy').format(DateTime.now().subtract(const Duration(days: 365))),
+    DateFormat('yyyy').format(DateTime.now()),
+    DateFormat('yyyy').format(DateTime.now().add(const Duration(days: 365))),
   ];
 
-  final yearValue = '2024'.obs;
 
-  DateTime selectedDate = DateTime.now();
+  final monthNameForWeekViewValue = 'January'.obs;
+  final yearForWeekViewValue = '2024'.obs;
+  final monthNameIdForWeekView = '1'.obs;
+
   final currentMonth = DateTime.now().obs;
-
-  final currentWeakStartDate = DateTime.now().obs;
-  final currentWeakEndDate = DateTime.now().obs;
 
   final tabBarValue = 'Month'.obs;
 
@@ -116,7 +122,6 @@ class AttendanceTrackerController extends GetxController {
   final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   final monthTotalDaysList = [];
   final dayValue = ''.obs;
-  String? totalHours;
 
   final apiResValue = false.obs;
   final calendarGridClickValue = false.obs;
@@ -126,15 +131,37 @@ class AttendanceTrackerController extends GetxController {
   List<MonthlyHistory>? monthlyHistoryList;
   Map<String, dynamic> bodyParamsForMonthlyAttendanceApi = {};
 
+  final keyForBottomSheet = GlobalKey<FormState>();
+  final checkInDateController = TextEditingController();
+  final checkInTimeController = TextEditingController();
+  final checkOutDateController = TextEditingController();
+  final checkOutTimeController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final sendRequestButtonValue = false.obs;
+  Map<String, dynamic> bodyParamsForAddAttendanceApi = {};
+
+
+  final getWeeklyAttendanceDataModal = Rxn<GetWeeklyAttendanceDataModal>();
+  List<WeeklyHistory>? weeklyHistoryList;
+  List<History>? weekDayHistoryList;
+  Map<String, dynamic> bodyParamsForWeeklyAttendanceApi = {};
+  PageController pageController = PageController();
+  int i = 0;
+
+
+  final currentWeakStartDate = DateTime.now().obs;
+  final currentWeakEndDate = DateTime.now().obs;
+
+
   @override
   Future<void> onInit() async {
     super.onInit();
     try {
       menuName.value = Get.arguments[0];
       currentWeakStartDate.value = CommonCalendarMethods.getPreviousMonday(DateTime.now());
-      monthNameValue.value = monthNameList[DateTime.now().month - 1];
-      monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
 
+      monthNameForMonthViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
+      monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
       await callingGetMonthlyAttendanceDataApi();
     } catch (e) {
       apiResValue.value = false;
@@ -151,19 +178,34 @@ class AttendanceTrackerController extends GetxController {
     super.onClose();
   }
 
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   void increment() => count.value++;
 
   void clickOnBackButton() {
     Get.back();
   }
 
-  void clickOnMonthTab() {
+  Future<void> clickOnMonthTab() async {
     tabBarValue.value = 'Month';
+    monthNameForMonthViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
+    monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+    monthTotalDaysListDataAdd();
+    await callingGetMonthlyAttendanceDataApi();
   }
 
-  void clickOnWeekTab() {
+  Future<void> clickOnWeekTab() async {
     tabBarValue.value = 'Week';
+    monthNameForWeekViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
+    monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+    await callingGetWeeklyAttendanceDataApi();
   }
+
+  ///Todo Month View working
 
   void monthTotalDaysListDataAdd() {
     monthTotalDaysList.clear();
@@ -172,27 +214,27 @@ class AttendanceTrackerController extends GetxController {
     }
   }
 
-  Future<void> monthDropDownOnChanged({required String value}) async {
-    monthNameValue.value = value;
-    monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
-    currentMonth.value = DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
+  Future<void> monthDropDownOnChangedForMonth({required String value}) async {
+    monthNameForMonthViewValue.value = value;
+    monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+    currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
     monthTotalDaysListDataAdd();
     await callingGetMonthlyAttendanceDataApi();
   }
 
-  Future<void> yearDropDownOnChanged({required String value}) async {
-    yearValue.value = value;
-    monthNameId.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameValue.value);
-    currentMonth.value = DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
+  Future<void> yearDropDownOnChangedForMonth({required String value}) async {
+    yearForMonthViewValue.value = value;
+    monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+    currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
     monthTotalDaysListDataAdd();
     await callingGetMonthlyAttendanceDataApi();
   }
 
   Future<void> monthViewOnRefresh() async {
     apiResValue.value = true;
-    onInit();
-    currentMonth.value =
-        DateTime(int.parse(yearValue.value), int.parse(monthNameId.value));
+    // onInit();
+    await callingGetMonthlyAttendanceDataApi();
+    // currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
   }
 
   Future<void> callingGetMonthlyAttendanceDataApi() async {
@@ -200,8 +242,8 @@ class AttendanceTrackerController extends GetxController {
     try {
       bodyParamsForMonthlyAttendanceApi = {
         AK.action: ApiEndPointAction.getMonthlyAttendanceHistoryNew,
-        AK.month: monthNameId.value,
-        AK.year: yearValue.value,
+        AK.month: monthNameIdForMonthView.value,
+        AK.year: yearForMonthViewValue.value,
       };
       getMonthlyAttendanceDataModal.value = await CAI.getMonthlyAttendanceDataApi(bodyParams: bodyParamsForMonthlyAttendanceApi);
       if (getMonthlyAttendanceDataModal.value != null) {
@@ -233,26 +275,6 @@ class AttendanceTrackerController extends GetxController {
     cardSubTitleTextList.insert(11, getMonthlyAttendanceData?.totalPunchOutMissing??'0');
   }
 
-  String calculateTime({required String startDateTimeString,required String endDateTimeString}){
-    DateTime startTime = DateTime.parse(startDateTimeString);
-    DateTime endTime = DateTime.parse(endDateTimeString);
-
-    if (endTime.isBefore(startTime)) {
-     endTime = endTime.add(const Duration(days: 1)); // Add 24 hours
-   }
-
-   Duration difference = endTime.difference(startTime);
-
-   int totalHours = difference.inHours;
-   int totalMinutes = (difference.inMinutes % 60);
-   int totalSeconds = (difference.inSeconds % 60);
-
-   int formattedHours = totalHours % 12;
-   String amPm = totalHours >= 12 ? 'pm' : 'am';
-    // return '$formattedHours hr $totalMinutes min $totalSeconds sec $amPm';
-    return '${formattedHours}hr ${totalMinutes}min';
-  }
-
   Future<void> clickOnCalendarGrid({required int index, required day}) async {
 
     DateTime dateTime = DateTime(
@@ -261,15 +283,6 @@ class AttendanceTrackerController extends GetxController {
       int.parse('$day'),
     );
 
-    if(monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
-        && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-        && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
-        && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty){
-      totalHours = calculateTime(startDateTimeString: '${monthlyHistoryList?[index].punchInDate} ${monthlyHistoryList?[index].punchInTime}',endDateTimeString: '${monthlyHistoryList?[index].punchOutDate} ${monthlyHistoryList?[index].punchOutTime}');
-    }else{
-      totalHours = 'NIL';
-    }
-
     calendarGridClickValue.value = true;
     await CBS.commonBottomSheet(
       isDismissible: false,
@@ -277,7 +290,6 @@ class AttendanceTrackerController extends GetxController {
       children: [
         Obx(() {
           count.value;
-          print('monthlyHistoryList?[index].punchInDate:::::${monthlyHistoryList?[index].punchInDate} ${DateTime.now()}');
           return Column(
             children: [
               Text(
@@ -298,11 +310,11 @@ class AttendanceTrackerController extends GetxController {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      commonCardTimeTextView(title: 'Productive Hours', subTitle: '${1300 ~/ 60}hr ${1300 % 60}min'),
+                      commonCardTimeTextView(title: 'Productive Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].productiveWorkingMinutes}')),
                       commonCardTimeVerticalDividerView(),
-                      commonCardTimeTextView(title: 'Total Hours', subTitle: '${2600 ~/ 60}hr ${2600 % 60}min'),
+                      commonCardTimeTextView(title: 'Total Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].totalShiftMinutes}')),
                       commonCardTimeVerticalDividerView(),
-                      commonCardTimeTextView(title: 'Extra Hours', subTitle: '${1600 ~/ 60}hr ${1600 % 60}min'),
+                      commonCardTimeTextView(title: 'Extra Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].extraWorkingMinutes}')),
                     ],
                   ),
                 ),
@@ -333,22 +345,22 @@ class AttendanceTrackerController extends GetxController {
                               commonTextForCheckInOrCheckOutView(
                                 title: 'Punch In',
                                 subTitle: monthlyHistoryList?[index].punchInDate != '0000-00-00' && monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty
-                                    ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchInDate}'))
-                                    : '0000-00-00',
+                                    ? CMForDateTime.dateFormatForDateMonthYear(date: '${monthlyHistoryList?[index].punchInDate}')
+                                    : 'NIL',
                                 timeText: monthlyHistoryList?[index].punchInDate != '0000-00-00' && monthlyHistoryList?[index].punchInDate != null && monthlyHistoryList![index].punchInDate!.isNotEmpty && monthlyHistoryList?[index].punchInTime != null && monthlyHistoryList![index].punchInTime!.isNotEmpty
-                                    ? DateFormat('hh:mm a').format(DateTime.parse('${monthlyHistoryList?[index].punchInDate} ${monthlyHistoryList?[index].punchInTime}'))
+                                    ? CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime:'${monthlyHistoryList?[index].punchInDate} ${monthlyHistoryList?[index].punchInTime}')
                                     : 'NIL',
                               ),
                               commonTextForCheckInOrCheckOutView(
                                 title: 'Punch Out',
                                 subTitle: monthlyHistoryList?[index].punchOutDate != '0000-00-00' && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty
-                                    ? DateFormat('d MMM y').format(DateTime.parse('${monthlyHistoryList?[index].punchOutDate}'))
-                                    : "0000-00-00",
+                                    ? CMForDateTime.dateFormatForDateMonthYear(date: '${monthlyHistoryList?[index].punchOutDate}')
+                                    : "NIL",
                                 timeText: monthlyHistoryList?[index].punchOutDate != '0000-00-00' && monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty
-                                    ? DateFormat('hh:mm a').format(DateTime.parse('${monthlyHistoryList?[index].punchOutDate} ${monthlyHistoryList?[index].punchOutTime}'))
+                                    ? CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${monthlyHistoryList?[index].punchOutDate} ${monthlyHistoryList?[index].punchOutTime}')
                                     : "NIL",
                               ),
-                              commonTextForCheckInOrCheckOutView(title: 'Total Hours', timeText: totalHours ?? 'NIL'),
+                              commonTextForCheckInOrCheckOutView(title: 'Total Hours', timeText: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].totalWorkingMinutes}')),
                             ],
                           ),
                         if(monthlyHistoryList?[index].attendanceBreakHistory != null &&  monthlyHistoryList![index].attendanceBreakHistory!.isNotEmpty)
@@ -398,16 +410,14 @@ class AttendanceTrackerController extends GetxController {
                                           style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                                         ),
                                         Text(
-                                          int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') ~/ 60 != 0
-                                              ? '${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') ~/ 60} hr ${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') % 60} min'
-                                              : '${int.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}') % 60} min',
+                                          CMForDateTime.calculateTimeForHourAndMin(minute: '${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}'),
                                           style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: Col.primary),
                                         ),
                                       ],
                                     ),
                                     SizedBox(height: 5.px),
                                     Text(
-                                      '${DateFormat('hh:mm a').format(DateTime.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime}'))} - ${DateFormat('hh:mm a').format(DateTime.parse('${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}'))}',
+                                      '${CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime:'${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime}')} - ${CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime:'${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}')}',
                                       style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
                                     ),
                                     if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
@@ -422,7 +432,7 @@ class AttendanceTrackerController extends GetxController {
                                             dashColor: Col.secondary),
                                       ),
                                     if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
-                                      SizedBox(height: 10.px),
+                                    SizedBox(height: 10.px),
                                   ],
                                 );
                               },
@@ -437,26 +447,32 @@ class AttendanceTrackerController extends GetxController {
                     ),
                   );
                 }),
-              if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
+              if (monthlyHistoryList?[index].attendnacePending == true
+                  || monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
+                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false)
                 SizedBox(height: 16.px),
                 Text(
                 monthlyHistoryList?[index].attendnacePending ?? false
                     ? 'Attendance Pending'
-                    : monthlyHistoryList?[index].weekOff ?? false
+                    : monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
                     ? 'Week Off'
-                    : monthlyHistoryList?[index].holiday ?? false
+                    : monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false
                     ? 'Holiday'
                     : '' ,
                   style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: const MonthView().calendarGridTextColorView(index: index)),
                 ),
-              if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
-                SizedBox(height: 20.px),
-              if (monthlyHistoryList?[index].present == false || monthlyHistoryList?[index].attendnacePending == true || monthlyHistoryList?[index].weekOff == true || monthlyHistoryList?[index].holiday == true)
-              CW.commonElevatedButton(onPressed: () => clickOnRequestForAttendanceButton(index:index),buttonText: 'Request for Attendance')
+              if (monthlyHistoryList?[index].present == false && monthlyHistoryList?[index].attendnacePending == false
+                  || monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
+                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false)
+              SizedBox(height: 20.px),
+              if (monthlyHistoryList?[index].present == false && monthlyHistoryList?[index].attendnacePending == false
+                  || monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
+                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false)
+              CW.commonElevatedButton(onPressed: () => clickOnRequestForAttendanceButton(index:index,date:CMForDateTime.dateFormatForDateMonthYear(date: '$dateTime') ),buttonText: 'Request for Attendance')
             ],
           );
         }),
-        SizedBox(height: 30.px),
+        SizedBox(height: 20.px),
       ],
     ).whenComplete(() {
       bottomSheetBreakListValue.value = false;
@@ -466,7 +482,176 @@ class AttendanceTrackerController extends GetxController {
     calendarGridClickValue.value = false;
   }
 
-  void clickOnRequestForAttendanceButton({required int index}) {}
+  Widget suffixIconForTextFormFiled({required String iconPath}) => SizedBox(
+    height: 22.px,
+    width: 22.px,
+    child: Center(
+      child: CW.commonNetworkImageView(
+          path: iconPath,
+          isAssetImage: true,
+          height: 22.px,
+          width: 22.px,
+          color: Col.secondary),
+    ),
+  );
+
+  Future<void> clickOnRequestForAttendanceButton({required int index, required String date}) async {
+    Get.back();
+    checkInDateController.text = date;
+    checkOutDateController.text = date;
+    await CBS.commonBottomSheet(
+        isDismissible: false,
+        isFullScreen: true,
+        children: [
+         Form(
+           key: keyForBottomSheet,
+           child: Obx((){
+             count.value;
+             return Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 Text(
+                   'Attendance Request',
+                   style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                 ),
+                 SizedBox(height: 16.px),
+                 CW.commonTextField(
+                   labelText: 'Check In Date',
+                   hintText: 'Check In Date',
+                   controller: checkInDateController,
+                   validator: (value) => V.isValid(value: value, title: 'Please select check in date'),
+                   suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/working_days_icon.png'),
+                   readOnly: true,
+                 ),
+                 SizedBox(height: 10.px),
+                 CW.commonTextField(
+                   labelText: 'Check In Time',
+                   hintText: 'Check In Time',
+                   controller: checkInTimeController,
+                   validator: (value) => V.isValid(value: value, title: 'Please select check in time'),
+                   suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/watch_icon.png'),
+                   readOnly: true,
+                   onTap: () => clickOnCheckInTimeTextFormFiled(),
+                 ),
+                 SizedBox(height: 10.px),
+                 CW.commonTextField(
+                   labelText: 'Check Out Date',
+                   hintText: 'Check Out Date',
+                   controller: checkOutDateController,
+                   validator: (value) => V.isValid(value: value, title: 'Please select check out date'),
+                   suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/working_days_icon.png'),
+                   readOnly: true,
+                 ),
+                 SizedBox(height: 10.px),
+                 CW.commonTextField(
+                   labelText: 'Check Out Time',
+                   hintText: 'Check Out Time',
+                   controller: checkOutTimeController,
+                   validator: (value) => V.isValid(value: value, title: 'Please select check out time'),
+                   suffixIcon: suffixIconForTextFormFiled(iconPath: 'assets/icons/watch_icon.png'),
+                   readOnly: true,
+                   onTap: () => clickOnCheckOutTimeTextFormFiled(),
+                 ),
+                 SizedBox(height: 10.px),
+                 CW.commonTextFieldForMultiline(
+                     labelText: 'Description',
+                     hintText: 'Description',
+                     controller: descriptionController,
+                     maxLines: 3),
+                 SizedBox(height: 10.px),
+                 CW.commonElevatedButton(
+                   onPressed: sendRequestButtonValue.value
+                       ? () => null
+                       : () => clickOnSendRequestButton(),
+                   buttonText: 'Send Request',
+                   isLoading: sendRequestButtonValue.value,
+                 ),
+                 SizedBox(height: 30.px),
+               ],
+             );
+           }),
+         )
+       ]
+    ).whenComplete(() {
+      checkInDateController.clear();
+      checkInTimeController.clear();
+      checkOutDateController.clear();
+      checkOutTimeController.clear();
+      descriptionController.clear();
+    });
+  }
+
+  Future<void> clickOnCheckInTimeTextFormFiled() async {
+    await CDT.iosPicker1(
+      context: Get.context!,
+      dateController: checkInTimeController,
+      mode: CupertinoDatePickerMode.time,
+      firstDate: checkInTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(checkInTimeController.text)
+          : DateTime.now(),
+      initialDate: checkInTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(checkInTimeController.text)
+          : DateTime.now(),
+      lastDate: checkInTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(checkInTimeController.text).add(const Duration(hours: 12))
+          : DateTime.now().add(const Duration(hours: 12)),
+    ).whenComplete(() async {
+      CM.unFocusKeyBoard();
+    });
+  }
+
+  Future<void> clickOnCheckOutTimeTextFormFiled() async {
+    await CDT.iosPicker1(
+      context: Get.context!,
+      dateController: checkOutTimeController,
+      mode: CupertinoDatePickerMode.time,
+      firstDate: checkOutTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(checkOutTimeController.text)
+          : DateTime.now(),
+      initialDate: checkOutTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(checkOutTimeController.text)
+          : DateTime.now(),
+      lastDate: checkOutTimeController.text.isNotEmpty
+          ? DateFormat('hh:mm a').parse(checkOutTimeController.text).add(const Duration(hours: 12))
+          : DateTime.now().add(const Duration(hours: 12)),
+    ).whenComplete(() async {
+      CM.unFocusKeyBoard();
+    });
+  }
+
+  Future<void> clickOnSendRequestButton() async {
+    if(keyForBottomSheet.currentState!.validate()){
+      sendRequestButtonValue.value = true;
+      await callingAddAttendanceApi();
+    }
+  }
+
+  Future<void> callingAddAttendanceApi() async {
+    try{
+
+      bodyParamsForAddAttendanceApi = {
+        AK.action : ApiEndPointAction.addAttendance,
+        AK.punchInDate : CMForDateTime.dateTimeFormatForApi(dateTime: checkInDateController.text.trim().toString()),
+        AK.punchInTime : checkInTimeController.text.trim().toString(),
+        AK.punchOutDate : CMForDateTime.dateTimeFormatForApi(dateTime: checkOutDateController.text.trim().toString()),
+        AK.attendanceReason : descriptionController.text.trim().toString(),
+      };
+
+      http.Response? res = await CAI.addAttendanceApi(bodyParams: bodyParamsForAddAttendanceApi);
+      if(res != null && res.statusCode ==200){
+        sendRequestButtonValue.value = false;
+        Get.back();
+      }else{
+        sendRequestButtonValue.value = false;
+        CM.error();
+        Get.back();
+      }
+    }catch(e){
+      sendRequestButtonValue.value = false;
+      CM.error();
+      Get.back();
+    }
+  }
 
   Widget commonCardTimeTextView({required String title, required String subTitle}) =>
       Column(
@@ -519,5 +704,47 @@ class AttendanceTrackerController extends GetxController {
           ),
         ],
       );
+
+  ///Todo Week View working
+
+  Future<void> monthDropDownOnChangedForWeek({required String value}) async {
+    monthNameForWeekViewValue.value = value;
+    monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+    await callingGetWeeklyAttendanceDataApi();
+  }
+
+  Future<void> yearDropDownOnChangedForWeek({required String value}) async {
+    yearForWeekViewValue.value = value;
+    monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+    await callingGetWeeklyAttendanceDataApi();
+  }
+
+  Future<void> callingGetWeeklyAttendanceDataApi() async {
+    apiResValue.value = true;
+    pageController = PageController(initialPage: 0);
+    try {
+      bodyParamsForWeeklyAttendanceApi = {
+        AK.action: ApiEndPointAction.getWeeklyAttendanceHistoryNew,
+        AK.month: monthNameIdForWeekView.value,
+        AK.year: yearForWeekViewValue.value,
+      };
+      getWeeklyAttendanceDataModal.value = await CAI.getWeeklyAttendanceDataApi(bodyParams: bodyParamsForWeeklyAttendanceApi);
+      if (getWeeklyAttendanceDataModal.value != null) {
+        weeklyHistoryList = getWeeklyAttendanceDataModal.value?.weeklyHistory;
+        for ( i = 0; i < weeklyHistoryList!.length-1; i++) {
+          if(CMForDateTime.dateFormatForDateMonthYear(date: '${weeklyHistoryList?[i].startDate}') == CMForDateTime.dateFormatForDateMonthYear(date: '${currentWeakStartDate.value}')){
+            pageController = PageController(initialPage: i);
+            count.value++;
+          }
+        }
+        apiResValue.value = false;
+      }
+    } catch (e) {
+      apiResValue.value = false;
+      print('e:::: $e');
+      CM.error();
+    }
+  }
+
 
 }
