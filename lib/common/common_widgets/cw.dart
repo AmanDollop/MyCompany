@@ -452,8 +452,7 @@ class CW {
             : InputDecoration(
                 counterText: '',
                 labelText: labelText,
-                labelStyle:
-                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 errorStyle: errorStyle ??
                     Theme.of(Get.context!)
                         .textTheme
@@ -494,10 +493,10 @@ class CW {
                         : BorderSide.none,
                     borderRadius: BorderRadius.circular(
                         borderRadius ?? C.textFieldRadius)),
-                suffixIcon: suffixIcon != null
+                suffixIcon:  suffixIcon != null
                     ? Padding(
                         padding: suffixPadding ?? EdgeInsets.zero,
-                        child: suffixIcon,
+                        child:  suffixIcon,
                       )
                     : null,
                 prefixIcon: prefixIcon != null
@@ -1393,16 +1392,8 @@ class CW {
     return ReadMoreText(
       value,
       style: textStyle ?? Theme.of(Get.context!).textTheme.titleSmall,
-      moreStyle: readMoreTextStyle ??
-          Theme.of(Get.context!)
-              .textTheme
-              .headlineLarge
-              ?.copyWith(fontSize: 14.px),
-      lessStyle: readLessTextStyle ??
-          Theme.of(Get.context!)
-              .textTheme
-              .headlineLarge
-              ?.copyWith(fontSize: 14.px),
+      moreStyle: readMoreTextStyle ?? Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 14.px),
+      lessStyle: readLessTextStyle ?? Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 14.px),
       trimLines: maxLine ?? 3,
       trimLength: 7,
       trimCollapsedText: C.textReadMore,

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -25,6 +24,7 @@ class CircularController extends GetxController {
 
   final apiResValue = true.obs;
   final isLastPage = false.obs;
+  final hideSearchFieldValue = false.obs;
 
   final menuName = ''.obs;
 
@@ -227,7 +227,6 @@ class CircularController extends GetxController {
 
   Future<void> searchOnChange({String? value}) async {
     try {
-
       if (value != null) {
         const duration = Duration(milliseconds: 800); // set the duration that you want call search() after that.
         if (searchOnStoppedTyping != null) {

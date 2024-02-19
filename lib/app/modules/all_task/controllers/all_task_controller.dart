@@ -18,6 +18,7 @@ class AllTaskController extends GetxController {
 
   final apiResValue = false.obs;
   final createTaskButtonValue = false.obs;
+  final hideSearchFieldValue = false.obs;
 
   final key = GlobalKey<FormState>();
   final taskSearchController = TextEditingController();

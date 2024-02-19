@@ -17,13 +17,13 @@ import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
+import 'package:task/api/api_model/upcoming_celebration_modal.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_dialog/cd.dart';
-import 'package:task/common/common_packages/shimmer/shimmer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -122,6 +122,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final initialPosition = const CameraPosition(target: LatLng(0, 0)).obs;
   final Completer<GoogleMapController> googleController = Completer<GoogleMapController>();
 
+  final getUpcomingCelebrationModal = Rxn<UpcomingCelebrationModal>();
+  List<Celebration>? upcomingCelebrationList;
+  Map<String, dynamic> bodyParamsForGetUpcomingCelebrationApi = {};
 
   @override
   Future<void> onInit() async {
@@ -229,9 +232,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     try {
       await companyData();
       await shiftData();
+      await appMenusData();
       await callingGetTodayAttendanceApi();
       await callingGetBreakDetailsApi();
-      await appMenusData();
+      await callingGetUpcomingCelebrationApi();
     } catch (e) {
       apiResValue.value = false;
     }
@@ -731,7 +735,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     await callingBreakOutApi();
   }
 
-  void clickOnUpcomingCelebrationsButton() {}
+  void clickOnUpcomingCelebrationsButton() {
+    Get.toNamed(Routes.UPCOMING_CELEBRATIONS);
+  }
 
   void clickOnHeadingCards({required int headingCardIndex}) {
     if (isHeadingMenuList[headingCardIndex].menuClick == 'circular') {
@@ -970,6 +976,22 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       lat2: double.parse('${getLatLong?.latitude}'),
       lon2: double.parse('${getLatLong?.longitude}'),
     );
+  }
+
+  Future<void> callingGetUpcomingCelebrationApi() async {
+    try{
+      bodyParamsForGetUpcomingCelebrationApi={
+        AK.action : ApiEndPointAction.getCelebration,
+        AK.isDashboard : '1'
+      };
+      getUpcomingCelebrationModal.value = await CAI.getUpcomingCelebrationApi(bodyParams: bodyParamsForGetUpcomingCelebrationApi);
+      if(getUpcomingCelebrationModal.value != null){
+        upcomingCelebrationList = getUpcomingCelebrationModal.value?.celebration;
+      }
+    }catch(e){
+      CM.error();
+      print('getUpcomingCelebrationApi::::: error::::  $e');
+    }
   }
 
 }

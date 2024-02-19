@@ -21,6 +21,7 @@ class SubTaskController extends GetxController {
   final taskCategoryId = ''.obs;
   final taskName = 'Task Name'.obs;
   final apiResValue = true.obs;
+  final hideSearchFieldValue = false.obs;
   final apiResValueForSubTaskFilter = true.obs;
   final apiResValueForSubTask = true.obs;
   final switchValue = false.obs;
@@ -88,7 +89,9 @@ class SubTaskController extends GetxController {
     await onInit();
   }
 
-  Future<void> subTaskSearchOnChange({required String value}) async {}
+  Future<void> subTaskSearchOnChange({required String value}) async {
+    count.value++;
+  }
 
   Future<void> clickOnSubTaskFilterCard({required int index}) async {
     CM.unFocusKeyBoard();

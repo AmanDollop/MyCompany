@@ -28,6 +28,7 @@ import 'package:task/api/api_model/shift_time_modal.dart';
 import 'package:task/api/api_model/sub_task_data_modal.dart';
 import 'package:task/api/api_model/sub_task_filter_data_modal.dart';
 import 'package:task/api/api_model/task_data_modal.dart';
+import 'package:task/api/api_model/upcoming_celebration_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/my_http/my_http.dart';
@@ -834,7 +835,7 @@ class CAI extends GetxController{
     Map<String, String> authorization = await userToken();
 
     http.Response? response = await MyHttp.postMethod(
-        url: '$baseUrl${AU.endPointAttendanceControllerApi}',
+        url: '$baseUrl${AU.endPointHolidayControllerApi}',
         bodyParams: bodyParams,
         context: Get.context!,
         token: authorization,
@@ -1061,6 +1062,34 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getTaskTimeLineModal = GetTaskTimeLineModal.fromJson(jsonDecode(response.body));
         return getTaskTimeLineModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<UpcomingCelebrationModal?> getUpcomingCelebrationApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    UpcomingCelebrationModal? upcomingCelebrationModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointCelebrationControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        upcomingCelebrationModal = UpcomingCelebrationModal.fromJson(jsonDecode(response.body));
+        return upcomingCelebrationModal;
       } else {
         return null;
       }

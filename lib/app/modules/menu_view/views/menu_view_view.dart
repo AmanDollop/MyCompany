@@ -20,39 +20,54 @@ class MenuViewView extends GetView<MenuViewController> {
         child: Scaffold(
           body: Obx(() {
             controller.count.value;
+            print('controller.hideSearchFieldValue.value:::: ${controller.hideSearchFieldValue.value}');
             return ModalProgress(
               inAsyncCall: controller.apiResValue.value,
               child: controller.apiResValue.value
                   ? menusListViewForShimmer()
                   : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                     Padding(
-                    padding: EdgeInsets.only(top: 16.px, right: 12.px, left: 12.px),
-                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        titleTextView(),
-                        SizedBox(height: 10.px),
-                        menusSearchTextFieldView(),
+                        AnimatedCrossFade(
+                          firstChild: Padding(
+                            padding: EdgeInsets.only(
+                                top: 16.px, right: 12.px, left: 12.px),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                titleTextView(),
+                                SizedBox(height: 10.px),
+                                menusSearchTextFieldView(),
+                              ],
+                            ),
+                          ),
+                          secondChild: const SizedBox(),
+                          crossFadeState: controller.hideSearchFieldValue.value
+                              ? CrossFadeState.showSecond
+                              : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 500),
+                        ),
+                        Obx(
+                          () => controller.menusModal.value != null
+                              ? controller.getMenuList.isNotEmpty
+                                  ? Expanded(
+                                      child: controller.searchController.text
+                                                  .isNotEmpty &&
+                                              controller
+                                                  .getMenuListForSearch.isEmpty
+                                          ? CW.commonNoDataFoundText(
+                                              text: 'Menus not found!')
+                                          : menusGridView(),
+                                    )
+                                  : CW.commonNoDataFoundText(
+                                      text: 'Menus not found!')
+                              : CW.commonNoDataFoundText(
+                                  text: controller.apiResValue.value
+                                      ? ''
+                                      : 'Menus not found!'),
+                        ),
                       ],
                     ),
-                  ), Obx(
-                    () =>  controller.menusModal.value != null
-                        ? controller.getMenuList.isNotEmpty
-                            ? Expanded(
-                                child: controller.searchController.text.isNotEmpty && controller.getMenuListForSearch.isEmpty
-                                    ? CW.commonNoDataFoundText(text: 'Menus not found!')
-                                    : menusGridView(),
-                              )
-                            : CW.commonNoDataFoundText(text: 'Menus not found!')
-                        : CW.commonNoDataFoundText(
-                            text: controller.apiResValue.value
-                                ? ''
-                                : 'Menus not found!'),
-                  ),
-                ],
-              ),
             );
           }),
         ),
@@ -72,6 +87,26 @@ class MenuViewView extends GetView<MenuViewController> {
         hintText: 'Search Menus',
         controller: controller.searchController,
         onChanged: (value) => controller.searchOnChange(value: value),
+        suffixIcon: controller.searchController.text.isNotEmpty
+            ? SizedBox(
+                width: 24.px,
+                height: 24.px,
+                child: InkWell(
+                  onTap: () {
+                    controller.searchController.clear();
+                    controller.count.value = 0;
+                  },
+                  child: Center(
+                    child: CW.commonNetworkImageView(
+                        path: 'assets/icons/cancel_white_icon.png',
+                        color: Col.text,
+                        isAssetImage: true,
+                        width: 12.px,
+                        height: 12.px),
+                  ),
+                ),
+              )
+            : const SizedBox(),
         prefixIcon: SizedBox(
           width: 24.px,
           height: 24.px,
@@ -87,7 +122,10 @@ class MenuViewView extends GetView<MenuViewController> {
 
   Widget cardTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .labelSmall
+            ?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
         textAlign: TextAlign.center,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
@@ -106,9 +144,10 @@ class MenuViewView extends GetView<MenuViewController> {
           mainAxisSpacing: 10.px,
         ),
         itemBuilder: (context, index) {
-          Color convertedColor = stringToColor(colorString: '${controller.getMenuList[index].backgroundColor}');
+          Color convertedColor = stringToColor(
+              colorString: '${controller.getMenuList[index].backgroundColor}');
           return InkWell(
-            onTap: () => controller.clickOnCard(index:index),
+            onTap: () => controller.clickOnCard(index: index),
             borderRadius: BorderRadius.circular(10.px),
             child: Ink(
               height: 100.px,

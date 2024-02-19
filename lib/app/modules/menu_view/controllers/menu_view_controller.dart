@@ -18,6 +18,7 @@ class MenuViewController extends GetxController {
   final searchController = TextEditingController();
 
   final apiResValue = true.obs;
+  final hideSearchFieldValue = false.obs;
 
   final companyDetailFromLocalDataBase = ''.obs;
   GetCompanyDetails? getCompanyDetails;

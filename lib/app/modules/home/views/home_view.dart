@@ -42,22 +42,37 @@ class HomeView extends GetView<HomeController> {
                   controller: controller.scrollController.value,
                   padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
                   children: [
-                    punchInAndPunchOutView(),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 12.px),
+                      padding: EdgeInsets.zero,
+                      decoration: BoxDecoration(
+                          color: Col.inverseSecondary,
+                          borderRadius: BorderRadius.circular(10.px),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Col.primary.withOpacity(.2),
+                                blurRadius: 1)
+                          ]),
+                      child: punchInAndPunchOutView(),
+                    ),
                     controller.apiResValue.value
-                        ? menusListViewForShimmer()
+                        ? Padding(
+                          padding:EdgeInsets.only(top: 16.px),
+                          child: menusListViewForShimmer(),
+                        )
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (controller.hideBanner.value)
                                 SizedBox(height: 16.px),
                               if (controller.hideBanner.value)
-                                bannerView(),
-                              if (controller.hideUpcomingCelebration.value)
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 14.px),
-                                  child: upcomingCelebrationsButtonView(),
-                                ),
+                              bannerView(),
+                              SizedBox(height: 16.px),
                               appMenusListView(),
+                              if (controller.hideUpcomingCelebration.value)
+                                SizedBox(height: 16.px),
+                              if (controller.hideUpcomingCelebration.value)
+                                upcomingCelebrationsButtonView(),
                               if (controller.hideMyTeam.value)
                                 SizedBox(height: 14.px),
                               if (controller.hideMyTeam.value)
@@ -94,14 +109,16 @@ class HomeView extends GetView<HomeController> {
 
   Widget punchInAndPunchOutView() {
     DateTime breakStartTime =
-        controller.getTodayAttendanceDetail?.breakStartTime != null && controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
-            ? DateFormat('HH:mm:ss').parse('${controller.getTodayAttendanceDetail?.breakStartTime}')
+        controller.getTodayAttendanceDetail?.breakStartTime != null &&
+                controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
+            ? DateFormat('HH:mm:ss')
+                .parse('${controller.getTodayAttendanceDetail?.breakStartTime}')
             : DateTime(0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (controller.breakValue.value)
-        Padding(
+          Padding(
             padding: EdgeInsets.only(right: 12.px, left: 12.px),
             child: Card(
               elevation: 0,
@@ -133,7 +150,8 @@ class HomeView extends GetView<HomeController> {
                     height: 180.px,
                     width: 180.px,
                     child: CustomPaint(
-                      painter: MyClockPainter(currentTime: controller.currentTimeForTimer),
+                      painter: MyClockPainter(
+                          currentTime: controller.currentTimeForTimer),
                     ),
                   ),
                   Stack(
@@ -164,10 +182,13 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     commonSwitchButtonView(),
                     SizedBox(height: 14.px),
-                    controller.checkInValue.value && controller.checkOutValue.value
+                    controller.checkInValue.value &&
+                            controller.checkOutValue.value
                         ? CW.commonElevatedButton(
                             onPressed: () {
-                              CM.showSnackBar(message: 'You have already performed punch in and punch out this day.');
+                              CM.showSnackBar(
+                                  message:
+                                      'You have already performed punch in and punch out this day.');
                             },
                             buttonText: 'Take a Break',
                             // width: 150.px,
@@ -177,18 +198,23 @@ class HomeView extends GetView<HomeController> {
                           )
                         : controller.breakValue.value
                             ? Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       cardTextView(text: 'Break time'),
-                                      cardTextView(text: DateFormat('hh:mm:ss a').format(breakStartTime),
+                                      cardTextView(
+                                          text: DateFormat('hh:mm:ss a')
+                                              .format(breakStartTime),
                                           fontSize: 12.px),
                                     ],
                                   ),
                                   InkWell(
-                                    onTap: () => controller.clickOnBreakEndButton(),
+                                    onTap: () =>
+                                        controller.clickOnBreakEndButton(),
                                     borderRadius: BorderRadius.circular(4.px),
                                     child: Column(
                                       children: [
@@ -202,7 +228,8 @@ class HomeView extends GetView<HomeController> {
                                               color: Col.inverseSecondary,
                                               size: 16.px),
                                         ),
-                                        cardTextView(text: 'End', color: Col.primary),
+                                        cardTextView(
+                                            text: 'End', color: Col.primary),
                                       ],
                                     ),
                                   ),
@@ -253,7 +280,8 @@ class HomeView extends GetView<HomeController> {
               firstText: 'Check In', fontSize: 8.px),
           if (controller.checkInValue.value)
             circularProgressIndicatorCheckInTextView(
-                firstText: '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
+                firstText:
+                    '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
                 fontSize: 8.px),
           SizedBox(height: 2.px),
           Row(
@@ -263,7 +291,8 @@ class HomeView extends GetView<HomeController> {
                 controller.count;
                 // print('::::test:::${formatWithLeadingZeros(controller.hours.value)}');
                 return circularProgressIndicatorTimeTextView(
-                  firstText: controller.checkInValue.value && controller.checkOutValue.value
+                  firstText: controller.checkInValue.value &&
+                          controller.checkOutValue.value
                       ? '${formatWithLeadingZeros(controller.hours.value)}:${formatWithLeadingZeros(controller.minutes.value)}:${formatWithLeadingZeros(controller.seconds.value)}'
                       : formatTime(controller.currentTimeForTimer),
                 );
@@ -290,10 +319,7 @@ class HomeView extends GetView<HomeController> {
 
   Widget circularProgressIndicatorTimeTextView({required String firstText}) => Text(
         firstText,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .headlineLarge
-            ?.copyWith(fontSize: 18.px),
+        style: Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 18.px),
       );
 
   Widget circularProgressIndicatorCheckInTextView({required String firstText, double? fontSize}) => Text(
@@ -309,7 +335,8 @@ class HomeView extends GetView<HomeController> {
       return GestureDetector(
         onHorizontalDragStart: (details) {
           CM.showSnackBar(
-              message: 'You have already performed punch in and punch out this day.');
+              message:
+                  'You have already performed punch in and punch out this day.');
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 500),
@@ -426,7 +453,8 @@ class HomeView extends GetView<HomeController> {
         indicatorWidth: 12.px,
       );
 
-  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight? fontWeight, TextAlign? textAlign}) => Text(
+  Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight? fontWeight, TextAlign? textAlign}) =>
+      Text(
         text,
         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
             fontWeight: fontWeight ?? FontWeight.w500,
@@ -437,17 +465,154 @@ class HomeView extends GetView<HomeController> {
         textAlign: textAlign,
       );
 
-  Widget upcomingCelebrationsButtonView() => CW.commonElevatedButton(
-        onPressed: () => controller.clickOnUpcomingCelebrationsButton(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            cardTextView(
-                text: 'Upcoming Celebrations', color: Col.inverseSecondary),
-            cardTextView(text: 'View', color: Col.inverseSecondary),
-          ],
-        ),
-      );
+  // Widget upcomingCelebrationsButtonView() => CW.commonElevatedButton(
+  //       onPressed: () => controller.clickOnUpcomingCelebrationsButton(),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           cardTextView(
+  //               text: 'Upcoming Celebrations', color: Col.inverseSecondary),
+  //           cardTextView(text: 'View', color: Col.inverseSecondary),
+  //         ],
+  //       ),
+  //     );
+
+  Widget upcomingCelebrationsButtonView() {
+    return commonCard(
+      titleText: 'Upcoming Celebrations',
+      viewAllButtonValue: true,
+      onPressedViewAllButton: () => controller.clickOnUpcomingCelebrationsButton(),
+      listWidget: controller.upcomingCelebrationList != null && controller.upcomingCelebrationList!.isNotEmpty
+          ? Padding(padding: EdgeInsets.only(left: 6.px, right: 6.px, bottom: 0.px),
+        child: GridView.builder(
+          shrinkWrap: true,
+
+          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 0.px,
+              mainAxisSpacing: 0.px,
+              childAspectRatio: .8
+          ),
+          itemCount: controller.upcomingCelebrationList?.length,
+          itemBuilder: (context, index) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            final screenHeight = MediaQuery.of(context).size.height;
+
+            final cardWidth = (screenWidth - 30) / 2; // Adjust as needed
+            final cardHeight = cardWidth * 0.8; // Adjust the aspect ratio as needed
+
+            return Container(
+              width: cardWidth,
+              height: cardHeight,
+              margin:  EdgeInsets.only(left: index % 2 == 0 ? 6.px : 2.px,right: index % 2 == 0 ? 2.px : 6.px),
+              padding: EdgeInsets.zero,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6.px),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CW.commonNetworkImageView(
+                      path: controller.upcomingCelebrationList?[index].celebrationType == 'Birthday'
+                          ? 'assets/images/birthday_background_image.png'
+                          : 'assets/images/work_anniversary_background_image.png',
+                      isAssetImage: true,
+                      fit: BoxFit.fill,
+                    ),
+                    Container(
+                      width: cardWidth,
+                      padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
+                      margin: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // SizedBox(height: 6.px),
+                          Container(
+                            width: 50.px,
+                            height: 50.px,
+                            margin: EdgeInsets.zero,
+                            decoration: BoxDecoration(
+                              color: Col.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: controller.upcomingCelebrationList?[index].userProfilePic != null &&
+                                  controller.upcomingCelebrationList![index].userProfilePic!.isNotEmpty
+                                  ? ClipRRect(
+                                borderRadius: BorderRadius.circular(25.px),
+                                child: CW.commonNetworkImageView(
+                                  path: '${AU.baseUrlAllApisImage}${controller.upcomingCelebrationList?[index].userProfilePic}',
+                                  isAssetImage: false,
+                                  errorImage: 'assets/images/profile.png',
+                                  width: 50.px,
+                                  height: 50.px,
+                                ),
+                              )
+                                  : Text(
+                                controller.upcomingCelebrationList?[index].shortName != null && controller.upcomingCelebrationList![index].shortName!.isNotEmpty
+                                    ? '${controller.upcomingCelebrationList?[index].shortName}'
+                                    : '?',
+                                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 6.px),
+                          cardTextView(
+                              text: controller.upcomingCelebrationList?[index].userFullName != null && controller.upcomingCelebrationList![index].userFullName!.isNotEmpty
+                                  ? '${controller.upcomingCelebrationList?[index].userFullName}'
+                                  : '?',
+                              fontWeight: FontWeight.w700,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              fontSize: 10.px),
+                          SizedBox(height: 2.px),
+                          cardTextView(
+                              text: controller.upcomingCelebrationList?[index].userDesignation != null && controller.upcomingCelebrationList![index].userDesignation!.isNotEmpty
+                                  ? '${controller.upcomingCelebrationList?[index].userDesignation}'
+                                  : '?',
+                              fontWeight: FontWeight.w600,
+                              maxLines: 1,
+                              fontSize: 8.px,
+                              textAlign: TextAlign.center),
+                          cardTextView(
+                              text: controller.upcomingCelebrationList?[index].branchName != null && controller.upcomingCelebrationList![index].branchName!.isNotEmpty
+                                  ? '${controller.upcomingCelebrationList?[index].branchName} - ${controller.upcomingCelebrationList?[index].departmentName}'
+                                  : '?',
+                              fontWeight: FontWeight.w600,
+                              maxLines: 2,
+                              fontSize: 8.px,
+                              textAlign: TextAlign.center),
+                          SizedBox(height: 2.px),
+                          cardTextView(
+                              text: controller.upcomingCelebrationList?[index].celebrationYear != null && controller.upcomingCelebrationList![index].celebrationYear!.isNotEmpty
+                                  ? '(${controller.upcomingCelebrationList?[index].celebrationYear})'
+                                  : '?',
+                              fontWeight: FontWeight.w500,
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
+                              fontSize: 8.px),
+                          SizedBox(height: 6.px),
+                          cardTextView(
+                              text: controller.upcomingCelebrationList?[index].celebrationDate != null && controller.upcomingCelebrationList![index].celebrationDate!.isNotEmpty
+                                  ? '${controller.upcomingCelebrationList?[index].celebrationDate}'
+                                  : '?',
+                              fontWeight: FontWeight.w700,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              fontSize: 10.px),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+                    ),
+                  )
+          : SizedBox(height: 8.px),
+    );
+  }
 
   Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
         margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
@@ -471,8 +636,7 @@ class HomeView extends GetView<HomeController> {
                 children: [
                   cardTextView(text: titleText, fontSize: 16.px),
                   if (viewAllButtonValue)
-                    viewAllTextButtonView(
-                        onPressedViewAllButton: onPressedViewAllButton ?? () {})
+                    viewAllTextButtonView(onPressedViewAllButton: onPressedViewAllButton ?? () {})
                 ],
               ),
             ),
@@ -481,7 +645,8 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) => CW.commonTextButton(
+  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) =>
+      CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',
@@ -495,7 +660,7 @@ class HomeView extends GetView<HomeController> {
   Widget appMenusListView() {
     return Obx(() {
       controller.count.value;
-      if(controller.menusModal.value != null){
+      if (controller.menusModal.value != null) {
         if (controller.isHeadingMenuList.isNotEmpty) {
           return commonCard(
             titleText: 'App Menu',
@@ -510,9 +675,12 @@ class HomeView extends GetView<HomeController> {
                 mainAxisSpacing: 10.px,
               ),
               itemBuilder: (context, index) {
-                Color convertedColor = CW.apiColorConverterMethod(colorString: '${controller.isHeadingMenuList[index].backgroundColor}');
+                Color convertedColor = CW.apiColorConverterMethod(
+                    colorString:
+                        '${controller.isHeadingMenuList[index].backgroundColor}');
                 return InkWell(
-                  onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
+                  onTap: () =>
+                      controller.clickOnHeadingCards(headingCardIndex: index),
                   borderRadius: BorderRadius.circular(10.px),
                   child: Ink(
                     height: 100.px,
@@ -528,7 +696,8 @@ class HomeView extends GetView<HomeController> {
                       borderRadius: BorderRadius.circular(8.px),
                     ),
                     child: Ink(
-                      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 8.px, vertical: 8.px),
                       decoration: BoxDecoration(
                         color: Col.inverseSecondary,
                         borderRadius: BorderRadius.circular(6.px),
@@ -546,21 +715,25 @@ class HomeView extends GetView<HomeController> {
                               borderRadius: BorderRadius.circular(6.px),
                             ),
                             child: Center(
-                              child:
-                              controller.isHeadingMenuList[index].menuImage == null && controller.isHeadingMenuList[index].menuImage!.isEmpty
+                              child: controller.isHeadingMenuList[index]
+                                              .menuImage ==
+                                          null &&
+                                      controller.isHeadingMenuList[index]
+                                          .menuImage!.isEmpty
                                   ? CW.commonNetworkImageView(
-                                path: 'assets/images/default_image.jpg',
-                                isAssetImage: true,
-                                width: 44.px,
-                                height: 44.px,
-                              )
+                                      path: 'assets/images/default_image.jpg',
+                                      isAssetImage: true,
+                                      width: 44.px,
+                                      height: 44.px,
+                                    )
                                   : SizedBox(
-                                width: 22.px,
-                                height: 22.px,
-                                child: CW.commonCachedNetworkImageView(
-                                  path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
-                                ),
-                              ),
+                                      width: 22.px,
+                                      height: 22.px,
+                                      child: CW.commonCachedNetworkImageView(
+                                        path:
+                                            '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
+                                      ),
+                                    ),
                             ),
                           ),
                           SizedBox(height: 10.px),
@@ -571,7 +744,8 @@ class HomeView extends GetView<HomeController> {
                                   .textTheme
                                   .labelSmall
                                   ?.copyWith(
-                                  fontWeight: FontWeight.w700, fontSize: 10.px),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 10.px),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -590,7 +764,7 @@ class HomeView extends GetView<HomeController> {
               ? const SizedBox()
               : CW.commonNoDataFoundText(text: 'Menus not found!');
         }
-      }else {
+      } else {
         return controller.apiResValue.value
             ? const SizedBox()
             : CW.commonNoDataFoundText(text: 'Menus not found!');

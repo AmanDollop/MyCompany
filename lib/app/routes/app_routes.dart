@@ -45,6 +45,7 @@ abstract class Routes {
   static const TASK_TIME_LINE = _Paths.TASK_TIME_LINE;
   static const PENALTY = _Paths.PENALTY;
   static const HOLIDAY = _Paths.HOLIDAY;
+  static const UPCOMING_CELEBRATIONS = _Paths.UPCOMING_CELEBRATIONS;
 }
 
 abstract class _Paths {
@@ -91,4 +92,5 @@ abstract class _Paths {
   static const TASK_TIME_LINE = '/task-time-line';
   static const PENALTY = '/penalty';
   static const HOLIDAY = '/holiday';
+  static const UPCOMING_CELEBRATIONS = '/upcoming-celebrations';
 }

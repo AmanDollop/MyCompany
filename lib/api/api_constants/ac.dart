@@ -140,6 +140,8 @@ class AK {
 
   static const action = "action";
 
+  static const isDashboard = "isDashboard";
+
   static const month = "month";
 
   static const taskCategoryName = "task_category_name";
@@ -202,6 +204,10 @@ class AU {
   static const endPointBreakControllerApi = "api/BreakController.php";
 
   static const endPointTaskControllerApi = "api/TaskController.php";
+
+  static const endPointHolidayControllerApi = "api/HolidayController.php";
+
+  static const endPointCelebrationControllerApi = "api/CelebrationController.php";
 
 
 
@@ -310,6 +316,8 @@ class ApiEndPointAction{
   static  const deleteTimeline = 'deleteTimeline';
 
   static  const getHolidays = 'getHolidays';
+
+  static  const getCelebration = 'getCelebration';
 
 
 }

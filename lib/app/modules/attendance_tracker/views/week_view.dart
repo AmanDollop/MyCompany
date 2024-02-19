@@ -150,11 +150,10 @@ class WeekView extends GetView<AttendanceTrackerController> {
             icon: Icon(Icons.keyboard_arrow_left,
                 color: Col.secondary, size: 28.px),
             onPressed: () {
-              // controller.pageController.previousPage(
-              //   duration: const Duration(milliseconds: 500),
-              //   curve: Curves.easeInOut,
-              // );
-              controller.pageController.jumpToPage(0);
+              controller.pageController.previousPage(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
               controller.count.value--;
             },
           ),

@@ -82,6 +82,8 @@ import '../modules/sub_task/bindings/sub_task_binding.dart';
 import '../modules/sub_task/views/sub_task_view.dart';
 import '../modules/task_time_line/bindings/task_time_line_binding.dart';
 import '../modules/task_time_line/views/task_time_line_view.dart';
+import '../modules/upcoming_celebrations/bindings/upcoming_celebrations_binding.dart';
+import '../modules/upcoming_celebrations/views/upcoming_celebrations_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
 
@@ -303,6 +305,11 @@ class AppPages {
       name: _Paths.HOLIDAY,
       page: () => const HolidayView(),
       binding: HolidayBinding(),
+    ),
+    GetPage(
+      name: _Paths.UPCOMING_CELEBRATIONS,
+      page: () => const UpcomingCelebrationsView(),
+      binding: UpcomingCelebrationsBinding(),
     ),
   ];
 }

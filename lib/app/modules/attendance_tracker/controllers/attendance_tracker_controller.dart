@@ -38,7 +38,7 @@ class AttendanceTrackerController extends GetxController {
     'December',
   ];
   final monthNameForMonthViewValue = 'January'.obs;
-  final yearForMonthViewValue = '2024'.obs;
+  final yearForMonthViewValue = DateFormat('yyyy').format(DateTime.now()).obs;
 
   final monthNameIdForMonthView = '1'.obs;
 
@@ -50,7 +50,7 @@ class AttendanceTrackerController extends GetxController {
 
 
   final monthNameForWeekViewValue = 'January'.obs;
-  final yearForWeekViewValue = '2024'.obs;
+  final yearForWeekViewValue = DateFormat('yyyy').format(DateTime.now()).obs;
   final monthNameIdForWeekView = '1'.obs;
 
   final currentMonth = DateTime.now().obs;

@@ -15,64 +15,86 @@ class AllTaskView extends GetView<AllTaskController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: CW.commonAppBarView(
-          title: controller.menuName.value,
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton(),
+    return Obx(() {
+      controller.count.value;
+      return GestureDetector(
+        onTap: () {
+          CM.unFocusKeyBoard();
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: CW.commonAppBarView(
+              title: controller.menuName.value,
+              isLeading: true,
+              onBackPressed: () => controller.clickOnBackButton(),
+              actions: [
+                CW.commonIconButton(onPressed: () {
+                  controller.hideSearchFieldValue.value = !controller.hideSearchFieldValue.value;
+                  controller.taskSearchController.clear();
+                  controller.count.value = 0;
+                }, isAssetImage: false,icon: controller.hideSearchFieldValue.value
+                    ? Icons.search_off
+                    : Icons.search,color: Col.inverseSecondary),
+                SizedBox(width: 10.px)
+              ]
+          ),
+          body: Obx(() {
+            controller.count.value;
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
+              child: Column(
+                children: [
+                  AnimatedCrossFade(
+                    firstChild: const SizedBox(),
+                    secondChild: taskSearchTextFieldView(),
+                    crossFadeState: controller.hideSearchFieldValue.value
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 500),
+                    reverseDuration: const Duration(microseconds: 0),
+                  ),
+                  if(controller.hideSearchFieldValue.value)
+                  SizedBox(height: 16.px),
+                  AC.isConnect.value
+                      ? controller.apiResValue.value
+                      ? Expanded(
+                    child: shimmerView(),
+                  )
+                      : Expanded(
+                    child: ModalProgress(
+                      inAsyncCall: controller.apiResValue.value,
+                      child: CW.commonRefreshIndicator(
+                        onRefresh: () => controller.onRefresh(),
+                        child: LM(
+                          noMoreWidget: const SizedBox(),
+                          isLastPage: controller.isLastPage.value,
+                          onLoadMore: () => controller.onLoadMore(),
+                          child: ListView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            children: [
+                              topCardGridView(),
+                              SizedBox(height: 16.px),
+                              taskCardListView(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                      : CW.commonNetworkImageView(
+                      path: C.iNoInternetDialog,
+                      isAssetImage: true,
+                      width: 200.px,
+                      height: 200.px),
+                ],
+              ),
+            );
+          }),
+          floatingActionButton: addTaskFloatingActionButtonView(),
         ),
-        body: Obx(() {
-          controller.count.value;
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
-            child: Column(
-              children: [
-                taskSearchTextFieldView(),
-                SizedBox(height: 16.px),
-                AC.isConnect.value
-                    ? controller.apiResValue.value
-                        ? Expanded(
-                            child: shimmerView(),
-                          )
-                        : Expanded(
-                            child: ModalProgress(
-                              inAsyncCall: controller.apiResValue.value,
-                              child: CW.commonRefreshIndicator(
-                                onRefresh: () => controller.onRefresh(),
-                                child: LM(
-                                  noMoreWidget: const SizedBox(),
-                                  isLastPage: controller.isLastPage.value,
-                                  onLoadMore: () => controller.onLoadMore(),
-                                  child: ListView(
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    children: [
-                                      topCardGridView(),
-                                      SizedBox(height: 16.px),
-                                      taskCardListView(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                    : CW.commonNetworkImageView(
-                        path: C.iNoInternetDialog,
-                        isAssetImage: true,
-                        width: 200.px,
-                        height: 200.px),
-              ],
-            ),
-          );
-        }),
-        floatingActionButton: addTaskFloatingActionButtonView(),
-      ),
-    );
+      );
+    });
   }
 
   Widget taskSearchTextFieldView() => CW.commonTextField(
@@ -81,6 +103,26 @@ class AllTaskView extends GetView<AllTaskController> {
         hintText: 'Search Task Category',
         controller: controller.taskSearchController,
         onChanged: (value) => controller.taskSearchOnChange(value: value),
+        suffixIcon: controller.taskSearchController.text.isNotEmpty
+        ? SizedBox(
+      width: 24.px,
+      height: 24.px,
+      child: InkWell(
+        onTap: () {
+          controller.taskSearchController.clear();
+          controller.count.value = 0;
+        },
+        child: Center(
+          child: CW.commonNetworkImageView(
+              path: 'assets/icons/cancel_white_icon.png',
+              color: Col.text,
+              isAssetImage: true,
+              width: 12.px,
+              height: 12.px),
+        ),
+      ),
+    )
+        : const SizedBox(),
         prefixIcon: SizedBox(
           width: 24.px,
           height: 24.px,

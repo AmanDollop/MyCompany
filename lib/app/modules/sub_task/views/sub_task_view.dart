@@ -8,6 +8,7 @@ import 'package:task/app/modules/sub_task/views/sub_task_shimmer_view.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
+import 'package:task/common/read_more_and_less_text/read_more_and_less_text.dart';
 import 'package:task/theme/colors/colors.dart';
 import '../controllers/sub_task_controller.dart';
 
@@ -16,105 +17,168 @@ class SubTaskView extends GetView<SubTaskController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => CM.unFocusKeyBoard(),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: CW.commonAppBarView(
-          title: controller.taskName.value,
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton(),
-        ),
-        body: Obx(() {
-          controller.count.value;
-          return AC.isConnect.value
-              ? ModalProgress(
-                  isLoader: false,
-                  inAsyncCall: controller.apiResValue.value,
-                  child: CW.commonRefreshIndicator(
-                    onRefresh: () => controller.onRefresh(),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
-                      child: Column(
-                        children: [
-                          // subTaskSearchTextFieldView(),
-                          // SizedBox(height: 16.px),
-                          controller.apiResValue.value
-                              ? Expanded(
-                                  child: SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value),
-                                )
-                              : Expanded(
-                                  child: ListView(
-                                    physics: const ScrollPhysics(),
-                                    children: [
-                                      controller.apiResValueForSubTaskFilter.value
-                                          ? SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value)
-                                          : filterCardGridView(),
-                                      SizedBox(height: 16.px),
-                                      controller.apiResValueForSubTask.value
-                                          ? SubTaskShimmerView.shimmerView(apiResValue: controller.apiResValue.value, apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value, apiResValueForSubTask: controller.apiResValueForSubTask.value)
-                                          : subTaskCardListView(),
-                                      SizedBox(height: 8.h)
-                                    ],
+    return Obx(() {
+      controller.count.value;
+      return GestureDetector(
+        onTap: () => CM.unFocusKeyBoard(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: CW.commonAppBarView(
+              title: controller.taskName.value,
+              isLeading: true,
+              onBackPressed: () => controller.clickOnBackButton(),
+              actions: [
+                CW.commonIconButton(
+                    onPressed: () {
+                      controller.hideSearchFieldValue.value = !controller.hideSearchFieldValue.value;
+                      controller.taskSearchController.clear();
+                      controller.count.value = 0;
+                    },
+                    isAssetImage: false,
+                    icon: controller.hideSearchFieldValue.value
+                        ? Icons.search_off
+                        : Icons.search,
+                    color: Col.inverseSecondary),
+                SizedBox(width: 10.px)
+              ]),
+          body: Obx(() {
+            controller.count.value;
+            return AC.isConnect.value
+                ? ModalProgress(
+                    isLoader: false,
+                    inAsyncCall: controller.apiResValue.value,
+                    child: CW.commonRefreshIndicator(
+                      onRefresh: () => controller.onRefresh(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 16.px, horizontal: 12.px),
+                        child: Column(
+                          children: [
+                            AnimatedCrossFade(
+                              firstChild: const SizedBox(),
+                              secondChild: subTaskSearchTextFieldView(),
+                              crossFadeState:
+                                  controller.hideSearchFieldValue.value
+                                      ? CrossFadeState.showSecond
+                                      : CrossFadeState.showFirst,
+                              duration: const Duration(milliseconds: 500),
+                              reverseDuration: const Duration(microseconds: 0),
+                            ),
+                            if (controller.hideSearchFieldValue.value)
+                              SizedBox(height: 16.px),
+                            controller.apiResValue.value
+                                ? Expanded(
+                                    child: SubTaskShimmerView.shimmerView(
+                                        apiResValue: controller.apiResValue.value,
+                                        apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value,
+                                        apiResValueForSubTask: controller.apiResValueForSubTask.value),
+                                  )
+                                : Expanded(
+                                    child: ListView(
+                                      physics: const ScrollPhysics(),
+                                      children: [
+                                        controller.apiResValueForSubTaskFilter.value
+                                            ? SubTaskShimmerView.shimmerView(
+                                                apiResValue: controller.apiResValue.value,
+                                                apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value,
+                                                apiResValueForSubTask: controller.apiResValueForSubTask.value)
+                                            : filterCardGridView(),
+                                        SizedBox(height: 16.px),
+                                        controller.apiResValueForSubTask.value
+                                            ? SubTaskShimmerView.shimmerView(
+                                                apiResValue: controller.apiResValue.value,
+                                                apiResValueForSubTaskFilter: controller.apiResValueForSubTaskFilter.value,
+                                                apiResValueForSubTask: controller.apiResValueForSubTask.value)
+                                            : subTaskCardListView(),
+                                        SizedBox(height: 8.h)
+                                      ],
+                                    ),
                                   ),
-                                ),
-                        ],
+                          ],
+                        ),
                       ),
+                    ),
+                  )
+                : CW.commonNoNetworkView();
+          }),
+          floatingActionButton: AC.isConnect.value
+              ? addSubTaskFloatingActionButtonView()
+              : const SizedBox(),
+        ),
+      );
+    });
+  }
+
+  Widget subTaskSearchTextFieldView() => Obx(() {
+        controller.count.value;
+        return CW.commonTextField(
+          isBorder: true,
+          isSearchLabelText: true,
+          hintText: 'Search Task',
+          controller: controller.taskSearchController,
+          onChanged: (value) => controller.subTaskSearchOnChange(value: value),
+          suffixIcon: controller.taskSearchController.text.isNotEmpty
+              ? SizedBox(
+                  width: 24.px,
+                  height: 24.px,
+                  child: InkWell(
+                    onTap: () {
+                      controller.taskSearchController.clear();
+                      controller.count.value = 0;
+                    },
+                    child: Center(
+                      child: CW.commonNetworkImageView(
+                          path: 'assets/icons/cancel_white_icon.png',
+                          color: Col.text,
+                          isAssetImage: true,
+                          width: 12.px,
+                          height: 12.px),
                     ),
                   ),
                 )
-              : CW.commonNoNetworkView();
-        }),
-        floatingActionButton: AC.isConnect.value
-            ? addSubTaskFloatingActionButtonView()
-            : const SizedBox(),
-      ),
-    );
-  }
-
-  Widget subTaskSearchTextFieldView() => CW.commonTextField(
-        isBorder: true,
-        isSearchLabelText: true,
-        hintText: 'Search Task',
-        controller: controller.taskSearchController,
-        onChanged: (value) => controller.subTaskSearchOnChange(value: value),
-        prefixIcon: SizedBox(
-          width: 24.px,
-          height: 24.px,
-          child: Center(
-            child: CW.commonNetworkImageView(
-                path: 'assets/icons/search_icon.png',
-                isAssetImage: true,
-                width: 24.px,
-                height: 24.px),
+              : const SizedBox(),
+          prefixIcon: SizedBox(
+            width: 24.px,
+            height: 24.px,
+            child: Center(
+              child: CW.commonNetworkImageView(
+                  path: 'assets/icons/search_icon.png',
+                  isAssetImage: true,
+                  width: 24.px,
+                  height: 24.px),
+            ),
           ),
-        ),
-      );
+        );
+      },
+  );
 
-  Widget subTitleTextView({required String text, double? fontSize,int? maxLines}) => Text(
+  Widget subTitleTextView({required String text, double? fontSize, int? maxLines}) =>
+      Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .labelSmall
+            ?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize),
         maxLines: maxLines ?? 1,
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget cardTitleTextView({required String text, Color? color, double? fontSize}) =>
-      Text(
-        text, style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-            fontSize: fontSize ?? 10.px,
-            fontWeight: FontWeight.w600,
-            color: color),
+  Widget cardTitleTextView({required String text, Color? color, double? fontSize}) => Text(
+        text,
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: fontSize ?? 10.px, fontWeight: FontWeight.w600, color: color),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       );
 
   Widget filterCardGridView() {
     if (controller.getSubTaskFilterDataModal.value != null) {
-      if (controller.subTaskFilterList != null && controller.subTaskFilterList!.isNotEmpty) {
+      if (controller.subTaskFilterList != null &&
+          controller.subTaskFilterList!.isNotEmpty) {
         return Card(
           color: Col.inverseSecondary,
           margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
           child: Padding(
             padding: EdgeInsets.all(4.px),
             child: GridView.builder(
@@ -122,22 +186,32 @@ class SubTaskView extends GetView<SubTaskController> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.subTaskFilterList?.length,
               shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.6),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, childAspectRatio: 2.6),
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: () => controller.clickOnSubTaskFilterCard(index: index),
+                  onTap: () =>
+                      controller.clickOnSubTaskFilterCard(index: index),
                   borderRadius: BorderRadius.circular(6.px),
                   child: Container(
                     margin: EdgeInsets.all(4.px),
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: controller.subTaskFilterList?[index].isSelected ?? false
-                              ? CW.apiColorConverterMethod(colorString: '${controller.subTaskFilterList?[index].taskStatusColor}')
+                          color: controller
+                                      .subTaskFilterList?[index].isSelected ??
+                                  false
+                              ? CW.apiColorConverterMethod(
+                                  colorString:
+                                      '${controller.subTaskFilterList?[index].taskStatusColor}')
                               : Colors.transparent,
                           width: 1.px),
                       borderRadius: BorderRadius.circular(6.px),
-                      color: controller.subTaskFilterList?[index].isSelected ?? false
-                          ? CW.apiColorConverterMethod(colorString: '${controller.subTaskFilterList?[index].taskStatusColor}')
+                      color: controller.subTaskFilterList?[index].isSelected ??
+                              false
+                          ? CW
+                              .apiColorConverterMethod(
+                                  colorString:
+                                      '${controller.subTaskFilterList?[index].taskStatusColor}')
                               .withOpacity(.2)
                           : Col.gray.withOpacity(.2),
                     ),
@@ -149,14 +223,19 @@ class SubTaskView extends GetView<SubTaskController> {
                             height: 10.px,
                             width: 10.px,
                             decoration: BoxDecoration(
-                                color: controller.subTaskFilterList?[index].isSelected ?? false
-                                    ? CW.apiColorConverterMethod(colorString: '${controller.subTaskFilterList?[index].taskStatusColor}')
+                                color: controller.subTaskFilterList?[index]
+                                            .isSelected ??
+                                        false
+                                    ? CW.apiColorConverterMethod(
+                                        colorString:
+                                            '${controller.subTaskFilterList?[index].taskStatusColor}')
                                     : Col.gray.withOpacity(.5),
                                 shape: BoxShape.circle),
                           ),
                           SizedBox(width: 4.px),
                           cardTitleTextView(
-                              text: '${controller.subTaskFilterList?[index].taskStatusName}',
+                              text:
+                                  '${controller.subTaskFilterList?[index].taskStatusName}',
                               color: Col.secondary),
                         ],
                       ),
@@ -184,31 +263,42 @@ class SubTaskView extends GetView<SubTaskController> {
         itemBuilder: (context, index) {
           return Card(
             color: Col.inverseSecondary,
-            margin: EdgeInsets.only(bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
+            margin: EdgeInsets.only(
+                bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6.px)),
             child: Column(
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 taskNameContainerView(index: index),
                 profileView(index: index),
-                CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
+                CW.commonDividerView(
+                    height: 0.px, color: Col.gray.withOpacity(.5)),
                 dateView(index: index),
-                if(controller.subTaskList?[index].taskNote != null && controller.subTaskList![index].taskNote!.isNotEmpty)
-                  CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
-                if(controller.subTaskList?[index].taskNote != null && controller.subTaskList![index].taskNote!.isNotEmpty)
+                if (controller.subTaskList?[index].taskNote != null &&
+                    controller.subTaskList![index].taskNote!.isNotEmpty)
+                  CW.commonDividerView(
+                      height: 0.px, color: Col.gray.withOpacity(.5)),
+                if (controller.subTaskList?[index].taskNote != null &&
+                    controller.subTaskList![index].taskNote!.isNotEmpty)
                   Padding(
                     padding: EdgeInsets.all(10.px),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        cardTitleTextView(text: 'Task Note - ', color: Col.gray),
+                        cardTitleTextView(
+                            text: 'Task Note - ', color: Col.gray),
                         Flexible(
-                            child: subTitleTextView(text: '${controller.subTaskList?[index].taskNote}',maxLines: 2),
+                          child: MyReadMoreText(
+                            text: '${controller.subTaskList?[index].taskNote}',
+                            maxLines: 4,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                CW.commonDividerView(height: 0.px, color: Col.gray.withOpacity(.5)),
-
+                CW.commonDividerView(
+                    height: 0.px, color: Col.gray.withOpacity(.5)),
                 statusView(index: index),
                 editDeleteAndMoreView(index: index)
               ],
@@ -271,22 +361,29 @@ class SubTaskView extends GetView<SubTaskController> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: controller.subTaskList?[index].userProfile != null && controller.subTaskList![index].userProfile!.isNotEmpty
+                child: controller.subTaskList?[index].userProfile != null &&
+                        controller.subTaskList![index].userProfile!.isNotEmpty
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(25.px),
                         child: CW.commonNetworkImageView(
-                            path: '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
-                            isAssetImage: false,
-                            errorImage: 'assets/images/profile.png',
+                          path:
+                              '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
+                          isAssetImage: false,
+                          errorImage: 'assets/images/profile.png',
                           width: 50.px,
                           height: 50.px,
                         ),
                       )
                     : Text(
-                        controller.subTaskList?[index].shortName != null && controller.subTaskList![index].shortName!.isNotEmpty
+                        controller.subTaskList?[index].shortName != null &&
+                                controller
+                                    .subTaskList![index].shortName!.isNotEmpty
                             ? '${controller.subTaskList?[index].shortName}'
                             : '?',
-                        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: Col.inverseSecondary),
                       ),
               ),
             ),
@@ -300,22 +397,30 @@ class SubTaskView extends GetView<SubTaskController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       cardTitleTextView(
-                          text: controller.subTaskList?[index].isSelfAddedTask != null &&
-                                  controller.subTaskList![index].isSelfAddedTask!.isNotEmpty
+                          text: controller.subTaskList?[index]
+                                          .isSelfAddedTask !=
+                                      null &&
+                                  controller.subTaskList![index]
+                                      .isSelfAddedTask!.isNotEmpty
                               ? '${controller.subTaskList?[index].isSelfAddedTask}'
                               : 'Not Found!',
                           color: Col.gray),
                       cardTitleTextView(
-                          text: controller.subTaskList?[index].createdDate != null &&
-                                  controller.subTaskList![index].createdDate!.isNotEmpty
-                              ? DateFormat('hh:mm a, d MMM y').format(DateTime.parse('${controller.subTaskList?[index].createdDate}'))
+                          text: controller.subTaskList?[index].createdDate !=
+                                      null &&
+                                  controller.subTaskList![index].createdDate!
+                                      .isNotEmpty
+                              ? DateFormat('hh:mm a, d MMM y').format(
+                                  DateTime.parse(
+                                      '${controller.subTaskList?[index].createdDate}'))
                               : 'Not Found!',
                           color: Col.gray),
                     ],
                   ),
                   subTitleTextView(
                       text: controller.subTaskList?[index].userName != null &&
-                              controller.subTaskList![index].userName!.isNotEmpty
+                              controller
+                                  .subTaskList![index].userName!.isNotEmpty
                           ? '${controller.subTaskList?[index].userName}'
                           : 'Not found!'),
                 ],
@@ -369,9 +474,12 @@ class SubTaskView extends GetView<SubTaskController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           cardTitleTextView(text: 'Start Date', color: Col.gray),
-          subTitleTextView(text: controller.subTaskList?[index].taskStartDate != null && controller.subTaskList![index].taskStartDate!.isNotEmpty
-                  ? DateFormat('d MMM y').format(DateTime.parse('${controller.subTaskList?[index].taskStartDate}'))
-              : 'Not Found!',
+          subTitleTextView(
+            text: controller.subTaskList?[index].taskStartDate != null &&
+                    controller.subTaskList![index].taskStartDate!.isNotEmpty
+                ? DateFormat('d MMM y').format(DateTime.parse(
+                    '${controller.subTaskList?[index].taskStartDate}'))
+                : 'Not Found!',
           ),
         ],
       );
@@ -381,8 +489,10 @@ class SubTaskView extends GetView<SubTaskController> {
         children: [
           cardTitleTextView(text: 'Due Date', color: Col.gray),
           subTitleTextView(
-              text: controller.subTaskList?[index].taskDueDate != null && controller.subTaskList![index].taskDueDate!.isNotEmpty
-                  ? DateFormat('d MMM y').format(DateTime.parse('${controller.subTaskList?[index].taskDueDate}'))
+              text: controller.subTaskList?[index].taskDueDate != null &&
+                      controller.subTaskList![index].taskDueDate!.isNotEmpty
+                  ? DateFormat('d MMM y').format(DateTime.parse(
+                      '${controller.subTaskList?[index].taskDueDate}'))
                   : 'Not Found!'),
         ],
       );
@@ -405,14 +515,19 @@ class SubTaskView extends GetView<SubTaskController> {
                           Container(
                             height: 16.px,
                             width: 16.px,
-                            decoration: const BoxDecoration(shape: BoxShape.circle),
-                            child:  commonCardButtonView(
+                            decoration:
+                                const BoxDecoration(shape: BoxShape.circle),
+                            child: commonCardButtonView(
                               iconPath: 'assets/icons/priority_icon.png',
                             ),
                           ),
                           SizedBox(width: 4.px),
                           cardTitleTextView(
-                              text: controller.subTaskList?[index].taskPriority != null && controller.subTaskList![index].taskPriority!.isNotEmpty
+                              text: controller.subTaskList?[index]
+                                              .taskPriority !=
+                                          null &&
+                                      controller.subTaskList![index]
+                                          .taskPriority!.isNotEmpty
                                   ? '${controller.subTaskList?[index].taskPriority}'
                                   : 'Not Found!',
                               color: Col.secondary),
@@ -431,36 +546,69 @@ class SubTaskView extends GetView<SubTaskController> {
                             height: 10.px,
                             width: 10.px,
                             decoration: BoxDecoration(
-                                color: controller.subTaskList?[index].taskStatusColor != '' ||
-                                        controller.subTaskList?[index].taskStatusColor != null && controller.subTaskList![index].taskStatusColor!.isNotEmpty
+                                color: controller.subTaskList?[index]
+                                                .taskStatusColor !=
+                                            '' ||
+                                        controller.subTaskList?[index]
+                                                    .taskStatusColor !=
+                                                null &&
+                                            controller.subTaskList![index]
+                                                .taskStatusColor!.isNotEmpty
                                     ? CW.apiColorConverterMethod(
-                                        colorString: '${controller.subTaskList?[index].taskStatusColor}')
+                                        colorString:
+                                            '${controller.subTaskList?[index].taskStatusColor}')
                                     : Col.secondary,
                                 shape: BoxShape.circle),
                           ),
                           SizedBox(width: 4.px),
                           cardTitleTextView(
-                              text: controller.subTaskList?[index].taskStatusName != null && controller.subTaskList![index].taskStatusName!.isNotEmpty
+                              text: controller.subTaskList?[index]
+                                              .taskStatusName !=
+                                          null &&
+                                      controller.subTaskList![index]
+                                          .taskStatusName!.isNotEmpty
                                   ? '${controller.subTaskList?[index].taskStatusName}'
                                   : 'Not Found!',
-                              color: controller.subTaskList?[index].taskStatusColor != '' ||
-                                      controller.subTaskList?[index].taskStatusColor != null && controller.subTaskList![index].taskStatusColor!.isNotEmpty
+                              color: controller.subTaskList?[index]
+                                              .taskStatusColor !=
+                                          '' ||
+                                      controller.subTaskList?[index]
+                                                  .taskStatusColor !=
+                                              null &&
+                                          controller.subTaskList![index]
+                                              .taskStatusColor!.isNotEmpty
                                   ? CW.apiColorConverterMethod(
-                                      colorString: '${controller.subTaskList?[index].taskStatusColor}')
+                                      colorString:
+                                          '${controller.subTaskList?[index].taskStatusColor}')
                                   : Col.secondary),
-                          if (controller.subTaskList?[index].taskStatus != '4' && controller.subTaskList?[index].taskStatus != '3')
+                          if (controller.subTaskList?[index].taskStatus !=
+                                  '4' &&
+                              controller.subTaskList?[index].taskStatus != '3')
                             SizedBox(width: 5.px),
-                          if (controller.subTaskList?[index].taskStatus != '4' && controller.subTaskList?[index].taskStatus != '3')
+                          if (controller.subTaskList?[index].taskStatus !=
+                                  '4' &&
+                              controller.subTaskList?[index].taskStatus != '3')
                             InkWell(
-                              onTap: () => controller.clickOnEditStatusButton(taskId: controller.subTaskList?[index].taskId ?? ''),
+                              onTap: () => controller.clickOnEditStatusButton(
+                                  taskId:
+                                      controller.subTaskList?[index].taskId ??
+                                          ''),
                               child: CW.commonNetworkImageView(
                                   path: 'assets/icons/edit_status_icon.png',
                                   isAssetImage: true,
                                   width: 12.px,
                                   height: 12.px,
-                                  color: controller.subTaskList?[index].taskStatusColor != '' || controller.subTaskList?[index].taskStatusColor != null && controller.subTaskList![index].taskStatusColor!.isNotEmpty
+                                  color: controller.subTaskList?[index]
+                                                  .taskStatusColor !=
+                                              '' ||
+                                          controller.subTaskList?[index]
+                                                      .taskStatusColor !=
+                                                  null &&
+                                              controller.subTaskList![index]
+                                                  .taskStatusColor!.isNotEmpty
                                       ? CW.apiColorConverterMethod(
-                                          colorString: '${controller.subTaskList?[index].taskStatusColor}')
+                                          colorString:
+                                              '${controller.subTaskList?[index].taskStatusColor}')
                                       : Col.secondary),
                             )
                         ],
@@ -507,7 +655,8 @@ class SubTaskView extends GetView<SubTaskController> {
               commonCardButtonView(
                 iconPath: 'assets/icons/delete_icon.png',
                 iconColor: Col.error,
-                onTap: () => controller.clickOnDeleteSubTaskButton(index: index),
+                onTap: () =>
+                    controller.clickOnDeleteSubTaskButton(index: index),
               ),
             if (controller.subTaskList?[index].isDeleteAllow ?? false)
               SizedBox(width: 10.px),
@@ -516,18 +665,19 @@ class SubTaskView extends GetView<SubTaskController> {
               onTap: () => controller.clickOnTimeLineButton(index: index),
             ),
             SizedBox(width: 10.px),
-            if (controller.subTaskList?[index].taskAttachment != null && controller.subTaskList![index].taskAttachment!.isNotEmpty)
-            commonCardButtonView(
-              iconPath: 'assets/icons/document_icon.png',
-              onTap: () => controller.clickOnTaskAttachmentButton(index: index),
-            ),
+            if (controller.subTaskList?[index].taskAttachment != null &&
+                controller.subTaskList![index].taskAttachment!.isNotEmpty)
+              commonCardButtonView(
+                iconPath: 'assets/icons/document_icon.png',
+                onTap: () =>
+                    controller.clickOnTaskAttachmentButton(index: index),
+              ),
             SizedBox(width: 10.px),
           ],
         ),
       );
 
-  Widget commonCardButtonView({GestureTapCallback? onTap, Color? iconColor, required String iconPath}) =>
-      InkWell(
+  Widget commonCardButtonView({GestureTapCallback? onTap, Color? iconColor, required String iconPath}) => InkWell(
         borderRadius: BorderRadius.circular(6.px),
         onTap: onTap,
         child: Ink(
