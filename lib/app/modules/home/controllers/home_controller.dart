@@ -399,6 +399,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
     isEarlyPunchOut.value = currentTimeForPunchOut.isBefore(punchOutDateTimeForPunchOut);
 
+
     CBS.commonBottomSheet(
       showDragHandle: false,
       isDismissible: false,
@@ -512,7 +513,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(6.px)
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(isLatePunchIn.value ? 8.px : 0.px),
+                  padding: EdgeInsets.all(!checkInValue.value && isLatePunchIn.value || isEarlyPunchOut.value ? 8.px : 0.px),
                   child: Column(
                     children: [
                       !checkInValue.value
