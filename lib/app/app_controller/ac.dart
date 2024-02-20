@@ -30,7 +30,7 @@ class AC extends GetxController {
       if (networkConnection.value) {
         isConnect.value = true;
         if (isDialogShow == 1) {
-          Get.back();
+          // Get.back();
         }
       } else {
         isConnect.value = false;

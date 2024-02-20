@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -21,7 +22,8 @@ class DocumentView extends GetView<DocumentController> {
           onBackPressed: () => controller.clickOnBackButton()),
       body: Obx(() {
         controller.count.value;
-        return ModalProgress(
+        return AC.isConnect.value
+            ? ModalProgress(
             inAsyncCall: controller.apiResValue.value,
             child: controller.apiResValue.value
                 ? shimmerView()
@@ -140,7 +142,8 @@ class DocumentView extends GetView<DocumentController> {
                       return CW.commonNoDataFoundText(text: 'No data found!');
                     }
                   }),
-        );
+        )
+            : CW.commonNoNetworkView();
       }),
       floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
           ? Padding(

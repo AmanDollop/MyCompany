@@ -28,11 +28,17 @@ class AllTaskView extends GetView<AllTaskController> {
               isLeading: true,
               onBackPressed: () => controller.clickOnBackButton(),
               actions: [
-                CW.commonIconButton(onPressed: () {
+                CW.commonIconButton(onPressed: () async {
                   controller.hideSearchFieldValue.value = !controller.hideSearchFieldValue.value;
                   controller.taskSearchController.clear();
-                  controller.count.value = 0;
-                }, isAssetImage: false,icon: controller.hideSearchFieldValue.value
+                  controller.count.value++;
+                  controller.taskCategoryList.clear();
+                  controller.offset.value = 0;
+                  controller.apiResValue.value= true;
+                  await controller.callingGetTaskDataApi();
+                },
+                    isAssetImage: false,
+                    icon: controller.hideSearchFieldValue.value
                     ? Icons.search_off
                     : Icons.search,color: Col.inverseSecondary),
                 SizedBox(width: 10.px)
@@ -40,7 +46,8 @@ class AllTaskView extends GetView<AllTaskController> {
           ),
           body: Obx(() {
             controller.count.value;
-            return Padding(
+            return AC.isConnect.value
+                ? Padding(
               padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
               child: Column(
                 children: [
@@ -55,8 +62,7 @@ class AllTaskView extends GetView<AllTaskController> {
                   ),
                   if(controller.hideSearchFieldValue.value)
                   SizedBox(height: 16.px),
-                  AC.isConnect.value
-                      ? controller.apiResValue.value
+                  controller.apiResValue.value
                       ? Expanded(
                     child: shimmerView(),
                   )
@@ -81,15 +87,11 @@ class AllTaskView extends GetView<AllTaskController> {
                         ),
                       ),
                     ),
-                  )
-                      : CW.commonNetworkImageView(
-                      path: C.iNoInternetDialog,
-                      isAssetImage: true,
-                      width: 200.px,
-                      height: 200.px),
+                  ),
                 ],
               ),
-            );
+            )
+                : CW.commonNoNetworkView();
           }),
           floatingActionButton: addTaskFloatingActionButtonView(),
         ),
@@ -108,9 +110,13 @@ class AllTaskView extends GetView<AllTaskController> {
       width: 24.px,
       height: 24.px,
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           controller.taskSearchController.clear();
-          controller.count.value = 0;
+          controller.count.value++;
+          controller.taskCategoryList.clear();
+          controller.offset.value = 0;
+          controller.apiResValue.value= true;
+          await controller.callingGetTaskDataApi();
         },
         child: Center(
           child: CW.commonNetworkImageView(

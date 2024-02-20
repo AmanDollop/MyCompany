@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -27,7 +28,9 @@ class AddEducationView extends GetView<AddEducationController> {
               onBackPressed: () => controller.clickOnBackButton()),
           body: Obx(() {
             controller.count.value;
-            return achievementsView();
+            return AC.isConnect.value
+                ? achievementsView()
+                : CW.commonNoNetworkView();
           }),
         );
       }),

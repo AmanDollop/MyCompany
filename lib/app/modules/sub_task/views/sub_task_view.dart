@@ -283,17 +283,15 @@ class SubTaskView extends GetView<SubTaskController> {
                     controller.subTaskList![index].taskNote!.isNotEmpty)
                   Padding(
                     padding: EdgeInsets.all(10.px),
-                    child: Row(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        cardTitleTextView(
-                            text: 'Task Note - ', color: Col.gray),
-                        Flexible(
-                          child: MyReadMoreText(
-                            text: '${controller.subTaskList?[index].taskNote}',
-                            maxLines: 4,
-                          ),
-                        ),
+                        cardTitleTextView(text: 'Task Note', color: Col.gray),
+                        // MyReadMoreText(
+                        //   text: '${controller.subTaskList?[index].taskNote}',
+                        //   maxLines: 4,
+                        // ),
+                        CW.commonReadMoreText(value: '${controller.subTaskList?[index].taskNote}',maxLine: 4)
                       ],
                     ),
                   ),
@@ -361,29 +359,19 @@ class SubTaskView extends GetView<SubTaskController> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: controller.subTaskList?[index].userProfile != null &&
-                        controller.subTaskList![index].userProfile!.isNotEmpty
-                    ? ClipRRect(
+                child: ClipRRect(
                         borderRadius: BorderRadius.circular(25.px),
                         child: CW.commonNetworkImageView(
-                          path:
-                              '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
+                          path: '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
                           isAssetImage: false,
-                          errorImage: 'assets/images/profile.png',
                           width: 50.px,
                           height: 50.px,
+                          errorImageValue: true,
+                          userShortName: controller.subTaskList?[index].shortName != null &&
+                              controller.subTaskList![index].shortName!.isNotEmpty
+                              ? '${controller.subTaskList?[index].shortName}'
+                              : '?'
                         ),
-                      )
-                    : Text(
-                        controller.subTaskList?[index].shortName != null &&
-                                controller
-                                    .subTaskList![index].shortName!.isNotEmpty
-                            ? '${controller.subTaskList?[index].shortName}'
-                            : '?',
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(color: Col.inverseSecondary),
                       ),
               ),
             ),
@@ -397,11 +385,8 @@ class SubTaskView extends GetView<SubTaskController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       cardTitleTextView(
-                          text: controller.subTaskList?[index]
-                                          .isSelfAddedTask !=
-                                      null &&
-                                  controller.subTaskList![index]
-                                      .isSelfAddedTask!.isNotEmpty
+                          text: controller.subTaskList?[index].isSelfAddedTask != null &&
+                                  controller.subTaskList![index].isSelfAddedTask!.isNotEmpty
                               ? '${controller.subTaskList?[index].isSelfAddedTask}'
                               : 'Not Found!',
                           color: Col.gray),

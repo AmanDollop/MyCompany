@@ -38,6 +38,7 @@ class GetCompanyDetails {
   bool? attendanceSelfieRequired;
   bool? restrictAttendanceOutOfRange;
   bool? workReportRequiredOnPunchOut;
+  String? currency;
 
   GetCompanyDetails(
       {this.companyId,
@@ -55,6 +56,7 @@ class GetCompanyDetails {
         this.hideMyReportingPerson,
         this.attendanceSelfieRequired,
         this.restrictAttendanceOutOfRange,
+        this.currency,
         this.workReportRequiredOnPunchOut});
 
   GetCompanyDetails.fromJson(Map<String, dynamic> json) {
@@ -74,6 +76,7 @@ class GetCompanyDetails {
     attendanceSelfieRequired = json['attendance_selfie_required'];
     restrictAttendanceOutOfRange = json['restrict_attendance_out_of_range'];
     workReportRequiredOnPunchOut = json['work_report_required_on_punch_out'];
+    currency = json['currency'];
   }
 
   Map<String, dynamic> toJson() {
@@ -92,10 +95,9 @@ class GetCompanyDetails {
     data['hide_my_team'] = hideMyTeam;
     data['hide_my_reporting_person'] = hideMyReportingPerson;
     data['attendance_selfie_required'] = attendanceSelfieRequired;
-    data['restrict_attendance_out_of_range'] =
-        restrictAttendanceOutOfRange;
-    data['work_report_required_on_punch_out'] =
-        workReportRequiredOnPunchOut;
+    data['restrict_attendance_out_of_range'] = restrictAttendanceOutOfRange;
+    data['work_report_required_on_punch_out'] = workReportRequiredOnPunchOut;
+    data['currency'] = currency;
     return data;
   }
 }

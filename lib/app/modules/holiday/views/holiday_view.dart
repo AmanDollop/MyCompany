@@ -73,7 +73,7 @@ class HolidayView extends GetView<HolidayController> {
             }
           }),
         )
-            : CW.commonNetworkImageView(path: 'assets/images/no_internet_dialog.png', isAssetImage: true),
+            : CW.commonNoNetworkView(),
       );
     });
   }
@@ -200,7 +200,7 @@ class HolidayView extends GetView<HolidayController> {
               dateTextView(
                   text: controller.holidayList?[index].holidayStartDate != null &&
                           controller.holidayList![index].holidayStartDate!.isNotEmpty
-                      ? '${CMForDateTime.getDayNameFromDate(dateString: '${controller.holidayList?[index].holidayStartDate}')}   ${controller.holidayList?[index].holidayStartDate}'
+                      ? CMForDateTime.getDayNameFromDate(dateString: '${controller.holidayList?[index].holidayStartDate}')
                       : 'Not found!'),
             ],
           ),
@@ -212,7 +212,7 @@ class HolidayView extends GetView<HolidayController> {
     shrinkWrap: true,
     padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 16.px),
     itemBuilder: (context, index){
-      Color? cardColor = controller.getRandomColorForCards().withOpacity(.2);
+      Color? cardColor = controller.getRandomColorForCards().withOpacity(.4);
       return Container(
         margin: EdgeInsets.only(bottom: 12.px),
         padding: EdgeInsets.zero,

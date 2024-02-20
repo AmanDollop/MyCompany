@@ -312,7 +312,7 @@ class AttendanceTrackerController extends GetxController {
                     children: [
                       commonCardTimeTextView(title: 'Productive Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].productiveWorkingMinutes}')),
                       commonCardTimeVerticalDividerView(),
-                      commonCardTimeTextView(title: 'Total Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].totalShiftMinutes}')),
+                      commonCardTimeTextView(title: 'Shift Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].totalShiftMinutes}')),
                       commonCardTimeVerticalDividerView(),
                       commonCardTimeTextView(title: 'Extra Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].extraWorkingMinutes}')),
                     ],
@@ -447,27 +447,31 @@ class AttendanceTrackerController extends GetxController {
                     ),
                   );
                 }),
-              if (monthlyHistoryList?[index].attendnacePending == true
-                  || monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
-                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false)
                 SizedBox(height: 16.px),
                 Text(
-                monthlyHistoryList?[index].attendnacePending ?? false
-                    ? 'Attendance Pending'
+                monthlyHistoryList?[index].present == true  && monthlyHistoryList?[index].extraDay == true
+                    ? '(Extra Day)'
+                    : monthlyHistoryList?[index].isAbsent == true && monthlyHistoryList?[index].present == false && monthlyHistoryList?[index].attendnacePending == false
+                    && monthlyHistoryList?[index].weekOff == false && monthlyHistoryList?[index].holiday == false
+                    ? '(Absent)':
+                     monthlyHistoryList?[index].attendnacePending ?? false
+                    ? '(Attendance Pending)'
                     : monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
-                    ? 'Week Off'
+                    ? '(Week Off)'
                     : monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false
-                    ? 'Holiday'
+                    ? '(Holiday)'
                     : '' ,
                   style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: const MonthView().calendarGridTextColorView(index: index)),
                 ),
               if (monthlyHistoryList?[index].present == false && monthlyHistoryList?[index].attendnacePending == false
                   || monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
-                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false)
+                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false
+                  || monthlyHistoryList?[index].isPunchOutMissing == true  && monthlyHistoryList?[index].present == true)
               SizedBox(height: 20.px),
               if (monthlyHistoryList?[index].present == false && monthlyHistoryList?[index].attendnacePending == false
                   || monthlyHistoryList?[index].weekOff == true && monthlyHistoryList?[index].present == false
-                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false)
+                  || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false
+                  || monthlyHistoryList?[index].isPunchOutMissing == true  && monthlyHistoryList?[index].present == true)
               CW.commonElevatedButton(onPressed: () => clickOnRequestForAttendanceButton(index:index,date:CMForDateTime.dateFormatForDateMonthYear(date: '$dateTime') ),buttonText: 'Request for Attendance')
             ],
           );
@@ -582,16 +586,17 @@ class AttendanceTrackerController extends GetxController {
   }
 
   Future<void> clickOnCheckInTimeTextFormFiled() async {
+    print('checkInTimeController.text::::: ${checkInTimeController.text}');
     await CDT.iosPicker1(
       context: Get.context!,
       dateController: checkInTimeController,
       mode: CupertinoDatePickerMode.time,
       firstDate: checkInTimeController.text.isNotEmpty
-          ? DateFormat('hh:mm a').parse(checkInTimeController.text)
-          : DateTime.now(),
+          ? DateFormat('hh:mm a').parse(checkInTimeController.text).subtract(const Duration(hours: 12))
+          : DateTime.now().subtract(const Duration(hours: 12)),
       initialDate: checkInTimeController.text.isNotEmpty
-          ? DateFormat('hh:mm a').parse(checkInTimeController.text)
-          : DateTime.now(),
+          ? DateFormat('hh:mm a').parse(checkInTimeController.text).subtract(const Duration(hours: 12))
+          : DateTime.now().subtract(const Duration(hours: 12)),
       lastDate: checkInTimeController.text.isNotEmpty
           ? DateFormat('hh:mm a').parse(checkInTimeController.text).add(const Duration(hours: 12))
           : DateTime.now().add(const Duration(hours: 12)),
@@ -606,11 +611,11 @@ class AttendanceTrackerController extends GetxController {
       dateController: checkOutTimeController,
       mode: CupertinoDatePickerMode.time,
       firstDate: checkOutTimeController.text.isNotEmpty
-          ? DateFormat('hh:mm a').parse(checkOutTimeController.text)
-          : DateTime.now(),
+          ? DateFormat('hh:mm a').parse(checkOutTimeController.text).subtract(const Duration(hours: 12))
+          : DateTime.now().subtract(const Duration(hours: 12)),
       initialDate: checkOutTimeController.text.isNotEmpty
-          ? DateFormat('hh:mm a').parse(checkOutTimeController.text)
-          : DateTime.now(),
+          ? DateFormat('hh:mm a').parse(checkOutTimeController.text).subtract(const Duration(hours: 12))
+          : DateTime.now().subtract(const Duration(hours: 12)),
       lastDate: checkOutTimeController.text.isNotEmpty
           ? DateFormat('hh:mm a').parse(checkOutTimeController.text).add(const Duration(hours: 12))
           : DateTime.now().add(const Duration(hours: 12)),
@@ -634,6 +639,7 @@ class AttendanceTrackerController extends GetxController {
         AK.punchInDate : CMForDateTime.dateTimeFormatForApi(dateTime: checkInDateController.text.trim().toString()),
         AK.punchInTime : checkInTimeController.text.trim().toString(),
         AK.punchOutDate : CMForDateTime.dateTimeFormatForApi(dateTime: checkOutDateController.text.trim().toString()),
+        AK.punchOutTime : checkOutTimeController.text.trim().toString(),
         AK.attendanceReason : descriptionController.text.trim().toString(),
       };
 
@@ -680,27 +686,18 @@ class AttendanceTrackerController extends GetxController {
         children: [
           Text(
             title,
-            style: Theme.of(Get.context!)
-                .textTheme
-                .labelMedium
-                ?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
+            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
           ),
           if (subTitle != null) SizedBox(height: 2.px),
           if (subTitle != null)
             Text(
               subTitle,
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(fontSize: 11.px, fontWeight: FontWeight.w500),
+              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: 11.px, fontWeight: FontWeight.w500),
             ),
           SizedBox(height: 2.px),
           Text(
             timeText,
-            style: Theme.of(Get.context!)
-                .textTheme
-                .labelSmall
-                ?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       );

@@ -43,8 +43,6 @@ class UpcomingCelebrationsController extends GetxController {
       getUpcomingCelebrationModal.value = await CAI.getUpcomingCelebrationApi(bodyParams: bodyParamsForGetUpcomingCelebrationApi);
       if(getUpcomingCelebrationModal.value != null){
         upcomingCelebrationList.addAll(getUpcomingCelebrationModal.value?.celebration ?? []);
-        upcomingCelebrationList.addAll(getUpcomingCelebrationModal.value?.celebration ?? []);
-        upcomingCelebrationList.addAll(getUpcomingCelebrationModal.value?.celebration ?? []);
       }
     }catch(e){
       apiResValue.value=false;

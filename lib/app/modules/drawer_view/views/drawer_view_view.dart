@@ -142,27 +142,21 @@ class DrawerViewView extends GetView<DrawerViewController> {
             color:  Col.inverseSecondary,
             shape: BoxShape.circle),
         child:  Center(
-                child: controller.userPic.value != 'null' && controller.userPic.value.isNotEmpty
-                    ? ClipRRect(
-                  borderRadius: BorderRadius.circular(31.px),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(36.px),
                   child: CW.commonNetworkImageView(
-                      path: controller.userPic.value.isNotEmpty
-                          ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                          : 'assets/images/profile.png',
-                      isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
-                      errorImage: 'assets/images/profile.png',
+                      path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
+                      isAssetImage: false,
                       width: 66.px,
-                      height: 66.px),
-                ): Text(
-                  controller.userShortName.value != 'null' &&
-                          controller.userShortName.value.isNotEmpty
-                      ? controller.userShortName.value
-                      : '?',
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .displaySmall
-                      ?.copyWith(
-                          fontWeight: FontWeight.w700, color: Col.primary)),
+                      height: 66.px,
+                    userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
+                        ? controller.userShortName.value
+                        : '?',
+                    errorImageValue: true,
+                    userShortNameBackgroundColor: Col.inverseSecondary,
+                    userShortNameColor: Col.primary
+                  ),
+                ),
               ),
       );
 

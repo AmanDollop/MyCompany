@@ -14,11 +14,16 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/get_break_details_modal.dart';
+import 'package:task/api/api_model/get_department_employee_modal.dart';
+import 'package:task/api/api_model/get_my_team_member_modal.dart';
+import 'package:task/api/api_model/get_reporting_person_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/upcoming_celebration_modal.dart';
+import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/app_controller/ac.dart';
+import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
 import 'package:task/app/routes/app_pages.dart';
@@ -37,6 +42,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final count = 0.obs;
   final apiResValue = true.obs;
 
+  final userDataFromLocalDataBase =''.obs;
+  UserDetails? userData;
+  JobInfo? jobInfo;
+
   final scrollController = ScrollController().obs;
 
   final breakValue = false.obs;
@@ -54,11 +63,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final bannerIndex = 0.obs;
 
   final companyDetailFromLocalDataBase = ''.obs;
-
   GetCompanyDetails? getCompanyDetails;
   final companyId = ''.obs;
 
   final hideUpcomingCelebration = false.obs;
+  final hideMyReportingPerson= false.obs;
   final hideMyDepartment = false.obs;
   final hideGallery = false.obs;
   final hideBanner = false.obs;
@@ -126,6 +135,18 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   List<Celebration>? upcomingCelebrationList;
   Map<String, dynamic> bodyParamsForGetUpcomingCelebrationApi = {};
 
+  final getDepartmentEmployeeModal = Rxn<GetDepartmentEmployeeModal>();
+  List<GetEmployee>? getDepartmentEmployeeList;
+  Map<String, dynamic> bodyParamsForGetDepartmentEmployeeApi = {};
+
+  final getMyTeamMemberModal = Rxn<GetMyTeamMemberModal>();
+  List<MyTeam>? myTeamMemberList;
+  Map<String, dynamic> bodyParamsForGetMyTeamMemberApi = {};
+
+  final getReportingPersonModal = Rxn<GetReportingPersonModal>();
+  List<MyReportingTeam>? myReportingTeamList;
+  Map<String, dynamic> bodyParamsForGetReportingPersonApi = {};
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -171,14 +192,19 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   willPop() {
-    CD.commonIosExitAppDialog(
-      clickOnCancel: () {
-        Get.back();
-      },
-      clickOnExit: () {
-        exit(0);
-      },
-    );
+    if(scrollController.value.position.pixels == 0.0){
+      CD.commonIosExitAppDialog(
+        clickOnCancel: () {
+          Get.back();
+        },
+        clickOnExit: () {
+          exit(0);
+        },
+      );
+    }else{
+      scrollController.value.position.jumpTo(0.0);
+    }
+    count.value++;
   }
 
   Location location = Location();
@@ -230,24 +256,38 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> setDefaultData() async {
     try {
-      await companyData();
-      await shiftData();
-      await appMenusData();
+      await getUserDataFromLocalDataBase();
+      await getCompanyDataFromLocalDataBase();
+      await getShiftDataFromLocalDataBase();
+      await getAppMenusDataFromLocalDataBase();
       await callingGetTodayAttendanceApi();
       await callingGetBreakDetailsApi();
       await callingGetUpcomingCelebrationApi();
+      await callingGetDepartmentEmployeeApi();
+      await callingGetMyTeamMemberApi();
+      await callingGetReportingPersonApi();
     } catch (e) {
       apiResValue.value = false;
     }
     apiResValue.value = false;
   }
 
-  Future<void> companyData() async {
+  Future<void> getUserDataFromLocalDataBase() async {
+    try {
+      userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+
+      userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+      jobInfo = userData?.jobInfo;
+    } catch (e) {}
+  }
+
+  Future<void> getCompanyDataFromLocalDataBase() async {
     try {
       companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
       getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
       companyId.value = getCompanyDetails?.companyId ?? '';
       hideUpcomingCelebration.value = getCompanyDetails?.hideUpcomingCelebration ?? false;
+      hideMyReportingPerson.value = getCompanyDetails?.hideMyReportingPerson ?? false;
       hideMyDepartment.value = getCompanyDetails?.hideMyDepartment ?? false;
       hideGallery.value = getCompanyDetails?.hideGallery ?? false;
       hideBanner.value = getCompanyDetails?.hideBanner ?? false;
@@ -255,7 +295,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     } catch (e) {}
   }
 
-  Future<void> shiftData() async {
+  Future<void> getShiftDataFromLocalDataBase() async {
     try {
       await BottomSheetForOTP.callingGetShiftDetailApi();
       shiftDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftDetails, tableName: DataBaseConstant.tableNameForShiftDetail);
@@ -267,7 +307,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  Future<void> appMenusData() async {
+  Future<void> getAppMenusDataFromLocalDataBase() async {
     try {
       if (isDatabaseHaveDataForAppMenu.value) {
         await BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
@@ -753,15 +793,18 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   void clickOnMyTeamCards({required int myTeamCardIndex}) {}
 
-  void clickOnYourDepartmentViewAllButton() {}
+  void clickOnYourDepartmentViewAllButton() {
+    Get.toNamed(Routes.DEPARTMENT);
+  }
+
+  void clickOnReportingPersonCard({required int reportingPersonIndex}) {}
 
   void clickOnYourDepartmentCards({required int yourDepartmentCardIndex}) {}
 
   void clickOnGalleryViewAllButton() {}
 
   Future<DateTime> getInternetDateTime() async {
-    final response =
-        await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
+    final response = await http.get(Uri.parse('http://worldtimeapi.org/api/ip'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -992,6 +1035,56 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }catch(e){
       CM.error();
       print('getUpcomingCelebrationApi::::: error::::  $e');
+    }
+  }
+
+  Future<void> callingGetDepartmentEmployeeApi() async {
+    try{
+      bodyParamsForGetDepartmentEmployeeApi={
+        AK.action : ApiEndPointAction.getBranchDeptUser,
+        AK.branchId : jobInfo?.branchId ?? '',
+        AK.departmentId : jobInfo?.departmentId ?? ''
+      };
+      getDepartmentEmployeeModal.value = await CAI.getDepartmentEmployeeApi(bodyParams: bodyParamsForGetDepartmentEmployeeApi);
+      if(getDepartmentEmployeeModal.value != null){
+        getDepartmentEmployeeList = getDepartmentEmployeeModal.value?.getEmployee;
+      }
+    }catch(e){
+      CM.error();
+      print('GetDepartmentEmployeeApi::::: error::::  $e');
+    }
+  }
+
+  Future<void> callingGetMyTeamMemberApi() async {
+    try{
+      bodyParamsForGetMyTeamMemberApi={
+        AK.action : ApiEndPointAction.getTeamMember,
+      };
+      getMyTeamMemberModal.value = await CAI.getMyTeamMemberApi(bodyParams: bodyParamsForGetMyTeamMemberApi);
+      if(getMyTeamMemberModal.value != null){
+        myTeamMemberList = getMyTeamMemberModal.value?.myTeam;
+
+        // myTeamMemberList?.addAll(getMyTeamMemberModal.value?.myTeam??[]);
+        // myTeamMemberList?.addAll(getMyTeamMemberModal.value?.myTeam ?? []);
+      }
+    }catch(e){
+      CM.error();
+      print('GetMyTeamMemberApi::::: error::::  $e');
+    }
+  }
+
+  Future<void> callingGetReportingPersonApi() async {
+    try{
+      bodyParamsForGetReportingPersonApi={
+        AK.action : ApiEndPointAction.getReportingPerson,
+      };
+      getReportingPersonModal.value = await CAI.getReportingPersonApi(bodyParams: bodyParamsForGetReportingPersonApi);
+      if(getReportingPersonModal.value != null){
+        myReportingTeamList = getReportingPersonModal.value?.myReportingTeam;
+      }
+    }catch(e){
+      CM.error();
+      print('GetReportingPersonApi::::: error::::  $e');
     }
   }
 

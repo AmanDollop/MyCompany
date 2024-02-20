@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -28,7 +29,8 @@ class AddBankView extends GetView<AddBankController> {
         ),
         body: Obx(() {
           controller.count.value;
-          return Padding(
+          return AC.isConnect.value
+              ? Padding(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Stack(
               alignment: Alignment.bottomCenter,
@@ -103,7 +105,8 @@ class AddBankView extends GetView<AddBankController> {
                 )
               ],
             ),
-          );
+          )
+              : CW.commonNoNetworkView();
         }),
       ),
     );

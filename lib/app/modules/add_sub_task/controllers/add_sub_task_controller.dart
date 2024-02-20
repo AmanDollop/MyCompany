@@ -21,6 +21,9 @@ import 'package:task/theme/colors/colors.dart';
 
 class AddSubTaskController extends GetxController {
   final count = 0.obs;
+
+  final assignToListViewValue = false.obs;
+
   final pageName = ''.obs;
   final taskCategoryId = ''.obs;
 

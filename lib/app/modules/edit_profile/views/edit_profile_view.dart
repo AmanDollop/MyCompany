@@ -189,27 +189,20 @@ class EditProfileView extends GetView<EditProfileController> {
                     width: 110.px,
                   ),
                 )
-                : controller.userPic.value.isNotEmpty
-                ? ClipRRect(
+                :  ClipRRect(
                   borderRadius: BorderRadius.circular(65.px),
                   child: CW.commonNetworkImageView(
-                    path: controller.userPic.value.isNotEmpty
-                        ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                        : 'assets/images/profile.png',
-                    errorImage: 'assets/images/profile.png',
-                    isAssetImage:
-                        controller.userPic.value.isNotEmpty ? false : true,
+                    path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
+                    isAssetImage: false,
                     height: 130.px,
                     width: 130.px,
+                    errorImageValue: true,
+                    userShortName: controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
+                        ? controller.userShortName.value
+                        : '?',
+                    // userShortNameColor: Col.primary
                   ),
-                )
-                : Text(
-                controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
-                    ? controller.userShortName.value
-                    : '?',
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .headlineLarge),
+                ),
           ),
         ),
       );

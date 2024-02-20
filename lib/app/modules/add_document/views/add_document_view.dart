@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -25,7 +26,8 @@ class AddDocumentView extends GetView<AddDocumentController> {
         body: Obx(() {
           controller.count.value;
           print('imageFile::: ${controller.imageFile.value}');
-          return Padding(
+          return AC.isConnect.value
+              ? Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
             child: Form(
               key: controller.key,
@@ -49,7 +51,8 @@ class AddDocumentView extends GetView<AddDocumentController> {
                 ],
               ),
             ),
-          );
+          )
+              : CW.commonNoNetworkView();
         }),
       ),
     );

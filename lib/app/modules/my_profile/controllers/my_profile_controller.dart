@@ -52,10 +52,6 @@ class MyProfileController extends GetxController {
   final getEmployeeDetailsModal = Rxn<GetEmployeeDetailsModal>();
   List<GetEmployeeDetails>? getEmployeeDetails;
 
-  final companyDetailFromLocalDataBase = ''.obs;
-  GetCompanyDetails? getCompanyDetails;
-  final hideMyReportingPerson= false.obs;
-
 
   final apiResponseValue = true.obs;
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
@@ -104,9 +100,6 @@ class MyProfileController extends GetxController {
     profileMenuDetails.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.profileMenuDetails, tableName: DataBaseConstant.tableNameForProfileMenu);
     getEmployeeDetails = GetEmployeeDetailsModal.fromJson(jsonDecode(profileMenuDetails.value)).getEmployeeDetails;
 
-    companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
-    getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
-
       userFullName.value = personalInfo?.userFullName ?? '';
 
       userShortName.value = personalInfo?.shortName??'';
@@ -128,8 +121,6 @@ class MyProfileController extends GetxController {
       instagramUrl.value = socialInfo?.instagram??'';
 
       facebookUrl.value = socialInfo?.facebook??'';
-
-      hideMyReportingPerson.value = getCompanyDetails?.hideMyReportingPerson ?? false;
 
     await callingGetEmployeeDetailsApi();
 
@@ -303,5 +294,7 @@ class MyProfileController extends GetxController {
     apiResponseValue.value = true;
     onInit();
   }
+
+  void clickOnReportingPersonCard({required int listIndex}) {}
 
 }

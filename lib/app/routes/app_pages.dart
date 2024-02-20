@@ -26,6 +26,8 @@ import '../modules/circular_detail/bindings/circular_detail_binding.dart';
 import '../modules/circular_detail/views/circular_detail_view.dart';
 import '../modules/contact_detail/bindings/contact_detail_binding.dart';
 import '../modules/contact_detail/views/contact_detail_view.dart';
+import '../modules/department/bindings/department_binding.dart';
+import '../modules/department/views/department_view.dart';
 import '../modules/document/bindings/document_binding.dart';
 import '../modules/document/views/document_view.dart';
 import '../modules/drawer_view/bindings/drawer_view_binding.dart';
@@ -310,6 +312,11 @@ class AppPages {
       name: _Paths.UPCOMING_CELEBRATIONS,
       page: () => const UpcomingCelebrationsView(),
       binding: UpcomingCelebrationsBinding(),
+    ),
+    GetPage(
+      name: _Paths.DEPARTMENT,
+      page: () => const DepartmentView(),
+      binding: DepartmentBinding(),
     ),
   ];
 }

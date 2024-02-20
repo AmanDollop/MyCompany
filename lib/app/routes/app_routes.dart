@@ -46,6 +46,7 @@ abstract class Routes {
   static const PENALTY = _Paths.PENALTY;
   static const HOLIDAY = _Paths.HOLIDAY;
   static const UPCOMING_CELEBRATIONS = _Paths.UPCOMING_CELEBRATIONS;
+  static const DEPARTMENT = _Paths.DEPARTMENT;
 }
 
 abstract class _Paths {
@@ -93,4 +94,5 @@ abstract class _Paths {
   static const PENALTY = '/penalty';
   static const HOLIDAY = '/holiday';
   static const UPCOMING_CELEBRATIONS = '/upcoming-celebrations';
+  static const DEPARTMENT = '/department';
 }

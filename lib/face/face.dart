@@ -61,9 +61,10 @@ class CustomFaceDetector extends GetxController {
     } else {
       final pickedFile = await ImagePicker().pickImage(
         source: ImageSource.camera,
-        preferredCameraDevice: CameraDevice.rear,
+        preferredCameraDevice: CameraDevice.front,
         maxHeight: 400,
         maxWidth: 400,
+        requestFullMetadata: true,
         imageQuality: 40,
       );
 

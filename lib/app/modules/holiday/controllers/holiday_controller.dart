@@ -85,6 +85,7 @@ class HolidayController extends GetxController {
 
   Future<void> callingGetHolidayApi() async {
     try{
+      monthNameAndColors.clear();
       apiResValue.value = true;
       bodyParamsForGetHolidayApi = {
         AK.action : ApiEndPointAction.getHolidays,
@@ -97,7 +98,7 @@ class HolidayController extends GetxController {
           monthNameForCalender.add(monthName(monthId: '${DateTime.parse('${element.holidayStartDate}').month}'));
           for (String month in monthNameForCalender) {
             if (!monthNameAndColors.containsKey(month)) {
-              monthNameAndColors[month] = getRandomColorForCards().withOpacity(.2);
+              monthNameAndColors[month] = getRandomColorForCards().withOpacity(.4);
             }
           }
         });

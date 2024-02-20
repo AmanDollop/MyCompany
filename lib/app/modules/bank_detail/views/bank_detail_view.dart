@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -23,7 +24,8 @@ class BankDetailView extends GetView<BankDetailController> {
           onRefresh: () async {
             await controller.onInit();
           },
-          child: ModalProgress(
+          child: AC.isConnect.value
+              ? ModalProgress(
             inAsyncCall: controller.apiResValue.value,
             child: controller.apiResValue.value
                 ? shimmerView()
@@ -169,7 +171,8 @@ class BankDetailView extends GetView<BankDetailController> {
                     )
                     : CW.commonNoDataFoundText()
                 :  CW.commonNoDataFoundText(text: controller.apiResValue.value ? '':'No Data Found!'),
-          ),
+          )
+              : CW.commonNoNetworkView(),
         );
       }),
       floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'

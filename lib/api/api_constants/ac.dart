@@ -209,6 +209,8 @@ class AU {
 
   static const endPointCelebrationControllerApi = "api/CelebrationController.php";
 
+  static const endPointPenaltyControllerApi = "api/PenaltyContoller.php";
+
 
 
 
@@ -318,6 +320,14 @@ class ApiEndPointAction{
   static  const getHolidays = 'getHolidays';
 
   static  const getCelebration = 'getCelebration';
+
+  static  const getBranchDeptUser = 'getBranchDeptUser';
+
+  static  const getTeamMember = 'getTeamMember';
+
+  static  const getReportingPerson = 'getReportingPersion';
+
+  static  const getPenalty = 'getPenalty';
 
 
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -26,7 +27,8 @@ class AddExperienceView extends GetView<AddExperienceController> {
             onBackPressed: () => controller.clickOnBackButton()),
         body: Obx(() {
           controller.count.value;
-          return Stack(
+          return AC.isConnect.value
+              ? Stack(
             alignment: Alignment.bottomCenter,
             children: [
               Form(
@@ -64,7 +66,8 @@ class AddExperienceView extends GetView<AddExperienceController> {
                 ),
               ),
             ],
-          );
+          )
+              : CW.commonNoNetworkView();
         }),
       ),
     );

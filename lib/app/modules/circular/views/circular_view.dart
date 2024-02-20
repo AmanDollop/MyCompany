@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/load_more/lm.dart';
 import 'package:task/common/common_widgets/cw.dart';
@@ -39,7 +40,8 @@ class CircularView extends GetView<CircularController> {
           ),
           body: Obx(() {
             controller.count.value;
-            return ModalProgress(
+            return AC.isConnect.value
+                ? ModalProgress(
               inAsyncCall: controller.apiResValue.value,
               isLoader: false,
               child: controller.apiResValue.value
@@ -101,7 +103,8 @@ class CircularView extends GetView<CircularController> {
                   return CW.commonNoDataFoundText(text: controller.apiResValue.value?'':'No Data Found!');
                 }
               }),
-            );
+            )
+                : CW.commonNoNetworkView();
           }),
         ),
       );

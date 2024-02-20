@@ -44,11 +44,11 @@ class CMForDateTime {
   static String calculateTimeForHourAndMin({required String minute}) {
     String time = '0';
     if(int.parse(minute) ~/ 60 != 0 ){
-      time = '${int.parse(minute) ~/ 60} hr ${int.parse(minute) % 60} min';
+      time = '${formatWithLeadingZeros(int.parse(minute) ~/ 60)} hr ${formatWithLeadingZeros(int.parse(minute) % 60)} min';
     }else if(int.parse(minute) % 60 != 0 ){
-      time = '${int.parse(minute) % 60} min';
+      time = '${formatWithLeadingZeros(int.parse(minute) % 60)} min';
     }else{
-      time = '0 min';
+      time = '00 min';
     }
     return time; ///Todo output => { 0 hr 00 min || 00 min || NIL }
   }

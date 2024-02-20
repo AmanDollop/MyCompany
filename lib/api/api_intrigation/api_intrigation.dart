@@ -14,8 +14,12 @@ import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_break_details_modal.dart';
+import 'package:task/api/api_model/get_department_employee_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
+import 'package:task/api/api_model/get_my_team_member_modal.dart';
+import 'package:task/api/api_model/get_penalty_modal.dart';
+import 'package:task/api/api_model/get_reporting_person_modal.dart';
 import 'package:task/api/api_model/get_task_time_line_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/get_weekly_attendance_data_modal.dart';
@@ -1090,6 +1094,118 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         upcomingCelebrationModal = UpcomingCelebrationModal.fromJson(jsonDecode(response.body));
         return upcomingCelebrationModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetDepartmentEmployeeModal?> getDepartmentEmployeeApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetDepartmentEmployeeModal? getDepartmentEmployeeModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointAuthControllerPhpApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getDepartmentEmployeeModal = GetDepartmentEmployeeModal.fromJson(jsonDecode(response.body));
+        return getDepartmentEmployeeModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetMyTeamMemberModal?> getMyTeamMemberApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetMyTeamMemberModal? getMyTeamMemberModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getMyTeamMemberModal = GetMyTeamMemberModal.fromJson(jsonDecode(response.body));
+        return getMyTeamMemberModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetReportingPersonModal?> getReportingPersonApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetReportingPersonModal? getReportingPersonModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getReportingPersonModal = GetReportingPersonModal.fromJson(jsonDecode(response.body));
+        return getReportingPersonModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetPenaltyModal?> getPenaltyApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetPenaltyModal? getPenaltyModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointPenaltyControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getPenaltyModal = GetPenaltyModal.fromJson(jsonDecode(response.body));
+        return getPenaltyModal;
       } else {
         return null;
       }

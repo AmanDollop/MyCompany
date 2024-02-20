@@ -284,6 +284,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
     var t = '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
     DateTime parsedDate = DateFormat("d-M-yyyy").parse(t);
 
+
     var extra = parsedDate.weekday == 7 ? 0 : parsedDate.weekday;
 
     daysInMonth = daysInMonth + extra;
@@ -314,16 +315,20 @@ class MonthView extends GetView<AttendanceTrackerController> {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
               } else if (controller.monthlyHistoryList?[index - extra].holiday ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
-                CM.showSnackBar(message: 'Holiday');
+                // CM.showSnackBar(message: 'Holiday');
               } else if (controller.monthlyHistoryList?[index - extra].weekOff ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
-                CM.showSnackBar(message: 'Week Off');
+                // CM.showSnackBar(message: 'Week Off');
               } else if (controller.monthlyHistoryList?[index - extra].leave ?? false) {
-                CM.showSnackBar(message: 'Leave');
+                // CM.showSnackBar(message: 'Leave');
               } else if (controller.monthlyHistoryList?[index - extra].attendnacePending ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
               } else {
-                CM.showSnackBar(message: 'This date data not available!');
+                if(DateTime.now().isAfter(parsedDate.add(Duration(days: day-1)))) {
+                  controller.clickOnCalendarGrid(index: index - extra, day: day);
+                }else{
+                  CM.showSnackBar(message: 'This date data not available!');
+                }
               }
             },
             borderRadius: BorderRadius.circular(20.px),
@@ -368,6 +373,8 @@ class MonthView extends GetView<AttendanceTrackerController> {
       return const Color(0xffE0F1FF);
     } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
       return const Color(0xffFFE2D3);
+    }else if (controller.monthlyHistoryList?[index].isAbsent ?? false) {
+      return const Color(0xffFFD9D9);
     } else {
       return Colors.transparent;
     }
@@ -384,6 +391,8 @@ class MonthView extends GetView<AttendanceTrackerController> {
       return const Color(0xff249CFF);
     } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
       return const Color(0xffFF5700);
+    }else if (controller.monthlyHistoryList?[index].isAbsent ?? false) {
+      return const Color(0xffCE1212);
     } else {
       return Colors.transparent;
     }

@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -27,7 +29,8 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         body: Obx(
           () {
             controller.count.value;
-            return Stack(
+            return AC.isConnect.value
+                ? Stack(
               alignment: Alignment.bottomCenter,
               children: [
                 Form(
@@ -76,7 +79,8 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
                 ),
                 addAndUpdateButtonView()
               ],
-            );
+            )
+                : CW.commonNoNetworkView();
           },
         ),
       ),
@@ -187,7 +191,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 assignTextView(text: 'Assign To'),
-                // addAssignButtonView()
+                addAssignButtonView()
               ],
             ),
             SizedBox(height: 5.px),
@@ -210,9 +214,50 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               ),
               // trailing: removeButtonView(),
             ),
+            // AnimatedCrossFade(
+            //     firstChild: assignToListView(),
+            //     secondChild: const SizedBox(),
+            //     crossFadeState: controller.assignToListViewValue.value
+            //     ? CrossFadeState.showFirst
+            //     : CrossFadeState.showSecond,
+            //     duration: const Duration(milliseconds: 500),
+            //   reverseDuration: const Duration(microseconds: 0),
+            // ),
           ],
         ),
       );
+  Widget assignToListView() => ListView.builder(
+    padding: EdgeInsets.only(top: 5.px),
+    physics: const NeverScrollableScrollPhysics(),
+    shrinkWrap: true,
+    itemCount: 10,
+    itemBuilder: (context, index) {
+      return Column(
+        children: [
+          ListTile(
+            horizontalTitleGap: 12.px,
+            contentPadding: EdgeInsets.only(right: 2.px),
+            leading: profileView(),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                assignTextView(
+                    text: controller.userFullName.value != 'null' && controller.userFullName.value.isNotEmpty
+                        ? controller.userFullName.value
+                        : 'Employee Name'),
+                developerTypeTextView(
+                    text: controller.developer.value != 'null' && controller.developer.value.isNotEmpty
+                        ? controller.developer.value
+                        : 'Designation'),
+              ],
+            ),
+            trailing: removeButtonView(),
+          ),
+          if(index != 9)
+            CW.commonDividerView()
+        ],
+      );
+    },);
 
   Widget assignTextView({required String text,Color? color}) => Text(
         text,
@@ -221,7 +266,9 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
 
   Widget addAssignButtonView() => InkWell(
         borderRadius: BorderRadius.circular(6.px),
-        onTap: () {},
+        onTap: () {
+          controller.assignToListViewValue.value = !controller.assignToListViewValue.value;
+        },
         child: Container(
           width: 24.px,
           height: 24.px,
@@ -230,7 +277,9 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
             borderRadius: BorderRadius.circular(6.px),
           ),
           child: Center(
-            child: CW.commonNetworkImageView(
+            child: controller.assignToListViewValue.value
+                ? Icon(CupertinoIcons.minus_rectangle,color: Col.primary,size: 12.px,)
+                : CW.commonNetworkImageView(
               path: 'assets/icons/outline_add_icon.png',
               height: 12.px,
               width: 12.px,
@@ -245,26 +294,23 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         height: 40.px,
         decoration: BoxDecoration(color: Col.inverseSecondary, shape: BoxShape.circle),
         child: Center(
-          child: controller.userPic.value != 'null' && controller.userPic.value.isNotEmpty
-              ? ClipRRect(
+          child: ClipRRect(
                   borderRadius: BorderRadius.circular(31.px),
                   child: CW.commonNetworkImageView(
-                      path: controller.userPic.value.isNotEmpty
-                          ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                          : 'assets/images/profile.png',
-                      isAssetImage: controller.userPic.value.isNotEmpty ? false : true,
-                      errorImage: 'assets/images/profile.png',
+                      path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
+                      isAssetImage: false,
                       width: 40.px,
-                      height: 40.px),
-                )
-              : assignTextView(text: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
-              ? controller.userShortName.value
-              : '?',color: Col.primary),
+                      height: 40.px,
+                    errorImageValue: true,
+                    userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
+                        ? controller.userShortName.value
+                        : '?',
+                  ),
+                ),
         ),
       );
 
-  Widget developerTypeTextView({required String text}) =>
-      Text(text, style: Theme.of(Get.context!).textTheme.labelSmall);
+  Widget developerTypeTextView({required String text}) => Text(text, style: Theme.of(Get.context!).textTheme.labelSmall);
 
   Widget removeButtonView() => InkWell(
         borderRadius: BorderRadius.circular(8.px),
@@ -427,4 +473,5 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               isLoading: controller.addSubTaskButtonValue.value),
         ),
       );
+
 }

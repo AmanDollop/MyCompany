@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -22,7 +23,8 @@ class EducationView extends GetView<EducationController> {
           onBackPressed: () => controller.clickOnBackButton()),
       body: Obx(() {
         controller.count.value;
-        return ModalProgress(
+        return AC.isConnect.value
+            ? ModalProgress(
           inAsyncCall: controller.apiResponseValue.value,
           isLoader: false,
           child: Padding(
@@ -68,7 +70,8 @@ class EducationView extends GetView<EducationController> {
               ],
             ),
           ),
-        );
+        )
+            : CW.commonNoNetworkView();
       }),
       floatingActionButton: controller.accessType.value != '1' &&
               controller.isChangeable.value != '1'

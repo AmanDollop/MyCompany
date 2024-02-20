@@ -20,9 +20,9 @@ import '../common_packages/rating/rating_bar_indicator.dart';
 class CW {
   /// --------------------------Common Button(Elevated,Outline,Text,IconButton) Collection-----------------------
 
-  static apiColorConverterMethod({required String colorString}){
+  static apiColorConverterMethod({required String colorString}) {
     String formattedColor =
-    colorString.startsWith('#') ? colorString.substring(1) : colorString;
+        colorString.startsWith('#') ? colorString.substring(1) : colorString;
 
     // Parse the hexadecimal value and create a Color object
     return Color(int.parse('0xFF$formattedColor'));
@@ -65,7 +65,8 @@ class CW {
               child: SizedBox(
                 height: progressBarHeight ?? 24.px,
                 width: progressBarWidth ?? 24.px,
-                child: CW.commonProgressBarView(color: Col.inverseSecondary,backgroundColor: Col.gray),
+                child: CW.commonProgressBarView(
+                    color: Col.inverseSecondary, backgroundColor: Col.gray),
               ),
             )
           : child ??
@@ -394,7 +395,8 @@ class CW {
                         .textTheme
                         .labelMedium
                         ?.copyWith(color: Col.error),
-                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                labelStyle:
+                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 hintText: hintText,
                 fillColor: fillColor ?? Col.inverseSecondary,
                 filled: filled ? true : false,
@@ -452,7 +454,8 @@ class CW {
             : InputDecoration(
                 counterText: '',
                 labelText: labelText,
-                labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                labelStyle:
+                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
                 errorStyle: errorStyle ??
                     Theme.of(Get.context!)
                         .textTheme
@@ -493,10 +496,10 @@ class CW {
                         : BorderSide.none,
                     borderRadius: BorderRadius.circular(
                         borderRadius ?? C.textFieldRadius)),
-                suffixIcon:  suffixIcon != null
+                suffixIcon: suffixIcon != null
                     ? Padding(
                         padding: suffixPadding ?? EdgeInsets.zero,
-                        child:  suffixIcon,
+                        child: suffixIcon,
                       )
                     : null,
                 prefixIcon: prefixIcon != null
@@ -618,7 +621,8 @@ class CW {
           margin: EdgeInsets.zero,
           color: Col.inverseSecondary,
           shape: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+              borderRadius:
+                  BorderRadius.circular(borderRadius ?? C.textFieldRadius),
               borderSide: BorderSide.none),
           child: TextFormField(
             textInputAction: textInputAction,
@@ -1206,7 +1210,8 @@ class CW {
           double? switchCircleHeight,
           double? switchCircleWidth,
           required Color switchBackgroundColor,
-          Color? switchCircleColor}) => InkWell(
+          Color? switchCircleColor}) =>
+      InkWell(
         onTap: onChange,
         borderRadius:
             BorderRadius.circular(switchBackgroundBorderRadius ?? 7.px),
@@ -1217,7 +1222,8 @@ class CW {
           alignment: value ? Alignment.centerRight : Alignment.centerLeft,
           decoration: BoxDecoration(
             color: switchBackgroundColor,
-            borderRadius: BorderRadius.circular(switchBackgroundBorderRadius ?? 7.px),
+            borderRadius:
+                BorderRadius.circular(switchBackgroundBorderRadius ?? 7.px),
           ),
           child: AnimatedContainer(
             width: switchCircleWidth ?? 10.px,
@@ -1274,7 +1280,8 @@ class CW {
         checkColor: checkColor ?? Col.inverseSecondary,
         splashRadius: 24.px,
         side: BorderSide(color: borderColor ?? Col.darkGray, width: 1.5.px),
-        shape: shape?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.px)),
+        shape: shape ??
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.px)),
       );
 
   static Widget commonDividerView({
@@ -1283,7 +1290,8 @@ class CW {
     double? wight,
     double? leftPadding,
     double? rightPadding,
-  }) => Divider(
+  }) =>
+      Divider(
         color: color ?? Col.gray,
         height: height ?? 10.px,
         thickness: wight ?? .5.px,
@@ -1306,7 +1314,12 @@ class CW {
           Duration? shimmerDuration,
           Color? shimmerBackgroundColor,
           Color? shimmerMovementColor,
-          String? errorImage}) => InkWell(
+          String? errorImage,
+          String? userShortName,
+          Color? userShortNameColor,
+          Color? userShortNameBackgroundColor,
+          bool errorImageValue = false}) =>
+      InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
         child: ClipRRect(
@@ -1336,26 +1349,46 @@ class CW {
                             duration: shimmerDuration,
                             movementColor: shimmerMovementColor);
                       },
-                  errorBuilder: (context, error, stackTrace) => Image.asset(
-                    errorImage ?? 'assets/images/default_image.jpg',
-                    height: height,
-                    width: width,
-                    color: color,
-                    fit: fit,
-                  ),
+                  errorBuilder: (context, error, stackTrace) {
+                    if (errorImageValue) {
+                      return Container(
+                        // width: 44.px,
+                        // height: 44.px,
+                        // margin: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                            color: userShortNameBackgroundColor ?? Col.primary,
+                            // shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8.px)),
+                        child: Center(
+                          child: Text(
+                            userShortName ?? "",
+                            style: Theme.of(Get.context!)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                    color: userShortNameColor ??
+                                        Col.inverseSecondary),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Image.asset(
+                        errorImage ?? 'assets/images/default_image.jpg',
+                        height: height,
+                        width: width,
+                        color: color,
+                        fit: fit,
+                      );
+                    }
+                  },
                 ),
         ),
       );
 
   static Widget commonNoNetworkView() => Center(
-          child:  Text('No Internet Connection!',
-        style: Theme.of(Get.context!)
-            .textTheme
-            .displayLarge
-            ?.copyWith(color: Col.primary),
-        textAlign: TextAlign.center,
-      ),
-        );
+        child: CW.commonNetworkImageView(
+            path: 'assets/images/no_internet_dialog.png', isAssetImage: true),
+      );
 
   static Widget commonShimmerViewForImage(
       {double? width,
@@ -1391,9 +1424,9 @@ class CW {
   }) {
     return ReadMoreText(
       value,
-      style: textStyle ?? Theme.of(Get.context!).textTheme.titleSmall,
-      moreStyle: readMoreTextStyle ?? Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 14.px),
-      lessStyle: readLessTextStyle ?? Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 14.px),
+      style: textStyle ?? Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+      moreStyle: readMoreTextStyle ?? Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.primary,fontSize: 10.px),
+      lessStyle: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.primary,fontSize: 10.px),
       trimLines: maxLine ?? 3,
       trimLength: 7,
       trimCollapsedText: C.textReadMore,
@@ -1560,7 +1593,8 @@ class CW {
           ),
         ),
       ),
-      placeholder: loadingBuilder ?? (context, url) {
+      placeholder: loadingBuilder ??
+          (context, url) {
             return CW.commonShimmerViewForImage(
                 height: height,
                 width: width,
@@ -1579,22 +1613,20 @@ class CW {
     );
   }
 
-
-  static Widget commonCachedNetworkImageView1({
-    required String path,
-    double? height,
-    double? width,
-    double? radius,
-    BoxFit fit = BoxFit.fill,
-    GestureTapCallback? onTap,
-    PlaceholderWidgetBuilder? loadingBuilder,
-    Duration? shimmerDuration,
-    Color? shimmerBackgroundColor,
-    Color? shimmerMovementColor,
-    String? errorImage,
-    Color? imageColor,
-    bool apiResValue = false
-  }) {
+  static Widget commonCachedNetworkImageView1(
+      {required String path,
+      double? height,
+      double? width,
+      double? radius,
+      BoxFit fit = BoxFit.fill,
+      GestureTapCallback? onTap,
+      PlaceholderWidgetBuilder? loadingBuilder,
+      Duration? shimmerDuration,
+      Color? shimmerBackgroundColor,
+      Color? shimmerMovementColor,
+      String? errorImage,
+      Color? imageColor,
+      bool apiResValue = false}) {
     return CachedNetworkImage(
       imageUrl: path,
       imageBuilder: (context, imageProvider) => InkWell(
@@ -1612,19 +1644,20 @@ class CW {
           ),
         ),
       ),
-      placeholder: loadingBuilder ?? (context, url) {
-        final count = 0.obs;
-            if(apiResValue) {
+      placeholder: loadingBuilder ??
+          (context, url) {
+            final count = 0.obs;
+            if (apiResValue) {
               count.value++;
               return commonShimmerViewForImage(
-              height: height,
-              width: width,
-              radius: radius,
-              backgroundColor: shimmerBackgroundColor,
-              duration: shimmerDuration,
-              movementColor: shimmerMovementColor,
-            );
-            }else{
+                height: height,
+                width: width,
+                radius: radius,
+                backgroundColor: shimmerBackgroundColor,
+                duration: shimmerDuration,
+                movementColor: shimmerMovementColor,
+              );
+            } else {
               count.value++;
               return commonShimmerViewForImage(
                 height: height,
@@ -1645,5 +1678,4 @@ class CW {
       ),
     );
   }
-
 }

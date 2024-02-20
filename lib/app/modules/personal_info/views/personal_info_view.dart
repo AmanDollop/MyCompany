@@ -151,20 +151,19 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
             borderRadius: BorderRadius.circular(58.px),
           ),
           child: Center(
-            child: controller.userPic.isNotEmpty?ClipRRect(
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(55.px),
               child: CW.commonNetworkImageView(
                   height: 110.px,
                   width: 110.px,
-                  path: controller.userPic.isNotEmpty
-                      ? '${AU.baseUrlAllApisImage}${controller.userPic.value}'
-                      : 'assets/images/profile.png',
-                  isAssetImage: controller.userPic.isNotEmpty ? false : true),
-            ):Text(
-                controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
+                  path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
+                  isAssetImage: false,
+                errorImageValue: true,
+                userShortName: controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
                     ? controller.userShortName.value
-                    : '?',
-                style: Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(color: Col.inverseSecondary)),
+                    : '?'
+              ),
+            ),
           ),
         ),
       );

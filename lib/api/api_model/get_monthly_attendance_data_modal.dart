@@ -129,6 +129,7 @@ class MonthlyHistory {
   bool? extraDay;
   bool? lateIn;
   bool? earlyOut;
+  bool? isAbsent;
   bool? isPunchOutMissing;
   String? holidayName;
   String? holidayDescription;
@@ -161,6 +162,7 @@ class MonthlyHistory {
         this.extraDay,
         this.lateIn,
         this.earlyOut,
+        this.isAbsent,
         this.isPunchOutMissing,
         this.holidayName,
         this.holidayDescription,
@@ -194,6 +196,7 @@ class MonthlyHistory {
     extraDay = json['extra_day'];
     lateIn = json['late_in'];
     earlyOut = json['early_out'];
+    isAbsent = json['is_absent'];
     isPunchOutMissing = json['is_punch_out_missing'];
     holidayName = json['holiday_name'];
     holidayDescription = json['holiday_description'];
@@ -233,6 +236,7 @@ class MonthlyHistory {
     data['extra_day'] = extraDay;
     data['late_in'] = lateIn;
     data['early_out'] = earlyOut;
+    data['is_absent'] = isAbsent;
     data['is_punch_out_missing'] = isPunchOutMissing;
     data['holiday_name'] = holidayName;
     data['holiday_description'] = holidayDescription;

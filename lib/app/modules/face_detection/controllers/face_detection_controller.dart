@@ -58,20 +58,14 @@ class FaceDetectionController extends GetxController {
 
     if (pickedFile != null) {
       userFaceData.value = await CustomFaceDetector().getFaceFeatures(fileImage: File(pickedFile.path));
-
       image2.bitmap = base64Encode(await pickedFile.readAsBytes());
       image2.imageType = regula.ImageType.PRINTED;
 
-      print('userSavedData::: ${userSavedFaceData.toJson()}');
-      print('userData::: ${userFaceData.toJson()}');
-
-      double similarity = compareFaces(userSavedFaceData.value!.faceFeatures!,
-          userFaceData.value!.faceFeatures!);
+      double similarity = compareFaces(userSavedFaceData.value!.faceFeatures!,userFaceData.value!.faceFeatures!);
       print("similarity:::$similarity");
 
       if (similarity >= 0.5 && similarity <= 1.5) {
-        if (await CustomFaceDetector()
-            .matchFaces(image1: image1, image2: image2)) {
+        if (await CustomFaceDetector().matchFaces(image1: image1, image2: image2)) {
           print('Face Matched');
           CM.showToast('Face Matched');
         } else {

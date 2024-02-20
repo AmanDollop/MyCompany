@@ -29,19 +29,28 @@ class TaskTimeLineController extends GetxController {
 
   Map<String,dynamic> bodyParamsForAddTaskTimeLine = {};
 
+
+
   @override
   Future<void> onInit() async {
     super.onInit();
     subTaskList = Get.arguments[0];
     await callingGetSubTaskApi();
     scrollController.addListener(() async {
-      print('addListener::::::::::::');
       if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
         count.value=0;
         await callingGetSubTaskApi();
         count.value++;
       }
     });
+  }
+
+  Stream<Map<DateTime, List<TimeLine>>> counterStream() async* {
+    while (true) {
+      yield await callingGetSubTaskApi();
+      apiResValue.value = false;
+      await Future.delayed(const Duration(milliseconds: 1000));
+    }
   }
 
   @override
@@ -60,9 +69,8 @@ class TaskTimeLineController extends GetxController {
     Get.back();
   }
 
-  Future<void> callingGetSubTaskApi() async {
+  Future<Map<DateTime, List<TimeLine>>> callingGetSubTaskApi() async {
     try {
-      count.value=0;
       bodyParamsForGetTaskTimeLine = {
           AK.action: ApiEndPointAction.getTimeline,
           AK.taskId: subTaskList?.taskId ?? '',
@@ -70,14 +78,14 @@ class TaskTimeLineController extends GetxController {
       getTaskTimeLineModal.value = await CAI.getTaskTimeLineApi(bodyParams: bodyParamsForGetTaskTimeLine);
       if (getTaskTimeLineModal.value != null) {
         timeLineList = groupMessagesByDay(messagesDetailData: getTaskTimeLineModal.value?.timeLine ?? []);
-        count.value++;
       }
     } catch (e) {
       print('get task time line api error::::  $e');
       CM.error();
       apiResValue.value = false;
     }
-    apiResValue.value = false;
+    // apiResValue.value = false;
+    return timeLineList;
   }
 
   Map<DateTime, List<TimeLine>> groupMessagesByDay({required List<TimeLine> messagesDetailData}) {
