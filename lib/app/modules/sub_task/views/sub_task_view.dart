@@ -268,7 +268,7 @@ class SubTaskView extends GetView<SubTaskController> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6.px)),
             child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 taskNameContainerView(index: index),
                 profileView(index: index),
@@ -317,15 +317,9 @@ class SubTaskView extends GetView<SubTaskController> {
         height: 44.px,
         margin: EdgeInsets.zero,
         decoration: BoxDecoration(
-          color: CW
-              .apiColorConverterMethod(
-                  colorString:
-                      '${controller.subTaskList?[index].taskStatusColor}')
-              .withOpacity(.1),
+          color: CW.apiColorConverterMethod(colorString: '${controller.subTaskList?[index].taskStatusColor}').withOpacity(.1),
           border: Border.all(
-              color: CW.apiColorConverterMethod(
-                  colorString:
-                      '${controller.subTaskList?[index].taskStatusColor}'),
+              color: CW.apiColorConverterMethod(colorString: '${controller.subTaskList?[index].taskStatusColor}'),
               width: 1.px),
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(6.px),

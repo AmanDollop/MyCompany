@@ -122,23 +122,18 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
                             shape: BoxShape.circle,
                           ),
                           child: Center(
-                            child: controller.upcomingCelebrationList[index].userProfilePic != null &&
-                                controller.upcomingCelebrationList[index].userProfilePic!.isNotEmpty
-                                ? ClipRRect(
-                              borderRadius: BorderRadius.circular(25.px),
+                            child:  ClipRRect(
+                              borderRadius: BorderRadius.circular(27.px),
                               child: CW.commonNetworkImageView(
                                 path: '${AU.baseUrlAllApisImage}${controller.upcomingCelebrationList[index].userProfilePic}',
                                 isAssetImage: false,
-                                errorImage: 'assets/images/profile.png',
+                                errorImageValue: true,
+                                userShortName: controller.upcomingCelebrationList[index].shortName != null && controller.upcomingCelebrationList[index].shortName!.isNotEmpty
+                                    ? '${controller.upcomingCelebrationList[index].shortName}'
+                                    : '?',
                                 width: 50.px,
                                 height: 50.px,
                               ),
-                            )
-                                : Text(
-                              controller.upcomingCelebrationList[index].shortName != null && controller.upcomingCelebrationList[index].shortName!.isNotEmpty
-                                  ? '${controller.upcomingCelebrationList[index].shortName}'
-                                  : '?',
-                              style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                             ),
                           ),
                         ),

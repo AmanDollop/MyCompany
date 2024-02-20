@@ -1,9 +1,32 @@
 class GetWeeklyAttendanceDataModal {
-  List<WeeklyHistory>? weeklyHistory;
+  String? message;
+  GetWeeklyAttendance? getWeeklyAttendance;
 
-  GetWeeklyAttendanceDataModal({this.weeklyHistory});
+  GetWeeklyAttendanceDataModal({this.message, this.getWeeklyAttendance});
 
   GetWeeklyAttendanceDataModal.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    getWeeklyAttendance = json['getWeeklyAttendance'] != null
+        ? GetWeeklyAttendance.fromJson(json['getWeeklyAttendance'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['message'] = message;
+    if (getWeeklyAttendance != null) {
+      data['getWeeklyAttendance'] = getWeeklyAttendance!.toJson();
+    }
+    return data;
+  }
+}
+
+class GetWeeklyAttendance {
+  List<WeeklyHistory>? weeklyHistory;
+
+  GetWeeklyAttendance({this.weeklyHistory});
+
+  GetWeeklyAttendance.fromJson(Map<String, dynamic> json) {
     if (json['weekly_history'] != null) {
       weeklyHistory = <WeeklyHistory>[];
       json['weekly_history'].forEach((v) {
@@ -27,21 +50,20 @@ class WeeklyHistory {
   String? startDate;
   String? endDate;
   String? totalWeekMinutes;
-  String? totalWeekWorkingMinutes;
   String? totalWeekRemainingMinutes;
   String? totalWeekExtraMinutes;
+  String? totalProductiveWorkingMinutes;
   String? totalSpendMinutes;
   List<History>? history;
 
   WeeklyHistory(
-      {
-        this.week,
+      {this.week,
         this.startDate,
         this.endDate,
         this.totalWeekMinutes,
-        this.totalWeekWorkingMinutes,
         this.totalWeekRemainingMinutes,
         this.totalWeekExtraMinutes,
+        this.totalProductiveWorkingMinutes,
         this.totalSpendMinutes,
         this.history});
 
@@ -50,9 +72,9 @@ class WeeklyHistory {
     startDate = json['start_date'];
     endDate = json['end_date'];
     totalWeekMinutes = json['total_week_minutes'];
-    totalWeekWorkingMinutes = json['total_week_working_minutes'];
     totalWeekRemainingMinutes = json['total_week_remaining_minutes'];
     totalWeekExtraMinutes = json['total_week_extra_minutes'];
+    totalProductiveWorkingMinutes = json['total_productive_working_minutes'];
     totalSpendMinutes = json['total_spend_minutes'];
     if (json['history'] != null) {
       history = <History>[];
@@ -68,9 +90,10 @@ class WeeklyHistory {
     data['start_date'] = startDate;
     data['end_date'] = endDate;
     data['total_week_minutes'] = totalWeekMinutes;
-    data['total_week_working_minutes'] = totalWeekWorkingMinutes;
     data['total_week_remaining_minutes'] = totalWeekRemainingMinutes;
     data['total_week_extra_minutes'] = totalWeekExtraMinutes;
+    data['total_productive_working_minutes'] =
+        totalProductiveWorkingMinutes;
     data['total_spend_minutes'] = totalSpendMinutes;
     if (history != null) {
       data['history'] = history!.map((v) => v.toJson()).toList();

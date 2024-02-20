@@ -727,11 +727,13 @@ class AttendanceTrackerController extends GetxController {
       };
       getWeeklyAttendanceDataModal.value = await CAI.getWeeklyAttendanceDataApi(bodyParams: bodyParamsForWeeklyAttendanceApi);
       if (getWeeklyAttendanceDataModal.value != null) {
-        weeklyHistoryList = getWeeklyAttendanceDataModal.value?.weeklyHistory;
-        for ( i = 0; i < weeklyHistoryList!.length-1; i++) {
-          if(CMForDateTime.dateFormatForDateMonthYear(date: '${weeklyHistoryList?[i].startDate}') == CMForDateTime.dateFormatForDateMonthYear(date: '${currentWeakStartDate.value}')){
-            pageController = PageController(initialPage: i);
-            count.value++;
+        weeklyHistoryList = getWeeklyAttendanceDataModal.value?.getWeeklyAttendance?.weeklyHistory;
+        if(weeklyHistoryList != null && weeklyHistoryList!.isNotEmpty){
+          for ( i = 0; i < weeklyHistoryList!.length-1; i++) {
+            if(CMForDateTime.dateFormatForDateMonthYear(date: '${weeklyHistoryList?[i].startDate}') == CMForDateTime.dateFormatForDateMonthYear(date: '${currentWeakStartDate.value}')){
+              pageController = PageController(initialPage: i);
+              count.value++;
+            }
           }
         }
         apiResValue.value = false;

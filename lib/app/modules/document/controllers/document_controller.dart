@@ -331,8 +331,9 @@ class DocumentController extends GetxController {
     }
   }
 
-  void clickOnAddViewButton() {
-    Get.toNamed(Routes.ADD_DOCUMENT);
+  Future<void> clickOnAddViewButton() async {
+    await Get.toNamed(Routes.ADD_DOCUMENT);
+    onInit();
   }
 
 }
