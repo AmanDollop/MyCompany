@@ -25,10 +25,12 @@ class WeekView extends GetView<AttendanceTrackerController> {
                   Row(
                     children: [
                       commonDropDownView(
+                        onTap: () => controller.clickOnMonthFromWeekView(),
                         dropDownView: monthDropDownView(),
                       ),
                       SizedBox(width: 10.px),
                       commonDropDownView(
+                        onTap: () => controller.clickOnYearFromWeekView(),
                         dropDownView: yearDropDownView(),
                       ),
                     ],
@@ -70,28 +72,38 @@ class WeekView extends GetView<AttendanceTrackerController> {
     });
   }
 
-  Widget commonDropDownView({required Widget dropDownView}) => Expanded(
+  Widget commonDropDownView({required Widget dropDownView,required GestureTapCallback onTap}) => Expanded(
         child: Container(
           height: 40.px,
           decoration: BoxDecoration(
               color: Col.gray.withOpacity(.3),
               borderRadius: BorderRadius.circular(6.px)),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.px),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: dropDownView,
-                ),
-                Icon(Icons.arrow_drop_down, color: Col.darkGray)
-              ],
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.px),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: dropDownView,
+                  ),
+                  Icon(Icons.arrow_drop_down, color: Col.darkGray)
+                ],
+              ),
             ),
           ),
         ),
       );
 
-  Widget monthDropDownView() => DropdownButton<String>(
+  Widget monthDropDownView() => Text(
+    controller.monthNameForWeekViewValue.value,
+    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+      fontWeight: FontWeight.w600,
+    ),
+  );
+
+  /*Widget monthDropDownView() => DropdownButton<String>(
         value: controller.monthNameForWeekViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
@@ -115,9 +127,16 @@ class WeekView extends GetView<AttendanceTrackerController> {
             ),
           );
         }).toList(),
-      );
+      );*/
 
-  Widget yearDropDownView() => DropdownButton<String>(
+  Widget yearDropDownView() => Text(
+    controller.yearForWeekViewValue.value,
+    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+      fontWeight: FontWeight.w600,
+    ),
+  );
+
+  /*Widget yearDropDownView() => DropdownButton<String>(
         value: controller.yearForWeekViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
@@ -139,7 +158,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
             ),
           );
         }).toList(),
-      );
+      );*/
 
   Widget buildHeader({required int index}) {
     return Row(

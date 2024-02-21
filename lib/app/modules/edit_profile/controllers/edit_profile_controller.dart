@@ -198,95 +198,103 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> clickOnBloodGroupTextField() async {
-    await CBS.commonDraggableBottomSheet(
-        initialChildSize: 0.38,
-        maxChildSize: 0.50,
-        list: Wrap(
-          children: List.generate(
-            bloodGroupList.length,
-            (index) => Obx(() {
-              count.value;
-              final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
-              return SizedBox(
-                width: cellWidth,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: index % 2 == 0 ? C.margin : C.margin / 2,
-                      right: index % 2 == 0 ? C.margin / 2 : C.margin,
-                      top: C.margin / 2,
-                      bottom: 0.px),
-                  child: Container(
-                    height: 46.px,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.px),
-                      color: bloodGroupValue.value == bloodGroupList[index]
-                          ? Col.primary.withOpacity(.08)
-                          : Colors.transparent,
-                      border: Border.all(
+    await CBS.commonBottomSheet(
+        // initialChildSize: 0.38,
+        // maxChildSize: 0.50,
+        isDismissible: false,
+        horizontalPadding: 0,
+        children: [
+          Center(
+            child: Text(
+              'Blood Group',
+              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          SizedBox(height: 14.px),
+          Wrap(
+            children: List.generate(
+              bloodGroupList.length,
+                  (index) => Obx(() {
+                count.value;
+                final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
+                return SizedBox(
+                  width: cellWidth,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: index % 2 == 0 ? C.margin : C.margin / 2,
+                        right: index % 2 == 0 ? C.margin / 2 : C.margin,
+                        top: C.margin / 2,
+                        bottom: 0.px),
+                    child: Container(
+                      height: 46.px,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.px),
                         color: bloodGroupValue.value == bloodGroupList[index]
-                            ? Col.primary
-                            : Col.darkGray,
-                        width: bloodGroupValue.value == bloodGroupList[index]
-                            ? 1.5.px
-                            : 1.px,
+                            ? Col.primary.withOpacity(.08)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: bloodGroupValue.value == bloodGroupList[index]
+                              ? Col.primary
+                              : Col.darkGray,
+                          width: bloodGroupValue.value == bloodGroupList[index]
+                              ? 1.5.px
+                              : 1.px,
+                        ),
                       ),
-                    ),
-                    child: InkWell(
-                      onTap: () => clickOnBloodGroup(index: index),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 6.px, horizontal: 10.px),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              bloodGroupList[index],
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w500),
-                            ),
-                            Container(
-                              height:
-                                  bloodGroupValue.value == bloodGroupList[index]
-                                      ? 18.px
-                                      : 16.px,
-                              width:
-                                  bloodGroupValue.value == bloodGroupList[index]
-                                      ? 18.px
-                                      : 16.px,
-                              padding: EdgeInsets.all(2.px),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: bloodGroupValue.value ==
-                                          bloodGroupList[index]
-                                      ? Col.primary
-                                      : Col.text,
-                                  width: 1.5.px,
-                                ),
+                      child: InkWell(
+                        onTap: () => clickOnBloodGroup(index: index),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 6.px, horizontal: 10.px),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                bloodGroupList[index],
+                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
                               ),
-                              child: Container(
+                              /*Container(
+                                height:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                width:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                padding: EdgeInsets.all(2.px),
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
                                     color: bloodGroupValue.value ==
-                                            bloodGroupList[index]
+                                        bloodGroupList[index]
                                         ? Col.primary
-                                        : Colors.transparent),
-                              ),
-                            ),
-                          ],
+                                        : Col.text,
+                                    width: 1.5.px,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: bloodGroupValue.value ==
+                                          bloodGroupList[index]
+                                          ? Col.primary
+                                          : Colors.transparent),
+                                ),
+                              ),*/
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
+            ),
           ),
-        ),
-        children: []).whenComplete(
+          SizedBox(height: 30.px)
+        ]).whenComplete(
       () => CM.unFocusKeyBoard(),
     );
   }

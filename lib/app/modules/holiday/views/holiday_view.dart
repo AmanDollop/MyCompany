@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -26,6 +24,7 @@ class HolidayView extends GetView<HolidayController> {
               SizedBox(
                 width: 120.px,
                 child: commonDropDownView(
+                  onTap: () => controller.clickOnYear(),
                   dropDownView: yearDropDownView(),
                 ),
               ),
@@ -78,27 +77,35 @@ class HolidayView extends GetView<HolidayController> {
     });
   }
 
-  Widget commonDropDownView({required Widget dropDownView}) => Container(
+  Widget commonDropDownView({required Widget dropDownView,required GestureTapCallback onTap}) => Container(
     height: 40.px,
     margin: EdgeInsets.only(right: 12.px),
-    decoration: BoxDecoration(
-        color: Col.inverseSecondary,
-        borderRadius: BorderRadius.circular(6.px)),
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.px),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: dropDownView,
-          ),
-          Icon(Icons.arrow_drop_down, color: Col.darkGray)
-        ],
+    decoration: BoxDecoration(color: Col.inverseSecondary, borderRadius: BorderRadius.circular(6.px)),
+    child: InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.px),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: dropDownView,
+            ),
+            Icon(Icons.arrow_drop_down, color: Col.darkGray)
+          ],
+        ),
       ),
     ),
   );
 
-  Widget yearDropDownView() => DropdownButton<String>(
+  Widget yearDropDownView() => Text(
+    controller.yearForMonthViewValue.value,
+    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+      fontWeight: FontWeight.w600,
+    ),
+  );
+
+  /*Widget yearDropDownView() => DropdownButton<String>(
         value: controller.yearForMonthViewValue.value,
         icon: const Icon(Icons.arrow_drop_down, color: Colors.transparent),
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
@@ -110,8 +117,7 @@ class HolidayView extends GetView<HolidayController> {
         ),
         onChanged: (String? value) =>
             controller.yearDropDownOnChanged(value: value ?? ''),
-        items: controller.yearForMonthViewList
-            .map<DropdownMenuItem<String>>((String value) {
+        items: controller.yearForMonthViewList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
@@ -122,7 +128,7 @@ class HolidayView extends GetView<HolidayController> {
             ),
           );
         }).toList(),
-      );
+      );*/
 
   Widget cardView({required int index}) => Container(
         margin: EdgeInsets.only(bottom: 12.px),
@@ -148,13 +154,14 @@ class HolidayView extends GetView<HolidayController> {
 
   Widget dateAndMonthNameContainerView({required int index}) {
     Color? cardColor = controller.monthNameAndColors[controller.monthNameForCalender[index]];
+    controller.isAfterDate.value = DateTime.now().isAfter(DateTime.parse('${controller.holidayList?[index].holidayStartDate}'));
     return Expanded(
       flex: 2,
       child: Container(
         margin: EdgeInsets.zero,
         padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 16.px),
         decoration: BoxDecoration(
-          color: cardColor,
+          color: controller.isAfterDate.value ? cardColor?.withOpacity(.2) : cardColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(6.px),
             bottomLeft: Radius.circular(6.px),
@@ -165,7 +172,7 @@ class HolidayView extends GetView<HolidayController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             monthNameTextView(text: controller.holidayList?[index].holidayStartDate != null && controller.holidayList![index].holidayStartDate!.isNotEmpty
-                ? '${DateTime.parse('${controller.holidayList?[index].holidayStartDate}').day}'
+                ? CMForDateTime.formatWithLeadingZeros(DateTime.parse('${controller.holidayList?[index].holidayStartDate}').day)
                 : '?'),
             dateTextView(text: '${controller.monthNameForCalender[index]}'),
           ],
@@ -176,12 +183,12 @@ class HolidayView extends GetView<HolidayController> {
 
   Widget monthNameTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: controller.isAfterDate.value?Col.gray:Col.text ),
       );
 
   Widget dateTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 10.px),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 10.px,color: controller.isAfterDate.value?Col.gray:Col.text),
       );
 
   Widget holidayDetailView({required int index}) => Expanded(
@@ -192,10 +199,9 @@ class HolidayView extends GetView<HolidayController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               monthNameTextView(
-                  text: controller.holidayList?[index].holidayName != null &&
-                          controller.holidayList![index].holidayName!.isNotEmpty
+                  text: controller.holidayList?[index].holidayName != null && controller.holidayList![index].holidayName!.isNotEmpty
                       ? '${controller.holidayList?[index].holidayName}'
-                      : 'Not found!'),
+                      : 'Not found!',),
               // SizedBox(height: 5.px),
               dateTextView(
                   text: controller.holidayList?[index].holidayStartDate != null &&

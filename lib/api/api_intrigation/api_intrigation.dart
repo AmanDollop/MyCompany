@@ -61,6 +61,7 @@ class CAI extends GetxController{
     authorization = {
       AK.authorization: token.value,
     };
+
     if(stringToken){
       return token.value;
     }else{

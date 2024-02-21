@@ -3,11 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/holiday_modal.dart';
 import 'package:task/common/calendar_method/calendar_method.dart';
+import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/theme/colors/colors.dart';
+import 'package:task/theme/constants/constants.dart';
 
 class HolidayController extends GetxController {
 
@@ -35,6 +39,8 @@ class HolidayController extends GetxController {
 
   List monthNameForCalender = [];
   Map<String, Color> monthNameAndColors = {};
+
+  final isAfterDate = false.obs;
 
   @override
   Future<void> onInit() async {
@@ -138,6 +144,113 @@ class HolidayController extends GetxController {
     }else{
       return '?';
     }
+  }
+
+  Future<void> clickOnYear() async {
+    await CBS.commonBottomSheet(
+      // initialChildSize: 0.38,
+      // maxChildSize: 0.50,
+        isDismissible: false,
+        horizontalPadding: 0,
+        children: [
+          Center(
+            child: Text(
+              'Select Year',
+              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          SizedBox(height: 14.px),
+          Wrap(
+            children: List.generate(
+              yearForMonthViewList.length,
+                  (index) => Obx(() {
+                count.value;
+                final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
+                return SizedBox(
+                  width: cellWidth,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: index % 2 == 0 ? C.margin : C.margin / 2,
+                        right: index % 2 == 0 ? C.margin / 2 : C.margin,
+                        top: C.margin / 2,
+                        bottom: 0.px),
+                    child: Container(
+                      height: 46.px,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.px),
+                        color: yearForMonthViewValue.value == yearForMonthViewList[index]
+                            ? Col.primary.withOpacity(.08)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: yearForMonthViewValue.value == yearForMonthViewList[index]
+                              ? Col.primary
+                              : Col.darkGray,
+                          width: yearForMonthViewValue.value == yearForMonthViewList[index]
+                              ? 1.5.px
+                              : 1.px,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () => clickOnYearValue(index: index),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 6.px, horizontal: 10.px),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                yearForMonthViewList[index],
+                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                              ),
+                              /*Container(
+                                height:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                width:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                padding: EdgeInsets.all(2.px),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: bloodGroupValue.value ==
+                                        bloodGroupList[index]
+                                        ? Col.primary
+                                        : Col.text,
+                                    width: 1.5.px,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: bloodGroupValue.value ==
+                                          bloodGroupList[index]
+                                          ? Col.primary
+                                          : Colors.transparent),
+                                ),
+                              ),*/
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          SizedBox(height: 30.px)
+        ]);
+  }
+
+  Future<void> clickOnYearValue({required int index}) async {
+    yearForMonthViewValue.value = yearForMonthViewList[index];
+    await callingGetHolidayApi();
+    count.value++;
+    Get.back();
   }
 
 }

@@ -15,6 +15,7 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:task/theme/constants/constants.dart';
 import 'package:task/validator/v.dart';
 import '../../../../common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
@@ -160,12 +161,13 @@ class AttendanceTrackerController extends GetxController {
       menuName.value = Get.arguments[0];
       currentWeakStartDate.value = CommonCalendarMethods.getPreviousMonday(DateTime.now());
 
-      monthNameForMonthViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
+      monthNameForMonthViewValue.value = monthNameForMonthViewList[currentMonth.value.month-1];
       monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
       await callingGetMonthlyAttendanceDataApi();
     } catch (e) {
       apiResValue.value = false;
     }
+    apiResValue.value = false;
   }
 
   @override
@@ -201,8 +203,11 @@ class AttendanceTrackerController extends GetxController {
   Future<void> clickOnWeekTab() async {
     tabBarValue.value = 'Week';
     monthNameForWeekViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
-    monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+    monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+    currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
+    monthTotalDaysListDataAdd();
     await callingGetWeeklyAttendanceDataApi();
+    apiResValue.value = false;
   }
 
   ///Todo Month View working
@@ -214,7 +219,224 @@ class AttendanceTrackerController extends GetxController {
     }
   }
 
-  Future<void> monthDropDownOnChangedForMonth({required String value}) async {
+  Future<void> clickOnMonthNameFromMonthView() async {
+    await CBS.commonBottomSheet(
+      // initialChildSize: 0.38,
+      // maxChildSize: 0.50,
+        isDismissible: false,
+        horizontalPadding: 0,
+        isFullScreen: true,
+        children: [
+          Center(
+            child: Text(
+              'Select Month',
+              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          SizedBox(height: 14.px),
+          Wrap(
+            children: List.generate(
+              monthNameForMonthViewList.length,
+                  (index) => Obx(() {
+                count.value;
+                final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
+                return SizedBox(
+                  width: cellWidth,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: index % 2 == 0 ? C.margin : C.margin / 2,
+                        right: index % 2 == 0 ? C.margin / 2 : C.margin,
+                        top: C.margin / 2,
+                        bottom: 0.px),
+                    child: Container(
+                      height: 46.px,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.px),
+                        color: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
+                            ? Col.primary.withOpacity(.08)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
+                              ? Col.primary
+                              : Col.darkGray,
+                          width: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
+                              ? 1.5.px
+                              : 1.px,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          monthNameForMonthViewValue.value = monthNameForMonthViewList[index];
+                          monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+                          currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
+                          monthTotalDaysListDataAdd();
+                          await callingGetMonthlyAttendanceDataApi();
+                          Get.back();
+                          },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 6.px, horizontal: 10.px),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                monthNameForMonthViewList[index],
+                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                              ),
+                              /*Container(
+                                height:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                width:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                padding: EdgeInsets.all(2.px),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: bloodGroupValue.value ==
+                                        bloodGroupList[index]
+                                        ? Col.primary
+                                        : Col.text,
+                                    width: 1.5.px,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: bloodGroupValue.value ==
+                                          bloodGroupList[index]
+                                          ? Col.primary
+                                          : Colors.transparent),
+                                ),
+                              ),*/
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          SizedBox(height: 40.px)
+        ]);
+
+  }
+
+  Future<void> clickOnYearFromMonthView() async {
+    await CBS.commonBottomSheet(
+      // initialChildSize: 0.38,
+      // maxChildSize: 0.50,
+        isDismissible: false,
+        horizontalPadding: 0,
+        isFullScreen: true,
+        children: [
+          Center(
+            child: Text(
+              'Select Year',
+              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          SizedBox(height: 14.px),
+          Wrap(
+            children: List.generate(
+              yearForMonthViewList.length,
+                  (index) => Obx(() {
+                count.value;
+                final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
+                return SizedBox(
+                  width: cellWidth,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: index % 2 == 0 ? C.margin : C.margin / 2,
+                        right: index % 2 == 0 ? C.margin / 2 : C.margin,
+                        top: C.margin / 2,
+                        bottom: 0.px),
+                    child: Container(
+                      height: 46.px,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.px),
+                        color: yearForMonthViewValue.value == yearForMonthViewList[index]
+                            ? Col.primary.withOpacity(.08)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: yearForMonthViewValue.value == yearForMonthViewList[index]
+                              ? Col.primary
+                              : Col.darkGray,
+                          width: yearForMonthViewValue.value == yearForMonthViewList[index]
+                              ? 1.5.px
+                              : 1.px,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          yearForMonthViewValue.value = yearForMonthViewList[index];
+                          monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+                          currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
+                          monthTotalDaysListDataAdd();
+                          await callingGetMonthlyAttendanceDataApi();
+                          Get.back();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 6.px, horizontal: 10.px),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                yearForMonthViewList[index],
+                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                              ),
+                              /*Container(
+                                height:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                width:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                padding: EdgeInsets.all(2.px),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: bloodGroupValue.value ==
+                                        bloodGroupList[index]
+                                        ? Col.primary
+                                        : Col.text,
+                                    width: 1.5.px,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: bloodGroupValue.value ==
+                                          bloodGroupList[index]
+                                          ? Col.primary
+                                          : Colors.transparent),
+                                ),
+                              ),*/
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          SizedBox(height: 40.px)
+        ]);
+  }
+
+  /*Future<void> monthDropDownOnChangedForMonth({required String value}) async {
     monthNameForMonthViewValue.value = value;
     monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
     currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
@@ -228,7 +450,7 @@ class AttendanceTrackerController extends GetxController {
     currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
     monthTotalDaysListDataAdd();
     await callingGetMonthlyAttendanceDataApi();
-  }
+  }*/
 
   Future<void> monthViewOnRefresh() async {
     apiResValue.value = true;
@@ -258,6 +480,7 @@ class AttendanceTrackerController extends GetxController {
       print('e:::: $e');
       CM.error();
     }
+    apiResValue.value = false;
   }
 
   void setDataInCard() {
@@ -659,8 +882,7 @@ class AttendanceTrackerController extends GetxController {
     }
   }
 
-  Widget commonCardTimeTextView({required String title, required String subTitle}) =>
-      Column(
+  Widget commonCardTimeTextView({required String title, required String subTitle}) => Column(
         children: [
           Text(
             title,
@@ -704,7 +926,7 @@ class AttendanceTrackerController extends GetxController {
 
   ///Todo Week View working
 
-  Future<void> monthDropDownOnChangedForWeek({required String value}) async {
+  /*Future<void> monthDropDownOnChangedForWeek({required String value}) async {
     monthNameForWeekViewValue.value = value;
     monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
     await callingGetWeeklyAttendanceDataApi();
@@ -714,7 +936,7 @@ class AttendanceTrackerController extends GetxController {
     yearForWeekViewValue.value = value;
     monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
     await callingGetWeeklyAttendanceDataApi();
-  }
+  }*/
 
   Future<void> callingGetWeeklyAttendanceDataApi() async {
     apiResValue.value = true;
@@ -736,14 +958,225 @@ class AttendanceTrackerController extends GetxController {
             }
           }
         }
-        apiResValue.value = false;
       }
     } catch (e) {
       apiResValue.value = false;
       print('e:::: $e');
       CM.error();
     }
+    apiResValue.value = false;
   }
 
+  Future<void> clickOnMonthFromWeekView() async {
+    await CBS.commonBottomSheet(
+      // initialChildSize: 0.38,
+      // maxChildSize: 0.50,
+        isDismissible: false,
+        horizontalPadding: 0,
+        isFullScreen: true,
+        children: [
+          Center(
+            child: Text(
+              'Select Month',
+              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          SizedBox(height: 14.px),
+          Wrap(
+            children: List.generate(
+              monthNameForMonthViewList.length,
+                  (index) => Obx(() {
+                count.value;
+                final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
+                return SizedBox(
+                  width: cellWidth,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: index % 2 == 0 ? C.margin : C.margin / 2,
+                        right: index % 2 == 0 ? C.margin / 2 : C.margin,
+                        top: C.margin / 2,
+                        bottom: 0.px),
+                    child: Container(
+                      height: 46.px,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.px),
+                        color: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
+                            ? Col.primary.withOpacity(.08)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
+                              ? Col.primary
+                              : Col.darkGray,
+                          width: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
+                              ? 1.5.px
+                              : 1.px,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          monthNameForWeekViewValue.value = monthNameForMonthViewList[index];
+                          monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+                          await callingGetWeeklyAttendanceDataApi();
+                          Get.back();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 6.px, horizontal: 10.px),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                monthNameForMonthViewList[index],
+                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                              ),
+                              /*Container(
+                                height:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                width:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                padding: EdgeInsets.all(2.px),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: bloodGroupValue.value ==
+                                        bloodGroupList[index]
+                                        ? Col.primary
+                                        : Col.text,
+                                    width: 1.5.px,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: bloodGroupValue.value ==
+                                          bloodGroupList[index]
+                                          ? Col.primary
+                                          : Colors.transparent),
+                                ),
+                              ),*/
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          SizedBox(height: 40.px)
+        ]);
+  }
+
+  Future<void> clickOnYearFromWeekView() async {
+    await CBS.commonBottomSheet(
+      // initialChildSize: 0.38,
+      // maxChildSize: 0.50,
+        isDismissible: false,
+        horizontalPadding: 0,
+        isFullScreen: true,
+        children: [
+          Center(
+            child: Text(
+              'Select Year',
+              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          SizedBox(height: 14.px),
+          Wrap(
+            children: List.generate(
+              yearForMonthViewList.length,
+                  (index) => Obx(() {
+                count.value;
+                final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
+                return SizedBox(
+                  width: cellWidth,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: index % 2 == 0 ? C.margin : C.margin / 2,
+                        right: index % 2 == 0 ? C.margin / 2 : C.margin,
+                        top: C.margin / 2,
+                        bottom: 0.px),
+                    child: Container(
+                      height: 46.px,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.px),
+                        color: yearForWeekViewValue.value == yearForMonthViewList[index]
+                            ? Col.primary.withOpacity(.08)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: yearForWeekViewValue.value == yearForMonthViewList[index]
+                              ? Col.primary
+                              : Col.darkGray,
+                          width: yearForWeekViewValue.value == yearForMonthViewList[index]
+                              ? 1.5.px
+                              : 1.px,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          yearForWeekViewValue.value = yearForMonthViewList[index];
+                          monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+                          await callingGetWeeklyAttendanceDataApi();
+                          Get.back();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 6.px, horizontal: 10.px),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                yearForMonthViewList[index],
+                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                              ),
+                              /*Container(
+                                height:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                width:
+                                bloodGroupValue.value == bloodGroupList[index]
+                                    ? 18.px
+                                    : 16.px,
+                                padding: EdgeInsets.all(2.px),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: bloodGroupValue.value ==
+                                        bloodGroupList[index]
+                                        ? Col.primary
+                                        : Col.text,
+                                    width: 1.5.px,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: bloodGroupValue.value ==
+                                          bloodGroupList[index]
+                                          ? Col.primary
+                                          : Colors.transparent),
+                                ),
+                              ),*/
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          SizedBox(height: 40.px)
+        ]);
+  }
 
 }

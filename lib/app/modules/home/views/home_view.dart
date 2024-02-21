@@ -488,132 +488,130 @@ class HomeView extends GetView<HomeController> {
       viewAllButtonValue: true,
       onPressedViewAllButton: () => controller.clickOnUpcomingCelebrationsButton(),
       listWidget: controller.upcomingCelebrationList != null && controller.upcomingCelebrationList!.isNotEmpty
-          ? Padding(padding: EdgeInsets.only(left: 6.px, right: 6.px, bottom: 0.px),
-           child: GridView.builder(
-          shrinkWrap: true,
-          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 0.px,
-              mainAxisSpacing: 0.px,
-              childAspectRatio: .8
-          ),
-          itemCount: controller.upcomingCelebrationList?.length,
-          itemBuilder: (context, index) {
-            final screenWidth = MediaQuery.of(context).size.width;
-            final screenHeight = MediaQuery.of(context).size.height;
-
-            final cardWidth = (screenWidth - 30) / 2; // Adjust as needed
-            final cardHeight = cardWidth * 0.8; // Adjust the aspect ratio as needed
-
-            return Container(
-              width: cardWidth,
-              height: cardHeight,
-              margin:  EdgeInsets.only(left: index % 2 == 0 ? 6.px : 2.px,right: index % 2 == 0 ? 2.px : 6.px),
-              padding: EdgeInsets.zero,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6.px),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CW.commonNetworkImageView(
-                      path: controller.upcomingCelebrationList?[index].celebrationType == 'Birthday'
-                          ? 'assets/images/birthday_background_image.png'
-                          : 'assets/images/work_anniversary_background_image.png',
-                      isAssetImage: true,
-                      fit: BoxFit.fill,
+          ? GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 0.px,
+            mainAxisSpacing: 0.px,
+            childAspectRatio: .8
                     ),
-                    Container(
-                      width: cardWidth,
-                      padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
-                      margin: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // SizedBox(height: 6.px),
-                          Container(
-                            width: 50.px,
-                            height: 50.px,
-                            margin: EdgeInsets.zero,
-                            decoration: BoxDecoration(
-                              color: Col.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: controller.upcomingCelebrationList?[index].userProfilePic != null &&
-                                  controller.upcomingCelebrationList![index].userProfilePic!.isNotEmpty
-                                  ? ClipRRect(
-                                borderRadius: BorderRadius.circular(25.px),
-                                child: CW.commonNetworkImageView(
-                                  path: '${AU.baseUrlAllApisImage}${controller.upcomingCelebrationList?[index].userProfilePic}',
-                                  isAssetImage: false,
-                                  errorImage: 'assets/images/profile.png',
-                                  width: 50.px,
-                                  height: 50.px,
-                                ),
-                              )
-                                  : Text(
-                                controller.upcomingCelebrationList?[index].shortName != null && controller.upcomingCelebrationList![index].shortName!.isNotEmpty
-                                    ? '${controller.upcomingCelebrationList?[index].shortName}'
-                                    : '?',
-                                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+                    itemCount: controller.upcomingCelebrationList?.length,
+                    itemBuilder: (context, index) {
+          final screenWidth = MediaQuery.of(context).size.width;
+          final screenHeight = MediaQuery.of(context).size.height;
+
+          final cardWidth = (screenWidth - 30) / 2; // Adjust as needed
+          final cardHeight = cardWidth * 0.8; // Adjust the aspect ratio as needed
+
+          return Container(
+            width: cardWidth,
+            height: cardHeight,
+            // margin:  EdgeInsets.only(left: index % 2 == 0 ? 6.px : 2.px,right: index % 2 == 0 ? 2.px : 6.px),
+            padding: EdgeInsets.zero,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6.px),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CW.commonNetworkImageView(
+                    path: controller.upcomingCelebrationList?[index].celebrationType == 'Birthday'
+                        ? 'assets/images/birthday_background_image.png'
+                        : 'assets/images/work_anniversary_background_image.png',
+                    isAssetImage: true,
+                    fit: BoxFit.fill,
+                  ),
+                  Container(
+                    width: cardWidth,
+                    padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
+                    margin: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // SizedBox(height: 6.px),
+                        Container(
+                          width: 50.px,
+                          height: 50.px,
+                          margin: EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                            color: Col.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: controller.upcomingCelebrationList?[index].userProfilePic != null &&
+                                controller.upcomingCelebrationList![index].userProfilePic!.isNotEmpty
+                                ? ClipRRect(
+                              borderRadius: BorderRadius.circular(25.px),
+                              child: CW.commonNetworkImageView(
+                                path: '${AU.baseUrlAllApisImage}${controller.upcomingCelebrationList?[index].userProfilePic}',
+                                isAssetImage: false,
+                                errorImage: 'assets/images/profile.png',
+                                width: 50.px,
+                                height: 50.px,
                               ),
+                            )
+                                : Text(
+                              controller.upcomingCelebrationList?[index].shortName != null && controller.upcomingCelebrationList![index].shortName!.isNotEmpty
+                                  ? '${controller.upcomingCelebrationList?[index].shortName}'
+                                  : '?',
+                              style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                             ),
                           ),
-                          SizedBox(height: 6.px),
-                          cardTextView(
-                              text: controller.upcomingCelebrationList?[index].userFullName != null && controller.upcomingCelebrationList![index].userFullName!.isNotEmpty
-                                  ? '${controller.upcomingCelebrationList?[index].userFullName}'
-                                  : '?',
-                              fontWeight: FontWeight.w700,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              fontSize: 10.px),
-                          SizedBox(height: 2.px),
-                          cardTextView(
-                              text: controller.upcomingCelebrationList?[index].userDesignation != null && controller.upcomingCelebrationList![index].userDesignation!.isNotEmpty
-                                  ? '${controller.upcomingCelebrationList?[index].userDesignation}'
-                                  : '?',
-                              fontWeight: FontWeight.w600,
-                              maxLines: 1,
-                              fontSize: 8.px,
-                              textAlign: TextAlign.center),
-                          cardTextView(
-                              text: controller.upcomingCelebrationList?[index].branchName != null && controller.upcomingCelebrationList![index].branchName!.isNotEmpty
-                                  ? '${controller.upcomingCelebrationList?[index].branchName} - ${controller.upcomingCelebrationList?[index].departmentName}'
-                                  : '?',
-                              fontWeight: FontWeight.w600,
-                              maxLines: 2,
-                              fontSize: 8.px,
-                              textAlign: TextAlign.center),
-                          SizedBox(height: 2.px),
-                          cardTextView(
-                              text: controller.upcomingCelebrationList?[index].celebrationYear != null && controller.upcomingCelebrationList![index].celebrationYear!.isNotEmpty
-                                  ? '(${controller.upcomingCelebrationList?[index].celebrationYear})'
-                                  : '?',
-                              fontWeight: FontWeight.w500,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              fontSize: 8.px),
-                          SizedBox(height: 6.px),
-                          cardTextView(
-                              text: controller.upcomingCelebrationList?[index].celebrationDate != null && controller.upcomingCelebrationList![index].celebrationDate!.isNotEmpty
-                                  ? '${controller.upcomingCelebrationList?[index].celebrationDate}'
-                                  : '?',
-                              fontWeight: FontWeight.w700,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              fontSize: 10.px),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                        ),
+                        SizedBox(height: 6.px),
+                        cardTextView(
+                            text: controller.upcomingCelebrationList?[index].userFullName != null && controller.upcomingCelebrationList![index].userFullName!.isNotEmpty
+                                ? '${controller.upcomingCelebrationList?[index].userFullName}'
+                                : '?',
+                            fontWeight: FontWeight.w700,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            fontSize: 10.px),
+                        SizedBox(height: 2.px),
+                        cardTextView(
+                            text: controller.upcomingCelebrationList?[index].userDesignation != null && controller.upcomingCelebrationList![index].userDesignation!.isNotEmpty
+                                ? '${controller.upcomingCelebrationList?[index].userDesignation}'
+                                : '?',
+                            fontWeight: FontWeight.w600,
+                            maxLines: 1,
+                            fontSize: 8.px,
+                            textAlign: TextAlign.center),
+                        cardTextView(
+                            text: controller.upcomingCelebrationList?[index].branchName != null && controller.upcomingCelebrationList![index].branchName!.isNotEmpty
+                                ? '${controller.upcomingCelebrationList?[index].branchName} - ${controller.upcomingCelebrationList?[index].departmentName}'
+                                : '?',
+                            fontWeight: FontWeight.w600,
+                            maxLines: 2,
+                            fontSize: 8.px,
+                            textAlign: TextAlign.center),
+                        SizedBox(height: 2.px),
+                        cardTextView(
+                            text: controller.upcomingCelebrationList?[index].celebrationYear != null && controller.upcomingCelebrationList![index].celebrationYear!.isNotEmpty
+                                ? '(${controller.upcomingCelebrationList?[index].celebrationYear})'
+                                : '?',
+                            fontWeight: FontWeight.w500,
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            fontSize: 8.px),
+                        SizedBox(height: 6.px),
+                        cardTextView(
+                            text: controller.upcomingCelebrationList?[index].celebrationDate != null && controller.upcomingCelebrationList![index].celebrationDate!.isNotEmpty
+                                ? '${controller.upcomingCelebrationList?[index].celebrationDate}'
+                                : '?',
+                            fontWeight: FontWeight.w700,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            fontSize: 10.px),
+                      ],
+                    ),
+                  )
+                ],
               ),
-            );
-          },
-        ),
-      )
+            ),
+          );
+                    },
+                  )
           : SizedBox(height: 8.px),
     );
   }
