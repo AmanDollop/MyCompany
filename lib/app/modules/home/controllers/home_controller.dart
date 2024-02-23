@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +23,6 @@ import 'package:task/api/api_model/shift_details_modal.dart';
 import 'package:task/api/api_model/upcoming_celebration_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/app_controller/ac.dart';
-import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/app/modules/drawer_view/controllers/drawer_view_controller.dart';
 import 'package:task/app/modules/home/dialog/break_dialog.dart';
 import 'package:task/app/routes/app_pages.dart';
@@ -74,7 +73,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   final hideMyTeam = false.obs;
 
   final appMenuFromLocalDataBase = ''.obs;
-  final isDatabaseHaveDataForAppMenu = true.obs;
 
   final menusModal = Rxn<MenusModal>();
   List<GetMenu> isHeadingMenuList = [];
@@ -211,18 +209,20 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> callingGetLatLongMethod() async {
     try {
-      getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
-      currentDateTime = await getInternetDateTime();
-      if (getLatLong != null) {
-        isDatabaseHaveDataForAppMenu.value = await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu);
-        await setDefaultData();
-      } else {
-        if (AC.isConnect.value) {
-          locationAlertDialog();
-        }
-      }
+     if(AC.isConnect.value){
+       getLatLong = await MyLocation.getUserLatLong(context: Get.context!);
+       currentDateTime = await getInternetDateTime();
+       if (getLatLong != null) {
+         await setDefaultData();
+       } else {
+           locationAlertDialog();
+       }
+     }else{
+       await setDefaultData();
+     }
     } catch (e) {
       CM.error();
+      print('callingGetLatLongMethod:::: error::::  $e');
     }
   }
 
@@ -260,12 +260,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       await getCompanyDataFromLocalDataBase();
       await getShiftDataFromLocalDataBase();
       await getAppMenusDataFromLocalDataBase();
-      await callingGetTodayAttendanceApi();
-      await callingGetBreakDetailsApi();
-      await callingGetUpcomingCelebrationApi();
-      await callingGetDepartmentEmployeeApi();
-      await callingGetMyTeamMemberApi();
-      await callingGetReportingPersonApi();
+      if(AC.isConnect.value){
+        await apisCallingMethod();
+      }
     } catch (e) {
       apiResValue.value = false;
     }
@@ -275,7 +272,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   Future<void> getUserDataFromLocalDataBase() async {
     try {
       userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
-
       userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
       jobInfo = userData?.jobInfo;
     } catch (e) {}
@@ -297,7 +293,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> getShiftDataFromLocalDataBase() async {
     try {
-      await BottomSheetForOTP.callingGetShiftDetailApi();
+      if(AC.isConnect.value){
+        await BottomSheetForOTP.callingGetShiftDetailApi();
+      }
       shiftDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftDetails, tableName: DataBaseConstant.tableNameForShiftDetail);
       shiftDetails = ShiftDetailsModal.fromJson(jsonDecode(shiftDetailFromLocalDataBase.value)).shiftDetails;
       shiftTimeFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.shiftTime, tableName: DataBaseConstant.tableNameForShiftDetail);
@@ -309,20 +307,26 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> getAppMenusDataFromLocalDataBase() async {
     try {
-      if (isDatabaseHaveDataForAppMenu.value) {
+      if(AC.isConnect.value) {
         await BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
-      } else {
+      }
         appMenuFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.appMenus, tableName: DataBaseConstant.tableNameForAppMenu);
         menusModal.value = MenusModal.fromJson(jsonDecode(appMenuFromLocalDataBase.value));
         menusModal.value?.getMenu?.forEach((element) {
           if (element.isDashboardMenu == '1') {
             isHeadingMenuList.add(element);
-            print('isHeadingMenuList:::::: ${element.menuName}');
           }
         });
-        /*await*/ BottomSheetForOTP.callingMenusApi(companyId: companyId.value);
-      }
     } catch (e) {}
+  }
+
+  Future<void> apisCallingMethod() async {
+    await callingGetTodayAttendanceApi();
+    await callingGetBreakDetailsApi();
+    await callingGetUpcomingCelebrationApi();
+    await callingGetDepartmentEmployeeApi();
+    await callingGetMyTeamMemberApi();
+    await callingGetReportingPersonApi();
   }
 
   locationAlertDialog() async {
@@ -453,35 +457,35 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               //    initialPosition.value.target.longitude != 0
-          //     ? Container(
-          // height: 200.px,
-          //   decoration: BoxDecoration(
-          //     color: Theme.of(Get.context!).colorScheme.onBackground,
-          //     borderRadius: BorderRadius.all(
-          //       Radius.circular(6.px),
-          //     ),
-          //   ),
-          //   child: ClipRRect(
-          //     borderRadius: BorderRadius.all(Radius.circular(6.px)),
-          //     child: GoogleMap(
-          //       mapType: MapType.normal,
-          //       buildingsEnabled: true,
-          //       compassEnabled: false,
-          //       rotateGesturesEnabled: false,
-          //       myLocationButtonEnabled: false,
-          //       indoorViewEnabled: false,
-          //       trafficEnabled: true,
-          //       initialCameraPosition: initialPosition.value,
-          //       onMapCreated: (mapController) => googleController.complete(mapController),
-          //       myLocationEnabled: true,
-          //       zoomGesturesEnabled: false,
-          //       zoomControlsEnabled: false,
-          //     ),
-          //   ),
-          // )
-          //     : CW.commonShimmerViewForImage(height: 200.px),
-          //      SizedBox(height: 16.px),
+                  initialPosition.value.target.longitude != 0
+              ? Container(
+          height: 200.px,
+            decoration: BoxDecoration(
+              color: Theme.of(Get.context!).colorScheme.onBackground,
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.px),
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(6.px)),
+              child: GoogleMap(
+                mapType: MapType.normal,
+                buildingsEnabled: true,
+                compassEnabled: false,
+                rotateGesturesEnabled: false,
+                myLocationButtonEnabled: false,
+                indoorViewEnabled: false,
+                trafficEnabled: true,
+                initialCameraPosition: initialPosition.value,
+                onMapCreated: (mapController) => googleController.complete(mapController),
+                myLocationEnabled: true,
+                zoomGesturesEnabled: false,
+                zoomControlsEnabled: false,
+              ),
+            ),
+          )
+              : CW.commonShimmerViewForImage(height: 200.px),
+               SizedBox(height: 16.px),
                Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -1088,4 +1092,57 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
+}
+
+class CustomToast {
+
+  final player = AudioPlayer();
+  Future<void> clickOn(BuildContext context) async {
+    // CustomToast.showCustomToast(context, 'This is a custom toast');
+    await player.stop();
+    try {
+      await player.play(
+        UrlSource('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'),
+        mode: PlayerMode.mediaPlayer,
+        volume: 1,
+      );
+    } on TimeoutException catch (e) {
+      print('TimeoutException: $e');
+    } on Exception catch (e) {
+      print('Exception occurred: $e');
+    }
+  }
+
+  static void showCustomToast(BuildContext context, String message) {
+    OverlayEntry overlayEntry;
+    OverlayState overlayState = Overlay.of(context);
+    overlayEntry = OverlayEntry(
+      builder: (BuildContext context) => Positioned(
+        // bottom: 88.h, // Adjust this value to change the toast position
+        left: 20.0,
+        right: 20.0,
+        top: 50.px,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            alignment: Alignment.topCenter,
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              message,
+              style: TextStyle(color: Colors.white, fontSize: 16.0),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlayState.insert(overlayEntry);
+    // Adjust the duration as needed
+    Future.delayed(Duration(seconds: 2)).then((_) {
+      overlayEntry.remove();
+    });
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -22,7 +23,8 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
       body: Obx(() {
         return ModalProgress(
           inAsyncCall: controller.apiResValue.value,
-          child: controller.getUpcomingCelebrationModal.value != null
+          child: AC.isConnect.value
+              ? controller.getUpcomingCelebrationModal.value != null
               ? ListView(
                   shrinkWrap: true,
                   children: [
@@ -62,7 +64,8 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
                 )
               : controller.apiResValue.value
                   ? const SizedBox()
-                  : CW.commonNoDataFoundText(),
+                  : CW.commonNoDataFoundText()
+              : CW.commonNoNetworkView(),
         );
       }),
     );

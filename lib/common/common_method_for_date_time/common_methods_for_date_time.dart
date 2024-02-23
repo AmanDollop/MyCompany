@@ -79,4 +79,11 @@ class CMForDateTime {
     return dayName;
   }
 
+  static String getTimeFromDateFor24Hours({required String dateAndTimeString}) {
+    DateTime dateTime = DateFormat("dd MMM yyyy hh:mm a").parse(dateAndTimeString);
+    String outputDateTimeString = DateFormat("HH:mm:ss").format(dateTime);
+    print('dateTime:::: $outputDateTimeString'); ///Todo output => { 14:04:00 }
+    return outputDateTimeString;
+  }
+
 }

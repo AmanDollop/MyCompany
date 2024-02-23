@@ -133,45 +133,45 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
     );
   }
 
-  Widget dateContainerView({required int index, required DateTime date}) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 4.px),
-        decoration: BoxDecoration(
-            color: Col.primary.withOpacity(.2),
-            borderRadius: BorderRadius.circular(4.px)),
-        child: Text(DateFormat('d MMM y').format(DateTime.parse('$date')),
-            style: Theme.of(Get.context!)
-                .textTheme
-                .labelSmall
-                ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10.px)),
-      );
+  Widget dateContainerView({required int index, required DateTime date}) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 4.px),
+      decoration: BoxDecoration(
+          color: Col.primary.withOpacity(.2),
+          borderRadius: BorderRadius.circular(4.px)),
+      child: Text(
+          DateFormat('d MMM y').format(DateTime.now().subtract(const Duration(days: 1))) == DateFormat('d MMM y').format(DateTime.parse('$date'))
+              ? 'Yesterday'
+              : DateFormat('d MMM y').format(DateTime.now()) == DateFormat('d MMM y').format(DateTime.parse('$date'))
+             ? 'Today'
+          : DateFormat('d MMM y').format(DateTime.parse('$date')),
+          style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, fontSize: 10.px)),
+    );
+  }
 
-  Widget senderProfileView({required int index, required TimeLine messageDetail}) => Container(
-        height: 36.px,
-        width: 36.px,
-        margin: EdgeInsets.zero,
-        padding: EdgeInsets.zero,
-        decoration: BoxDecoration(
-            color: Col.primary.withOpacity(.2.px), shape: BoxShape.circle),
-        child: Center(
-          child: messageDetail.userProfile != null &&
-                  messageDetail.userProfile!.isNotEmpty
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(18.px),
-                  child: CW.commonNetworkImageView(
-                      path:
-                          '${AU.baseUrlAllApisImage}${messageDetail.userProfile}',
-                      isAssetImage: false,
-                      errorImage: 'assets/images/profile.png',
-                      height: 36.px,
-                      width: 36.px),
-                )
-              : Text(
-                  '${messageDetail.shortName}',
-                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600, color: Col.primary),
-                ),
+  Widget senderProfileView({required int index, required TimeLine messageDetail}) {
+    return Container(
+      height: 36.px,
+      width: 36.px,
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+          color: Col.primary.withOpacity(.2.px), shape: BoxShape.circle),
+      child: Center(
+        child:ClipRRect(
+          borderRadius: BorderRadius.circular(18.px),
+          child: CW.commonNetworkImageView(
+              path: '${AU.baseUrlAllApisImage}${messageDetail.userProfile}',
+              isAssetImage: false,
+              height: 36.px,
+              width: 36.px,
+              errorImageValue: true,
+              userShortName: '${messageDetail.shortName}'
+          ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget senderNameTextView({required int index, required TimeLine messageDetail}) => Text(
         messageDetail.userName != null && messageDetail.userName!.isNotEmpty

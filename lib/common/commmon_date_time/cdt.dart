@@ -199,6 +199,7 @@ class CDT {
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle: TextStyle(
                         fontSize: 16,
+                        color: Colors.black
                       ),
                     ),
                   ),
@@ -328,6 +329,7 @@ class CDT {
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle: TextStyle(
                         fontSize: 16.px,
+                        color: Colors.black
                       ),
                     ),
                   ),

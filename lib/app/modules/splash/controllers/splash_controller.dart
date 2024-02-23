@@ -18,9 +18,6 @@ class SplashController extends GetxController {
 
   UserDetails? userData;
 
-
-
-
   @override
    Future<void> onInit()  async {
     super.onInit();
@@ -30,7 +27,7 @@ class SplashController extends GetxController {
       // await BottomSheetForOTP.callingGetShiftDetailApi();
       Timer(
         const Duration(seconds: 3),
-            () => callingNextScreen(),
+        () => callingNextScreen(),
       );
     }catch(e){
       Timer(

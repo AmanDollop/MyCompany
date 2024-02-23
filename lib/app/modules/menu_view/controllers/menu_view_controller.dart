@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task/api/api_constants/ac.dart';
-import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';

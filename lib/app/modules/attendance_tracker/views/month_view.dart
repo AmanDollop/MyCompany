@@ -15,49 +15,52 @@ class MonthView extends GetView<AttendanceTrackerController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return CW.commonRefreshIndicator(
-        onRefresh: () => controller.monthViewOnRefresh(),
-        child: ModalProgress(
-          inAsyncCall: controller.apiResValue.value,
-          child: controller.apiResValue.value
-              ? shimmerView()
-              : controller.getMonthlyAttendanceDataModal.value != null
-                  ? controller.getMonthlyAttendanceData != null
-                      ? ListView(
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          children: [
-                            Row(
-                              children: [
-                                commonDropDownView(
-                                  onTap: () => controller.clickOnMonthNameFromMonthView(),
-                                  dropDownView: monthDropDownView(),
-                                ),
-                                SizedBox(width: 10.px),
-                                commonDropDownView(
-                                  onTap: () => controller.clickOnYearFromMonthView(),
-                                  dropDownView: yearDropDownView(),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10.px),
-                            circularProgressBarView(),
-                            SizedBox(height: 10.px),
-                            cardGridView(),
-                            SizedBox(height: 20.px),
-                            getDayNames(),
-                            SizedBox(height: 14.px),
-                            calendarGridView(),
-                            SizedBox(height: 20.px),
-                          ],
-                        )
-                      : Center(
-                          child: CW.commonNoDataFoundText(),
-                        )
-                  : controller.apiResValue.value
-                      ? const SizedBox()
-                      : CW.commonNoDataFoundText(),
-        ),
+      return ModalProgress(
+        inAsyncCall: controller.apiResValue.value,
+        child: controller.apiResValue.value
+            ? shimmerView()
+            : controller.getMonthlyAttendanceDataModal.value != null
+            ? controller.getMonthlyAttendanceData != null
+            ? Column(
+          children: [
+            Row(
+              children: [
+                commonDropDownView(
+                  onTap: () => controller.clickOnMonthNameFromMonthView(),
+                  dropDownView: monthDropDownView(),
+                ),
+                SizedBox(width: 10.px),
+                commonDropDownView(
+                  onTap: () => controller.clickOnYearFromMonthView(),
+                  dropDownView: yearDropDownView(),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.px),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                children: [
+                  circularProgressBarView(),
+                  SizedBox(height: 10.px),
+                  cardGridView(),
+                  SizedBox(height: 20.px),
+                  getDayNames(),
+                  SizedBox(height: 14.px),
+                  calendarGridView(),
+                  SizedBox(height: 20.px),
+                ],
+              ),
+            )
+          ],
+        )
+            : Center(
+          child: CW.commonNoDataFoundText(),
+        )
+            : controller.apiResValue.value
+            ? const SizedBox()
+            : CW.commonNoDataFoundText(),
       );
     });
   }
@@ -73,11 +76,9 @@ class MonthView extends GetView<AttendanceTrackerController> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.px),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: dropDownView,
-                  ),
+                  dropDownView,
                   Icon(Icons.arrow_drop_down, color: Col.darkGray)
                 ],
               ),
@@ -335,16 +336,18 @@ class MonthView extends GetView<AttendanceTrackerController> {
               } else if (controller.monthlyHistoryList?[index - extra].holiday ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
                 // CM.showSnackBar(message: 'Holiday');
-              } else if (controller.monthlyHistoryList?[index - extra].weekOff ?? false) {
+              } else if (controller.monthlyHistoryList?[index - extra].weekOff == true && DateTime.now().isAfter(parsedDate.add(Duration(days: day-1)))) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
                 // CM.showSnackBar(message: 'Week Off');
               } else if (controller.monthlyHistoryList?[index - extra].leave ?? false) {
                 // CM.showSnackBar(message: 'Leave');
               } else if (controller.monthlyHistoryList?[index - extra].attendnacePending ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
+              }else if (controller.monthlyHistoryList?[index - extra].isAbsent ?? false) {
+                controller.clickOnCalendarGrid(index: index - extra, day: day);
               } else {
                 if(DateTime.now().isAfter(parsedDate.add(Duration(days: day-1)))) {
-                  controller.clickOnCalendarGrid(index: index - extra, day: day);
+                  CM.showSnackBar(message: 'Week off');
                 }else{
                   CM.showSnackBar(message: 'This date data not available!');
                 }

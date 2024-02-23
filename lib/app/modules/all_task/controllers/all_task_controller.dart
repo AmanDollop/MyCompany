@@ -281,14 +281,16 @@ class AllTaskController extends GetxController {
     );
   }
 
-  void clickOnTaskCard({required int taskCardListViewIndex}) {
+  Future<void> clickOnTaskCard({required int taskCardListViewIndex}) async {
     CM.unFocusKeyBoard();
-    if (taskCategoryList[taskCardListViewIndex].taskCategoryId != null &&
-        taskCategoryList[taskCardListViewIndex].taskCategoryId!.isNotEmpty) {
-      Get.toNamed(Routes.SUB_TASK, arguments: [
+    if (taskCategoryList[taskCardListViewIndex].taskCategoryId != null && taskCategoryList[taskCardListViewIndex].taskCategoryId!.isNotEmpty) {
+      await Get.toNamed(Routes.SUB_TASK, arguments: [
         taskCategoryList[taskCardListViewIndex].taskCategoryId,
         taskCategoryList[taskCardListViewIndex].taskCategoryName
       ]);
+      offset.value = 0;
+      taskCategoryList.clear();
+      onInit();
     } else {
       CM.showSnackBar(message: 'Sub task not found');
     }

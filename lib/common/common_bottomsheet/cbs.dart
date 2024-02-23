@@ -339,8 +339,7 @@ class CBS {
         rightPadding: 10.px,
       );
 
-  Widget commonView({required VoidCallback onTap, required String title}) =>
-      InkWell(
+  Widget commonView({required VoidCallback onTap, required String title}) => InkWell(
         onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -464,8 +463,10 @@ class BottomSheetForOTP extends GetxController {
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
         await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
+        await BottomSheetForOTP.callingGetCompanyDetailApi();
         companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
         getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
+        await BottomSheetForOTP.callingGetShiftDetailApi();
         await callingMenusApi(companyId: getCompanyDetails?.companyId ?? '');
         Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
         CM.showSnackBar(message: 'LogIn Successfully');
@@ -474,6 +475,7 @@ class BottomSheetForOTP extends GetxController {
         CM.error();
       }
     } catch (e) {
+      print('matchOtpApiCalling ::::: error:::: $e');
       verifyButtonValue.value = false;
       CM.error();
     }
@@ -604,7 +606,6 @@ class BottomSheetForOTP extends GetxController {
                                   if (otpController.text.isNotEmpty) {
                                     verifyButtonValue.value = true;
                                     await matchOtpApiCalling(email: email, otp: otpController.text.trim().toString());
-                                    await BottomSheetForOTP.callingGetCompanyDetailApi();
                                     // await BottomSheetForOTP.callingGetShiftDetailApi();
                                   }
                                 },

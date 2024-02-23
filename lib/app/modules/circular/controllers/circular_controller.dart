@@ -227,6 +227,7 @@ class CircularController extends GetxController {
 
   Future<void> searchOnChange({String? value}) async {
     try {
+      count.value++;
       if (value != null) {
         const duration = Duration(milliseconds: 800); // set the duration that you want call search() after that.
         if (searchOnStoppedTyping != null) {

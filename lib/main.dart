@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_packages/scroll_behavior/scroll_behavior.dart';
@@ -36,22 +37,25 @@ Future<void> main() async {
               buildContext,
               orientation,
               screenType,
-              ) => GetMaterialApp(
-            title: "Application",
-            initialRoute: AppPages.INITIAL,
-            getPages: AppPages.routes,
-            theme: AppThemeData.themeData(fontFamily: C.fontKumbhSans),
-            defaultTransition: Transition.rightToLeftWithFade,
-            debugShowCheckedModeBanner: false,
-            scrollBehavior: ListScrollBehavior(),
-            initialBinding: InitialBinding(),
-          ),
+              ) => GestureDetector(
+                onTap: () async {
+                  await Fluttertoast.cancel();
+                },
+                child: GetMaterialApp(
+                            title: "Application",
+                            initialRoute: AppPages.INITIAL,
+                            getPages: AppPages.routes,
+                            theme: AppThemeData.themeData(fontFamily: C.fontKumbhSans),
+                            defaultTransition: Transition.rightToLeftWithFade,
+                            debugShowCheckedModeBanner: false,
+                            scrollBehavior: ListScrollBehavior(),
+                          ),
+              ),
         ),
       ),
     );
   });
 }
-
 
 /*import 'dart:io';
 import 'package:flutter/material.dart';

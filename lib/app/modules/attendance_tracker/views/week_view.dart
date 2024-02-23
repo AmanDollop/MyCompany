@@ -20,59 +20,60 @@ class WeekView extends GetView<AttendanceTrackerController> {
         child: controller.apiResValue.value
             ? shimmerView()
             : controller.getWeeklyAttendanceDataModal.value != null
-            ? Column(
-                children: [
-                  Row(
+                ? Column(
                     children: [
-                      commonDropDownView(
-                        onTap: () => controller.clickOnMonthFromWeekView(),
-                        dropDownView: monthDropDownView(),
-                      ),
-                      SizedBox(width: 10.px),
-                      commonDropDownView(
-                        onTap: () => controller.clickOnYearFromWeekView(),
-                        dropDownView: yearDropDownView(),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10.px),
-                  controller.weeklyHistoryList != null && controller.weeklyHistoryList!.isNotEmpty
-                      ? Expanded(
-                         // height: MediaQuery.of(context).size.height * 0.72,
-                          child: PageView.builder(
-                            scrollDirection: Axis.horizontal,
-                            controller: controller.pageController,
-                            physics: const ScrollPhysics(),
-                            itemCount: controller.weeklyHistoryList?.length,
-                            itemBuilder: (context, index) {
-                              return AnimatedContainer(
-                                duration: const Duration(milliseconds: 1000),
-                                curve: Curves.easeInOut,
-                                // alignment: Alignment.center,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: [
-                                    buildHeader(index: index),
-                                    SizedBox(height: 10.px),
-                                    circularProgressBarView(index: index),
-                                    SizedBox(height: 10.px),
-                                    listViewBuilder(index: index),
-                                    SizedBox(height: 20.px),
-                                  ],
-                                ),
-                              );
-                            },
+                      Row(
+                        children: [
+                          commonDropDownView(
+                            onTap: () => controller.clickOnMonthFromWeekView(),
+                            dropDownView: monthDropDownView(),
                           ),
-                        )
-                      : CW.commonNoDataFoundText()
-                ],
-              )
-            : CW.commonNoDataFoundText(),
+                          SizedBox(width: 10.px),
+                          commonDropDownView(
+                            onTap: () => controller.clickOnYearFromWeekView(),
+                            dropDownView: yearDropDownView(),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.px),
+                      controller.weeklyHistoryList != null && controller.weeklyHistoryList!.isNotEmpty
+                          ? Expanded(
+                              // height: MediaQuery.of(context).size.height * 0.72,
+                              child: PageView.builder(
+                                scrollDirection: Axis.horizontal,
+                                controller: controller.pageController,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: controller.weeklyHistoryList?.length,
+                                itemBuilder: (context, index) {
+                                  return AnimatedContainer(
+                                    duration:
+                                        const Duration(milliseconds: 1000),
+                                    curve: Curves.easeInOut,
+                                    // alignment: Alignment.center,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: [
+                                        buildHeader(index: index),
+                                        SizedBox(height: 10.px),
+                                        circularProgressBarView(index: index),
+                                        SizedBox(height: 10.px),
+                                        listViewBuilder(index: index),
+                                        SizedBox(height: 20.px),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          : CW.commonNoDataFoundText()
+                    ],
+                  )
+                : CW.commonNoDataFoundText(),
       );
     });
   }
 
-  Widget commonDropDownView({required Widget dropDownView,required GestureTapCallback onTap}) => Expanded(
+  Widget commonDropDownView({required Widget dropDownView, required GestureTapCallback onTap}) => Expanded(
         child: Container(
           height: 40.px,
           decoration: BoxDecoration(
@@ -97,11 +98,11 @@ class WeekView extends GetView<AttendanceTrackerController> {
       );
 
   Widget monthDropDownView() => Text(
-    controller.monthNameForWeekViewValue.value,
-    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-      fontWeight: FontWeight.w600,
-    ),
-  );
+        controller.monthNameForWeekViewValue.value,
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+      );
 
   /*Widget monthDropDownView() => DropdownButton<String>(
         value: controller.monthNameForWeekViewValue.value,
@@ -130,11 +131,11 @@ class WeekView extends GetView<AttendanceTrackerController> {
       );*/
 
   Widget yearDropDownView() => Text(
-    controller.yearForWeekViewValue.value,
-    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-      fontWeight: FontWeight.w600,
-    ),
-  );
+        controller.yearForWeekViewValue.value,
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+      );
 
   /*Widget yearDropDownView() => DropdownButton<String>(
         value: controller.yearForWeekViewValue.value,
@@ -230,12 +231,18 @@ class WeekView extends GetView<AttendanceTrackerController> {
                     children: [
                       titleTextView(text: 'Total time', color: Col.secondary),
                       SizedBox(height: 2.px),
-                      subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
+                      subTitleTextView(
+                          text: CMForDateTime.calculateTimeForHourAndMin(
+                              minute:
+                                  '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
                       SizedBox(height: 5.px),
                       titleTextView(
                           text: 'Total Spend Time', color: Col.secondary),
                       SizedBox(height: 2.px),
-                      subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalSpendMinutes}'))
+                      subTitleTextView(
+                          text: CMForDateTime.calculateTimeForHourAndMin(
+                              minute:
+                                  '${controller.weeklyHistoryList?[index].totalSpendMinutes}'))
                     ],
                   ),
                 ),
@@ -249,15 +256,24 @@ class WeekView extends GetView<AttendanceTrackerController> {
               children: [
                 titleTextView(text: 'Total Productive Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
+                subTitleTextView(
+                    text: CMForDateTime.calculateTimeForHourAndMin(
+                        minute:
+                            '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
                 SizedBox(height: 5.px),
                 titleTextView(text: 'Total Extra Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekExtraMinutes}')),
+                subTitleTextView(
+                    text: CMForDateTime.calculateTimeForHourAndMin(
+                        minute:
+                            '${controller.weeklyHistoryList?[index].totalWeekExtraMinutes}')),
                 SizedBox(height: 5.px),
                 titleTextView(text: 'Total Remaining Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekRemainingMinutes}')),
+                subTitleTextView(
+                    text: CMForDateTime.calculateTimeForHourAndMin(
+                        minute:
+                            '${controller.weeklyHistoryList?[index].totalWeekRemainingMinutes}')),
               ],
             ),
           ),
@@ -266,7 +282,10 @@ class WeekView extends GetView<AttendanceTrackerController> {
 
   Widget titleTextView({required String text, Color? color}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, color: color),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .labelMedium
+            ?.copyWith(fontSize: 10.px, color: color),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -282,7 +301,10 @@ class WeekView extends GetView<AttendanceTrackerController> {
 
   Widget timeTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.w600),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -310,22 +332,29 @@ class WeekView extends GetView<AttendanceTrackerController> {
 
   Widget listCardView({required int weekDayIndex}) => Card(
         color: Col.inverseSecondary,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
         child: Padding(
           padding: EdgeInsets.all(8.px),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleTextView(text: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.weekDayHistoryList?[weekDayIndex].attendanceDate}')),
+              titleTextView(
+                  text: CMForDateTime.dateFormatForDateMonthYear(
+                      date:
+                          '${controller.weekDayHistoryList?[weekDayIndex].attendanceDate}')),
               SizedBox(height: 2.px),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   timeTextView(
-                    text: '${controller.weekDayHistoryList?[weekDayIndex].dayName}',
+                    text:
+                        '${controller.weekDayHistoryList?[weekDayIndex].dayName}',
                   ),
                   timeTextView(
-                    text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].totalWorkingMinutes}'),
+                    text: CMForDateTime.calculateTimeForHourAndMin(
+                        minute:
+                            '${controller.weekDayHistoryList?[weekDayIndex].totalWorkingMinutes}'),
                   ),
                 ],
               ),
@@ -341,7 +370,9 @@ class WeekView extends GetView<AttendanceTrackerController> {
                         titleTextView(text: 'Total Productive Time'),
                         SizedBox(height: 2.px),
                         subTitleTextView(
-                            text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].productiveWorkingMinutes}'),
+                          text: CMForDateTime.calculateTimeForHourAndMin(
+                              minute:
+                                  '${controller.weekDayHistoryList?[weekDayIndex].productiveWorkingMinutes}'),
                         ),
                       ],
                     ),
@@ -354,7 +385,9 @@ class WeekView extends GetView<AttendanceTrackerController> {
                         titleTextView(text: 'Extra Hours'),
                         SizedBox(height: 2.px),
                         subTitleTextView(
-                          text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].extraWorkingMinutes}'),
+                          text: CMForDateTime.calculateTimeForHourAndMin(
+                              minute:
+                                  '${controller.weekDayHistoryList?[weekDayIndex].extraWorkingMinutes}'),
                         ),
                       ],
                     ),
@@ -367,7 +400,9 @@ class WeekView extends GetView<AttendanceTrackerController> {
                         titleTextView(text: 'Remaining Time'),
                         SizedBox(height: 2.px),
                         subTitleTextView(
-                          text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weekDayHistoryList?[weekDayIndex].remainingWorkingMinutes}'),
+                          text: CMForDateTime.calculateTimeForHourAndMin(
+                              minute:
+                                  '${controller.weekDayHistoryList?[weekDayIndex].remainingWorkingMinutes}'),
                         ),
                       ],
                     ),
@@ -380,52 +415,54 @@ class WeekView extends GetView<AttendanceTrackerController> {
       );
 
   Widget shimmerView() => ListView(
-    shrinkWrap: true,
-    physics: const ScrollPhysics(),
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: CW.commonShimmerViewForImage(height: 40.px),
-          ),
-          SizedBox(width: 10.px),
-          Expanded(
-            child: CW.commonShimmerViewForImage(height: 40.px),
-          ),
-        ],
-      ),
-      SizedBox(height: 10.px),
-      Row(
-        children: [
-          CW.commonShimmerViewForImage(height: 150.px, width: 150.px, radius: 75.px),
-          SizedBox(width: 15.px),
-          Flexible(
-            child: Column(
-              children: [
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(height: 20.px),
-                SizedBox(height: 5.px),
-              ],
-            ),
-          )
-        ],
-      ),
-      SizedBox(height: 10.px),
-      ListView.builder(
-        itemCount: 7,
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => Padding(
-          padding: EdgeInsets.only(bottom: 12.px),
-          child: CW.commonShimmerViewForImage(height: 70.px,width: double.infinity),
-        ),
-      ),
-      SizedBox(height: 20.px),
-    ],
-  );
+        physics: const ScrollPhysics(),
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: CW.commonShimmerViewForImage(height: 40.px),
+              ),
+              SizedBox(width: 10.px),
+              Expanded(
+                child: CW.commonShimmerViewForImage(height: 40.px),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.px),
+          Row(
+            children: [
+              CW.commonShimmerViewForImage(
+                  height: 150.px, width: 150.px, radius: 75.px),
+              SizedBox(width: 15.px),
+              Flexible(
+                child: Column(
+                  children: [
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                    CW.commonShimmerViewForImage(height: 20.px),
+                    SizedBox(height: 5.px),
+                  ],
+                ),
+              )
+            ],
+          ),
+          SizedBox(height: 10.px),
+          ListView.builder(
+            itemCount: 7,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => Padding(
+              padding: EdgeInsets.only(bottom: 12.px),
+              child: CW.commonShimmerViewForImage(
+                  height: 70.px, width: double.infinity),
+            ),
+          ),
+          SizedBox(height: 20.px),
+        ],
+      );
 }

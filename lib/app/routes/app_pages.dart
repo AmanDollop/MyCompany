@@ -111,7 +111,8 @@ class AppPages {
         name: _Paths.LOGIN,
         page: () => const LoginView(),
         binding: LoginBinding(),
-        transitionDuration: const Duration(microseconds: 0)),
+        transitionDuration: const Duration(microseconds: 0),
+    ),
     GetPage(
       name: _Paths.SIGN_UP,
       page: () => const SignUpView(),
@@ -121,6 +122,7 @@ class AppPages {
       name: _Paths.SEARCH_COMPANY,
       page: () => const SearchCompanyView(),
       binding: SearchCompanyBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.SELECT_BRANCE,
@@ -146,12 +148,14 @@ class AppPages {
         name: _Paths.NOTIFICATION,
         page: () => const NotificationView(),
         binding: NotificationBinding(),
-        transitionDuration: const Duration(microseconds: 0)),
+        transitionDuration: const Duration(microseconds: 0),
+    ),
     GetPage(
         name: _Paths.DRAWER_VIEW,
         page: () => const DrawerViewView(),
         binding: DrawerViewBinding(),
-        transitionDuration: const Duration(microseconds: 0)),
+        transitionDuration: const Duration(microseconds: 0),
+    ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
       page: () => const EditProfileView(),
@@ -166,7 +170,8 @@ class AppPages {
         name: _Paths.MY_PROFILE,
         page: () => const MyProfileView(),
         binding: MyProfileBinding(),
-        transitionDuration: const Duration(microseconds: 0)),
+        transitionDuration: const Duration(microseconds: 0),
+    ),
     GetPage(
       name: _Paths.SELECT_DEPARTMENT,
       page: () => const SelectDepartmentView(),
@@ -257,7 +262,8 @@ class AppPages {
         page: () => const CircularView(),
         binding: CircularBinding(),
         transition: Transition.fadeIn,
-        transitionDuration: const Duration(microseconds: 0)),
+        transitionDuration: const Duration(microseconds: 0),
+    ),
     GetPage(
       name: _Paths.CIRCULAR_DETAIL,
       page: () => const CircularDetailView(),
@@ -277,7 +283,8 @@ class AppPages {
         name: _Paths.ATTENDANCE_TRACKER,
         page: () => const AttendanceTrackerView(),
         binding: AttendanceTrackerBinding(),
-        transitionDuration: const Duration(microseconds: 0)),
+        transitionDuration: const Duration(microseconds: 0),
+    ),
     GetPage(
       name: _Paths.ALL_TASK,
       page: () => const AllTaskView(),
@@ -312,35 +319,14 @@ class AppPages {
       name: _Paths.UPCOMING_CELEBRATIONS,
       page: () => const UpcomingCelebrationsView(),
       binding: UpcomingCelebrationsBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.DEPARTMENT,
       page: () => const DepartmentView(),
       binding: DepartmentBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
   ];
 }
 
-class InitialBinding extends Bindings {
-  @override
-  void dependencies() {
-    HomeBinding();
-    SplashBinding();
-    LoginBinding();
-    SignUpBinding();
-    SearchCompanyBinding();
-    SelectBranceBinding();
-    UtilitiesBinding();
-    BottomNavigationBinding();
-    MenuViewBinding();
-    NotificationBinding();
-    DrawerViewBinding();
-    EditProfileBinding();
-    OtpVerificationBinding();
-    MyProfileBinding();
-    SelectDepartmentBinding();
-    SelectShiftTimeBinding();
-    ContactDetailBinding();
-    PersonalInfoBinding();
-  }
-}

@@ -170,6 +170,9 @@ class AK {
   static const punchOutDate = "punch_out_date";
   static const punchOutTime = "punch_out_time";
   static const attendanceReason = "attendance_reason";
+  static const attendanceDate = "attendance_date";
+  static const attendanceTime = "attendance_time";
+  static const punchOutMissingReason = "punch_out_missing_reason";
 
 
 }
@@ -294,6 +297,8 @@ class ApiEndPointAction{
   static const getWeeklyAttendanceHistoryNew = 'getWeeklyAttendanceHistoryNew';
 
   static const addAttendance = 'addAttendance';
+
+  static const punchOutMissingRequest = 'punchOutMissingRequest';
 
   static const addTaskCategory = 'addTaskCategory';
 
