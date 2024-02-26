@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -1094,6 +1093,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
 }
 
+/*
 class CustomToast {
 
   final player = AudioPlayer();
@@ -1145,4 +1145,4 @@ class CustomToast {
       overlayEntry.remove();
     });
   }
-}
+}*/

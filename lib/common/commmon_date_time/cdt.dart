@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';

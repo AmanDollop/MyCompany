@@ -867,7 +867,6 @@ class AttendanceTrackerController extends GetxController {
   }
 
   Future<void> clickOnSendRequestButton({required int index}) async {
-
     if(keyForBottomSheet.currentState!.validate()){
       sendRequestButtonValue.value = true;
       if(monthlyHistoryList![index].isPunchOutMissing ?? false)
@@ -985,7 +984,7 @@ class AttendanceTrackerController extends GetxController {
       if (getWeeklyAttendanceDataModal.value != null) {
         weeklyHistoryList = getWeeklyAttendanceDataModal.value?.getWeeklyAttendance?.weeklyHistory;
         if(weeklyHistoryList != null && weeklyHistoryList!.isNotEmpty){
-          for (var i = 0; i < weeklyHistoryList!.length-1; i++) {
+          for (var i = 0; i < weeklyHistoryList!.length; i++) {
             if(CMForDateTime.dateFormatForDateMonthYear(date: '${weeklyHistoryList?[i].startDate}') == CMForDateTime.dateFormatForDateMonthYear(date: '${currentWeakStartDate.value}')){
               pageController = PageController(initialPage: i);
               count.value++;
