@@ -76,29 +76,29 @@ class HomeView extends GetView<HomeController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   if (controller.hideUpcomingCelebration.value)
-                                    SizedBox(height: 16.px),
+                                   SizedBox(height: 16.px),
                                   if (controller.hideUpcomingCelebration.value)
-                                    upcomingCelebrationsButtonView(),
+                                   upcomingCelebrationsButtonView(),
                                   if (controller.hideMyTeam.value)
-                                    if(controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
-                                      SizedBox(height: 14.px),
+                                  if(controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
+                                   SizedBox(height: 14.px),
                                   if (controller.hideMyTeam.value)
-                                    if(controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
-                                      myTeamListView(),
+                                  if(controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
+                                   myTeamListView(),
                                   if (controller.hideMyReportingPerson.value)
-                                    if(controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
-                                      SizedBox(height: 14.px),
+                                  if(controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
+                                   SizedBox(height: 14.px),
                                   if (controller.hideMyReportingPerson.value)
-                                    if(controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
-                                      reportingPersonListView(),
+                                  if(controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
+                                   reportingPersonListView(),
                                   if (controller.hideMyDepartment.value)
-                                    if(controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
-                                      SizedBox(height: 14.px),
+                                  if(controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
+                                   SizedBox(height: 14.px),
                                   if (controller.hideMyDepartment.value)
-                                    if(controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
-                                      yourDepartmentListView(),
+                                  if(controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
+                                   yourDepartmentListView(),
                                   if (controller.hideGallery.value)
-                                    Padding(
+                                   Padding(
                                       padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,7 +109,7 @@ class HomeView extends GetView<HomeController> {
                                       ),
                                     ),
                                   if (controller.hideGallery.value)
-                                    galleryListView(),
+                                   galleryListView(),
                                   SizedBox(height: 10.px),
                                 ],
                               )
@@ -478,6 +478,16 @@ class HomeView extends GetView<HomeController> {
   //       ),
   //     );
 
+  void showOverlay({required BuildContext context, required String imagePath, required String userShortName}) {
+    controller.overlayEntry = CW.showOverlay(
+        context: context,
+        imagePath: imagePath,
+        userShortName: userShortName,
+        height: 200.px,
+        width: 200.px,
+        borderRadius: 100.px);
+  }
+
   Widget upcomingCelebrationsButtonView() {
     return commonCard(
       titleText: 'Upcoming Celebrations',
@@ -783,9 +793,20 @@ class HomeView extends GetView<HomeController> {
             : controller.getDepartmentEmployeeList?.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return InkWell(
+          return GestureDetector(
             onTap: () => controller.clickOnYourDepartmentCards(yourDepartmentCardIndex: index),
-            borderRadius: BorderRadius.circular(8.px),
+            onLongPress: () {
+              // Show overlay entry
+              showOverlay(context: context, userShortName: controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
+                  ? '${controller.getDepartmentEmployeeList?[index].shortName}'
+                  : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',);
+            },
+            onLongPressCancel: () {
+              controller.overlayEntry.remove();
+            },
+            onLongPressEnd: (details) {
+              controller.overlayEntry.remove();
+            },
             child: Ink(
               height: 106.px,
               width: 100.px,
@@ -871,9 +892,20 @@ class HomeView extends GetView<HomeController> {
           childAspectRatio: 2.2
         ),
         itemBuilder: (context, index) {
-          return InkWell(
+          return GestureDetector(
             onTap: () => controller.clickOnMyTeamCards(myTeamCardIndex: index),
-            borderRadius: BorderRadius.circular(8.px),
+            onLongPress: () {
+              // Show overlay entry
+              showOverlay(context: context, userShortName: controller.myTeamMemberList?[index].shortName != null && controller.myTeamMemberList![index].shortName!.isNotEmpty
+                  ? '${controller.myTeamMemberList?[index].shortName}'
+                  : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.myTeamMemberList?[index].userProfilePic}',);
+            },
+            onLongPressCancel: () {
+              controller.overlayEntry.remove();
+            },
+            onLongPressEnd: (details) {
+              controller.overlayEntry.remove();
+            },
             child: Ink(
               height: 132.px,
               padding: EdgeInsets.only(left: 10.px),
@@ -905,7 +937,6 @@ class HomeView extends GetView<HomeController> {
                         child: CW.commonNetworkImageView(
                           path: '${AU.baseUrlAllApisImage}${controller.myTeamMemberList?[index].userProfilePic}',
                           isAssetImage: false,
-                          errorImage: 'assets/images/profile.png',
                           fit: BoxFit.fill,
                           width: 40.px,
                           height: 40.px,
@@ -966,9 +997,20 @@ class HomeView extends GetView<HomeController> {
             mainAxisSpacing: 10.px,
             childAspectRatio: 2.2),
         itemBuilder: (context, index) {
-          return InkWell(
+          return GestureDetector(
             onTap: () => controller.clickOnReportingPersonCard(reportingPersonIndex: index),
-            borderRadius: BorderRadius.circular(8.px),
+            onLongPress: () {
+              // Show overlay entry
+              showOverlay(context: context, userShortName: controller.myReportingTeamList?[index].shortName != null && controller.myReportingTeamList![index].shortName!.isNotEmpty
+                  ? '${controller.myReportingTeamList?[index].shortName}'
+                  : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.myReportingTeamList?[index].userProfilePic}',);
+            },
+            onLongPressCancel: () {
+              controller.overlayEntry.remove();
+            },
+            onLongPressEnd: (details) {
+              controller.overlayEntry.remove();
+            },
             child: Ink(
               height: 132.px,
               padding: EdgeInsets.only(left: 10.px),

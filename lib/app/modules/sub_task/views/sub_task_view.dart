@@ -271,7 +271,7 @@ class SubTaskView extends GetView<SubTaskController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 taskNameContainerView(index: index),
-                profileView(index: index),
+                profileView(index: index,context: context),
                 CW.commonDividerView(
                     height: 0.px, color: Col.gray.withOpacity(.5)),
                 dateView(index: index),
@@ -339,34 +339,59 @@ class SubTaskView extends GetView<SubTaskController> {
         ),
       );
 
-  Widget profileView({required int index}) => Padding(
+  void showOverlay({required BuildContext context, required String imagePath, required String userShortName}) {
+    controller.overlayEntry = CW.showOverlay(
+        context: context,
+        imagePath: imagePath,
+        userShortName: userShortName,
+        height: 200.px,
+        width: 200.px,
+        borderRadius: 100.px);
+  }
+
+  Widget profileView({required int index,required BuildContext context}) => Padding(
         padding: EdgeInsets.all(10.px),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              width: 50.px,
-              height: 50.px,
-              margin: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: Col.primary,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25.px),
-                        child: CW.commonNetworkImageView(
-                          path: '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
-                          isAssetImage: false,
-                          width: 50.px,
-                          height: 50.px,
-                          errorImageValue: true,
-                          userShortName: controller.subTaskList?[index].shortName != null &&
-                              controller.subTaskList![index].shortName!.isNotEmpty
-                              ? '${controller.subTaskList?[index].shortName}'
-                              : '?'
+            GestureDetector(
+              onLongPress: () {
+                // Show overlay entry
+                showOverlay(context: context, userShortName: controller.subTaskList?[index].shortName != null &&
+                    controller.subTaskList![index].shortName!.isNotEmpty
+                    ? '${controller.subTaskList?[index].shortName}'
+                    : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',);
+              },
+              onLongPressCancel: () {
+                controller.overlayEntry.remove();
+              },
+              onLongPressEnd: (details) {
+                controller.overlayEntry.remove();
+              },
+              child: Container(
+                width: 50.px,
+                height: 50.px,
+                margin: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  color: Col.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25.px),
+                          child: CW.commonNetworkImageView(
+                            path: '${AU.baseUrlAllApisImage}${controller.subTaskList?[index].userProfile}',
+                            isAssetImage: false,
+                            width: 50.px,
+                            height: 50.px,
+                            errorImageValue: true,
+                            userShortName: controller.subTaskList?[index].shortName != null &&
+                                controller.subTaskList![index].shortName!.isNotEmpty
+                                ? '${controller.subTaskList?[index].shortName}'
+                                : '?'
+                          ),
                         ),
-                      ),
+                ),
               ),
             ),
             SizedBox(width: 10.px),

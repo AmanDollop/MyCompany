@@ -73,6 +73,7 @@ dependencies:
   url_launcher: ^6.0.0
   open_file: ^3.3.2
   audioplayers: ^5.2.1
+  firebase_core: ^2.25.4
 
 
 #  trust_location: ^2.0.13

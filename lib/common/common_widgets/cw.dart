@@ -1290,14 +1290,47 @@ class CW {
     double? wight,
     double? leftPadding,
     double? rightPadding,
-  }) =>
-      Divider(
+  }) => Divider(
         color: color ?? Col.gray,
         height: height ?? 10.px,
         thickness: wight ?? .5.px,
         endIndent: rightPadding,
         indent: leftPadding,
       );
+
+  static OverlayEntry showOverlay({required BuildContext context, required String imagePath, String? userShortName,double? height, double? width, double? borderRadius}) {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (BuildContext context) {
+        return Material(
+          color: Col.primary.withOpacity(.6),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.px),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadius ?? 68),
+                child: CW.commonNetworkImageView(
+                    path: imagePath,
+                    isAssetImage: false,
+                    height: height ?? 136.px,
+                    width: width ?? 136.px,
+                    errorImageValue: true,
+                    userShortName: userShortName,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    // Insert overlay entry
+    Overlay.of(context).insert(overlayEntry);
+    return overlayEntry;
+    // // Remove overlay entry after some time (e.g., 3 seconds)
+    // Future.delayed(Duration(seconds: 3), () {
+    //   // controller.overlayEntry.remove();
+    // });
+  }
 
   /// --------------------------Common ImageView/Shimmer/ReadMore/Ratting Collection--------------------------
 
@@ -1352,8 +1385,8 @@ class CW {
                   errorBuilder: (context, error, stackTrace) {
                     if (errorImageValue) {
                       return Container(
-                        // width: 44.px,
-                        // height: 44.px,
+                         height: height,
+                         width: width,
                         // margin: EdgeInsets.zero,
                         decoration: BoxDecoration(
                             color: userShortNameBackgroundColor ?? Col.primary,
@@ -1362,12 +1395,7 @@ class CW {
                         child: Center(
                           child: Text(
                             userShortName ?? "",
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                    color: userShortNameColor ??
-                                        Col.inverseSecondary),
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.inverseSecondary),
                           ),
                         ),
                       );
@@ -1629,6 +1657,8 @@ class CW {
       bool apiResValue = false}) {
     return CachedNetworkImage(
       imageUrl: path,
+      fadeInDuration: const Duration(microseconds: 0),
+      fadeOutDuration: const Duration(microseconds: 0),
       imageBuilder: (context, imageProvider) => InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0),
@@ -1644,30 +1674,15 @@ class CW {
           ),
         ),
       ),
-      placeholder: loadingBuilder ??
-          (context, url) {
-            final count = 0.obs;
-            if (apiResValue) {
-              count.value++;
-              return commonShimmerViewForImage(
-                height: height,
-                width: width,
-                radius: radius,
-                backgroundColor: shimmerBackgroundColor,
-                duration: shimmerDuration,
-                movementColor: shimmerMovementColor,
-              );
-            } else {
-              count.value++;
-              return commonShimmerViewForImage(
-                height: height,
-                width: width,
-                radius: radius,
-                backgroundColor: shimmerBackgroundColor,
-                duration: shimmerDuration,
-                movementColor: shimmerMovementColor,
-              );
-            }
+      placeholder: loadingBuilder ?? (context, url) {
+            return commonShimmerViewForImage(
+              height: height,
+              width: width,
+              radius: radius,
+              backgroundColor: shimmerBackgroundColor,
+              duration: shimmerDuration,
+              movementColor: shimmerMovementColor,
+            );
           },
       errorWidget: (context, url, error) => Image.asset(
         errorImage ?? 'assets/images/default_image.jpg',

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -167,15 +167,8 @@ class WeekView extends GetView<AttendanceTrackerController> {
       children: [
         if (index > 0)
           IconButton(
-            icon: Icon(Icons.keyboard_arrow_left,
-                color: Col.secondary, size: 28.px),
-            onPressed: () {
-              controller.pageController.previousPage(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-              controller.count.value--;
-            },
+            icon: Icon(Icons.keyboard_arrow_left, color: Col.secondary, size: 28.px),
+            onPressed: () => controller.clickOnReverseIconButton(index:index),
           ),
         SizedBox(width: 10.px),
         Text(
@@ -185,27 +178,33 @@ class WeekView extends GetView<AttendanceTrackerController> {
         SizedBox(width: 10.px),
         if (index < controller.weeklyHistoryList!.length - 1)
           IconButton(
-            icon: Icon(Icons.keyboard_arrow_right,
-                color: Col.secondary, size: 28.px),
-            onPressed: () {
-              controller.pageController.nextPage(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-              controller.count.value++;
-            },
+            icon: Icon(Icons.keyboard_arrow_right, color: Col.secondary, size: 28.px),
+            onPressed: () => controller.clickOnForwardIconButton(index:index),
           ),
       ],
     );
   }
 
-  Widget commonCircularProgressBar({required double value}) {
-    return CircularProgressIndicator(
-      strokeWidth: 8.px,
-      value: .5,
-      backgroundColor: Col.primary.withOpacity(.2),
-      strokeCap: StrokeCap.round,
-    );
+  startCircularProgressBar({required int index}){
+    double percentage = double.parse('${controller.weeklyHistoryList?[index].totalSpendMinutes}') / double.parse('${controller.weeklyHistoryList?[index].totalWeekMinutes}');
+    controller.animation = Tween(begin: 0.0, end: percentage).animate(controller.animationController)..addListener(() {
+          controller.progressValue.value = controller.animation.value;
+          controller.count.value++;
+      });
+    // Start the animation
+    controller.animationController.forward();
+  }
+
+
+  Widget commonCircularProgressBar({required int index}) {
+    startCircularProgressBar(index: index);
+      return CircularProgressIndicator(
+        strokeWidth: 8.px,
+        value: controller.progressValue.value,
+        backgroundColor: Col.primary.withOpacity(.2),
+        strokeCap: StrokeCap.round,
+      );
+
   }
 
   Widget circularProgressBarView({required int index}) => Row(
@@ -220,7 +219,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
                   child: SizedBox(
                     height: 130.px,
                     width: 130.px,
-                    child: commonCircularProgressBar(value: 0.0),
+                    child: commonCircularProgressBar(index: index),
                   ),
                 ),
                 SizedBox(
@@ -232,17 +231,13 @@ class WeekView extends GetView<AttendanceTrackerController> {
                       titleTextView(text: 'Total time', color: Col.secondary),
                       SizedBox(height: 2.px),
                       subTitleTextView(
-                          text: CMForDateTime.calculateTimeForHourAndMin(
-                              minute:
-                                  '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
+                          text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
                       SizedBox(height: 5.px),
                       titleTextView(
                           text: 'Total Spend Time', color: Col.secondary),
                       SizedBox(height: 2.px),
                       subTitleTextView(
-                          text: CMForDateTime.calculateTimeForHourAndMin(
-                              minute:
-                                  '${controller.weeklyHistoryList?[index].totalSpendMinutes}'))
+                          text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalSpendMinutes}'))
                     ],
                   ),
                 ),
@@ -382,12 +377,11 @@ class WeekView extends GetView<AttendanceTrackerController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        titleTextView(text: 'Extra Hours'),
+                        titleTextView(text: 'Extra Time'),
                         SizedBox(height: 2.px),
                         subTitleTextView(
                           text: CMForDateTime.calculateTimeForHourAndMin(
-                              minute:
-                                  '${controller.weekDayHistoryList?[weekDayIndex].extraWorkingMinutes}'),
+                              minute: '${controller.weekDayHistoryList?[weekDayIndex].extraWorkingMinutes}'),
                         ),
                       ],
                     ),
@@ -401,8 +395,7 @@ class WeekView extends GetView<AttendanceTrackerController> {
                         SizedBox(height: 2.px),
                         subTitleTextView(
                           text: CMForDateTime.calculateTimeForHourAndMin(
-                              minute:
-                                  '${controller.weekDayHistoryList?[weekDayIndex].remainingWorkingMinutes}'),
+                              minute: '${controller.weekDayHistoryList?[weekDayIndex].remainingWorkingMinutes}'),
                         ),
                       ],
                     ),

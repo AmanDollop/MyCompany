@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855023530221",
+    "project_id": "my-company-dollop",
+    "storage_bucket": "my-company-dollop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855023530221:android:8b17a0673593b1ed519ce4",
+        "android_client_info": {
+          "package_name": "com.example.my_company"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF0rLNm8jQhJCRtng2w5t8oZtQ8hlj5eE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

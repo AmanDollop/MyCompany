@@ -145,6 +145,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   List<MyReportingTeam>? myReportingTeamList;
   Map<String, dynamic> bodyParamsForGetReportingPersonApi = {};
 
+  late OverlayEntry overlayEntry;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -665,7 +667,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                   style: Theme.of(Get.context!)
                       .textTheme
                       .labelLarge
-                      ?.copyWith(color: Col.darkGray),
+                      ?.copyWith(color: Col.darkGray,fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -684,7 +686,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                   progressBarHeight: 20.px,
                   child: Text(
                     !checkInValue.value ? 'Punch In' : 'Punch out',
-                    style: Theme.of(Get.context!).textTheme.labelLarge,
+                    style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 );
               }),
@@ -786,10 +788,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   void clickOnHeadingCards({required int headingCardIndex}) {
     if (isHeadingMenuList[headingCardIndex].menuClick == 'circular') {
-      Get.toNamed(Routes.CIRCULAR,
-          arguments: [isHeadingMenuList[headingCardIndex].menuName]);
+      Get.toNamed(Routes.CIRCULAR, arguments: [isHeadingMenuList[headingCardIndex].menuName]);
     } else if (isHeadingMenuList[headingCardIndex].menuClick == 'attendance') {
       Get.toNamed(Routes.ATTENDANCE_TRACKER, arguments: [isHeadingMenuList[headingCardIndex].menuName]);
+    }else if (isHeadingMenuList[headingCardIndex].menuClick == 'leave') {
+      Get.toNamed(Routes.LEAVE, arguments: [isHeadingMenuList[headingCardIndex].menuName]);
     } else {
       CM.showSnackBar(message: 'Coming soon');
     }

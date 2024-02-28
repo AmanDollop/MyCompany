@@ -21,7 +21,7 @@ import '../../../../common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
 
 
-class AttendanceTrackerController extends GetxController {
+class AttendanceTrackerController extends GetxController with GetTickerProviderStateMixin {
   final count = 0.obs;
   final menuName = ''.obs;
   List<String> monthNameForMonthViewList = [
@@ -49,7 +49,6 @@ class AttendanceTrackerController extends GetxController {
     DateFormat('yyyy').format(DateTime.now().add(const Duration(days: 365))),
   ];
 
-
   final monthNameForWeekViewValue = 'January'.obs;
   final yearForWeekViewValue = DateFormat('yyyy').format(DateTime.now()).obs;
   final monthNameIdForWeekView = '1'.obs;
@@ -62,11 +61,11 @@ class AttendanceTrackerController extends GetxController {
     const Color(0xffFFF2D8),
     const Color(0xffF2FFF3),
     const Color(0xffFFD9D9),
-    const Color(0xffE6E6E6),
+    const Color(0xffFFE9DD),
     const Color(0xffC7EEF4),
     const Color(0xffFFE9FD),
     const Color(0xffDDE0FB),
-    const Color(0xffFFE9DD),
+    const Color(0xffE6E6E6),
     const Color(0xffE0F1FF),
     const Color(0xffFFE2D3),
     const Color(0xffE4E1ED),
@@ -77,11 +76,11 @@ class AttendanceTrackerController extends GetxController {
     const Color(0xffE09701),
     const Color(0xff02930D),
     const Color(0xffCE1212),
-    const Color(0xff616161),
+    const Color(0xffAA3B00),
     const Color(0xff006E80),
     const Color(0xffCC08BA),
     const Color(0xff0717AF),
-    const Color(0xffAA3B00),
+    const Color(0xff616161),
     const Color(0xff249CFF),
     const Color(0xffFF5700),
     const Color(0xff4C426C),
@@ -147,6 +146,9 @@ class AttendanceTrackerController extends GetxController {
   List<History>? weekDayHistoryList;
   Map<String, dynamic> bodyParamsForWeeklyAttendanceApi = {};
   PageController pageController = PageController();
+  late AnimationController animationController;
+  late Animation<double> animation;
+  final progressValue = 0.0.obs;
 
 
   final currentWeakStartDate = DateTime.now().obs;
@@ -158,6 +160,7 @@ class AttendanceTrackerController extends GetxController {
     super.onInit();
     try {
       menuName.value = Get.arguments[0];
+      animationController = AnimationController(vsync: this, duration: const Duration(seconds: 2),animationBehavior: AnimationBehavior.normal);
       currentWeakStartDate.value = CommonCalendarMethods.getPreviousMonday(DateTime.now());
       monthNameForMonthViewValue.value = monthNameForMonthViewList[currentMonth.value.month-1];
       monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
@@ -181,17 +184,20 @@ class AttendanceTrackerController extends GetxController {
   @override
   void dispose() {
     pageController.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
   void increment() => count.value++;
 
-  void clickOnBackButton() {
+  clickOnBackButton() {
+    tabBarValue.value = 'Month';
     Get.back();
   }
 
   Future<void> clickOnMonthTab() async {
     tabBarValue.value = 'Month';
+    commonMethodForAnimationController();
     monthNameForMonthViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
     monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
     monthTotalDaysListDataAdd();
@@ -200,6 +206,7 @@ class AttendanceTrackerController extends GetxController {
 
   Future<void> clickOnWeekTab() async {
     tabBarValue.value = 'Week';
+    commonMethodForAnimationController();
     monthNameForWeekViewValue.value = monthNameForMonthViewList[DateTime.now().month - 1];
     monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
     monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
@@ -323,7 +330,7 @@ class AttendanceTrackerController extends GetxController {
             ),
           ),
           SizedBox(height: 40.px)
-        ]);
+        ]).whenComplete(() => commonMethodForAnimationController(),);
 
   }
 
@@ -432,7 +439,7 @@ class AttendanceTrackerController extends GetxController {
             ),
           ),
           SizedBox(height: 40.px)
-        ]);
+        ]).whenComplete(() => commonMethodForAnimationController(),);
   }
 
   /*Future<void> monthDropDownOnChangedForMonth({required String value}) async {
@@ -531,11 +538,11 @@ class AttendanceTrackerController extends GetxController {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      commonCardTimeTextView(title: 'Productive Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].productiveWorkingMinutes}')),
+                      commonCardTimeTextView(title: 'Productive Time', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].productiveWorkingMinutes}')),
                       commonCardTimeVerticalDividerView(),
-                      commonCardTimeTextView(title: 'Shift Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].totalShiftMinutes}')),
+                      commonCardTimeTextView(title: 'Shift Time', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].totalShiftMinutes}')),
                       commonCardTimeVerticalDividerView(),
-                      commonCardTimeTextView(title: 'Extra Hours', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].extraWorkingMinutes}')),
+                      commonCardTimeTextView(title: 'Extra Time', subTitle: CMForDateTime.calculateTimeForHourAndMin(minute: '${monthlyHistoryList?[index].extraWorkingMinutes}')),
                     ],
                   ),
                 ),
@@ -985,7 +992,7 @@ class AttendanceTrackerController extends GetxController {
       if (getWeeklyAttendanceDataModal.value != null) {
         weeklyHistoryList = getWeeklyAttendanceDataModal.value?.getWeeklyAttendance?.weeklyHistory;
         if(weeklyHistoryList != null && weeklyHistoryList!.isNotEmpty){
-          for (var i = 0; i < weeklyHistoryList!.length-1; i++) {
+          for (var i = 0; i < weeklyHistoryList!.length; i++) {
             if(CMForDateTime.dateFormatForDateMonthYear(date: '${weeklyHistoryList?[i].startDate}') == CMForDateTime.dateFormatForDateMonthYear(date: '${currentWeakStartDate.value}')){
               pageController = PageController(initialPage: i);
               count.value++;
@@ -1105,7 +1112,7 @@ class AttendanceTrackerController extends GetxController {
             ),
           ),
           SizedBox(height: 40.px)
-        ]);
+        ]).whenComplete(() => commonMethodForAnimationController(),);
   }
 
   Future<void> clickOnYearFromWeekView() async {
@@ -1211,7 +1218,33 @@ class AttendanceTrackerController extends GetxController {
             ),
           ),
           SizedBox(height: 40.px)
-        ]);
+        ]).whenComplete(() => commonMethodForAnimationController(),);
+  }
+
+  void clickOnForwardIconButton({required int index}) {
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      progressValue.value = 0.0;
+      animationController.dispose();
+      animationController = AnimationController(vsync: this, duration: const Duration(seconds: 2),animationBehavior: AnimationBehavior.normal);
+      count.value++;
+  }
+
+  void clickOnReverseIconButton({required int index}) {
+    pageController.previousPage(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+    commonMethodForAnimationController();
+    count.value--;
+  }
+
+  void commonMethodForAnimationController(){
+    progressValue.value = 0.0;
+    animationController.dispose();
+    animationController = AnimationController(vsync: this, duration: const Duration(seconds: 2),animationBehavior: AnimationBehavior.normal);
   }
 
 }

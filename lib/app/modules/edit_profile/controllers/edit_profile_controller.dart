@@ -51,7 +51,7 @@ class EditProfileController extends GetxController {
   final apiResponseValue = true.obs;
   final saveButtonValue = false.obs;
 
-  final userDataFromLocalDataBase =''.obs;
+  final userDataFromLocalDataBase = ''.obs;
   UserDetails? userData;
   PersonalInfo? personalInfo;
   ContactInfo? contactInfo;
@@ -86,63 +86,68 @@ class EditProfileController extends GetxController {
 
   void increment() => count.value++;
 
-
   Future<void> setDefaultData() async {
+    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(
+        key: DataBaseConstant.userDetail,
+        tableName: DataBaseConstant.tableNameForUserDetail);
 
-    userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
+    userData =
+        UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
+            .userDetails;
 
-    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
-
-    personalInfo=userData?.personalInfo;
-    contactInfo=userData?.contactInfo;
+    personalInfo = userData?.personalInfo;
+    contactInfo = userData?.contactInfo;
     jobInfo = userData?.jobInfo;
 
-      userFullName.value = personalInfo?.userFullName??'';
+    userFullName.value = personalInfo?.userFullName ?? '';
 
-      userShortName.value = personalInfo?.shortName??'';
+    userShortName.value = personalInfo?.shortName ?? '';
 
-      firstNameController.text = personalInfo?.userFirstName??'';
+    firstNameController.text = personalInfo?.userFirstName ?? '';
 
-      lastNameController.text = personalInfo?.userLastName??'';
+    lastNameController.text = personalInfo?.userLastName ?? '';
 
-      userPic.value = personalInfo?.userProfilePic??'';
+    userPic.value = personalInfo?.userProfilePic ?? '';
 
-      genderType.value = personalInfo?.gender??'';
-      if (genderType.value == 'Male') {
-        genderIndexValue.value = '0';
-      } else if (genderType.value == 'Female') {
-        genderIndexValue.value = '1';
-      } else {
-        genderIndexValue.value = '-1';
-      }
-
-      hobbiesAndInterestController.text = personalInfo?.hobbiesAndInterest??'';
-
-      dob.value = personalInfo?.memberDateOfBirth??'';
-      if(dob.value.isNotEmpty){
-        String formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: dob.value);
-        dobController.text = formattedDate.toString();
-      }
-
-      skillsController.text = personalInfo?.skills??'';
-
-
-    languageKnownController.text = personalInfo?.languageKnown??'';
-
-    bloodGroupController.text = personalInfo?.bloodGroup??'';
-    bloodGroupValue.value = personalInfo?.bloodGroup??'';
-
-    emailController.text = contactInfo?.userEmail??'';
-
-    mobileNumber.value = contactInfo?.userMobile??'';
-
-    countryCode.value = contactInfo?.countryCode??'';
-
-    if (countryCode.value != 'null' && countryCode.value.isNotEmpty && mobileNumber.value != 'null' && mobileNumber.value.isNotEmpty) {
-      mobileNumberController.text = '${countryCode.value} ${mobileNumber.value}';
+    genderType.value = personalInfo?.gender ?? '';
+    if (genderType.value == 'Male') {
+      genderIndexValue.value = '0';
+    } else if (genderType.value == 'Female') {
+      genderIndexValue.value = '1';
+    } else {
+      genderIndexValue.value = '-1';
     }
-    userDesignation.value = jobInfo?.userDesignation??'';
 
+    hobbiesAndInterestController.text = personalInfo?.hobbiesAndInterest ?? '';
+
+    dob.value = personalInfo?.memberDateOfBirth ?? '';
+    if (dob.value.isNotEmpty) {
+      String formattedDate =
+          CMForDateTime.dateFormatForDateMonthYear(date: dob.value);
+      dobController.text = formattedDate.toString();
+    }
+
+    skillsController.text = personalInfo?.skills ?? '';
+
+    languageKnownController.text = personalInfo?.languageKnown ?? '';
+
+    bloodGroupController.text = personalInfo?.bloodGroup ?? '';
+    bloodGroupValue.value = personalInfo?.bloodGroup ?? '';
+
+    emailController.text = contactInfo?.userEmail ?? '';
+
+    mobileNumber.value = contactInfo?.userMobile ?? '';
+
+    countryCode.value = contactInfo?.countryCode ?? '';
+
+    if (countryCode.value != 'null' &&
+        countryCode.value.isNotEmpty &&
+        mobileNumber.value != 'null' &&
+        mobileNumber.value.isNotEmpty) {
+      mobileNumberController.text =
+          '${countryCode.value} ${mobileNumber.value}';
+    }
+    userDesignation.value = jobInfo?.userDesignation ?? '';
   }
 
   void clickOnBackButton() {
@@ -186,7 +191,7 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> clickOnSaveButton() async {
-    if(key.currentState!.validate()){
+    if (key.currentState!.validate()) {
       saveButtonValue.value = true;
       await callingUpDateProfileApi();
       saveButtonValue.value = false;
@@ -194,7 +199,23 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> clickOnDOBTextField() async {
-    await CDT.iosPicker(context: Get.context!, dateController: dobController, initialDate: dobController.text.isNotEmpty ? DateFormat('dd MMM yyyy').parse(dobController.text) : DateTime.now()).whenComplete(() => CM.unFocusKeyBoard(),);
+    print('dobController.text:::: ${dobController.text}');
+    await CDT.iosPicker1(
+            context: Get.context!,
+            dateController: dobController,
+            initialDate: dobController.text.isNotEmpty
+                ? DateFormat('dd MMM yyyy').parse(dobController.text)
+                : DateTime.now(),
+           firstDate:  dobController.text.isNotEmpty
+               ? DateFormat('dd MMM yyyy').parse(dobController.text)
+               : DateTime(DateTime.now().year - 18),
+      lastDate: dobController.text.isNotEmpty
+          ? DateTime(DateFormat('dd MMM yyyy').parse(dobController.text).year+5)
+          : DateTime(DateTime.now().year + 5),
+    )
+        .whenComplete(
+          () => CM.unFocusKeyBoard(),
+        );
   }
 
   Future<void> clickOnBloodGroupTextField() async {
@@ -207,14 +228,17 @@ class EditProfileController extends GetxController {
           Center(
             child: Text(
               'Blood Group',
-              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           SizedBox(height: 14.px),
           Wrap(
             children: List.generate(
               bloodGroupList.length,
-                  (index) => Obx(() {
+              (index) => Obx(() {
                 count.value;
                 final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
                 return SizedBox(
@@ -252,7 +276,10 @@ class EditProfileController extends GetxController {
                             children: [
                               Text(
                                 bloodGroupList[index],
-                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                                style: Theme.of(Get.context!)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w500),
                               ),
                               /*Container(
                                 height:
@@ -299,62 +326,59 @@ class EditProfileController extends GetxController {
     );
   }
 
-  void clickOnBloodGroup({required int index})  {
+  void clickOnBloodGroup({required int index}) {
     bloodGroupValue.value = bloodGroupList[index];
     bloodGroupController.text = bloodGroupValue.value;
     Get.back();
   }
 
   Future<void> callingUpDateProfileApi() async {
-   try{
-     bodyParamsForUpdateProfile = {
-       AK.action : ApiEndPointAction.updatePersonalInfo,
-       AK.userFirstName : firstNameController.text.trim(),
-       AK.userLastName : lastNameController.text.trim(),
-       AK.memberDateOfBirth : dobController.text.trim(),
-       AK.hobbiesAndInterest : hobbiesAndInterestController.text.trim(),
-       AK.skills : skillsController.text.trim(),
-       AK.languageKnown : languageKnownController.text.trim(),
-       AK.bloodGroup : bloodGroupController.text.trim(),
-       AK.gender : genderType.value,
-     };
-     http.Response? response = await CAI.updateProfileApi(
-       bodyParams: bodyParamsForUpdateProfile,
-       image: image.value,
-     );
-     if(response != null){
-       if(response.statusCode == 200){
-         Map<String,dynamic> mapRes = {};
-         mapRes = jsonDecode(response.body);
-         CM.showSnackBar(message: mapRes['message']);
-         await BottomSheetForOTP.callingGetUserDataApi();
-         Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
-       }
-     }else{
-       apiResponseValue.value=false;
-       saveButtonValue.value=false;
-     }
-   }catch(e){
-     apiResponseValue.value=false;
-     saveButtonValue.value=false;
-     CM.error();
-   }
+    try {
+      bodyParamsForUpdateProfile = {
+        AK.action: ApiEndPointAction.updatePersonalInfo,
+        AK.userFirstName: firstNameController.text.trim(),
+        AK.userLastName: lastNameController.text.trim(),
+        AK.memberDateOfBirth: dobController.text.trim(),
+        AK.hobbiesAndInterest: hobbiesAndInterestController.text.trim(),
+        AK.skills: skillsController.text.trim(),
+        AK.languageKnown: languageKnownController.text.trim(),
+        AK.bloodGroup: bloodGroupController.text.trim(),
+        AK.gender: genderType.value,
+      };
+      http.Response? response = await CAI.updateProfileApi(
+        bodyParams: bodyParamsForUpdateProfile,
+        image: image.value,
+      );
+      if (response != null) {
+        if (response.statusCode == 200) {
+          Map<String, dynamic> mapRes = {};
+          mapRes = jsonDecode(response.body);
+          CM.showSnackBar(message: mapRes['message']);
+          await BottomSheetForOTP.callingGetUserDataApi();
+          Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
+        }
+      } else {
+        apiResponseValue.value = false;
+        saveButtonValue.value = false;
+      }
+    } catch (e) {
+      apiResponseValue.value = false;
+      saveButtonValue.value = false;
+      CM.error();
+    }
   }
 
   Future<void> callingBloodGroupApi() async {
-   try{
-     bloodGroupModal.value = await CAI.getBloodGroupApi(bodyParams: {AK.action:ApiEndPointAction.getBloodGroup});
-     if(bloodGroupModal.value != null){
-       bloodGroup = bloodGroupModal.value?.bloodGroup;
-       Map<String, dynamic> bloodGroupData = jsonDecode(bloodGroup??'');
-       bloodGroupList.addAll(bloodGroupData.values.toList());
-     }
-   }catch(e){
-     apiResponseValue.value=false;
-   }
+    try {
+      bloodGroupModal.value = await CAI.getBloodGroupApi(
+          bodyParams: {AK.action: ApiEndPointAction.getBloodGroup});
+      if (bloodGroupModal.value != null) {
+        bloodGroup = bloodGroupModal.value?.bloodGroup;
+        Map<String, dynamic> bloodGroupData = jsonDecode(bloodGroup ?? '');
+        bloodGroupList.addAll(bloodGroupData.values.toList());
+      }
+    } catch (e) {
+      apiResponseValue.value = false;
+    }
   }
-
 }
-
-
-

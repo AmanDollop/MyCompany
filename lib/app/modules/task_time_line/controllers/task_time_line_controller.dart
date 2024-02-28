@@ -11,7 +11,6 @@ import 'package:http/http.dart' as http;
 class TaskTimeLineController extends GetxController {
 
   final count = 0.obs;
-
   TaskDetails? subTaskList;
 
   final scrollController = ScrollController();
@@ -29,6 +28,7 @@ class TaskTimeLineController extends GetxController {
 
   Map<String,dynamic> bodyParamsForAddTaskTimeLine = {};
 
+  late OverlayEntry overlayEntry;
 
 
   @override

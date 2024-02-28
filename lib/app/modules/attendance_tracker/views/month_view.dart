@@ -152,10 +152,21 @@ class MonthView extends GetView<AttendanceTrackerController> {
         }).toList(),
       );*/
 
-  Widget commonCircularProgressBar({required double value}) {
+  startCircularProgressBar(){
+    double percentage = double.parse('${controller.getMonthlyAttendanceData?.totalSpendMinutes}') / double.parse('${controller.getMonthlyAttendanceData?.totalMonthlyTime}');
+    controller.animation = Tween(begin: 0.0, end: percentage).animate(controller.animationController)..addListener(() {
+      controller.progressValue.value = controller.animation.value;
+      controller.count.value++;
+    });
+    // Start the animation
+    controller.animationController.forward();
+  }
+
+  Widget commonCircularProgressBar() {
+    startCircularProgressBar();
     return CircularProgressIndicator(
       strokeWidth: 8.px,
-      value: .5,
+      value: controller.progressValue.value,
       backgroundColor: Col.primary.withOpacity(.2),
       strokeCap: StrokeCap.round,
     );
@@ -174,7 +185,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
                 child: SizedBox(
                   height: 130.px,
                   width: 130.px,
-                  child: commonCircularProgressBar(value: 0.0),
+                  child: commonCircularProgressBar(),
                 ),
               ),
               SizedBox(
@@ -221,28 +232,21 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Widget titleTextView({required String text, Color? color}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelMedium
-            ?.copyWith(fontSize: 10.px, color: color),
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, color: color),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
 
   Widget subTitleTextView({required String text, double? fontSize}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelSmall
-            ?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
 
   Widget cardTitleTextView({required String text, Color? color}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-            fontSize: 10.px, fontWeight: FontWeight.w600, color: color),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w600, color: color),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       );
@@ -372,8 +376,8 @@ class MonthView extends GetView<AttendanceTrackerController> {
                     style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w500,
                             color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
-                                    ? calendarGridTextColorView(index: index - extra)
-                                    : Col.secondary),
+                                    ? Col.text
+                                    : Col.gray),
                   ),
                 ),
               ),
@@ -390,7 +394,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
       return const Color(0xffDDE0FB);
     } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
-      return const Color(0xffFFE9DD);
+      return const Color(0xffE6E6E6);
     } else if (controller.monthlyHistoryList?[index].leave ?? false) {
       return const Color(0xffE0F1FF);
     } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
@@ -408,7 +412,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
       return const Color(0xff0717AF);
     } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
-      return const Color(0xffAA3B00);
+      return const Color(0xff616161);
     } else if (controller.monthlyHistoryList?[index].leave ?? false) {
       return const Color(0xff249CFF);
     } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {

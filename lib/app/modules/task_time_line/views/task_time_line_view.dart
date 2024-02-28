@@ -32,8 +32,8 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
               stream: controller.counterStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  if(controller.getTaskTimeLineModal.value != null){
-                    if(controller.timeLineList.isNotEmpty) {
+                  if (controller.getTaskTimeLineModal.value != null) {
+                    if (controller.timeLineList.isNotEmpty) {
                       return Stack(
                         alignment: Alignment.bottomCenter,
                         children: [
@@ -48,53 +48,144 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
                                   physics: const ScrollPhysics(),
                                   reverse: true,
                                   itemBuilder: (context, index) {
-                                    final date = snapshot.data?.keys.toList()[index];
-                                    final dateMessages = controller.timeLineList[date] ?? [];
+                                    final date =
+                                        snapshot.data?.keys.toList()[index];
+                                    final dateMessages =
+                                        controller.timeLineList[date] ?? [];
 
                                     return Padding(
-                                      padding: EdgeInsets.only(left: 8.px, right: 8.px, top: 8.px, bottom: index == 0 ? 90.px : 8.px),
+                                      padding: EdgeInsets.only(
+                                          left: 8.px,
+                                          right: 8.px,
+                                          top: 8.px,
+                                          bottom: index == 0 ? 90.px : 8.px),
                                       child: Column(
                                         children: [
-                                          dateContainerView(index: index, date: date ?? DateTime.now()),
+                                          dateContainerView(
+                                              index: index,
+                                              date: date ?? DateTime.now()),
                                           SizedBox(height: 10.px),
                                           ...dateMessages.map((messageDetail) {
                                             return Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: messageDetail.isSender == false
-                                                  ? MainAxisAlignment.start
-                                                  : MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  messageDetail.isSender ==
+                                                          false
+                                                      ? MainAxisAlignment.start
+                                                      : MainAxisAlignment.end,
                                               children: [
-                                                if (messageDetail.isSender == false)
-                                                  senderProfileView(index: index, messageDetail: messageDetail),
-                                                ChatContainerView(
-                                                  delivered: messageDetail.isSender == false?true:false,
-                                                  onLongPress: messageDetail.isDeleteAllow ?? false
-                                                      ? () => controller.clickOnMessageView(messageId: messageDetail.taskTimelineId ?? '')
-                                                      : () => null,
-                                                  widget: Column(
-                                                    crossAxisAlignment:
-                                                    messageDetail.isSender == true
-                                                        ? CrossAxisAlignment.end
-                                                        : CrossAxisAlignment.start,
-                                                    children: [
-                                                      if (messageDetail.isSender == false)
-                                                        senderNameTextView(index: index, messageDetail: messageDetail),
-                                                      if (messageDetail.isSender == false)
-                                                        SizedBox(height: 5.px),
-                                                      if (messageDetail.taskTimelineStatus != '5')
-                                                        commonTextForStatusMessageView(index: index, messageDetail: messageDetail),
-                                                      if (messageDetail.taskTimelineStatus != '5')
-                                                        SizedBox(height: 5.px),
-                                                      if (messageDetail.taskTimelineDescription != null && messageDetail.taskTimelineDescription!.isNotEmpty)
-                                                        commonTextForMessageView(index: index, messageDetail: messageDetail),
-                                                      SizedBox(height: 2.px),
-                                                      commonTimeTextView(index: index, messageDetail: messageDetail),
-                                                    ],
-                                                  ),
-                                                  color: messageDetail.isSender ?? false
-                                                      ? Col.gray.withOpacity(.2.px)
-                                                      : Col.primary.withOpacity(.1.px),
-                                                  isSender: messageDetail.isSender ?? false,
+                                                if (messageDetail.isSender ==
+                                                    false)
+                                                  senderProfileView(
+                                                      index: index,
+                                                      messageDetail:
+                                                          messageDetail,
+                                                      context: context),
+                                                Stack(
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  children: [
+                                                    ChatContainerView(
+                                                      // delivered: messageDetail.isSender == false?true:false,
+                                                      onLongPress: messageDetail
+                                                                  .isDeleteAllow ??
+                                                              false
+                                                          ? () => controller
+                                                              .clickOnMessageView(
+                                                                  messageId:
+                                                                      messageDetail
+                                                                              .taskTimelineId ??
+                                                                          '')
+                                                          : () => null,
+                                                      widget: Column(
+                                                        crossAxisAlignment: messageDetail
+                                                                    .isSender ==
+                                                                true
+                                                            ? CrossAxisAlignment
+                                                                .end
+                                                            : CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          if (messageDetail
+                                                                  .isSender ==
+                                                              false)
+                                                            senderNameTextView(
+                                                                index: index,
+                                                                messageDetail:
+                                                                    messageDetail),
+                                                          if (messageDetail
+                                                                  .isSender ==
+                                                              false)
+                                                            SizedBox(
+                                                                height: 2.px),
+                                                          if (messageDetail
+                                                                  .taskTimelineStatus !=
+                                                              '5')
+                                                            commonTextForStatusMessageView(
+                                                                index: index,
+                                                                messageDetail:
+                                                                    messageDetail),
+                                                          if (messageDetail
+                                                                  .taskTimelineStatus !=
+                                                              '5')
+                                                            SizedBox(
+                                                                height: 5.px),
+                                                          if (messageDetail
+                                                                      .taskTimelineDescription !=
+                                                                  null &&
+                                                              messageDetail
+                                                                  .taskTimelineDescription!
+                                                                  .isNotEmpty)
+                                                            commonTextForMessageView(
+                                                                index: index,
+                                                                messageDetail:
+                                                                    messageDetail),
+                                                          if (messageDetail
+                                                                  .isSender ==
+                                                              false)
+                                                            SizedBox(
+                                                                height: 8.px),
+                                                          SizedBox(
+                                                              height: 4.px),
+                                                          if (messageDetail
+                                                                  .isSender ==
+                                                              true)
+                                                            commonTimeTextView(
+                                                              index: index,
+                                                              messageDetail:
+                                                                  messageDetail,
+                                                            ),
+                                                        ],
+                                                      ),
+                                                      color: messageDetail
+                                                                  .isSender ??
+                                                              false
+                                                          ? Col.gray
+                                                              .withOpacity(
+                                                                  .2.px)
+                                                          : Col.primary
+                                                              .withOpacity(
+                                                                  .1.px),
+                                                      isSender: messageDetail
+                                                              .isSender ??
+                                                          false,
+                                                    ),
+                                                    if (messageDetail
+                                                            .isSender ==
+                                                        false)
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 8.px,
+                                                                left: 8.px,
+                                                                bottom: 8.px),
+                                                        child: commonTimeTextView(
+                                                            index: index,
+                                                            messageDetail:
+                                                                messageDetail),
+                                                      ),
+                                                  ],
                                                 ),
                                               ],
                                             );
@@ -112,18 +203,23 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
                               : sendMessageContainerView()
                         ],
                       );
-                    }else{
+                    } else {
                       return controller.apiResValue.value
                           ? const SizedBox()
                           : CW.commonNoDataFoundText();
                     }
-                  }else{
+                  } else {
                     return controller.apiResValue.value
                         ? const SizedBox()
                         : CW.commonNoDataFoundText();
                   }
                 } else {
-                  return  Center(child: Text('Loading...',style: Theme.of(Get.context!).textTheme.titleLarge,),);
+                  return Center(
+                    child: Text(
+                      'Loading...',
+                      style: Theme.of(Get.context!).textTheme.titleLarge,
+                    ),
+                  );
                 }
               },
             ),
@@ -137,36 +233,62 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 4.px),
       decoration: BoxDecoration(
-          color: Col.primary.withOpacity(.2),
-          borderRadius: BorderRadius.circular(4.px)),
+          color: Col.primary.withOpacity(.05),
+          borderRadius: BorderRadius.circular(4.px),
+          border: Border.all(color: Col.primary, width: .1.px)),
       child: Text(
-          DateFormat('d MMM y').format(DateTime.now().subtract(const Duration(days: 1))) == DateFormat('d MMM y').format(DateTime.parse('$date'))
-              ? 'Yesterday'
-              : DateFormat('d MMM y').format(DateTime.now()) == DateFormat('d MMM y').format(DateTime.parse('$date'))
-             ? 'Today'
-          : DateFormat('d MMM y').format(DateTime.parse('$date')),
-          style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, fontSize: 10.px)),
+        DateFormat('d MMM y')
+                    .format(DateTime.now().subtract(const Duration(days: 1))) ==
+                DateFormat('d MMM y').format(DateTime.parse('$date'))
+            ? 'Yesterday'
+            : DateFormat('d MMM y').format(DateTime.now()) ==
+                    DateFormat('d MMM y').format(DateTime.parse('$date'))
+                ? 'Today'
+                : DateFormat('d MMM y').format(DateTime.parse('$date')),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.w800, fontSize: 10.px, color: Col.primary),
+      ),
     );
   }
 
-  Widget senderProfileView({required int index, required TimeLine messageDetail}) {
-    return Container(
-      height: 36.px,
-      width: 36.px,
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      decoration: BoxDecoration(
-          color: Col.primary.withOpacity(.2.px), shape: BoxShape.circle),
-      child: Center(
-        child:ClipRRect(
-          borderRadius: BorderRadius.circular(18.px),
-          child: CW.commonNetworkImageView(
-              path: '${AU.baseUrlAllApisImage}${messageDetail.userProfile}',
-              isAssetImage: false,
-              height: 36.px,
-              width: 36.px,
-              errorImageValue: true,
-              userShortName: '${messageDetail.shortName}'
+  void showOverlay({required BuildContext context, required TimeLine messageDetail}) {
+    controller.overlayEntry = CW.showOverlay(
+        context: context,
+        imagePath: '${AU.baseUrlAllApisImage}${messageDetail.userProfile}',
+        userShortName: '${messageDetail.shortName}',
+        height: 200.px,
+        width: 200.px,
+        borderRadius: 100.px);
+  }
+
+  Widget senderProfileView({required int index, required TimeLine messageDetail, required BuildContext context}) {
+    return GestureDetector(
+      onLongPress: () {
+        showOverlay(context: context, messageDetail: messageDetail);
+      },
+      onLongPressCancel: () {
+        controller.overlayEntry.remove();
+      },
+      onLongPressEnd: (details) {
+        controller.overlayEntry.remove();
+      },
+      child: Container(
+        height: 36.px,
+        width: 36.px,
+        margin: EdgeInsets.zero,
+        padding: EdgeInsets.zero,
+        decoration: BoxDecoration(
+            color: Col.primary.withOpacity(.2.px), shape: BoxShape.circle),
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18.px),
+            child: CW.commonNetworkImageView(
+                path: '${AU.baseUrlAllApisImage}${messageDetail.userProfile}',
+                isAssetImage: false,
+                height: 36.px,
+                width: 36.px,
+                errorImageValue: true,
+                userShortName: '${messageDetail.shortName}'),
           ),
         ),
       ),
@@ -180,7 +302,7 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
         style: Theme.of(Get.context!)
             .textTheme
             .labelMedium
-            ?.copyWith(fontSize: 10.px),
+            ?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
       );
 
   Widget commonTextForStatusMessageView({required int index, int? maxLine, required TimeLine messageDetail}) => Text(
@@ -205,12 +327,18 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
   //       maxLines: maxLine,
   //     );
 
-  Widget commonTextForMessageView({required int index, int? maxLine, required TimeLine messageDetail}) => CW.commonReadMoreText(value: '${messageDetail.taskTimelineDescription}',maxLine: 10);
+  Widget commonTextForMessageView({required int index, int? maxLine, required TimeLine messageDetail}) => CW.commonReadMoreText(value: '${messageDetail.taskTimelineDescription}', maxLine: 10);
 
-  Widget commonTimeTextView({required int index, required TimeLine messageDetail}) => Text(messageDetail.taskTimelineDate != null && messageDetail.taskTimelineDate!.isNotEmpty
-            ? DateFormat('hh:mm a').format(DateTime.parse('${messageDetail.taskTimelineDate}'))
+  Widget commonTimeTextView({required int index, required TimeLine messageDetail, Color? textColor}) => Text(
+        messageDetail.taskTimelineDate != null &&
+                messageDetail.taskTimelineDate!.isNotEmpty
+            ? DateFormat('hh:mm a')
+                .format(DateTime.parse('${messageDetail.taskTimelineDate}'))
             : '?',
-        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontSize: 8.px),
+        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+            fontSize: 8.px,
+            color: messageDetail.isSender == false ? Col.gray : textColor,
+            fontWeight: FontWeight.w500),
         textAlign: TextAlign.end,
       );
 
@@ -218,19 +346,31 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
         height: 82.px,
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 12.px),
-        decoration: BoxDecoration(color: Col.inverseSecondary, boxShadow: [BoxShadow(color: Col.gray, blurRadius: 1.px)]),
-        child: controller.getTaskTimeLineModal.value?.isTaskTimeLineActive ?? false
-            ? Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: sendMessageTextFieldView(),
-            ),
-            SizedBox(width: 10.px),
-            sendButtonView(),
-          ],
-        )
-            : Center(child: Text('${controller.getTaskTimeLineModal.value?.timelineMsg}',style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),),),
+        decoration: BoxDecoration(
+          color: Col.inverseSecondary,
+          boxShadow: [BoxShadow(color: Col.gray, blurRadius: 1.px)],
+        ),
+        child:
+            controller.getTaskTimeLineModal.value?.isTaskTimeLineActive ?? false
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: sendMessageTextFieldView(),
+                      ),
+                      SizedBox(width: 10.px),
+                      sendButtonView(),
+                    ],
+                  )
+                : Center(
+                    child: Text(
+                      '${controller.getTaskTimeLineModal.value?.timelineMsg}',
+                      style: Theme.of(Get.context!)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ),
       );
 
   Widget sendMessageTextFieldView() => CW.commonTextField(
@@ -321,15 +461,20 @@ class ChatContainerView extends StatelessWidget {
     return Align(
       alignment: isSender ? Alignment.topRight : Alignment.topLeft,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: isSender ? 8.px : 0.px, vertical: 2.px),
+        padding: EdgeInsets.symmetric(
+            horizontal: isSender ? 8.px : 0.px, vertical: 2.px),
         child: CustomPaint(
-          painter: SpecialChatBubbleOne(color: color, alignment: isSender ? Alignment.topRight : Alignment.topLeft, tail: tail),
+          painter: SpecialChatBubbleOne(
+              color: color,
+              alignment: isSender ? Alignment.topRight : Alignment.topLeft,
+              tail: tail),
           child: GestureDetector(
             onTap: onTap,
             onLongPress: onLongPress,
             child: Container(
               constraints: constraints ??
-                  BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .7,
+                  BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * .7,
                   ),
               margin: isSender
                   ? stateTick
@@ -341,7 +486,8 @@ class ChatContainerView extends StatelessWidget {
                   Padding(
                     padding: stateTick
                         ? EdgeInsets.only(right: 20.px)
-                        : EdgeInsets.symmetric(vertical: 0.px, horizontal: 4.px),
+                        : EdgeInsets.symmetric(
+                            vertical: 0.px, horizontal: 4.px),
                     child: widget,
                   ),
                   stateIcon != null && stateTick

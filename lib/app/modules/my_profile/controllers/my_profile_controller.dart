@@ -63,6 +63,7 @@ class MyProfileController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     try {
+      apiResponseValue.value = true;
       await BottomSheetForOTP.callingGetUserDataApi();
       if(await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForProfileMenu)) {
         await callingGetEmployeeDetailsApi();
@@ -86,6 +87,10 @@ class MyProfileController extends GetxController {
 
   void increment() => count.value++;
 
+  onRefresh() {
+    onInit();
+  }
+
   Future<void> setDefaultData() async {
 
     userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
@@ -96,9 +101,6 @@ class MyProfileController extends GetxController {
     contactInfo=userData?.contactInfo;
     jobInfo=userData?.jobInfo;
     socialInfo=userData?.socialInfo;
-
-    profileMenuDetails.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.profileMenuDetails, tableName: DataBaseConstant.tableNameForProfileMenu);
-    getEmployeeDetails = GetEmployeeDetailsModal.fromJson(jsonDecode(profileMenuDetails.value)).getEmployeeDetails;
 
       userFullName.value = personalInfo?.userFullName ?? '';
 
@@ -122,8 +124,11 @@ class MyProfileController extends GetxController {
 
       facebookUrl.value = socialInfo?.facebook??'';
 
-    await callingGetEmployeeDetailsApi();
+    profileMenuDetails.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.profileMenuDetails, tableName: DataBaseConstant.tableNameForProfileMenu);
+    getEmployeeDetails = GetEmployeeDetailsModal.fromJson(jsonDecode(profileMenuDetails.value)).getEmployeeDetails;
+    print('getEmployeeDetails::::: ${getEmployeeDetails?[0].profileMenuName}');
 
+    // await callingGetEmployeeDetailsApi();
   }
 
   void clickOnBackButton() {
@@ -150,12 +155,10 @@ class MyProfileController extends GetxController {
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'job') {
       await Get.toNamed(Routes.JOB_INFO,arguments:arguments);
-      apiResponseValue.value = true;
       onInit();
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'social') {
       await Get.toNamed(Routes.ADD_SOCIAL_INFO,arguments:arguments);
-      apiResponseValue.value = true;
       onInit();
     }
     else if (getEmployeeDetails?[listIndex].menuClick == 'bank') {
@@ -236,7 +239,6 @@ class MyProfileController extends GetxController {
     }else{
       CM.showSnackBar(message: 'Please add twitter url');
       await Get.toNamed(Routes.ADD_SOCIAL_INFO);
-      apiResponseValue.value = true;
       onInit();
     }
   }
@@ -252,7 +254,6 @@ class MyProfileController extends GetxController {
     }else{
       CM.showSnackBar(message: 'Please add linkedin url');
       await Get.toNamed(Routes.ADD_SOCIAL_INFO);
-      apiResponseValue.value = true;
       onInit();
     }
   }
@@ -268,7 +269,6 @@ class MyProfileController extends GetxController {
     }else{
       CM.showSnackBar(message: 'Please add instagram url');
       await Get.toNamed(Routes.ADD_SOCIAL_INFO);
-      apiResponseValue.value = true;
       onInit();
     }
   }
@@ -284,14 +284,12 @@ class MyProfileController extends GetxController {
     }else{
       CM.showSnackBar(message: 'Please add facebook url');
       await Get.toNamed(Routes.ADD_SOCIAL_INFO);
-      apiResponseValue.value = true;
       onInit();
     }
   }
 
   Future<void> clickOnEditSocialInfoButton() async {
     await Get.toNamed(Routes.ADD_SOCIAL_INFO);
-    apiResponseValue.value = true;
     onInit();
   }
 

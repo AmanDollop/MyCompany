@@ -174,14 +174,13 @@ class SignUpController extends GetxController {
   Future<void> clickOnJoiningDateTextField() async {
     CM.unFocusKeyBoard();
 
-    await CDT.iosPicker(
+    await CDT.iosPicker1(
         context: Get.context!,
         dateController: joiningDateController,
         initialDate: joiningDateController.text.isNotEmpty
             ? DateFormat('dd MMM yyyy').parse(joiningDateController.text)
-            : DateTime.now()).then((value) {
-              print('then::::::: $value');
-    });
+            : DateTime.now(),
+    );
   }
 
   Future<void> clickOnCountryCode() async {

@@ -37,9 +37,20 @@ class DepartmentView extends GetView<DepartmentController> {
               mainAxisSpacing: 10.px,
             ),
             itemBuilder: (context, index) {
-              return InkWell(
+              return GestureDetector(
                 onTap: () => controller.clickOnCards(myTeamCardIndex: index),
-                borderRadius: BorderRadius.circular(8.px),
+                onLongPress: () {
+                  // Show overlay entry
+                  showOverlay(context: context, userShortName:controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
+                      ? '${controller.getDepartmentEmployeeList?[index].shortName}'
+                      : '?',imagePath: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',);
+                },
+                onLongPressCancel: () {
+                  controller.overlayEntry.remove();
+                },
+                onLongPressEnd: (details) {
+                  controller.overlayEntry.remove();
+                },
                 child: Ink(
                   height: 132.px,
                   padding: EdgeInsets.only(left: 3.px),
@@ -130,6 +141,16 @@ class DepartmentView extends GetView<DepartmentController> {
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign,
       );
+
+  void showOverlay({required BuildContext context, required String imagePath, required String userShortName}) {
+    controller.overlayEntry = CW.showOverlay(
+        context: context,
+        imagePath: imagePath,
+        userShortName: userShortName,
+        height: 200.px,
+        width: 200.px,
+        borderRadius: 100.px);
+  }
 
   Widget shimmerView() => GridView.builder(
     shrinkWrap: true,

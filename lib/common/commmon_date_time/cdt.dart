@@ -6,6 +6,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
 
@@ -45,7 +46,8 @@ class CDT {
             primarySwatch: CM.getMaterialColor(color: Col.primary),
           ),
           child: MediaQuery(
-              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: use24HourTime),
+              data: MediaQuery.of(context)
+                  .copyWith(alwaysUse24HourFormat: use24HourTime),
               child: child ?? const SizedBox()),
         );
       },
@@ -53,7 +55,6 @@ class CDT {
 
     return pickedTime;
   }
-
 
   static Future<TimeOfDay?> iosTimePicker({
     required BuildContext context,
@@ -69,7 +70,7 @@ class CDT {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 Get.back();
               },
               child: Container(
@@ -79,7 +80,10 @@ class CDT {
                   color: Col.secondary,
                   shape: BoxShape.circle,
                 ),
-                child:  Center(child: Icon(Icons.close,color: Col.inverseSecondary,size: 16.px),),
+                child: Center(
+                  child: Icon(Icons.close,
+                      color: Col.inverseSecondary, size: 16.px),
+                ),
               ),
             ),
             SizedBox(height: 10.px),
@@ -89,7 +93,7 @@ class CDT {
               decoration: BoxDecoration(
                 color: Col.inverseSecondary,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular( 20.px),
+                  topLeft: Radius.circular(20.px),
                   topRight: Radius.circular(20.px),
                 ),
               ),
@@ -116,35 +120,49 @@ class CDT {
                           decoration: BoxDecoration(
                             color: Col.inverseSecondary,
                             borderRadius: BorderRadius.circular(10.px),
-                            border: Border.all(color: Col.secondary, width: 1.px),
+                            border:
+                                Border.all(color: Col.secondary, width: 1.px),
                           ),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.px,
+                                horizontal:
+                                    MediaQuery.of(Get.context!).size.width / 7),
                             child: Center(
                               child: Text(
                                 C.textCancel,
-                                style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
+                                style: Theme.of(Get.context!)
+                                    .textTheme
+                                    .displayLarge
+                                    ?.copyWith(color: Col.primary),
                               ),
                             ),
                           ),
                         ),
                       ),
                       GestureDetector(
-                        onTap:  () {
+                        onTap: () {
                           Navigator.of(context).pop(pickedTime);
                         },
                         child: Container(
                           decoration: BoxDecoration(
                             color: Col.inverseSecondary,
                             borderRadius: BorderRadius.circular(10.px),
-                            border: Border.all(color: Col.secondary, width: 1.px),
+                            border:
+                                Border.all(color: Col.secondary, width: 1.px),
                           ),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.px,
+                                horizontal:
+                                    MediaQuery.of(Get.context!).size.width / 7),
                             child: Center(
                               child: Text(
                                 C.textSelect,
-                                style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
+                                style: Theme.of(Get.context!)
+                                    .textTheme
+                                    .displayLarge
+                                    ?.copyWith(color: Col.primary),
                               ),
                             ),
                           ),
@@ -163,24 +181,24 @@ class CDT {
     return pickedTime;
   }
 
-  static Future<String> iosPicker({
-    DateTime? lastDate,
-    DateTime? firstDate,
-    DateTime? initialDate,
-    int? minimumYear,
-    int? maximumYear,
-    required BuildContext context,
-    VoidCallback? clickOnSelect,
-    double? height,
-    double? borderRadius,
-    Color? backgroundColor,
-    bool use24hFormat = false,
-    bool showDayOfWeek = false,
-    CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
-    DatePickerDateOrder order = DatePickerDateOrder.dmy,
-    TextEditingController? dateController
-  }) async {
-    String formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
+  static Future<String> iosPicker(
+      {DateTime? lastDate,
+      DateTime? firstDate,
+      DateTime? initialDate,
+      int? minimumYear,
+      int? maximumYear,
+      required BuildContext context,
+      VoidCallback? clickOnSelect,
+      double? height,
+      double? borderRadius,
+      Color? backgroundColor,
+      bool use24hFormat = false,
+      bool showDayOfWeek = false,
+      CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
+      DatePickerDateOrder order = DatePickerDateOrder.dmy,
+      TextEditingController? dateController}) async {
+    String formattedDate =
+        CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
 
     CBS.commonBottomSheet(
       children: [
@@ -197,25 +215,25 @@ class CDT {
                 CupertinoTheme(
                   data: const CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black
-                      ),
+                      dateTimePickerTextStyle:
+                          TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ),
                   child: SizedBox(
                     height: height ?? MediaQuery.of(context).size.height / 3.5,
                     child: CupertinoDatePicker(
-                      initialDateTime:  initialDate ?? DateTime(DateTime.now().year - 18),
+                      initialDateTime:
+                          initialDate ?? DateTime(DateTime.now().year - 18),
                       minimumDate: firstDate ?? DateTime(1900),
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
-                        formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '$value');
+                        formattedDate =
+                            CMForDateTime.dateFormatForDateMonthYear(
+                                date: '$value');
                         // dateController?.text = formattedDate;
                       },
                       minimumYear: minimumYear ?? DateTime.now().year - 123,
                       maximumYear: maximumYear ?? DateTime.now().year,
-
                       showDayOfWeek: showDayOfWeek,
                       use24hFormat: use24hFormat,
                       mode: mode,
@@ -228,51 +246,41 @@ class CDT {
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
-              onTap: () {
-                Get.back();
-              },
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
-                  borderRadius: BorderRadius.circular(10.px),
-                  border: Border.all(color: Col.secondary, width: 1.px),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
-                  child: Center(
-                    child: Text(
-                      C.textCancel,
-                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
-                    ),
-                  ),
+            Expanded(
+              child: CW.commonOutlineButton(
+                onPressed: () {
+                  Get.back();
+                },
+                height: 40.px,
+                borderRadius: 4.px,
+                borderWidth: 1.px,
+                borderColor: Col.darkGray,
+                child: Text(
+                  C.textCancel,
+                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
+                      color: Col.darkGray, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
-            InkWell(
-              onTap: clickOnSelect ??
-                  () {
-                    dateController?.text = formattedDate;
-                    Get.back();
-                  },
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
-                  borderRadius: BorderRadius.circular(10.px),
-                  border: Border.all(color: Col.secondary, width: 1.px),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
-                  child: Center(
-                    child: Text(
-                      C.textSelect,
-                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
-                    ),
-                  ),
+            SizedBox(width: 10.px),
+            Expanded(
+              child: CW.commonElevatedButton(
+                borderRadius: 4.px,
+                height: 40.px,
+                onPressed: clickOnSelect ??
+                    () {
+                      dateController?.text = formattedDate;
+                      Get.back();
+                    },
+                progressBarWidth: 20.px,
+                progressBarHeight: 20.px,
+                child: Text(
+                  C.textSelect,
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -288,30 +296,30 @@ class CDT {
     return formattedDate;
   }
 
-  static Future<String> iosPicker1({
-    DateTime? lastDate,
-    DateTime? firstDate,
-    DateTime? initialDate,
-    int? minimumYear,
-    int? maximumYear,
-    required BuildContext context,
-    VoidCallback? clickOnSelect,
-    double? height,
-    double? borderRadius,
-    Color? backgroundColor,
-    bool use24hFormat = false,
-    bool showDayOfWeek = false,
-    CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
-    DatePickerDateOrder order = DatePickerDateOrder.dmy,
-    TextEditingController? dateController
-  })  async {
-    String formattedDate;
-    if(mode == CupertinoDatePickerMode.time){
-      formattedDate = CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${DateTime.now()}');
-    }else{
-      formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
+  static Future<String> iosPicker1(
+      {DateTime? lastDate,
+      DateTime? firstDate,
+      DateTime? initialDate,
+      int? minimumYear,
+      int? maximumYear,
+      required BuildContext context,
+      VoidCallback? clickOnSelect,
+      double? height,
+      double? borderRadius,
+      Color? backgroundColor,
+      bool use24hFormat = false,
+      bool showDayOfWeek = false,
+      CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
+      DatePickerDateOrder order = DatePickerDateOrder.dmy,
+      TextEditingController? dateController}) async {
+    String? formattedDate;
+    if (dateController?.text == null || dateController!.text.isEmpty) {
+      if (mode == CupertinoDatePickerMode.time) {
+        formattedDate = CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${DateTime.now()}');
+      } else {
+        formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
+      }
     }
-
     await CBS.commonBottomSheet(
       children: [
         Padding(
@@ -325,32 +333,29 @@ class CDT {
             child: Column(
               children: [
                 CupertinoTheme(
-                  data:  CupertinoThemeData(
+                  data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle: TextStyle(
-                        fontSize: 16.px,
-                        color: Colors.black
-                      ),
+                      dateTimePickerTextStyle:
+                          TextStyle(fontSize: 16.px, color: Colors.black),
                     ),
                   ),
                   child: SizedBox(
                     height: height ?? MediaQuery.of(context).size.height / 3.5,
                     child: CupertinoDatePicker(
-                      initialDateTime:  initialDate ?? DateTime(DateTime.now().year - 18),
+                      initialDateTime: initialDate ?? DateTime(DateTime.now().year - 18),
                       minimumDate: firstDate ?? DateTime(1900),
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
-
-                        if(mode == CupertinoDatePickerMode.time){
+                        if (mode == CupertinoDatePickerMode.time) {
                           formattedDate = CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '$value');
-                        }else{
+                        } else {
+                          print('value:::  $value');
                           formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '$value');
                         }
                         // dateController?.text = formattedDate;
                       },
                       minimumYear: minimumYear ?? DateTime.now().year - 123,
                       maximumYear: maximumYear ?? DateTime.now().year,
-
                       showDayOfWeek: showDayOfWeek,
                       use24hFormat: use24hFormat,
                       mode: mode,
@@ -363,50 +368,37 @@ class CDT {
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
-              onTap: () {
-                Get.back();
-              },
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
-                  borderRadius: BorderRadius.circular(10.px),
-                  border: Border.all(color: Col.secondary, width: 1.px),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
-                  child: Center(
-                    child: Text(
-                      C.textCancel,
-                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
-                    ),
-                  ),
+            Expanded(
+              child: CW.commonOutlineButton(
+                onPressed: () {
+                  Get.back();
+                },
+                height: 40.px,
+                borderRadius: 4.px,
+                borderWidth: 1.px,
+                borderColor: Col.darkGray,
+                child: Text(
+                  C.textCancel,
+                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
+                      color: Col.darkGray, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
-            InkWell(
-              onTap: clickOnSelect ?? () {
-                    dateController?.text = formattedDate;
-                    Get.back();
-                  },
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
-                  borderRadius: BorderRadius.circular(10.px),
-                  border: Border.all(color: Col.secondary, width: 1.px),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.px, horizontal: MediaQuery.of(Get.context!).size.width / 7),
-                  child: Center(
-                    child: Text(
-                      C.textSelect,
-                      style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
-                    ),
-                  ),
+            SizedBox(width: 10.px),
+            Expanded(
+              child: CW.commonElevatedButton(
+                borderRadius: 4.px,
+                height: 40.px,
+                onPressed: clickOnSelect ?? () {
+                      dateController?.text = formattedDate ?? dateController.text;
+                      Get.back();
+                    },
+                progressBarWidth: 20.px,
+                progressBarHeight: 20.px,
+                child: Text(
+                  C.textSelect,
+                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -419,7 +411,10 @@ class CDT {
       isDismissible: false,
     );
 
-    return formattedDate;
+    if (mode == CupertinoDatePickerMode.time) {
+      return formattedDate ?? dateController?.text ?? CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${DateTime.now()}');
+    } else {
+      return formattedDate ?? dateController?.text ?? CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
+    }
   }
-
 }

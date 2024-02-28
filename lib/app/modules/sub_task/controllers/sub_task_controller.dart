@@ -51,6 +51,8 @@ class SubTaskController extends GetxController {
 
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
 
+  late OverlayEntry overlayEntry;
+
   @override
   Future<void> onInit() async {
     super.onInit();

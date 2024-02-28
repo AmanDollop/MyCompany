@@ -68,7 +68,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
                       //   },
                       // ),
                       SizedBox(height: 10.px),
-                      assignView(),
+                      assignView(context: context),
                       SizedBox(height: 10.px),
                       remarkTextFormFiled(),
                       SizedBox(height: 10.px),
@@ -177,7 +177,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         ),
       );
 
-  Widget assignView() => Container(
+  Widget assignView({required BuildContext context}) => Container(
         // height: 100.px,
         width: double.infinity,
         padding: EdgeInsets.only(top: 8.px, bottom: 8.px, left: 18.px, right: 10.px),
@@ -198,7 +198,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
             ListTile(
               horizontalTitleGap: 12.px,
               contentPadding: EdgeInsets.only(right: 2.px),
-              leading: profileView(),
+              leading: profileView(context: context),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -226,6 +226,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
           ],
         ),
       );
+
   Widget assignToListView() => ListView.builder(
     padding: EdgeInsets.only(top: 5.px),
     physics: const NeverScrollableScrollPhysics(),
@@ -237,7 +238,7 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
           ListTile(
             horizontalTitleGap: 12.px,
             contentPadding: EdgeInsets.only(right: 2.px),
-            leading: profileView(),
+            leading: profileView(context: context),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -289,26 +290,50 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         ),
       );
 
-  Widget profileView() => Container(
-        width: 40.px,
-        height: 40.px,
-        decoration: BoxDecoration(color: Col.inverseSecondary, shape: BoxShape.circle),
-        child: Center(
-          child: ClipRRect(
-                  borderRadius: BorderRadius.circular(31.px),
-                  child: CW.commonNetworkImageView(
-                      path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
-                      isAssetImage: false,
-                      width: 40.px,
-                      height: 40.px,
-                    errorImageValue: true,
-                    userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
-                        ? controller.userShortName.value
-                        : '?',
+  void showOverlay({required BuildContext context, required String imagePath, required String userShortName}) {
+    controller.overlayEntry = CW.showOverlay(
+        context: context,
+        imagePath: imagePath,
+        userShortName: userShortName,
+        height: 200.px,
+        width: 200.px,
+        borderRadius: 100.px);
+  }
+
+  Widget profileView({required BuildContext context}) => GestureDetector(
+    onLongPress: () {
+      // Show overlay entry
+      showOverlay(context: context, userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
+          ? controller.userShortName.value
+          : '?',imagePath: '${AU.baseUrlAllApisImage}${controller.userPic.value}',);
+    },
+    onLongPressCancel: () {
+      controller.overlayEntry.remove();
+    },
+    onLongPressEnd: (details) {
+      controller.overlayEntry.remove();
+    },
+    child: Container(
+          width: 40.px,
+          height: 40.px,
+          decoration: BoxDecoration(color: Col.inverseSecondary, shape: BoxShape.circle),
+          child: Center(
+            child: ClipRRect(
+                    borderRadius: BorderRadius.circular(31.px),
+                    child: CW.commonNetworkImageView(
+                        path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
+                        isAssetImage: false,
+                        width: 40.px,
+                        height: 40.px,
+                      errorImageValue: true,
+                      userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
+                          ? controller.userShortName.value
+                          : '?',
+                    ),
                   ),
-                ),
+          ),
         ),
-      );
+  );
 
   Widget developerTypeTextView({required String text}) => Text(text, style: Theme.of(Get.context!).textTheme.labelSmall);
 

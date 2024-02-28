@@ -59,7 +59,7 @@ class AddExperienceController extends GetxController {
     if(getExperienceDetails?.joiningDate!=null&& getExperienceDetails!.joiningDate!.isNotEmpty) {
       joiningDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${getExperienceDetails?.joiningDate}');
     }
-    if(getExperienceDetails?.releaseDate!=null&& getExperienceDetails!.releaseDate!.isNotEmpty) {
+    if(getExperienceDetails?.releaseDate != null&& getExperienceDetails!.releaseDate!.isNotEmpty) {
       releaseDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${getExperienceDetails?.releaseDate}');
     }
     locationController.text = getExperienceDetails?.companyLocation ?? 'Company location not found!';
@@ -74,7 +74,7 @@ class AddExperienceController extends GetxController {
   Future<void> clickOnJoiningDateTextField() async {
     CM.unFocusKeyBoard();
 
-    await CDT.iosPicker(
+    await CDT.iosPicker1(
         context: Get.context!,
         dateController: joiningDateController,
         initialDate: joiningDateController.text.isNotEmpty
@@ -85,12 +85,17 @@ class AddExperienceController extends GetxController {
   Future<void> clickOnReleaseDateTextField() async {
     CM.unFocusKeyBoard();
 
-    await CDT.iosPicker(
+    await CDT.iosPicker1(
         context: Get.context!,
         dateController: releaseDateController,
-        initialDate: releaseDateController.text.isNotEmpty
-            ? DateFormat('dd MMM yyyy').parse(releaseDateController.text)
-            : DateTime.now());
+       firstDate: DateFormat('dd MMM yyyy').parse(joiningDateController.text),
+       initialDate: joiningDateController.text.isNotEmpty
+          ? DateFormat('dd MMM yyyy').parse(joiningDateController.text)
+          : DateTime.now(),
+      lastDate: joiningDateController.text.isNotEmpty
+          ? DateFormat('dd MMM yyyy').parse(joiningDateController.text).add(const Duration(days: 60))
+          : DateTime.now().add(const Duration(days: 60))
+    );
 
   }
 

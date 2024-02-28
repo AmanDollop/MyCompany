@@ -54,13 +54,8 @@ class MenuViewView extends GetView<MenuViewController> {
                                           ? CW.commonNoDataFoundText(text: 'Menus not found!')
                                           : menusGridView(),
                                     )
-                                  : CW.commonNoDataFoundText(
-                                      text: 'Menus not found!',
-                          )
-                              : CW.commonNoDataFoundText(
-                              text: controller.apiResValue.value
-                                      ? ''
-                                      : 'Menus not found!'),
+                                  : CW.commonNoDataFoundText(text: 'Menus not found!',
+                          ) : CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'Menus not found!'),
                         ),
                       ],
                     ),
@@ -153,7 +148,9 @@ class MenuViewView extends GetView<MenuViewController> {
                     color: Col.secondary.withOpacity(.05),
                   )
                 ],
-                color: CW.apiColorConverterMethod(colorString: '${controller.getMenuList[index].backgroundColor}'),
+                color: controller.searchController.text.isNotEmpty
+                    ? CW.apiColorConverterMethod(colorString: '${controller.getMenuListForSearch[index].backgroundColor}')
+                    : CW.apiColorConverterMethod(colorString: '${controller.getMenuList[index].backgroundColor}'),
                 borderRadius: BorderRadius.circular(8.px),
               ),
               child: Ink(
@@ -171,7 +168,9 @@ class MenuViewView extends GetView<MenuViewController> {
                       height: 40.px,
                       padding: EdgeInsets.all(2.px),
                       decoration: BoxDecoration(
-                        color: CW.apiColorConverterMethod(colorString: '${controller.getMenuList[index].backgroundColor}'),
+                        color: controller.searchController.text.isNotEmpty
+                            ? CW.apiColorConverterMethod(colorString: '${controller.getMenuListForSearch[index].backgroundColor}')
+                            : CW.apiColorConverterMethod(colorString: '${controller.getMenuList[index].backgroundColor}'),
                         borderRadius: BorderRadius.circular(6.px),
                       ),
                       child: Center(

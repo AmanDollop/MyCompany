@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
@@ -21,6 +21,8 @@ class DepartmentController extends GetxController {
   final getDepartmentEmployeeModal = Rxn<GetDepartmentEmployeeModal>();
   List<GetEmployee>? getDepartmentEmployeeList;
   Map<String, dynamic> bodyParamsForGetDepartmentEmployeeApi = {};
+
+  late OverlayEntry overlayEntry;
 
   @override
   Future<void> onInit() async {

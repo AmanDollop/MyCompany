@@ -46,6 +46,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/job_info/bindings/job_info_binding.dart';
 import '../modules/job_info/views/job_info_view.dart';
+import '../modules/leave/bindings/leave_binding.dart';
+import '../modules/leave/views/leave_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/menu_view/bindings/menu_view_binding.dart';
@@ -108,10 +110,10 @@ class AppPages {
       binding: SplashBinding(),
     ),
     GetPage(
-        name: _Paths.LOGIN,
-        page: () => const LoginView(),
-        binding: LoginBinding(),
-        transitionDuration: const Duration(microseconds: 0),
+      name: _Paths.LOGIN,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.SIGN_UP,
@@ -145,16 +147,16 @@ class AppPages {
       binding: MenuViewBinding(),
     ),
     GetPage(
-        name: _Paths.NOTIFICATION,
-        page: () => const NotificationView(),
-        binding: NotificationBinding(),
-        transitionDuration: const Duration(microseconds: 0),
+      name: _Paths.NOTIFICATION,
+      page: () => const NotificationView(),
+      binding: NotificationBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
-        name: _Paths.DRAWER_VIEW,
-        page: () => const DrawerViewView(),
-        binding: DrawerViewBinding(),
-        transitionDuration: const Duration(microseconds: 0),
+      name: _Paths.DRAWER_VIEW,
+      page: () => const DrawerViewView(),
+      binding: DrawerViewBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
@@ -167,10 +169,10 @@ class AppPages {
       binding: OtpVerificationBinding(),
     ),
     GetPage(
-        name: _Paths.MY_PROFILE,
-        page: () => const MyProfileView(),
-        binding: MyProfileBinding(),
-        transitionDuration: const Duration(microseconds: 0),
+      name: _Paths.MY_PROFILE,
+      page: () => const MyProfileView(),
+      binding: MyProfileBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.SELECT_DEPARTMENT,
@@ -258,11 +260,11 @@ class AppPages {
       binding: MyFaceAttendanceBinding(),
     ),
     GetPage(
-        name: _Paths.CIRCULAR,
-        page: () => const CircularView(),
-        binding: CircularBinding(),
-        transition: Transition.fadeIn,
-        transitionDuration: const Duration(microseconds: 0),
+      name: _Paths.CIRCULAR,
+      page: () => const CircularView(),
+      binding: CircularBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.CIRCULAR_DETAIL,
@@ -280,10 +282,10 @@ class AppPages {
       binding: AddDocumentBinding(),
     ),
     GetPage(
-        name: _Paths.ATTENDANCE_TRACKER,
-        page: () => const AttendanceTrackerView(),
-        binding: AttendanceTrackerBinding(),
-        transitionDuration: const Duration(microseconds: 0),
+      name: _Paths.ATTENDANCE_TRACKER,
+      page: () => const AttendanceTrackerView(),
+      binding: AttendanceTrackerBinding(),
+      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.ALL_TASK,
@@ -327,6 +329,10 @@ class AppPages {
       binding: DepartmentBinding(),
       transitionDuration: const Duration(microseconds: 0),
     ),
+    GetPage(
+      name: _Paths.LEAVE,
+      page: () => const LeaveView(),
+      binding: LeaveBinding(),
+    ),
   ];
 }
-

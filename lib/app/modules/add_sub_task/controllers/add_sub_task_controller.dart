@@ -70,6 +70,8 @@ class AddSubTaskController extends GetxController {
   final developer = ''.obs;
 
 
+  late OverlayEntry overlayEntry;
+
   @override
   void onInit() {
     super.onInit();
