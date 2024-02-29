@@ -96,84 +96,88 @@ class AddLeaveController extends GetxController {
   }
 
   Future<void> clickOnLeaveTypeField() async {
-    await CBS.commonBottomSheet(
-        showDragHandle: false,
-        isDismissible: false,
-        isFullScreen: true,
-        children: [
-          SizedBox(height: 20.px),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: leaveTypeList?.length,
-            itemBuilder: (context, index) {
-              return Obx(() {
-                count.value;
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10.px),
-                  padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
-                  height: 46.px,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.px),
-                    color: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                        ? Col.primary.withOpacity(.08)
-                        : Colors.transparent,
-                    border: Border.all(
+    if(getLeaveTypeModal.value != null){
+      if(leaveTypeList != null && leaveTypeList!.isNotEmpty){
+        await CBS.commonBottomSheet(
+          showDragHandle: false,
+          isDismissible: false,
+          isFullScreen: true,
+          children: [
+            SizedBox(height: 20.px),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: leaveTypeList?.length,
+              itemBuilder: (context, index) {
+                return Obx(() {
+                  count.value;
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10.px),
+                    padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                    height: 46.px,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.px),
                       color: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                          ? Col.primary
-                          : Col.darkGray,
-                      width: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                          ? 1.5.px
-                          : 1.px,
+                          ? Col.primary.withOpacity(.08)
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
+                            ? Col.primary
+                            : Col.darkGray,
+                        width: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
+                            ? 1.5.px
+                            : 1.px,
+                      ),
                     ),
-                  ),
-                  child: InkWell(
-                    onTap: () => clickOnLeaveTypeList(index: index),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${leaveTypeList?[index].leaveTypeName}',
-                          style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                        ),
-                        Container(
-                          height: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                              ? 18.px
-                              : 16.px,
-                          width: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                              ? 18.px
-                              : 16.px,
-                          padding: EdgeInsets.all(2.px),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color:
-                              leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                                  ? Col.primary
-                                  : Col.text,
-                              width: 1.5.px,
+                    child: InkWell(
+                      onTap: () => clickOnLeaveTypeList(index: index),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${leaveTypeList?[index].leaveTypeName}',
+                            style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                          ),
+                          Container(
+                            height: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
+                                ? 18.px
+                                : 16.px,
+                            width: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
+                                ? 18.px
+                                : 16.px,
+                            padding: EdgeInsets.all(2.px),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color:
+                                leaveTypeController.text == leaveTypeList?[index].leaveTypeName
+                                    ? Col.primary
+                                    : Col.text,
+                                width: 1.5.px,
+                              ),
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
+                                      ? Col.primary
+                                      : Colors.transparent),
                             ),
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: leaveTypeController.text == leaveTypeList?[index].leaveTypeName
-                                    ? Col.primary
-                                    : Colors.transparent),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              });
-            },
-          ),
-          SizedBox(height: 20.px),
-        ],
-    ).whenComplete(
-          () => CM.unFocusKeyBoard(),
-    );
+                  );
+                });
+              },
+            ),
+            SizedBox(height: 20.px),
+          ],
+        ).whenComplete(
+              () => CM.unFocusKeyBoard(),
+        );
+      }
+    }
   }
 
   void clickOnLeaveTypeList({required int index}) {
