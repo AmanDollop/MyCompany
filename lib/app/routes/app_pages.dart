@@ -8,6 +8,8 @@ import '../modules/add_education/bindings/add_education_binding.dart';
 import '../modules/add_education/views/add_education_view.dart';
 import '../modules/add_experience/bindings/add_experience_binding.dart';
 import '../modules/add_experience/views/add_experience_view.dart';
+import '../modules/add_leave/bindings/add_leave_binding.dart';
+import '../modules/add_leave/views/add_leave_view.dart';
 import '../modules/add_social_info/bindings/add_social_info_binding.dart';
 import '../modules/add_social_info/views/add_social_info_view.dart';
 import '../modules/add_sub_task/bindings/add_sub_task_binding.dart';
@@ -48,6 +50,8 @@ import '../modules/job_info/bindings/job_info_binding.dart';
 import '../modules/job_info/views/job_info_view.dart';
 import '../modules/leave/bindings/leave_binding.dart';
 import '../modules/leave/views/leave_view.dart';
+import '../modules/leave_detail/bindings/leave_detail_binding.dart';
+import '../modules/leave_detail/views/leave_detail_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/menu_view/bindings/menu_view_binding.dart';
@@ -333,6 +337,16 @@ class AppPages {
       name: _Paths.LEAVE,
       page: () => const LeaveView(),
       binding: LeaveBinding(),
+    ),
+    GetPage(
+      name: _Paths.LEAVE_DETAIL,
+      page: () => const LeaveDetailView(),
+      binding: LeaveDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_LEAVE,
+      page: () => const AddLeaveView(),
+      binding: AddLeaveBinding(),
     ),
   ];
 }

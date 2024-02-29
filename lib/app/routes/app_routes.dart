@@ -48,6 +48,8 @@ abstract class Routes {
   static const UPCOMING_CELEBRATIONS = _Paths.UPCOMING_CELEBRATIONS;
   static const DEPARTMENT = _Paths.DEPARTMENT;
   static const LEAVE = _Paths.LEAVE;
+  static const LEAVE_DETAIL = _Paths.LEAVE_DETAIL;
+  static const ADD_LEAVE = _Paths.ADD_LEAVE;
 }
 
 abstract class _Paths {
@@ -97,4 +99,6 @@ abstract class _Paths {
   static const UPCOMING_CELEBRATIONS = '/upcoming-celebrations';
   static const DEPARTMENT = '/department';
   static const LEAVE = '/leave';
+  static const LEAVE_DETAIL = '/leave-detail';
+  static const ADD_LEAVE = '/add-leave';
 }

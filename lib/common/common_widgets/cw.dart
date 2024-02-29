@@ -101,21 +101,25 @@ class CW {
         : OutlinedButton(
             onPressed: onPressed,
             style: OutlinedButton.styleFrom(
-                elevation: elevation ?? 0.px,
-                padding: padding ?? EdgeInsets.all(3.5.px),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      borderRadius ?? C.outlineButtonRadius),
-                ),
-                side: BorderSide(
-                  color: borderColor ?? Col.text,
-                  width: borderWidth ?? 1.5.px,
-                ),
-                backgroundColor: backgroundColor ?? Colors.transparent,
-                shadowColor: Colors.transparent,
-                foregroundColor: Col.text,
-                minimumSize: Size(width ?? 56.px, height ?? 56.px)),
+              elevation: elevation ?? 0.px,
+              padding: padding ?? EdgeInsets.all(3.5.px),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    borderRadius ?? C.outlineButtonRadius),
+              ),
+              side: BorderSide(
+                color: borderColor ?? Col.text,
+                width: borderWidth ?? 1.5.px,
+              ),
+              backgroundColor: backgroundColor ?? Colors.transparent,
+              shadowColor: Colors.transparent,
+              foregroundColor: Col.text,
+              minimumSize: Size(
+                width ?? 56.px,
+                height ?? 56.px,
+              ),
+            ),
             child: child ??
                 Text(
                   buttonText ?? '',
@@ -1290,7 +1294,8 @@ class CW {
     double? wight,
     double? leftPadding,
     double? rightPadding,
-  }) => Divider(
+  }) =>
+      Divider(
         color: color ?? Col.gray,
         height: height ?? 10.px,
         thickness: wight ?? .5.px,
@@ -1298,7 +1303,13 @@ class CW {
         indent: leftPadding,
       );
 
-  static OverlayEntry showOverlay({required BuildContext context, required String imagePath, String? userShortName,double? height, double? width, double? borderRadius}) {
+  static OverlayEntry showOverlay(
+      {required BuildContext context,
+      required String imagePath,
+      String? userShortName,
+      double? height,
+      double? width,
+      double? borderRadius}) {
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         return Material(
@@ -1309,12 +1320,12 @@ class CW {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(borderRadius ?? 68),
                 child: CW.commonNetworkImageView(
-                    path: imagePath,
-                    isAssetImage: false,
-                    height: height ?? 136.px,
-                    width: width ?? 136.px,
-                    errorImageValue: true,
-                    userShortName: userShortName,
+                  path: imagePath,
+                  isAssetImage: false,
+                  height: height ?? 136.px,
+                  width: width ?? 136.px,
+                  errorImageValue: true,
+                  userShortName: userShortName,
                 ),
               ),
             ),
@@ -1385,8 +1396,8 @@ class CW {
                   errorBuilder: (context, error, stackTrace) {
                     if (errorImageValue) {
                       return Container(
-                         height: height,
-                         width: width,
+                        height: height,
+                        width: width,
                         // margin: EdgeInsets.zero,
                         decoration: BoxDecoration(
                             color: userShortNameBackgroundColor ?? Col.primary,
@@ -1395,7 +1406,12 @@ class CW {
                         child: Center(
                           child: Text(
                             userShortName ?? "",
-                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.inverseSecondary),
+                            style: Theme.of(Get.context!)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                    color: userShortNameColor ??
+                                        Col.inverseSecondary),
                           ),
                         ),
                       );
@@ -1452,9 +1468,16 @@ class CW {
   }) {
     return ReadMoreText(
       value,
-      style: textStyle ?? Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
-      moreStyle: readMoreTextStyle ?? Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.primary,fontSize: 10.px),
-      lessStyle: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.primary,fontSize: 10.px),
+      style: textStyle ??
+          Theme.of(Get.context!)
+              .textTheme
+              .labelSmall
+              ?.copyWith(fontWeight: FontWeight.w600),
+      moreStyle: readMoreTextStyle ??
+          Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600, color: Col.primary, fontSize: 10.px),
+      lessStyle: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.w600, color: Col.primary, fontSize: 10.px),
       trimLines: maxLine ?? 3,
       trimLength: 7,
       trimCollapsedText: C.textReadMore,
@@ -1674,7 +1697,8 @@ class CW {
           ),
         ),
       ),
-      placeholder: loadingBuilder ?? (context, url) {
+      placeholder: loadingBuilder ??
+          (context, url) {
             return commonShimmerViewForImage(
               height: height,
               width: width,

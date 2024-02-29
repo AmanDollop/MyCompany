@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:task/api/api_constants/ac.dart';
@@ -14,7 +15,8 @@ class SplashController extends GetxController {
   final count = 0.obs;
   Database? database;
   final userDataFromLocalDataBaseValue = false.obs;
-  final userDataFromLocalDataBase =''.obs;
+  final userDataFromLocalDataBase = ''.obs;
+  final fcmId = ''.obs;
 
   UserDetails? userData;
 
@@ -22,6 +24,8 @@ class SplashController extends GetxController {
    Future<void> onInit()  async {
     super.onInit();
     try{
+      fcmId.value = await FirebaseMessaging.instance.getToken() ?? '';
+      print('fcmId.value::::: ${fcmId.value}');
       dataBaseCalling();
       await BottomSheetForOTP.callingGetCompanyDetailApi();
       // await BottomSheetForOTP.callingGetShiftDetailApi();

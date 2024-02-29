@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
+import 'package:task/app/routes/app_pages.dart';
 
 class LeaveController extends GetxController {
 
   final count = 0.obs;
   final menuName = ''.obs;
+  final addButtonExpandValue = false.obs;
   final apiResValue = true.obs;
 
   @override
@@ -30,6 +32,17 @@ class LeaveController extends GetxController {
     Get.back();
   }
 
-  void clickOnAddButton() {}
+  void clickOnViewMoreButton({required int index}) {
+    Get.toNamed(Routes.LEAVE_DETAIL);
+  }
+
+  void clickOnAddButton() {
+    addButtonExpandValue.value = true;
+    count.value++;
+  }
+
+  void clickOnAddExpandButton() {
+    Get.toNamed(Routes.ADD_LEAVE,arguments: ['Add Leave']);
+  }
 
 }

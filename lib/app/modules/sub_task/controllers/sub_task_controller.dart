@@ -99,8 +99,7 @@ class SubTaskController extends GetxController {
     CM.unFocusKeyBoard();
     count.value = 0;
 
-    subTaskFilterList?[index].isSelected =
-        !subTaskFilterList![index].isSelected;
+    subTaskFilterList?[index].isSelected = !subTaskFilterList![index].isSelected;
 
     selectedStatusFilterIds = [
       for (var e in subTaskFilterList!)
