@@ -214,6 +214,8 @@ class AU {
 
   static const endPointPenaltyControllerApi = "api/PenaltyContoller.php";
 
+  static const endPointLeaveControllerApi = "api/LeaveController.php";
+
 
 
 
@@ -333,6 +335,10 @@ class ApiEndPointAction{
   static  const getReportingPerson = 'getReportingPersion';
 
   static  const getPenalty = 'getPenalty';
+
+  static  const getLeaveCalender = 'getLeaveCalender';
+
+  static  const getLeaveType = 'getLeaveType';
 
 
 }

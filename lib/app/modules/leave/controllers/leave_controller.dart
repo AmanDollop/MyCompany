@@ -5,7 +5,6 @@ class LeaveController extends GetxController {
 
   final count = 0.obs;
   final menuName = ''.obs;
-  final addButtonExpandValue = false.obs;
   final apiResValue = true.obs;
 
   @override
@@ -37,11 +36,6 @@ class LeaveController extends GetxController {
   }
 
   void clickOnAddButton() {
-    addButtonExpandValue.value = true;
-    count.value++;
-  }
-
-  void clickOnAddExpandButton() {
     Get.toNamed(Routes.ADD_LEAVE,arguments: ['Add Leave']);
   }
 

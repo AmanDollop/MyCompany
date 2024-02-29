@@ -362,38 +362,22 @@ class MonthView extends GetView<AttendanceTrackerController> {
         } else {
           return InkWell(
             onTap: () {
-              if (controller.monthlyHistoryList?[index - extra].present ==
-                      true &&
-                  controller.monthlyHistoryList?[index - extra]
-                          .attendnacePending ==
-                      false) {
+              if (controller.monthlyHistoryList?[index - extra].present == true && controller.monthlyHistoryList?[index - extra].attendnacePending == false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
-              } else if (controller
-                      .monthlyHistoryList?[index - extra].holiday ??
-                  false) {
+              } else if (controller.monthlyHistoryList?[index - extra].holiday ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
                 // CM.showSnackBar(message: 'Holiday');
-              } else if (controller
-                          .monthlyHistoryList?[index - extra].weekOff ==
-                      true &&
-                  DateTime.now()
-                      .isAfter(parsedDate.add(Duration(days: day - 1)))) {
+              } else if (controller.monthlyHistoryList?[index - extra].weekOff == true && DateTime.now().isAfter(parsedDate.add(Duration(days: day - 1)))) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
                 // CM.showSnackBar(message: 'Week Off');
-              } else if (controller.monthlyHistoryList?[index - extra].leave ??
-                  false) {
+              } else if (controller.monthlyHistoryList?[index - extra].leave ?? false) {
                 // CM.showSnackBar(message: 'Leave');
-              } else if (controller
-                      .monthlyHistoryList?[index - extra].attendnacePending ??
-                  false) {
+              } else if (controller.monthlyHistoryList?[index - extra].attendnacePending ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
-              } else if (controller
-                      .monthlyHistoryList?[index - extra].isAbsent ??
-                  false) {
+              } else if (controller.monthlyHistoryList?[index - extra].isAbsent ?? false) {
                 controller.clickOnCalendarGrid(index: index - extra, day: day);
               } else {
-                if (DateTime.now()
-                    .isAfter(parsedDate.add(Duration(days: day - 1)))) {
+                if (DateTime.now().isAfter(parsedDate.add(Duration(days: day - 1)))) {
                   CM.showSnackBar(message: 'Week off');
                 } else {
                   CM.showSnackBar(message: 'This date data not available!');
@@ -403,8 +387,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
             borderRadius: BorderRadius.circular(20.px),
             child: Card(
               margin: EdgeInsets.zero,
-              elevation: calendarGridColorView(index: index - extra) !=
-                      const Color(0x00000000)
+              elevation: calendarGridColorView(index: index - extra) != const Color(0x00000000)
                   ? 1
                   : 0,
               color: day == 0
@@ -418,14 +401,9 @@ class MonthView extends GetView<AttendanceTrackerController> {
                 child: Center(
                   child: Text(
                     day.toString(),
-                    style: Theme.of(Get.context!)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(
+                    style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w500,
-                            color:
-                                calendarGridColorView(index: index - extra) !=
-                                        const Color(0x00000000)
+                            color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
                                     ? Col.text
                                     : Col.gray),
                   ),
