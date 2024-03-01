@@ -16,6 +16,9 @@ class AddLeaveController extends GetxController {
   final pageName = ''.obs;
 
   final applyLeaveButtonValue = false.obs;
+  final isAfterAndBeforeCalenderDateValue = false.obs;
+  final isAfterCalenderValue = false.obs;
+  final isBeforeCalenderValue = false.obs;
 
   final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   final monthTotalDaysList = [];

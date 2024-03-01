@@ -1,6 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -45,9 +44,9 @@ class AddLeaveView extends GetView<AddLeaveController> {
                           calendarGridView(),
                           SizedBox(height: 20.px),
                           if (controller.dateAddForLeaveList.isNotEmpty)
-                            leaveDateGridView(),
+                           leaveDateGridView(),
                           if (controller.dateAddForLeaveList.isNotEmpty)
-                            SizedBox(height: 10.px),
+                           SizedBox(height: 10.px),
                           leaveTypeTextField(),
                           SizedBox(height: 10.px),
                           fullAndHalfDayView(),
@@ -75,11 +74,12 @@ class AddLeaveView extends GetView<AddLeaveController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(
-          icon: Icon(Icons.keyboard_arrow_left,
-              color: Col.secondary, size: 28.px),
-          onPressed: () => controller.clickOnReverseIconButton(index: index),
-        ),
+        controller.currentMonth.value.month != DateTime.parse('${controller.getLeaveDateCalenderModal.value?.isBeforeDate}').month
+            ? IconButton(
+                icon: Icon(Icons.keyboard_arrow_left, color: Col.secondary, size: 28.px),
+                onPressed: () => controller.clickOnReverseIconButton(index: index),
+              )
+            : SizedBox(width: 50.px),
         SizedBox(width: 10.px),
         Text(
           CMForDateTime.dateFormatForMonthYear(
@@ -87,26 +87,25 @@ class AddLeaveView extends GetView<AddLeaveController> {
           style: Theme.of(Get.context!).textTheme.displayLarge,
         ),
         SizedBox(width: 10.px),
-        IconButton(
-          icon: Icon(Icons.keyboard_arrow_right,
-              color: Col.secondary, size: 28.px),
-          onPressed: () => controller.clickOnForwardIconButton(index: index),
-        ),
+        controller.currentMonth.value.month != DateTime.parse('${controller.getLeaveDateCalenderModal.value?.isAfterDate}').month
+            ? IconButton(
+                icon: Icon(Icons.keyboard_arrow_right, color: Col.secondary, size: 28.px),
+                onPressed: () => controller.clickOnForwardIconButton(index: index),
+              )
+            : SizedBox(width: 50.px),
       ],
     );
   }
 
-  Widget getDayNames({bool shimmerValue = false}) {
+  Widget getDayNames() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         for (var day in controller.days)
-          shimmerValue
-              ? CW.commonShimmerViewForImage(height: 20.px, width: 40.px)
-              : Text(
-                  day,
-                  style: Theme.of(Get.context!).textTheme.titleLarge,
-                ),
+          Text(
+            day,
+            style: Theme.of(Get.context!).textTheme.titleLarge,
+          ),
       ],
     );
   }
@@ -130,6 +129,19 @@ class AddLeaveView extends GetView<AddLeaveController> {
     return formattedDate;
   }
 
+  c({required String currentDate, required String isAfterDate, required String isBeforeDate}) {
+    DateTime current = DateTime.parse(currentDate);
+    DateTime after = DateTime.parse(isAfterDate);
+    DateTime before = DateTime.parse(isBeforeDate);
+
+    // Compare the dates
+    if (current.isBefore(before) || current.isAfter(after)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Widget calendarGridView() {
     var daysInMonth = DateTime(controller.currentMonth.value.year, controller.currentMonth.value.month + 1, 0).day;
 
@@ -146,9 +158,9 @@ class AddLeaveView extends GetView<AddLeaveController> {
     for (var i = 0; i < extra; i++) {
       controller.monthTotalDaysList.insert(0, 0);
     }
-
     if (controller.getLeaveDateCalenderModal.value != null) {
-      if (controller.leaveDateCalenderList != null && controller.leaveDateCalenderList!.isNotEmpty) {
+      if (controller.leaveDateCalenderList != null &&
+          controller.leaveDateCalenderList!.isNotEmpty) {
         return GridView.builder(
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -163,53 +175,70 @@ class AddLeaveView extends GetView<AddLeaveController> {
             if (day == 0) {
               return const SizedBox();
             } else {
+              if (controller.getLeaveDateCalenderModal.value?.isBeforeDate != null &&
+                  controller.getLeaveDateCalenderModal.value!.isBeforeDate!.isNotEmpty &&
+                  controller.getLeaveDateCalenderModal.value?.isAfterDate != null &&
+                  controller.getLeaveDateCalenderModal.value!.isAfterDate!.isNotEmpty) {
+                controller.isAfterAndBeforeCalenderDateValue.value = c(
+                  currentDate: '${controller.currentMonth.value.year}-${CMForDateTime.formatWithLeadingZeros(controller.currentMonth.value.month)}-${CMForDateTime.formatWithLeadingZeros(day)}',
+                  isAfterDate: '${controller.getLeaveDateCalenderModal.value?.isAfterDate}',
+                  isBeforeDate: '${controller.getLeaveDateCalenderModal.value?.isBeforeDate}',
+                );
+              }
               return InkWell(
                 onTap: () {
-                  print('isAfterDate::::: ${controller.getLeaveDateCalenderModal.value?.isAfterDate}');
-                  print('isBeforeDate::::: ${controller.getLeaveDateCalenderModal.value?.isBeforeDate}');
-
-                  print(':::${DateTime.parse('${controller.currentMonth.value.year}-${CMForDateTime.formatWithLeadingZeros(controller.currentMonth.value.month)}-${CMForDateTime.formatWithLeadingZeros(day)}')}');
-
-
-                  // print('dateAddForLeaveList:::: ${controller.dateAddForLeaveList}');
-                  // print('formattedDateListForApi:::: { ${controller.formattedDateListForApi.join(', ')} }');
-
-                 if(controller.leaveDateCalenderList?[index - extra].holiday == false && controller.leaveDateCalenderList?[index - extra].weekOff == false &&
-                     controller.leaveDateCalenderList?[index - extra].isLeave == false && controller.leaveDateCalenderList?[index - extra].isPresent == false ){
-                   if (controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')) {
-                     controller.dateAddForLeaveList.remove('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}');
-                     controller.formattedDateListForApi = controller.dateAddForLeaveList.map((dateString) => convertDateFormat(originalDateString: dateString)).toList();
-                   }
-                   else {
-                     controller.dateAddForLeaveList.add('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}');
-                     controller.formattedDateListForApi = controller.dateAddForLeaveList.map((dateString) => convertDateFormat(originalDateString: dateString)).toList();
-                   }
-                 }
-                 else if(controller.leaveDateCalenderList?[index - extra].holiday == true ){
-                   CM.showSnackBar(message: 'Holiday');
-                 }
-                 else if(controller.leaveDateCalenderList?[index - extra].weekOff == true ){
-                   CM.showSnackBar(message: 'WeekOff');
-                 }
-                 else if(controller.leaveDateCalenderList?[index - extra].isLeave == true ){
-                   CM.showSnackBar(message: 'Leave');
-                 }
-                 else if(controller.leaveDateCalenderList?[index - extra].isPresent == true || (controller.leaveDateCalenderList?[index - extra].isPresent == true && controller.leaveDateCalenderList?[index - extra].holiday == true)){
-                   CM.showSnackBar(message: 'Present');
-                 }
-
+                  if (controller.getLeaveDateCalenderModal.value?.isBeforeDate != null &&
+                      controller.getLeaveDateCalenderModal.value!.isBeforeDate!.isNotEmpty &&
+                      controller.getLeaveDateCalenderModal.value?.isAfterDate != null &&
+                      controller.getLeaveDateCalenderModal.value!.isAfterDate!.isNotEmpty) {
+                    if (!c(currentDate: '${controller.currentMonth.value.year}-${CMForDateTime.formatWithLeadingZeros(controller.currentMonth.value.month)}-${CMForDateTime.formatWithLeadingZeros(day)}',
+                      isAfterDate: '${controller.getLeaveDateCalenderModal.value?.isAfterDate}',
+                      isBeforeDate: '${controller.getLeaveDateCalenderModal.value?.isBeforeDate}',
+                    )) {
+                      if (controller.leaveDateCalenderList?[index - extra].holiday == false &&
+                          controller.leaveDateCalenderList?[index - extra].weekOff == false &&
+                          controller.leaveDateCalenderList?[index - extra].isLeave == false &&
+                          controller.leaveDateCalenderList?[index - extra].isPresent == false) {
+                        if (controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')) {
+                          controller.dateAddForLeaveList.remove('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}');
+                          controller.formattedDateListForApi = controller.dateAddForLeaveList.map((dateString) => convertDateFormat(originalDateString: dateString)).toList();
+                        } else {
+                          controller.dateAddForLeaveList.add('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}');
+                          controller.formattedDateListForApi = controller.dateAddForLeaveList.map((dateString) => convertDateFormat(originalDateString: dateString)).toList();
+                        }
+                      }
+                      else if (controller.leaveDateCalenderList?[index - extra].holiday == true) {
+                        CM.showSnackBar(message: 'Holiday');
+                      }
+                      else if (controller.leaveDateCalenderList?[index - extra].weekOff == true) {
+                        CM.showSnackBar(message: 'WeekOff');
+                      }
+                      else if (controller.leaveDateCalenderList?[index - extra].isLeave == true) {
+                        CM.showSnackBar(message: 'Leave');
+                      }
+                      else if (controller.leaveDateCalenderList?[index - extra].isPresent == true || (controller.leaveDateCalenderList?[index - extra].isPresent == true && controller.leaveDateCalenderList?[index - extra].holiday == true)) {
+                        CM.showSnackBar(message: 'Present');
+                      }
+                    }
+                  }
                   controller.count.value++;
                 },
                 borderRadius: BorderRadius.circular(20.px),
                 child: Card(
                   margin: EdgeInsets.zero,
-                  elevation: calendarGridColorView(index: index-extra) == const Color(0x00000000)
-                      ? 0
-                      : 1,
-                  color: controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
-                      ? Col.primary
-                      : calendarGridColorView(index: index-extra),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.px)),
+                  elevation: 0,
+                  color: /*controller.isAfterAndBeforeCalenderDateValue.value
+                     && controller.leaveDateCalenderList?[index - extra].weekOff == false
+                     && controller.leaveDateCalenderList?[index - extra].isLeave == false
+                     && controller.leaveDateCalenderList?[index - extra].isPresent == false
+                     && controller.leaveDateCalenderList?[index - extra].holiday == false
+                      ? Col.primary.withOpacity(.2)
+                      :*/
+                      controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
+                          ? Col.primary
+                          : calendarGridColorView(index: index - extra),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22.px)),
                   child: SizedBox(
                     height: 30.px,
                     width: 30.px,
@@ -219,9 +248,15 @@ class AddLeaveView extends GetView<AddLeaveController> {
                         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 10.px,
-                                color: controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
-                                    ? Col.inverseSecondary
-                                    : Col.text),
+                                color: controller.isAfterAndBeforeCalenderDateValue.value &&
+                                        controller.leaveDateCalenderList?[index - extra].weekOff == false &&
+                                        controller.leaveDateCalenderList?[index - extra].isLeave == false &&
+                                        controller.leaveDateCalenderList?[index - extra].isPresent == false &&
+                                        controller.leaveDateCalenderList?[index - extra].holiday == false
+                                    ? Col.darkGray.withOpacity(.4)
+                                    : controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
+                                        ? Col.inverseSecondary
+                                        : Col.text),
                       ),
                     ),
                   ),
@@ -247,7 +282,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
       return const Color(0xffE6E6E6);
     } else if (controller.leaveDateCalenderList?[index].isLeave ?? false) {
       return const Color(0xffE0F1FF);
-    }  else {
+    } else {
       return Colors.transparent;
     }
   }
@@ -270,7 +305,8 @@ class AddLeaveView extends GetView<AddLeaveController> {
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.px)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.px)),
             margin: EdgeInsets.zero,
             color: Col.inverseSecondary,
             child: Padding(
@@ -279,8 +315,13 @@ class AddLeaveView extends GetView<AddLeaveController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    CMForDateTime.formatDate(controller.dateAddForLeaveList[index]),
-                    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
+                    CMForDateTime.formatDate(
+                        controller.dateAddForLeaveList[index]),
+                    style: Theme.of(Get.context!)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(
+                            fontSize: 10.px, fontWeight: FontWeight.w500),
                   ),
                   // Text(
                   //   'Paid',
@@ -301,7 +342,8 @@ class AddLeaveView extends GetView<AddLeaveController> {
         labelText: 'Leave Type',
         hintText: 'Leave Type',
         keyboardType: TextInputType.name,
-        validator: (value) => V.isValid(value: value, title: 'Please select leave type'),
+        validator: (value) =>
+            V.isValid(value: value, title: 'Please select leave type'),
         onChanged: (value) {
           controller.count.value++;
         },

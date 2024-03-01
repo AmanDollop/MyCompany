@@ -114,6 +114,8 @@ class NS {
 
     AndroidNotificationDetails androidNotificationDetails;
 
+    print('remoteMessage.data:::: ${remoteMessage.data}');
+
     if (remoteMessage.data["image"] != null && remoteMessage.data["image"] != '') {
       final http.Response response = await http.get(Uri.parse('${remoteMessage.data["image"]}'));
       Uint8List imageData = response.bodyBytes;

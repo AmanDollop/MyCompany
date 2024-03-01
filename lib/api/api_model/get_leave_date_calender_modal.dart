@@ -9,8 +9,8 @@ class GetLeaveDateCalenderModal {
 
   GetLeaveDateCalenderModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    isAfterDate = json['is_afterDate'];
-    isBeforeDate = json['is_beforeDate'];
+    isAfterDate = json['isAfterDate'];
+    isBeforeDate = json['isBeforeDate'];
     if (json['leaveCalender'] != null) {
       leaveCalender = <LeaveCalender>[];
       json['leaveCalender'].forEach((v) {
@@ -22,8 +22,8 @@ class GetLeaveDateCalenderModal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
-    data['is_afterDate'] = isAfterDate;
-    data['is_beforeDate'] = isBeforeDate;
+    data['isAfterDate'] = isAfterDate;
+    data['isBeforeDate'] = isBeforeDate;
     if (leaveCalender != null) {
       data['leaveCalender'] =
           leaveCalender!.map((v) => v.toJson()).toList();
