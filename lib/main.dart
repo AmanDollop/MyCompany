@@ -18,11 +18,6 @@ import 'package:get/get.dart';
 import 'app/routes/app_pages.dart';
 
 
-///Todo Device Info code
-// DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-// AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-// print('Running on::::: ${androidInfo.id}');
-
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();

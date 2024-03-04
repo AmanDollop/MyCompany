@@ -5,6 +5,7 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
 import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
@@ -108,18 +109,20 @@ class DrawerViewController extends GetxController {
         clickOnCancel: () {
           Get.back();
         },
-        clickOnLogout: () async {
-          // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
-          await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
-          await CM.setString(key: AK.baseUrl, value: '');
-          Get.offAllNamed(Routes.SEARCH_COMPANY);
-        },
+        clickOnLogout: () => clickOnLogOutButton(),
       );
-
     }
+  }
+
+  Future<void> clickOnLogOutButton() async {
+      // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
+      await BottomSheetForOTP.callingUpdateFcmIdApi(forLogOutFcmId: true);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
+      await CM.setString(key: AK.baseUrl, value: '');
+      Get.offAllNamed(Routes.SEARCH_COMPANY);
   }
 
   Future<void> setDefaultData() async {

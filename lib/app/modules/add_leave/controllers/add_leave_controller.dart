@@ -4,13 +4,14 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_leave_date_calender_modal.dart';
+import 'package:task/api/api_model/get_leave_type_balance_modal.dart';
 import 'package:task/api/api_model/get_leave_type_modal.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/theme/colors/colors.dart';
 
-class AddLeaveController extends GetxController {
+class AddLeaveController extends GetxController with GetTickerProviderStateMixin{
   final count = 0.obs;
   final apiResValue = true.obs;
   final pageName = ''.obs;
@@ -49,6 +50,11 @@ class AddLeaveController extends GetxController {
   final getLeaveTypeModal = Rxn<GetLeaveTypeModal>();
   List<LeaveType>? leaveTypeList;
   Map<String, dynamic> bodyParamsForGetLeaveTypeApi = {};
+
+  final getLeaveTypeBalanceModal = Rxn<GetLeaveTypeBalanceModal>();
+  final availableLeave = ''.obs;
+  Map<String, dynamic> bodyParamsForGetLeaveTypeBalanceApi = {};
+
 
   @override
   Future<void> onInit() async {
@@ -183,8 +189,9 @@ class AddLeaveController extends GetxController {
     }
   }
 
-  void clickOnLeaveTypeList({required int index}) {
+  Future<void> clickOnLeaveTypeList({required int index}) async {
     leaveTypeController.text = leaveTypeList?[index].leaveTypeName ?? '';
+    await callingGetLeaveTypeBalanceApi(leaveTypeId:leaveTypeList?[index].leaveTypeId??'');
     Get.back();
   }
 
@@ -202,8 +209,7 @@ class AddLeaveController extends GetxController {
         AK.year: '${currentMonth.value.year}',
         AK.month: '${currentMonth.value.month}',
       };
-      getLeaveDateCalenderModal.value = await CAI.getLeaveDateCalenderApi(
-          bodyParams: bodyParamsForGetLeaveDateCalenderApi);
+      getLeaveDateCalenderModal.value = await CAI.getLeaveDateCalenderApi(bodyParams: bodyParamsForGetLeaveDateCalenderApi);
       if (getLeaveDateCalenderModal.value != null) {
         leaveDateCalenderList = getLeaveDateCalenderModal.value?.leaveCalender;
       }
@@ -222,8 +228,7 @@ class AddLeaveController extends GetxController {
         AK.action: ApiEndPointAction.getLeaveType,
         AK.year: '${currentMonth.value.year}',
       };
-      getLeaveTypeModal.value = await CAI.getLeaveTypeModalApi(
-          bodyParams: bodyParamsForGetLeaveTypeApi);
+      getLeaveTypeModal.value = await CAI.getLeaveTypeModalApi(bodyParams: bodyParamsForGetLeaveTypeApi);
       if (getLeaveTypeModal.value != null) {
         leaveTypeList = getLeaveTypeModal.value?.leaveType;
       }
@@ -234,4 +239,28 @@ class AddLeaveController extends GetxController {
     }
     apiResValue.value = false;
   }
+
+  Future<void> callingGetLeaveTypeBalanceApi({required String leaveTypeId}) async {
+    try {
+      print('formattedDateListForApi.join::::  ${formattedDateListForApi.join(',')}');
+      apiResValue.value = true;
+      bodyParamsForGetLeaveTypeBalanceApi = {
+        AK.action: ApiEndPointAction.getLeaveTypeBalance,
+        AK.leaveTypeId: leaveTypeId,
+        AK.leaveDate: formattedDateListForApi.join(','),
+      };
+      getLeaveTypeBalanceModal.value = await CAI.getLeaveTypeBalanceApi(bodyParams: bodyParamsForGetLeaveTypeBalanceApi);
+      if (getLeaveTypeBalanceModal.value != null) {
+        availableLeave.value = getLeaveTypeBalanceModal.value?.availableLeave ?? '';
+        print('availableLeave.value:::: ${availableLeave.value}');
+      }
+    } catch (e) {
+      CM.error();
+      print('callingGetLeaveTypeBalanceApi::::   error:::  $e');
+      apiResValue.value = false;
+    }
+    apiResValue.value = false;
+  }
+
+
 }

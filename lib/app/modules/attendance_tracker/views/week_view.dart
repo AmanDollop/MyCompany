@@ -198,12 +198,21 @@ class WeekView extends GetView<AttendanceTrackerController> {
 
   Widget commonCircularProgressBar({required int index}) {
     startCircularProgressBar(index: index);
-      return CircularProgressIndicator(
-        strokeWidth: 8.px,
-        value: controller.progressValue.value,
-        backgroundColor: Col.primary.withOpacity(.2),
-        strokeCap: StrokeCap.round,
-      );
+      if(controller.progressValue.value.isNaN){
+        return CircularProgressIndicator(
+          strokeWidth: 8.px,
+          value: 0,
+          backgroundColor: Col.primary.withOpacity(.2),
+          strokeCap: StrokeCap.round,
+        );
+      }else{
+        return CircularProgressIndicator(
+          strokeWidth: 8.px,
+          value: controller.progressValue.value,
+          backgroundColor: Col.primary.withOpacity(.2),
+          strokeCap: StrokeCap.round,
+        );
+      }
 
   }
 

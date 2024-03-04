@@ -24,7 +24,6 @@ class LoginController extends GetxController {
   Map<String, dynamic> bodyParamsSendOtp = {};
   Map<String, dynamic> otpApiResponseMap = {};
 
-
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -53,9 +52,16 @@ class LoginController extends GetxController {
   Future<void> clickOnContinueButton() async {
     CM.unFocusKeyBoard();
     if(key.currentState!.validate() && termsCheckBoxValue.value){
-      loginButtonValue.value = true;
-      await sendOtpApiCalling();
+      try{
+        loginButtonValue.value = true;
+        await BottomSheetForOTP.sendOtpApiCalling(email: emailController.text.trim().toString(),isLogInPageApiCalling:true);
+      }catch(e){
+        loginButtonValue.value = false;
+      }
+    }else{
+      loginButtonValue.value = false;
     }
+    loginButtonValue.value = false;
   }
 
   void clickOnCreateAccountButton() {
@@ -69,29 +75,29 @@ class LoginController extends GetxController {
     });
   }
 
-  Future<void> sendOtpApiCalling() async {
-    try{
-      bodyParamsSendOtp = {
-        AK.action: ApiEndPointAction.userSentOtp,
-        AK.userEmail: emailController.text.trim().toString(),
-      };
-      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
-      if (response != null && response.statusCode == 200) {
-        otpApiResponseMap = jsonDecode(response.body);
-        loginButtonValue.value = false;
-        print('otpApiResponseMap["otp"]:::::::   ${otpApiResponseMap["otp"].toString()}');
-        await BottomSheetForOTP.commonBottomSheetForVerifyOtp(otp: otpApiResponseMap["otp"].toString(),email: emailController.text.trim().toString());
-      }
-      else {
-        loginButtonValue.value = false;
-        CM.error();
-      }
-    }catch(e){
-      loginButtonValue.value = false;
-      CM.error();
-    }
-
-  }
+  // Future<void> sendOtpApiCalling() async {
+  //   try{
+  //     bodyParamsSendOtp = {
+  //       AK.action: ApiEndPointAction.userSentOtp,
+  //       AK.userEmail: emailController.text.trim().toString(),
+  //     };
+  //     http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+  //     if (response != null && response.statusCode == 200) {
+  //       otpApiResponseMap = jsonDecode(response.body);
+  //       loginButtonValue.value = false;
+  //       print('otpApiResponseMap["otp"]:::::::   ${otpApiResponseMap["otp"].toString()}');
+  //       await BottomSheetForOTP.commonBottomSheetForVerifyOtp(otp: otpApiResponseMap["otp"].toString(),email: emailController.text.trim().toString());
+  //     }
+  //     else {
+  //       loginButtonValue.value = false;
+  //       CM.error();
+  //     }
+  //   }catch(e){
+  //     loginButtonValue.value = false;
+  //     CM.error();
+  //   }
+  //
+  // }
 
 
 }

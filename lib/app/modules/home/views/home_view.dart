@@ -51,8 +51,12 @@ class HomeView extends GetView<HomeController> {
                           borderRadius: BorderRadius.circular(10.px),
                           boxShadow: [
                             BoxShadow(
-                                color: Col.primary.withOpacity(.2),
-                                blurRadius: 1)
+                              color: Col.primary.withOpacity(.1),
+                                // blurRadius: 1,
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              // offset: const Offset(0, 3),
+                            )
                           ],
                       ),
                       child: punchInAndPunchOutView(),
@@ -1140,7 +1144,7 @@ class HomeView extends GetView<HomeController> {
             shrinkWrap: true,
             padding: EdgeInsets.all(10.px),
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 5,
+            itemCount: 6,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 10.px,
@@ -1250,12 +1254,8 @@ class MyClockPainter extends CustomPainter {
 
     const rotatedAngle = 2 * pi / totalNumberOfTicks;
 
-    Paint minutesTicksPaint = Paint()
-      ..color = Col.gray
-      ..strokeWidth = 1.6;
-    Paint minutesTicksPaint1 = Paint()
-      ..color = Col.primary
-      ..strokeWidth = 1.6;
+    Paint minutesTicksPaint = Paint()..color = Col.gray..strokeWidth = 1.6;
+    Paint minutesTicksPaint1 = Paint()..color = Col.primary..strokeWidth = 1.6;
 
     canvas.save();
     canvas.translate(centerOffset.dx, centerOffset.dy);

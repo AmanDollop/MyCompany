@@ -272,17 +272,29 @@ class CM {
     return number.toString();
   }
 
+  static Future<String> generateRandomString() async {
+    final random = Random.secure();
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const length = 18;
+    String randomString = '';
+
+    for (int i = 0; i < length; i++) {
+      randomString += characters[random.nextInt(characters.length)];
+    }
+    return randomString;
+  }
+
   ///flutter pub add device_info_plus For Get Device Id
-  static Future<String?> getDeviceId() async {
+  static Future<String> getDeviceId() async {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
       var iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.identifierForVendor; // UNIQUE ID ON iOS
+      return iosDeviceInfo.identifierForVendor ?? ''; // UNIQUE ID ON iOS
     } else if (Platform.isAndroid) {
       var androidDeviceInfo = await deviceInfo.androidInfo;
       return androidDeviceInfo.id; // UNIQUE ID ON ANDROID
     }
-    return null;
+    return '';
   }
 
   ///For Convert Color into Material Color

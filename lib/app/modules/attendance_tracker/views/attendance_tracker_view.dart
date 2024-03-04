@@ -40,15 +40,26 @@ class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(top: 16.px),
-                              child: AnimatedCrossFade(
+                              child: controller.tabBarValue.value == 'Month'
+                                  ? AnimatedCrossFade(
+                                crossFadeState: controller.tabBarValue.value == 'Month'
+                                        ? CrossFadeState.showFirst
+                                        : CrossFadeState.showSecond,
+                                duration: const Duration(milliseconds: 100),
+                                firstCurve: Curves.fastOutSlowIn,
+                                secondCurve: Curves.fastOutSlowIn,
+                                firstChild: const MonthView(),
+                                secondChild: const SizedBox(),
+                              )
+                                  : AnimatedCrossFade(
                                 crossFadeState:
                                     controller.tabBarValue.value == 'Month'
                                         ? CrossFadeState.showFirst
                                         : CrossFadeState.showSecond,
-                                duration: const Duration(milliseconds: 1000),
+                                duration: const Duration(milliseconds: 100),
                                 firstCurve: Curves.fastOutSlowIn,
                                 secondCurve: Curves.fastOutSlowIn,
-                                firstChild: const MonthView(),
+                                firstChild: const SizedBox(),
                                 secondChild: const WeekView(),
                               ),
                             ),

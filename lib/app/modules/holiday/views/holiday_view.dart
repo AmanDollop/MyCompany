@@ -35,7 +35,6 @@ class HolidayView extends GetView<HolidayController> {
             ? shimmerView()
             : ModalProgress(
              inAsyncCall: controller.apiResValue.value,
-
             child: Obx(() {
             controller.count.value;
             if (controller.getHolidayModal.value != null) {

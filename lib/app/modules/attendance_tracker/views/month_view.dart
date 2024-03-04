@@ -155,12 +155,8 @@ class MonthView extends GetView<AttendanceTrackerController> {
       );*/
 
   startCircularProgressBar() {
-    double percentage = double.parse(
-            '${controller.getMonthlyAttendanceData?.totalSpendMinutes}') /
-        double.parse(
-            '${controller.getMonthlyAttendanceData?.totalMonthlyTime}');
-    controller.animation = Tween(begin: 0.0, end: percentage)
-        .animate(controller.animationController)
+    double percentage = double.parse('${controller.getMonthlyAttendanceData?.totalSpendMinutes}') / double.parse('${controller.getMonthlyAttendanceData?.totalMonthlyTime}');
+    controller.animation = Tween(begin: 0.0, end: percentage).animate(controller.animationController)
       ..addListener(() {
         controller.progressValue.value = controller.animation.value;
         controller.count.value++;
@@ -171,12 +167,21 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Widget commonCircularProgressBar() {
     startCircularProgressBar();
-    return CircularProgressIndicator(
+    if(controller.progressValue.value.isNaN) {
+      return CircularProgressIndicator(
       strokeWidth: 8.px,
-      value: controller.progressValue.value,
+      value: 0,
       backgroundColor: Col.primary.withOpacity(.2),
       strokeCap: StrokeCap.round,
     );
+    }else{
+      return CircularProgressIndicator(
+        strokeWidth: 8.px,
+        value: controller.progressValue.value,
+        backgroundColor: Col.primary.withOpacity(.2),
+        strokeCap: StrokeCap.round,
+      );
+    }
   }
 
   Widget circularProgressBarView() {

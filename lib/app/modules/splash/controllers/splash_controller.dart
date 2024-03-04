@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:task/api/api_constants/ac.dart';
@@ -24,9 +26,14 @@ class SplashController extends GetxController {
    Future<void> onInit()  async {
     super.onInit();
     try{
-      fcmId.value = await FirebaseMessaging.instance.getToken() ?? '';
+      if(Platform.isAndroid) {
+        fcmId.value = await FirebaseMessaging.instance.getToken() ?? '';
+      }else if(Platform.isIOS){
+        fcmId.value = await CM.generateRandomString();
+      }
       print('fcmId.value::::: ${fcmId.value}');
       dataBaseCalling();
+      await BottomSheetForOTP.callingUpdateFcmIdApi();
       await BottomSheetForOTP.callingGetCompanyDetailApi();
       // await BottomSheetForOTP.callingGetShiftDetailApi();
       Timer(

@@ -46,6 +46,8 @@ class Col {
 
   static Color  success = const Color(0xff02A63D);
 
+  static Color  yellow = const Color(0xffFFA814);
+
 /* --------------------------Text Colors Collection--------------------------*/
 
   static Color  text=const Color(0xff000000);

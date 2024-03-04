@@ -13,10 +13,13 @@ import 'package:task/api/api_model/department_modal.dart';
 import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
+import 'package:task/api/api_model/get_all_leave_modal.dart';
 import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_department_employee_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/get_leave_date_calender_modal.dart';
+import 'package:task/api/api_model/get_leave_detail_modal.dart';
+import 'package:task/api/api_model/get_leave_type_balance_modal.dart';
 import 'package:task/api/api_model/get_leave_type_modal.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
 import 'package:task/api/api_model/get_my_team_member_modal.dart';
@@ -269,6 +272,34 @@ class CAI extends GetxController{
       return null;
     }
   }
+
+  static Future<http.Response?> updateFcmIdApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+      url: '$baseUrl${AU.endPointUserControllerApi}',
+      bodyParams: bodyParams,
+      context: Get.context!,
+      token: authorization
+    );
+    if (response != null) {
+      if (await CM.checkResponse(
+          response: response,
+          wantInternetFailResponse: true,
+          wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 
   static Future<CompanyDetailsModal?> getCompanyDetailsApi({
     required Map<String, dynamic> bodyParams,
@@ -1265,6 +1296,90 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getLeaveTypeModal = GetLeaveTypeModal.fromJson(jsonDecode(response.body));
         return getLeaveTypeModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetLeaveTypeBalanceModal?> getLeaveTypeBalanceApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetLeaveTypeBalanceModal? getLeaveTypeBalanceModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointLeaveControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getLeaveTypeBalanceModal = GetLeaveTypeBalanceModal.fromJson(jsonDecode(response.body));
+        return getLeaveTypeBalanceModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetAllLeaveModal?> getAllLeaveApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetAllLeaveModal? getAllLeaveModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointLeaveControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getAllLeaveModal = GetAllLeaveModal.fromJson(jsonDecode(response.body));
+        return getAllLeaveModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetLeaveDetailModal?> getLeaveDetailApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetLeaveDetailModal? getLeaveDetailModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointLeaveControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getLeaveDetailModal = GetLeaveDetailModal.fromJson(jsonDecode(response.body));
+        return getLeaveDetailModal;
       } else {
         return null;
       }

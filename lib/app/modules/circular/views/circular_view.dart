@@ -113,7 +113,8 @@ class CircularView extends GetView<CircularController> {
                           : 'No Data Found!');
                 }
               }),
-            ) : CW.commonNoNetworkView();
+            )
+                : CW.commonNoNetworkView();
           }),
         ),
       );

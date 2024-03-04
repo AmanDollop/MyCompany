@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -123,8 +125,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
     int monthNumber = CMForDateTime.monthToNumber(month);
 
     // Format the date as "yyyy-MM-dd"
-    String formattedDate =
-        "$year-${CMForDateTime.formatWithLeadingZeros(monthNumber)}-${CMForDateTime.formatWithLeadingZeros(day)}";
+    String formattedDate = "$year-${CMForDateTime.formatWithLeadingZeros(monthNumber)}-${CMForDateTime.formatWithLeadingZeros(day)}";
 
     return formattedDate;
   }
@@ -237,8 +238,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
                       controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
                           ? Col.primary
                           : calendarGridColorView(index: index - extra),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22.px)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.px)),
                   child: SizedBox(
                     height: 30.px,
                     width: 30.px,
@@ -315,13 +315,8 @@ class AddLeaveView extends GetView<AddLeaveController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    CMForDateTime.formatDate(
-                        controller.dateAddForLeaveList[index]),
-                    style: Theme.of(Get.context!)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(
-                            fontSize: 10.px, fontWeight: FontWeight.w500),
+                    CMForDateTime.formatDate(controller.dateAddForLeaveList[index]),
+                    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
                   ),
                   // Text(
                   //   'Paid',
@@ -362,10 +357,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
 
   Widget radioButtonLabelTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelSmall
-            ?.copyWith(fontWeight: FontWeight.w500),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500),
       );
 
   Widget fullAndHalfDayView() => commonContainerView(
@@ -525,3 +517,4 @@ class AddLeaveView extends GetView<AddLeaveController> {
         ),
       );
 }
+

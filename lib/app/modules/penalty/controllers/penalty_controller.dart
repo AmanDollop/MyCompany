@@ -55,6 +55,14 @@ class PenaltyController extends GetxController {
     }
   }
 
+  onRefresh() async {
+    penaltyList.clear();
+    offset.value = 0;
+    apiResValue.value = true;
+    await getCompanyDataFromLocalDataBase();
+    await callingGetPenaltyApi();
+  }
+
   void clickOnBackButton() {
     Get.back();
   }

@@ -16,19 +16,23 @@ class AK {
 
   static const message="message";
 
-  static const searchString="searchStr";
+  static const fcmId = "fcm_id";
 
-  static const userEmail="user_email";
+  static const deviceId = "device_id";
 
-  static const userPassword="user_password";
+  static const searchString = "searchStr";
 
-  static const companyId="company_id";
+  static const userEmail = "user_email";
 
-  static const branchId="branch_id";
+  static const userPassword = "user_password";
 
-  static const userFirstName="user_first_name";
+  static const companyId = "company_id";
 
-  static const userLastName="user_last_name";
+  static const branchId = "branch_id";
+
+  static const userFirstName = "user_first_name";
+
+  static const userLastName = "user_last_name";
 
   static const userProfilePic = "user_profile_pic";
 
@@ -44,23 +48,23 @@ class AK {
 
   static const languageKnown = "language_known";
 
-  static const departmentId="department_id";
+  static const departmentId = "department_id";
 
-  static const shiftId="shift_id";
+  static const shiftId = "shift_id";
 
-  static const dateOfJoining="date_of_joining";
+  static const dateOfJoining = "date_of_joining";
 
-  static const userDesignation="user_designation";
+  static const userDesignation = "user_designation";
 
-  static const useMobile="user_mobile";
+  static const useMobile = "user_mobile";
 
-  static const gender="gender";
+  static const gender = "gender";
 
-  static const bloodGroup="blood_group";
+  static const bloodGroup = "blood_group";
 
-  static const deviceType="deviceType";
+  static const deviceType = "deviceType";
 
-  static const countryCode="country_code";
+  static const countryCode = "country_code";
 
   static const otp="otp";
 
@@ -174,6 +178,11 @@ class AK {
   static const attendanceTime = "attendance_time";
   static const punchOutMissingReason = "punch_out_missing_reason";
 
+  static const leaveYear = "leave_year";
+  static const leaveId = "leave_id";
+  static const leaveTypeId = "leave_type_id";
+  static const leaveDate = "leaveDate";
+
 
 }
 
@@ -272,6 +281,8 @@ class ApiEndPointAction{
 
   static const userSentOtp = 'userSentOtp';
 
+  static const updateFcmId = 'updateFcmId';
+
   static const getEmployeeProfileMenu = 'getEmployeeProfileMenu';
 
   static const getPromotion = 'getPromotion';
@@ -339,6 +350,12 @@ class ApiEndPointAction{
   static  const getLeaveCalender = 'getLeaveCalender';
 
   static  const getLeaveType = 'getLeaveType';
+
+  static  const getLeave = 'getLeave';
+
+  static  const getLeaveTypeBalance = 'getLeaveTypeBalance';
+
+  static  const getLeaveDetails = 'getLeaveDetails';
 
 
 }

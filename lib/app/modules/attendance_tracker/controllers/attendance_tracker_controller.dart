@@ -183,15 +183,16 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
 
   @override
   void dispose() {
-    pageController.dispose();
     animationController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
   void increment() => count.value++;
 
   clickOnBackButton() {
-    tabBarValue.value = 'Month';
+    // tabBarValue.value = 'Month';
+    Get.delete<AttendanceTrackerController>();
     Get.back();
   }
 

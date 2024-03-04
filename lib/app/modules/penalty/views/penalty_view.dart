@@ -21,72 +21,75 @@ class PenaltyView extends GetView<PenaltyController> {
         isLeading: true,
         onBackPressed: () => controller.clickOnBackButton(),
       ),
-      body: Obx(
-        () {
-          controller.count.value;
-          if (AC.isConnect.value) {
-            return ModalProgress(
-              inAsyncCall: controller.apiResValue.value,
-              child: controller.apiResValue.value
-                  ? shimmerView()
-                  : controller.getPenaltyModal.value != null
-                      ? controller.penaltyList.isNotEmpty
-                          ? LM(
-                              noMoreWidget: const SizedBox(),
-                              isLastPage: controller.isLastPage.value,
-                              onLoadMore: () => controller.onLoadMore(),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
-                                itemCount: controller.penaltyList.length,
-                                itemBuilder: (context, index) {
-                                  return Card(
-                                    color: Col.inverseSecondary,
-                                    margin: EdgeInsets.only(bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6.px),
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.px),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              dateTextView(index: index),
-                                              paidAndUnPaidTextView(index: index),
-                                            ],
-                                          ),
-                                          SizedBox(height: 2.px),
-                                          penaltyDetailTextView(index: index),
-                                          SizedBox(height: 5.px),
-                                          penaltyAmountTextView(index: index),
-                                          SizedBox(height: 5.px),
-                                          if (controller.penaltyList[index].penaltyAttachment != null && controller.penaltyList[index].penaltyAttachment!.isNotEmpty)
-                                            SizedBox(
-                                              height: 50.px,
-                                              child: penaltyImageListViewBuilder(index: index),
-                                            )
-                                        ],
+      body: CW.commonRefreshIndicator(
+        onRefresh: () => controller.onRefresh(),
+        child: Obx(
+          () {
+            controller.count.value;
+            if (AC.isConnect.value) {
+              return ModalProgress(
+                inAsyncCall: controller.apiResValue.value,
+                child: controller.apiResValue.value
+                    ? shimmerView()
+                    : controller.getPenaltyModal.value != null
+                        ? controller.penaltyList.isNotEmpty
+                            ? LM(
+                                noMoreWidget: const SizedBox(),
+                                isLastPage: controller.isLastPage.value,
+                                onLoadMore: () => controller.onLoadMore(),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+                                  itemCount: controller.penaltyList.length,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      color: Col.inverseSecondary,
+                                      margin: EdgeInsets.only(bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6.px),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : Center(
-                              child: CW.commonNoDataFoundText(),
-                            )
-                      : Center(
-                          child: CW.commonNoDataFoundText(),
-                        ),
-            );
-          } else {
-            return CW.commonNoNetworkView();
-          }
-        },
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.px),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                dateTextView(index: index),
+                                                paidAndUnPaidTextView(index: index),
+                                              ],
+                                            ),
+                                            SizedBox(height: 2.px),
+                                            penaltyDetailTextView(index: index),
+                                            SizedBox(height: 5.px),
+                                            penaltyAmountTextView(index: index),
+                                            SizedBox(height: 5.px),
+                                            if (controller.penaltyList[index].penaltyAttachment != null && controller.penaltyList[index].penaltyAttachment!.isNotEmpty)
+                                              SizedBox(
+                                                height: 50.px,
+                                                child: penaltyImageListViewBuilder(index: index),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            : Center(
+                                child: CW.commonNoDataFoundText(),
+                              )
+                        : Center(
+                            child: CW.commonNoDataFoundText(),
+                          ),
+              );
+            } else {
+              return CW.commonNoNetworkView();
+            }
+          },
+        ),
       ),
     );
   }

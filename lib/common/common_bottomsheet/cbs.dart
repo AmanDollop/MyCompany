@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
@@ -353,10 +354,7 @@ class CBS {
 
   Widget textViewTitle({required String title}) => Text(
         title,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
       );
 
   ///  Calling Of Country Picker BottomSheet
@@ -415,6 +413,10 @@ class BottomSheetForOTP extends GetxController {
   static ShiftTime? shiftTimeForSingleData;
   static final dayValue = ''.obs;
 
+  static final deviceId = ''.obs;
+  static final deviceType = ''.obs;
+  static final fcmId = ''.obs;
+
   static Map<String, dynamic> bodyParamsForShiftDetail = {};
 
   static Map<String, dynamic> bodyParamsSendOtp = {};
@@ -422,20 +424,36 @@ class BottomSheetForOTP extends GetxController {
 
   static Map<String, dynamic> bodyParamsMatchOtp = {};
 
+  static Map<String, dynamic> bodyParamsUpdateFcmId = {};
+
   static final menusModal = Rxn<MenusModal>();
   static List<GetMenu> isHeadingMenuList = [];
   static Map<String, dynamic> bodyParamsForMenusApi = {};
 
   static final companyDetailFromLocalDataBase = ''.obs;
 
-  static Future<void> sendOtpApiCalling({required String email}) async {
+  static Future<void> getIdsMethod() async {
+    deviceId.value = await CM.getDeviceId();
+    deviceType.value = CM.getDeviceType();
+    if(Platform.isAndroid) {
+      fcmId.value = await FirebaseMessaging.instance.getToken() ?? '';
+    }else if(Platform.isIOS){
+      fcmId.value = await CM.generateRandomString();
+    }
+  }
+
+  static Future<void> sendOtpApiCalling({required String email,bool isLogInPageApiCalling = false}) async {
     timer.value = !timer.value;
     try {
+      await getIdsMethod();
       otpController.text = '';
       otpController.clear();
       bodyParamsSendOtp = {
         AK.action: ApiEndPointAction.userSentOtp,
         AK.userEmail: email,
+        AK.fcmId : fcmId.value,
+        AK.deviceId : deviceId.value,
+        AK.deviceType : deviceType.value,
       };
       http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
       if (response != null && response.statusCode == 200) {
@@ -444,6 +462,9 @@ class BottomSheetForOTP extends GetxController {
           const Duration(seconds: 2),
           () => otpController.text = otpApiResponseMap['otp'].toString(),
         );
+        if(isLogInPageApiCalling){
+          await commonBottomSheetForVerifyOtp(otp: otpApiResponseMap["otp"].toString(),email: email);
+        }
       } else {
         CM.error();
       }
@@ -454,10 +475,14 @@ class BottomSheetForOTP extends GetxController {
 
   static Future<void> matchOtpApiCalling({required String email, required String otp}) async {
     try {
+      await getIdsMethod();
       bodyParamsMatchOtp = {
         AK.action: ApiEndPointAction.matchOtp,
         AK.otp: otp,
         AK.userEmail: email,
+        AK.fcmId : fcmId.value,
+        AK.deviceId : deviceId.value,
+        AK.deviceType : deviceType.value,
       };
       userDataModal.value = await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
       if (userDataModal.value != null) {
@@ -556,7 +581,8 @@ class BottomSheetForOTP extends GetxController {
                                   style: TextButton.styleFrom(foregroundColor: Theme.of(Get.context!).colorScheme.background),
                                   onPressed: () {},
                                   child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+                                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
                                 )
                               : TextButton(
                                   onPressed: () async {
@@ -564,7 +590,8 @@ class BottomSheetForOTP extends GetxController {
                                     await sendOtpApiCalling(email: email);
                                   },
                                   child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+                                      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
                                 ),
                           timer.value
                               ? Countdown(
@@ -738,6 +765,29 @@ class BottomSheetForOTP extends GetxController {
       } else {
         await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
       }
+    }
+  }
+
+  static Future<void> callingUpdateFcmIdApi({bool forLogOutFcmId =  false}) async {
+    try{
+      if(forLogOutFcmId){
+        fcmId.value = '';
+        deviceType.value = CM.getDeviceType();
+      }else{
+        await getIdsMethod();
+      }
+       bodyParamsUpdateFcmId = {
+        AK.action: ApiEndPointAction.updateFcmId,
+        AK.fcmId : fcmId.value,
+        AK.deviceType : deviceType.value,
+      };
+      http.Response? res = await CAI.updateFcmIdApi(bodyParams: bodyParamsUpdateFcmId);
+      if( res != null && res.statusCode == 200){
+        Map<String, dynamic> responseMap = jsonDecode(res.body);
+       CM.showSnackBar(message: '${responseMap['message']}');
+      }
+    } catch(e){
+      CM.error();
     }
   }
 
