@@ -14,8 +14,6 @@ import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import '../controllers/add_leave_controller.dart';
 
-///applicable leaves and all unpaid leaves
-
 class AddLeaveView extends GetView<AddLeaveController> {
   const AddLeaveView({Key? key}) : super(key: key);
 
@@ -170,12 +168,9 @@ class AddLeaveView extends GetView<AddLeaveController> {
   }
 
   Widget calendarGridView() {
-    var daysInMonth = DateTime(controller.currentMonth.value.year,
-            controller.currentMonth.value.month + 1, 0)
-        .day;
+    var daysInMonth = DateTime(controller.currentMonth.value.year, controller.currentMonth.value.month + 1, 0).day;
 
-    var t =
-        '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
+    var t = '1-${controller.currentMonth.value.month}-${controller.currentMonth.value.year}';
 
     DateTime parsedDate = DateFormat("d-M-yyyy").parse(t);
 
@@ -205,22 +200,14 @@ class AddLeaveView extends GetView<AddLeaveController> {
             if (day == 0) {
               return const SizedBox();
             } else {
-              if (controller.getLeaveDateCalenderModal.value?.isBeforeDate !=
-                      null &&
-                  controller.getLeaveDateCalenderModal.value!.isBeforeDate!
-                      .isNotEmpty &&
-                  controller.getLeaveDateCalenderModal.value?.isAfterDate !=
-                      null &&
-                  controller.getLeaveDateCalenderModal.value!.isAfterDate!
-                      .isNotEmpty) {
-                controller.isAfterAndBeforeCalenderDateValue.value =
-                    isAfterAndBeforeDateCheckerMethod(
-                  currentDate:
-                      '${controller.currentMonth.value.year}-${CMForDateTime.formatWithLeadingZeros(controller.currentMonth.value.month)}-${CMForDateTime.formatWithLeadingZeros(day)}',
-                  isAfterDate:
-                      '${controller.getLeaveDateCalenderModal.value?.isAfterDate}',
-                  isBeforeDate:
-                      '${controller.getLeaveDateCalenderModal.value?.isBeforeDate}',
+              if (controller.getLeaveDateCalenderModal.value?.isBeforeDate != null &&
+                  controller.getLeaveDateCalenderModal.value!.isBeforeDate!.isNotEmpty &&
+                  controller.getLeaveDateCalenderModal.value?.isAfterDate != null &&
+                  controller.getLeaveDateCalenderModal.value!.isAfterDate!.isNotEmpty) {
+                controller.isAfterAndBeforeCalenderDateValue.value = isAfterAndBeforeDateCheckerMethod(
+                  currentDate: '${controller.currentMonth.value.year}-${CMForDateTime.formatWithLeadingZeros(controller.currentMonth.value.month)}-${CMForDateTime.formatWithLeadingZeros(day)}',
+                  isAfterDate: '${controller.getLeaveDateCalenderModal.value?.isAfterDate}',
+                  isBeforeDate: '${controller.getLeaveDateCalenderModal.value?.isBeforeDate}',
                 );
               }
 
@@ -289,43 +276,23 @@ class AddLeaveView extends GetView<AddLeaveController> {
                               '$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
                           ? Col.primary
                           : calendarGridColorView(index: index - extra),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22.px)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.px)),
                   child: SizedBox(
                     height: 30.px,
                     width: 30.px,
                     child: Center(
                       child: Text(
                         day.toString(),
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .labelSmall
-                            ?.copyWith(
+                        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 10.px,
-                                color: controller
-                                            .isAfterAndBeforeCalenderDateValue
-                                            .value &&
-                                        controller.leaveDateCalenderList?[index - extra].weekOff ==
-                                            false &&
-                                        controller
-                                                .leaveDateCalenderList?[
-                                                    index - extra]
-                                                .isLeave ==
-                                            false &&
-                                        controller
-                                                .leaveDateCalenderList?[
-                                                    index - extra]
-                                                .isPresent ==
-                                            false &&
-                                        controller
-                                                .leaveDateCalenderList?[
-                                                    index - extra]
-                                                .holiday ==
-                                            false
+                                color: controller.isAfterAndBeforeCalenderDateValue.value &&
+                                        controller.leaveDateCalenderList?[index - extra].weekOff == false &&
+                                        controller.leaveDateCalenderList?[index - extra].isLeave == false &&
+                                        controller.leaveDateCalenderList?[index - extra].isPresent == false &&
+                                        controller.leaveDateCalenderList?[index - extra].holiday == false
                                     ? Col.darkGray.withOpacity(.4)
-                                    : controller.dateAddForLeaveList.contains(
-                                            '$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
+                                    : controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
                                         ? Col.inverseSecondary
                                         : Col.text),
                       ),
