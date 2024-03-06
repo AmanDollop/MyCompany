@@ -16,6 +16,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DocumentController extends GetxController {
 
@@ -210,7 +211,9 @@ class DocumentController extends GetxController {
         ],
       );
 
-  void clickOnShareButton({required int index}) {}
+  void clickOnShareButton({required int index}) {
+    Share.share('check out my website https://example.com', subject: 'Look what I made!');
+  }
 
   Future<void> clickOnDownloadButton({required int index}) async {
     try {

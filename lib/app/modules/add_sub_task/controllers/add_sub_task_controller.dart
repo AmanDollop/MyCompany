@@ -50,7 +50,7 @@ class AddSubTaskController extends GetxController {
   final result = Rxn<FilePickerResult>();
   final docLogo = ''.obs;
   final docType = ''.obs;
-  final imagePathFoeAdd = ''.obs;
+  final imagePathForAdd = ''.obs;
   final imagePathFoeUpDate = ''.obs;
   final imageFile = Rxn<File>();
 
@@ -314,7 +314,7 @@ class AddSubTaskController extends GetxController {
           docType.value = CM.getDocumentType(filePath: '$element');
           docLogo.value = CM.getDocumentTypeLogo(fileType: docType.value);
           if (docType.value == 'Image') {
-            imagePathFoeAdd.value = '$element';
+            imagePathForAdd.value = '$element';
           }
         }
       }

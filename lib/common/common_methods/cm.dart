@@ -351,11 +351,12 @@ class CM {
         return false;
       } else if (response.statusCode == StatusCodeConstant.REQUEST_TIMEOUT) {
         return false;
+      }else if (response.statusCode == StatusCodeConstant.CREATED) {
+        return true;
       } else {
         return false;
       }
     } else {
-
       return false;
     }
   }

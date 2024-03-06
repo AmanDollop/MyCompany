@@ -65,14 +65,15 @@ class CBS {
           child: GestureDetector(
             onTap: onTap,
             child: Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
               child: SingleChildScrollView(
                 child: Container(
-                   color: Colors.transparent,
+                  color: Colors.transparent,
                   child: Column(
                     children: [
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.back();
                         },
                         borderRadius: BorderRadius.circular(17.px),
@@ -83,7 +84,12 @@ class CBS {
                             color: Col.secondary,
                             shape: BoxShape.circle,
                           ),
-                          child: Center(child: CW.commonNetworkImageView(path: 'assets/icons/cancel_white_icon.png', isAssetImage: true,height: 10.px,width: 10.px)),
+                          child: Center(
+                              child: CW.commonNetworkImageView(
+                                  path: 'assets/icons/cancel_white_icon.png',
+                                  isAssetImage: true,
+                                  height: 10.px,
+                                  width: 10.px)),
                         ),
                       ),
                       SizedBox(height: 10.px),
@@ -100,8 +106,10 @@ class CBS {
                             borderRadius: showDragHandle
                                 ? BorderRadius.zero
                                 : BorderRadius.only(
-                                    topLeft: Radius.circular(cornerRadius ?? 20.px),
-                                    topRight: Radius.circular(cornerRadius ?? 20.px),
+                                    topLeft:
+                                        Radius.circular(cornerRadius ?? 20.px),
+                                    topRight:
+                                        Radius.circular(cornerRadius ?? 20.px),
                                   ),
                             child: ScrollConfiguration(
                               behavior: ListScrollBehavior(),
@@ -109,12 +117,13 @@ class CBS {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (unScrollWidget != null)
-                                  Padding(
+                                    Padding(
                                       padding: EdgeInsets.only(
                                           top: showDragHandle ? 0.px : C.margin,
                                           left: horizontalPadding ?? C.margin,
                                           right: horizontalPadding ?? C.margin,
-                                          bottom: horizontalPadding ?? C.margin / 2),
+                                          bottom: horizontalPadding ??
+                                              C.margin / 2),
                                       child: unScrollWidget,
                                     ),
                                   Flexible(
@@ -123,7 +132,8 @@ class CBS {
                                           left: horizontalPadding ?? C.margin,
                                           right: horizontalPadding ?? C.margin,
                                           top: showDragHandle ? 0.px : C.margin,
-                                          bottom: horizontalPadding ?? C.margin / 2),
+                                          bottom: horizontalPadding ??
+                                              C.margin / 2),
                                       shrinkWrap: true,
                                       children: children,
                                     ),
@@ -354,7 +364,10 @@ class CBS {
 
   Widget textViewTitle({required String title}) => Text(
         title,
-        style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(fontWeight: FontWeight.w600),
       );
 
   ///  Calling Of Country Picker BottomSheet
@@ -388,10 +401,12 @@ class CBS {
       ],
     );
   }
+
 }
 
 class BottomSheetForOTP extends GetxController {
   static final verifyButtonValue = false.obs;
+  static final deviceChangeRequestButtonValue = false.obs;
   static final otpController = TextEditingController();
   static final timer = false.obs;
   static final count = 0.obs;
@@ -435,14 +450,14 @@ class BottomSheetForOTP extends GetxController {
   static Future<void> getIdsMethod() async {
     deviceId.value = await CM.getDeviceId();
     deviceType.value = CM.getDeviceType();
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       fcmId.value = await FirebaseMessaging.instance.getToken() ?? '';
-    }else if(Platform.isIOS){
+    } else if (Platform.isIOS) {
       fcmId.value = await CM.generateRandomString();
     }
   }
 
-  static Future<void> sendOtpApiCalling({required String email,bool isLogInPageApiCalling = false}) async {
+  static Future<void> sendOtpApiCalling({required String email}) async {
     timer.value = !timer.value;
     try {
       await getIdsMethod();
@@ -451,19 +466,20 @@ class BottomSheetForOTP extends GetxController {
       bodyParamsSendOtp = {
         AK.action: ApiEndPointAction.userSentOtp,
         AK.userEmail: email,
-        AK.fcmId : fcmId.value,
-        AK.deviceId : deviceId.value,
-        AK.deviceType : deviceType.value,
+        AK.fcmId: fcmId.value,
+        AK.deviceId: deviceId.value,
+        AK.deviceType: deviceType.value,
       };
       http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
-      if (response != null && response.statusCode == 200) {
-        otpApiResponseMap = jsonDecode(response.body);
-        Future.delayed(
-          const Duration(seconds: 2),
-          () => otpController.text = otpApiResponseMap['otp'].toString(),
-        );
-        if(isLogInPageApiCalling){
-          await commonBottomSheetForVerifyOtp(otp: otpApiResponseMap["otp"].toString(),email: email);
+      if (response != null) {
+        if (response.statusCode == 200) {
+          otpApiResponseMap = jsonDecode(response.body);
+          Future.delayed(
+            const Duration(seconds: 2),
+            () => otpController.text = otpApiResponseMap['otp'].toString(),
+          );
+        } else {
+          CM.error();
         }
       } else {
         CM.error();
@@ -480,17 +496,25 @@ class BottomSheetForOTP extends GetxController {
         AK.action: ApiEndPointAction.matchOtp,
         AK.otp: otp,
         AK.userEmail: email,
-        AK.fcmId : fcmId.value,
-        AK.deviceId : deviceId.value,
-        AK.deviceType : deviceType.value,
+        AK.fcmId: fcmId.value,
+        AK.deviceId: deviceId.value,
+        AK.deviceType: deviceType.value,
       };
-      userDataModal.value = await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
+      userDataModal.value =
+          await CAI.matchOtpApi(bodyParams: bodyParamsMatchOtp);
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
-        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
+        await DataBaseHelper().insertInDataBase(data: {
+          DataBaseConstant.userDetail: json.encode(userDataModal.value)
+        }, tableName: DataBaseConstant.tableNameForUserDetail);
         await BottomSheetForOTP.callingGetCompanyDetailApi();
-        companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail, tableName: DataBaseConstant.tableNameForCompanyDetail);
-        getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
+        companyDetailFromLocalDataBase.value = await DataBaseHelper()
+            .getParticularData(
+                key: DataBaseConstant.companyDetail,
+                tableName: DataBaseConstant.tableNameForCompanyDetail);
+        getCompanyDetails = CompanyDetailsModal.fromJson(
+                jsonDecode(companyDetailFromLocalDataBase.value))
+            .getCompanyDetails;
         await BottomSheetForOTP.callingGetShiftDetailApi();
         await callingMenusApi(companyId: getCompanyDetails?.companyId ?? '');
         Get.offAllNamed(Routes.BOTTOM_NAVIGATION);
@@ -507,22 +531,11 @@ class BottomSheetForOTP extends GetxController {
     verifyButtonValue.value = false;
   }
 
-  static Future<void> commonBottomSheetForVerifyOtp({required String otp, required String email}) async {
-    await showModalBottomSheet(
-      context: Get.context!,
-      showDragHandle: true,
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Colors.white,
+  static Future<void> commonBottomSheetForVerifyOtp({required String otp, required String email, required String companyLogo}) async {
+    await CBS.commonBottomSheet(
       elevation: 0.px,
-      shape: OutlineInputBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.px),
-          topRight: Radius.circular(20.px),
-        ),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
+      children: [
+        StatefulBuilder(
           builder: (context, setState) {
             return Obx(() {
               count.value;
@@ -537,7 +550,7 @@ class BottomSheetForOTP extends GetxController {
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: ListView(
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(bottom: 34.px, left: 18.px, right: 18.px),
+                    padding: EdgeInsets.only(bottom: 20.px),
                     children: [
                       Text(
                         'OTP Verification',
@@ -554,15 +567,17 @@ class BottomSheetForOTP extends GetxController {
                             borderRadius: BorderRadius.circular(8.px),
                           ),
                           child: Center(
-                            child: CW.commonNetworkImageView(
-                                isAssetImage: true,
-                                path: 'assets/images/logo.png',
-                                height: 24.px,
-                                width: 24.px),
+                            child:CW.commonNetworkImageView(
+                                isAssetImage: companyLogo.isNotEmpty?false:true,
+                                path: companyLogo.isNotEmpty
+                                    ? '${AU.baseUrlForSearchCompanyImage}$companyLogo'
+                                    : 'assets/images/logo.png',
+                                height: 50.px,
+                                width: 50.px),
                           ),
                         ),
                       ),
-                      SizedBox(height: 24.px),
+                      SizedBox(height: 20.px),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(6.px),
                         child: CW.commonOtpView(
@@ -578,78 +593,81 @@ class BottomSheetForOTP extends GetxController {
                         children: [
                           timer.value
                               ? TextButton(
-                                  style: TextButton.styleFrom(foregroundColor: Theme.of(Get.context!).colorScheme.background),
-                                  onPressed: () {},
-                                  child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                )
+                            style: TextButton.styleFrom(
+                                foregroundColor: Theme.of(Get.context!)
+                                    .colorScheme
+                                    .background),
+                            onPressed: () {},
+                            child: Text(
+                              "Resend OTP",
+                              style: Theme.of(Get.context!)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                          )
                               : TextButton(
-                                  onPressed: () async {
-                                    otp = '';
-                                    await sendOtpApiCalling(email: email);
-                                  },
-                                  child: Text("Resend OTP",
-                                      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                ),
+                            onPressed: () async {
+                              otp = '';
+                              await sendOtpApiCalling(email: email);
+                            },
+                            child: Text(
+                              "Resend OTP",
+                              style: Theme.of(Get.context!)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                          ),
                           timer.value
                               ? Countdown(
-                                  seconds: 30,
-                                  build: (_, double time) {
-                                    return Text(
-                                      " in 00:${time.toInt()}",
-                                      style: Theme.of(Get.context!).textTheme.titleLarge,
-                                    );
-                                  },
-                                  interval: const Duration(milliseconds: 100),
-                                  onFinished: () {
-                                    setState(() {
-                                      timer.value = !timer.value;
-                                    });
-                                  },
-                                )
+                            seconds: 30,
+                            build: (_, double time) {
+                              return Text(
+                                " in 00:${time.toInt()}",
+                                style: Theme.of(Get.context!)
+                                    .textTheme
+                                    .titleLarge,
+                              );
+                            },
+                            interval: const Duration(milliseconds: 100),
+                            onFinished: () {
+                              setState(() {
+                                timer.value = !timer.value;
+                              });
+                            },
+                          )
                               : const SizedBox(),
                         ],
                       ),
                       SizedBox(height: 12.px),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: CW.commonOutlineButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                buttonText: 'Back',
-                                // width: 174.px,
-                                height: 42.px,
-                                borderRadius: C.radius),
-                          ),
-                          SizedBox(width: 10.px),
-                          Expanded(
-                            child: CW.commonElevatedButton(
-                                onPressed: () async {
-                                  if (otpController.text.isNotEmpty) {
-                                    verifyButtonValue.value = true;
-                                    await matchOtpApiCalling(email: email, otp: otpController.text.trim().toString());
-                                    // await BottomSheetForOTP.callingGetShiftDetailApi();
-                                  }
-                                },
-                                isLoading: verifyButtonValue.value,
-                                buttonText: 'Verify',
-                                height: 42.px),
-                          ),
-                        ],
-                      ),
+                      CW.commonElevatedButton(
+                          onPressed: verifyButtonValue.value
+                              ? () => null
+                              : () async {
+                            if (otpController.text.isNotEmpty) {
+                              verifyButtonValue.value = true;
+                              await matchOtpApiCalling(
+                                  email: email,
+                                  otp: otpController.text
+                                      .trim()
+                                      .toString(),
+                              );
+                              verifyButtonValue.value = false;
+                              // await BottomSheetForOTP.callingGetShiftDetailApi();
+                            }
+                          },
+                          isLoading: verifyButtonValue.value,
+                          buttonText: 'Verify',
+                          height: 42.px),
                     ],
                   ),
                 ),
               );
             });
           },
-        );
-      },
+        )
+      ],
     ).whenComplete(() {
       CM.unFocusKeyBoard();
       otpController.clear();
@@ -661,14 +679,23 @@ class BottomSheetForOTP extends GetxController {
 
   static Future<void> callingGetCompanyDetailApi() async {
     try {
-      companyDetailsModal.value = await CAI.getCompanyDetailsApi(bodyParams: {AK.action: ApiEndPointAction.getCompanyDetail});
+      companyDetailsModal.value = await CAI.getCompanyDetailsApi(
+          bodyParams: {AK.action: ApiEndPointAction.getCompanyDetail});
       if (companyDetailsModal.value != null) {
         getCompanyDetails = companyDetailsModal.value?.getCompanyDetails;
         if (getCompanyDetails != null) {
-          if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForCompanyDetail)) {
-            await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.companyDetail: json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
+          if (await DataBaseHelper().isDatabaseHaveData(
+              db: DataBaseHelper.dataBaseHelper,
+              tableName: DataBaseConstant.tableNameForCompanyDetail)) {
+            await DataBaseHelper().insertInDataBase(data: {
+              DataBaseConstant.companyDetail:
+                  json.encode(companyDetailsModal.value)
+            }, tableName: DataBaseConstant.tableNameForCompanyDetail);
           } else {
-            await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.companyDetail: json.encode(companyDetailsModal.value)}, tableName: DataBaseConstant.tableNameForCompanyDetail);
+            await DataBaseHelper().upDateDataBase(data: {
+              DataBaseConstant.companyDetail:
+                  json.encode(companyDetailsModal.value)
+            }, tableName: DataBaseConstant.tableNameForCompanyDetail);
           }
         }
       }
@@ -680,16 +707,22 @@ class BottomSheetForOTP extends GetxController {
   static Future<void> callingGetUserDataApi() async {
     final userDataFromLocalDataBase = ''.obs;
     try {
-      userDataModal.value = await CAI.getUserDataApi(bodyParams: {AK.action: ApiEndPointAction.getUserDetails});
+      userDataModal.value = await CAI.getUserDataApi(
+          bodyParams: {AK.action: ApiEndPointAction.getUserDetails});
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
 
-        userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDetail, tableName: DataBaseConstant.tableNameForUserDetail);
-        userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
+        userDataFromLocalDataBase.value = await DataBaseHelper()
+            .getParticularData(
+                key: DataBaseConstant.userDetail,
+                tableName: DataBaseConstant.tableNameForUserDetail);
+        userData =
+            UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
+                .userDetails;
         userDataModal.value?.userDetails?.token = userData?.token;
-        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)
+        await DataBaseHelper().upDateDataBase(data: {
+          DataBaseConstant.userDetail: json.encode(userDataModal.value)
         }, tableName: DataBaseConstant.tableNameForUserDetail);
-
       }
     } catch (e) {
       CM.error();
@@ -730,7 +763,8 @@ class BottomSheetForOTP extends GetxController {
 
   static Future<void> callingGetShiftDetailApi() async {
     bodyParamsForShiftDetail = {AK.action: ApiEndPointAction.getShiftDetail};
-    shiftDetailsModal.value = await CAI.getShiftDetailApi(bodyParams: bodyParamsForShiftDetail);
+    shiftDetailsModal.value =
+        await CAI.getShiftDetailApi(bodyParams: bodyParamsForShiftDetail);
     if (shiftDetailsModal.value != null) {
       shiftDetails = shiftDetailsModal.value?.shiftDetails;
       shiftTimeList = shiftDetails?.shiftTime;
@@ -740,55 +774,150 @@ class BottomSheetForOTP extends GetxController {
           shiftTimeForSingleData = element;
         }
       });
-      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForShiftDetail)) {
-        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value), DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)}, tableName: DataBaseConstant.tableNameForShiftDetail);
+      if (await DataBaseHelper().isDatabaseHaveData(
+          db: DataBaseHelper.dataBaseHelper,
+          tableName: DataBaseConstant.tableNameForShiftDetail)) {
+        await DataBaseHelper().insertInDataBase(data: {
+          DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value),
+          DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)
+        }, tableName: DataBaseConstant.tableNameForShiftDetail);
       } else {
-        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value), DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)}, tableName: DataBaseConstant.tableNameForShiftDetail);
+        await DataBaseHelper().upDateDataBase(data: {
+          DataBaseConstant.shiftDetails: json.encode(shiftDetailsModal.value),
+          DataBaseConstant.shiftTime: json.encode(shiftTimeForSingleData)
+        }, tableName: DataBaseConstant.tableNameForShiftDetail);
       }
     }
   }
 
-  static  Future<void> callingMenusApi({required String companyId}) async {
+  static Future<void> callingMenusApi({required String companyId}) async {
     bodyParamsForMenusApi = {
       AK.action: ApiEndPointAction.getDashboardMenu,
       AK.companyId: companyId
     };
     menusModal.value = await CAI.menusApi(bodyParams: bodyParamsForMenusApi);
     if (menusModal.value != null) {
-      if (await DataBaseHelper().isDatabaseHaveData(db: DataBaseHelper.dataBaseHelper, tableName: DataBaseConstant.tableNameForAppMenu)) {
-        await DataBaseHelper().insertInDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
+      if (await DataBaseHelper().isDatabaseHaveData(
+          db: DataBaseHelper.dataBaseHelper,
+          tableName: DataBaseConstant.tableNameForAppMenu)) {
+        await DataBaseHelper().insertInDataBase(
+            data: {DataBaseConstant.appMenus: json.encode(menusModal.value)},
+            tableName: DataBaseConstant.tableNameForAppMenu);
         menusModal.value?.getMenu?.forEach((element) {
           if (element.isDashboardMenu == '1') {
             isHeadingMenuList.add(element);
           }
         });
       } else {
-        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.appMenus: json.encode(menusModal.value)}, tableName: DataBaseConstant.tableNameForAppMenu);
+        await DataBaseHelper().upDateDataBase(
+            data: {DataBaseConstant.appMenus: json.encode(menusModal.value)},
+            tableName: DataBaseConstant.tableNameForAppMenu);
       }
     }
   }
 
-  static Future<void> callingUpdateFcmIdApi({bool forLogOutFcmId =  false}) async {
-    try{
-      if(forLogOutFcmId){
+  static Future<void> callingUpdateFcmIdApi({bool forLogOutFcmId = false}) async {
+    try {
+      if (forLogOutFcmId) {
         fcmId.value = '';
         deviceType.value = CM.getDeviceType();
-      }else{
+      } else {
         await getIdsMethod();
       }
-       bodyParamsUpdateFcmId = {
+      bodyParamsUpdateFcmId = {
         AK.action: ApiEndPointAction.updateFcmId,
-        AK.fcmId : fcmId.value,
-        AK.deviceType : deviceType.value,
+        AK.fcmId: fcmId.value,
+        AK.deviceType: deviceType.value,
       };
-      http.Response? res = await CAI.updateFcmIdApi(bodyParams: bodyParamsUpdateFcmId);
-      if( res != null && res.statusCode == 200){
+      http.Response? res =
+          await CAI.updateFcmIdApi(bodyParams: bodyParamsUpdateFcmId);
+      if (res != null && res.statusCode == 200) {
         Map<String, dynamic> responseMap = jsonDecode(res.body);
-       CM.showSnackBar(message: '${responseMap['message']}');
+        CM.showSnackBar(message: '${responseMap['message']}');
       }
-    } catch(e){
+    } catch (e) {
       CM.error();
     }
   }
 
+  static Future<void> changeDeviceRequestApi({required String id}) async {
+    try {
+      await getIdsMethod();
+      bodyParamsSendOtp = {
+        AK.action: ApiEndPointAction.deviceChangeRequest,
+        AK.userId: id,
+        AK.fcmId: fcmId.value,
+        AK.deviceId: deviceId.value,
+        AK.deviceType: deviceType.value,
+      };
+      http.Response? response = await CAI.sendOtpApi(bodyParams: bodyParamsSendOtp);
+      if (response != null) {
+        if (response.statusCode == 200) {
+          Get.back();
+        } else {
+          CM.error();
+        }
+      } else {
+        CM.error();
+      }
+    } catch (e) {
+      CM.error();
+      deviceChangeRequestButtonValue.value = false;
+    }
+    deviceChangeRequestButtonValue.value = false;
+  }
+
+  static Future<void> deviceChangeRequestBottomSheetView({required String message, required String id}) async {
+    await CBS.commonBottomSheet(
+      elevation: 0.px,
+      children: [
+        Obx(() {
+        count.value;
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(bottom: 20.px),
+              children: [
+                Center(
+                  child: CW.commonNetworkImageView(
+                      isAssetImage: true,
+                      path:  'assets/images/change_device__request_image.png',
+                      height: 100.px,
+                      width: 100.px),
+                ),
+                SizedBox(height: 16.px),
+                Text(
+                  'Change Device Request',
+                  style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.text),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 12.px),
+                Text(message,style: Theme.of(Get.context!).textTheme.titleMedium),
+                SizedBox(height: 24.px),
+                CW.commonElevatedButton(
+                    onPressed: deviceChangeRequestButtonValue.value
+                        ? () => null
+                        : () async {
+                      deviceChangeRequestButtonValue.value = true;
+                      await changeDeviceRequestApi(id:id);
+                    },
+                    isLoading: deviceChangeRequestButtonValue.value,
+                    buttonText: 'Send Request',
+                    height: 42.px,
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+      ]
+    ).whenComplete(() {
+      verifyButtonValue.value = false;
+    });
+  }
 }

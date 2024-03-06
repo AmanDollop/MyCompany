@@ -1,7 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:task/api/api_constants/ac.dart';
+import 'package:task/app/routes/app_pages.dart';
+import 'package:task/common/common_bottomsheet/cbs.dart';
+import 'package:task/data_base/data_base_constant/data_base_constant.dart';
+import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/main.dart';
 import '../../common_methods/cm.dart';
 import 'package:http/http.dart' as http;
@@ -66,9 +72,7 @@ class NS {
   Future<void> initNotification() async {
     InitializationSettings initializationSettings = InitializationSettings(android: androidInitializationSettings, iOS: iosInitializationSettings);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: onSelectNotification,
-        onDidReceiveBackgroundNotificationResponse: onSelectNotification);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification, onDidReceiveBackgroundNotificationResponse: onSelectNotification);
 
     await initFirebaseNotification();
   }
@@ -81,7 +85,7 @@ class NS {
     );
 
     FirebaseMessaging.onMessage.listen((message) {
-      if (!kDebugMode) {
+      if (kDebugMode) {
         print("NOTIFICATION TITLE:::::::${message.notification?.title}");
         print("NOTIFICATION BODY::::::::${message.notification?.body}");
         print("NOTIFICATION DATA::::::::${message.data}");
@@ -110,12 +114,11 @@ class NS {
     required RemoteMessage remoteMessage,
     String? payload,
   }) async {
+
     await initNotification();
-
     AndroidNotificationDetails androidNotificationDetails;
-
     print('remoteMessage.data:::: ${remoteMessage.data}');
-
+    print('remoteMessage.data["title"]::::: ${remoteMessage.data["title"]}');
     if (remoteMessage.data["image"] != null && remoteMessage.data["image"] != '') {
       final http.Response response = await http.get(Uri.parse('${remoteMessage.data["image"]}'));
       Uint8List imageData = response.bodyBytes;
@@ -143,16 +146,26 @@ class NS {
         styleInformation: const BigTextStyleInformation(''),
       );
     }
-
     NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails, iOS: iosNotificationDetails);
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      remoteMessage.data["title"],
-      remoteMessage.data['body'],
-      notificationDetails,
-      payload: payload,
-    );
+    if(remoteMessage.data["title"] == 'Logout'){
+      // await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForCompanyDetail);
+      await BottomSheetForOTP.callingUpdateFcmIdApi(forLogOutFcmId: true);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForUserDetail);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForProfileMenu);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForShiftDetail);
+      await DataBaseHelper().deleteDataBase(tableName: DataBaseConstant.tableNameForAppMenu);
+      await CM.setString(key: AK.baseUrl, value: '');
+      Get.offAllNamed(Routes.SEARCH_COMPANY);
+    }
+    else{
+      await flutterLocalNotificationsPlugin.show(
+        0,
+        remoteMessage.data["title"],
+        remoteMessage.data['body'],
+        notificationDetails,
+        payload: payload,
+      );
+    }
   }
   
 }

@@ -26,8 +26,11 @@ class LeaveController extends GetxController {
   ];
 
   final getAllLeaveModal = Rxn<GetAllLeaveModal>();
-  List<GetLeave>? getLeaveList;
+  List<GetLeave> getLeaveList = [];
   Map<String, dynamic> bodyParamsForGetAllLeaveApi = {};
+  final isLastPage = false.obs;
+  String limit = '10';
+  final offset = 0.obs;
 
   @override
   Future<void> onInit() async {
@@ -50,7 +53,10 @@ class LeaveController extends GetxController {
   void increment() => count.value++;
 
   onRefresh() async {
-    await onInit();
+    apiResValue.value = true;
+    offset.value = 0;
+    getLeaveList.clear();
+    await callingGetAllLeaveApi();
   }
 
   void clickOnBackButton(){
@@ -137,8 +143,8 @@ class LeaveController extends GetxController {
   }
 
   void clickOnViewMoreButton({required int index}) {
-    if(getLeaveList?[index].leaveId != null && getLeaveList![index].leaveId!.isNotEmpty) {
-      Get.toNamed(Routes.LEAVE_DETAIL,arguments: [getLeaveList?[index].leaveId]);
+    if(getLeaveList[index].leaveId != null && getLeaveList[index].leaveId!.isNotEmpty) {
+      Get.toNamed(Routes.LEAVE_DETAIL,arguments: [getLeaveList[index].leaveId]);
     }
   }
 
@@ -150,12 +156,17 @@ class LeaveController extends GetxController {
     try{
       bodyParamsForGetAllLeaveApi = {
         AK.action : ApiEndPointAction.getLeave,
-        AK.leaveYear : yearForMonthViewValue.value
+        AK.leaveYear : yearForMonthViewValue.value,
+        AK.limit: limit.toString(),
+        AK.offset: offset.toString(),
       };
       getAllLeaveModal.value = await CAI.getAllLeaveApi(bodyParams: bodyParamsForGetAllLeaveApi);
       if(getAllLeaveModal.value != null){
-        getLeaveList = getAllLeaveModal.value?.getLeave;
-        print('getLeaveList::::   ${getLeaveList?.length}');
+        if(getAllLeaveModal.value?.getLeave != null && getAllLeaveModal.value!.getLeave!.isNotEmpty) {
+          getLeaveList.addAll(getAllLeaveModal.value?.getLeave ?? []);
+        } else {
+          isLastPage.value = true;
+        }
       }
     }catch(e){
       CM.error();
@@ -165,5 +176,15 @@ class LeaveController extends GetxController {
     apiResValue.value = false;
   }
 
+  Future<void> onLoadMore() async {
+    offset.value = offset.value + 1;
+    try {
+      if (int.parse(limit) <= getLeaveList.length) {
+        await callingGetAllLeaveApi();
+      }
+    } catch (e) {
+      CM.error();
+    }
+  }
 
 }

@@ -279,8 +279,12 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
           ),
           child: Center(
             child: controller.assignToListViewValue.value
-                ? Icon(CupertinoIcons.minus_rectangle,color: Col.primary,size: 12.px,)
-                : CW.commonNetworkImageView(
+                ? CW.commonNetworkImageView(
+              path: 'assets/icons/outline_minus_icon.png',
+              height: 12.px,
+              width: 12.px,
+              isAssetImage: true,
+            ) : CW.commonNetworkImageView(
               path: 'assets/icons/outline_add_icon.png',
               height: 12.px,
               width: 12.px,
@@ -386,31 +390,31 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         child: controller.docType.value == 'Unknown'
             ? attachRowTextView()
             : controller.docType.value == 'Image'
-            ? controller.imagePathFoeAdd.value.isNotEmpty
-                ? fileImageAndNetworkImageView(isFileImage: true, imagePath: controller.imagePathFoeAdd.value)
+            ? controller.imagePathForAdd.value.isNotEmpty
+                ? fileImageAndNetworkImageView(isFileImage: true, imagePath: controller.imagePathForAdd.value)
                 : fileImageAndNetworkImageView(imagePath: controller.imagePathFoeUpDate.value)
             : docImageView(imagePath: controller.docLogo.value),
       );
     } else {
       return Row(
-        mainAxisAlignment: controller.imagePathFoeAdd.value.isNotEmpty
+        mainAxisAlignment: controller.imagePathForAdd.value.isNotEmpty
             ? MainAxisAlignment.spaceBetween
             : MainAxisAlignment.center,
         children: [
           Center(
             child: controller.docType.value != 'Image'
                 ? docImageView(imagePath: controller.docLogo.value)
-                : controller.imagePathFoeAdd.value.isNotEmpty
+                : controller.imagePathForAdd.value.isNotEmpty
                     ? fileImageAndNetworkImageView(
                         isFileImage: true,
-                        imagePath: controller.imagePathFoeAdd.value)
+                        imagePath: controller.imagePathForAdd.value)
                     : attachRowTextView(),
           ),
-          if (controller.imagePathFoeAdd.value.isNotEmpty)
+          if (controller.imagePathForAdd.value.isNotEmpty)
             InkWell(
               onTap: () {
                 controller.result.value = null;
-                controller.imagePathFoeAdd.value = '';
+                controller.imagePathForAdd.value = '';
               },
               child: Ink(
                 height: 30.px,

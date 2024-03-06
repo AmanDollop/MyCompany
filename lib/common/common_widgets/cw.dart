@@ -1246,13 +1246,15 @@ class CW {
     required ValueChanged? onChanged,
     required String index,
     required String selectedIndex,
-    Color? radioColor,
+    Color? focusColor,
+    Color? activeColor,
   }) =>
       Radio(
         toggleable: true,
-        // fillColor: MaterialStateProperty.all(radioColor ?? Col.primary),
-        focusColor: Col.gray,
-        activeColor: Col.primary,
+        // fillColor: MaterialStateProperty.all(focusColor?? Col.primary),
+        overlayColor: MaterialStateProperty.all(focusColor?? Col.gray),
+        focusColor: focusColor ?? Col.gray,
+        activeColor: activeColor ?? Col.primary,
         value: index,
         groupValue: selectedIndex,
         onChanged: onChanged,
@@ -1283,9 +1285,8 @@ class CW {
         activeColor: activeFillColor ?? Col.primary,
         checkColor: checkColor ?? Col.inverseSecondary,
         splashRadius: 24.px,
-        side: BorderSide(color: borderColor ?? Col.darkGray, width: 1.5.px),
-        shape: shape ??
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.px)),
+        side: BorderSide(color: borderColor ?? Col.darkGray, width: 1.px),
+        shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
       );
 
   static Widget commonDividerView({
@@ -1714,6 +1715,53 @@ class CW {
         width: width,
         color: imageColor,
         fit: fit,
+      ),
+    );
+  }
+}
+
+class CustomRadio<T> extends StatelessWidget {
+  final T value;
+  final T? groupValue;
+  final ValueChanged<T?> onChanged;
+  final Color activeColor;
+  final Color? fillColor;
+
+  CustomRadio({
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+    required this.activeColor,
+    this.fillColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onChanged(value);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: groupValue == value ? Col.primary :activeColor,width: 2.px),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(2.px),
+          child: groupValue == value
+              ? Container(
+            width: 8.px,
+            height: 8.px,
+            decoration:  BoxDecoration(
+              shape: BoxShape.circle,
+              color: Col.primary,
+            ),
+          )
+              : SizedBox(
+            height: 8.px,
+            width: 8.px,
+          ),
+        ),
       ),
     );
   }

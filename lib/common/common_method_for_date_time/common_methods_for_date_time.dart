@@ -127,7 +127,7 @@ class CMForDateTime {
     String formattedDay = getFormattedDay(day);
 
     // Return formatted date
-    return '$formattedDay $monthAbbreviation';
+    return '$formattedDay $monthAbbreviation $year';
   }
 
   static String getMonthAbbreviation(String month) {

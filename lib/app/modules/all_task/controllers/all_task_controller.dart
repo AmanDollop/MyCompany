@@ -127,7 +127,6 @@ class AllTaskController extends GetxController {
       if (getTaskDataModal.value != null) {
         if (getTaskDataModal.value?.taskCategory != null && getTaskDataModal.value!.taskCategory!.isNotEmpty) {
           taskCategoryList.addAll(getTaskDataModal.value?.taskCategory ?? []);
-          print('taskCategoryList::: ${taskCategoryList.length}');
         } else {
           isLastPage.value = true;
         }

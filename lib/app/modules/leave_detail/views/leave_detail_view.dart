@@ -52,19 +52,19 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
                                       commonColumnView(
                                           text1: 'Leave Day Type',
                                           text2: '${controller.getLeaveDetailsList?.leaveDayTypeView}'),
-                                    if (controller.getLeaveDetailsList?.leaveDayType != null && controller.getLeaveDetailsList!.leaveDayType!.isNotEmpty)
+                                    if (controller.getLeaveDetailsList?.leaveStatus != null && controller.getLeaveDetailsList!.leaveStatus!.isNotEmpty)
                                       SizedBox(height: 6.px),
-                                    if (controller.getLeaveDetailsList?.leaveDayType != null && controller.getLeaveDetailsList!.leaveDayType!.isNotEmpty)
+                                    if (controller.getLeaveDetailsList?.leaveStatus != null && controller.getLeaveDetailsList!.leaveStatus!.isNotEmpty)
                                       commonColumnView(
                                           text1: 'Leave Status',
-                                          text2: controller.getLeaveDetailsList?.isPaid == '0'
+                                          text2: controller.getLeaveDetailsList?.leaveStatus == '0'
                                               ? 'Padding'
-                                              : controller.getLeaveDetailsList?.isPaid == '1'
+                                              : controller.getLeaveDetailsList?.leaveStatus == '1'
                                                   ? 'Approved'
                                                   : 'Rejected',
-                                          color: controller.getLeaveDetailsList?.isPaid == '0'
+                                          color: controller.getLeaveDetailsList?.leaveStatus == '0'
                                               ? Col.yellow
-                                              : controller.getLeaveDetailsList?.isPaid == '1'
+                                              : controller.getLeaveDetailsList?.leaveStatus == '1'
                                                   ? Col.success
                                                   : Col.error,
                                           containerValue: true),

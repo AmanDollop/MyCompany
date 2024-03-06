@@ -260,24 +260,15 @@ class WeekView extends GetView<AttendanceTrackerController> {
               children: [
                 titleTextView(text: 'Total Productive Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(
-                    text: CMForDateTime.calculateTimeForHourAndMin(
-                        minute:
-                            '${controller.weeklyHistoryList?[index].totalWeekMinutes}')),
+                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalProductiveWorkingMinutes}')),
                 SizedBox(height: 5.px),
                 titleTextView(text: 'Total Extra Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(
-                    text: CMForDateTime.calculateTimeForHourAndMin(
-                        minute:
-                            '${controller.weeklyHistoryList?[index].totalWeekExtraMinutes}')),
+                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekExtraMinutes}')),
                 SizedBox(height: 5.px),
                 titleTextView(text: 'Total Remaining Time'),
                 SizedBox(height: 2.px),
-                subTitleTextView(
-                    text: CMForDateTime.calculateTimeForHourAndMin(
-                        minute:
-                            '${controller.weeklyHistoryList?[index].totalWeekRemainingMinutes}')),
+                subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.weeklyHistoryList?[index].totalWeekRemainingMinutes}')),
               ],
             ),
           ),

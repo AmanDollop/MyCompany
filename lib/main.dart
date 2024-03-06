@@ -74,7 +74,7 @@ Future<void> main() async {
 @pragma('vm:entry-point')
 Future<void> _backgroundNotificationHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  //await NS().showNotification(remoteMessage: message);
+  await NS().showNotification(remoteMessage: message);
     print("BACKGROUND NOTIFICATION TITLE::::::${message.notification?.title}");
     print("BACKGROUND NOTIFICATION BODY:::::::${message.notification?.body}");
     print("BACKGROUND NOTIFICATION DATA:::::${message.data}");

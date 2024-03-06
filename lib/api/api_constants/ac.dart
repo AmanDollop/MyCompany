@@ -24,6 +24,8 @@ class AK {
 
   static const userEmail = "user_email";
 
+  static const userId = "user_id";
+
   static const userPassword = "user_password";
 
   static const companyId = "company_id";
@@ -62,7 +64,7 @@ class AK {
 
   static const bloodGroup = "blood_group";
 
-  static const deviceType = "deviceType";
+  static const deviceType = "device_type";
 
   static const countryCode = "country_code";
 
@@ -280,6 +282,8 @@ class ApiEndPointAction{
   static const breakOut = 'breakOut';
 
   static const userSentOtp = 'userSentOtp';
+
+  static const deviceChangeRequest = 'deviceChangeRequest';
 
   static const updateFcmId = 'updateFcmId';
 
