@@ -45,11 +45,7 @@ Future<void> main() async {
       DevicePreview(
         enabled: false,
         builder: (context) => ResponsiveSizer(
-          builder: (
-              buildContext,
-              orientation,
-              screenType,
-              ) => GestureDetector(
+          builder: (buildContext, orientation, screenType) => GestureDetector(
                 onTap: () async {
                   await Fluttertoast.cancel();
                 },

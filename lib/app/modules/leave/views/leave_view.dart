@@ -48,24 +48,34 @@ class LeaveView extends GetView<LeaveController> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
                                 children: [
-                                  Row(
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'Leave Balance',
-                                        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, color: Col.primary),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
+                                      InkWell(
+                                        onTap: () => controller.clickOnLeaveBalance(),
+                                        borderRadius: BorderRadius.circular(2.px),
+                                        splashColor: Col.primary.withOpacity(.4),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Leave Balance',
+                                              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, color: Col.primary),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            SizedBox(width: 5.px),
+                                            Icon(Icons.arrow_right_alt_outlined, color: Col.primary)
+                                          ],
+                                        ),
                                       ),
-                                      SizedBox(width: 5.px),
-                                      Icon(Icons.arrow_right_alt_outlined,
-                                          color: Col.primary)
+                                      CW.commonDividerView(
+                                          color: Col.primary,
+                                          wight: 1.5.px,
+                                          rightPadding: 60.w,
+                                          height: 0),
                                     ],
                                   ),
-                                  CW.commonDividerView(
-                                      color: Col.primary,
-                                      wight: 1.5.px,
-                                      rightPadding: 60.w,
-                                      height: 0),
                                   SizedBox(height: 10.px),
                                   controller.getLeaveList.isNotEmpty
                                       ? ListView.builder(
@@ -93,6 +103,7 @@ class LeaveView extends GetView<LeaveController> {
                                                   commonRowForCardView(
                                                       text1: 'Leave Day Type ',
                                                       text2: '${controller.getLeaveList[index].leaveDayTypeView}'),
+                                                  if(controller.getLeaveList[index].leaveStartDate != null && controller.getLeaveList[index].leaveStartDate!.isNotEmpty)
                                                   commonRowForCardView(
                                                       text1: 'Date',
                                                       text2: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.getLeaveList[index].leaveStartDate}')),

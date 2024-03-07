@@ -12,7 +12,11 @@ import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
+import 'package:task/validator/v.dart';
 import '../controllers/add_leave_controller.dart';
+
+
+/// Apply bulk leave show hide working
 
 class AddLeaveView extends GetView<AddLeaveController> {
   const AddLeaveView({Key? key}) : super(key: key);
@@ -33,13 +37,16 @@ class AddLeaveView extends GetView<AddLeaveController> {
             controller.allMonthsSameValue.value = checkIfAllMonthsSame(dates: controller.formattedDateListForApi);
             if(controller.dateAddForLeaveList.isEmpty /*controller.dateAddForLeaveList.length <= 1*/){
               controller.applyBulkLeaveValue.value = false;
+              controller.applyBulkLeaveButtonHideAndShowValue.value = false;
             }
             return ModalProgress(
               isLoader: true,
               inAsyncCall: controller.apiResValue.value,
               child: controller.apiResValue.value
                   ? const SizedBox()
-                  : Stack(
+                  : controller.getLeaveDateCalenderModal.value != null
+                  ? controller.leaveDateCalenderList != null && controller.leaveDateCalenderList!.isNotEmpty
+                  ? Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
                         ListView(
@@ -62,7 +69,10 @@ class AddLeaveView extends GetView<AddLeaveController> {
                                     applyBulkLeaveView(),
                                   if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
                                     SizedBox(height: 14.px),
-                                  reasonTextFormFiled(),
+                                  Form(
+                                    key: controller.keyForLeaveReason,
+                                    child: reasonTextFormFiled(),
+                                  ),
                                   SizedBox(height: 10.px),
                                   attachFile(),
                                   SizedBox(height: 80.px),
@@ -70,12 +80,15 @@ class AddLeaveView extends GetView<AddLeaveController> {
                               )
                           ],
                         ),
-                        if (controller.dateAddForLeaveList.isNotEmpty)
-                          applyLeaveButtonView()
+                        // if (controller.dateAddForLeaveList.isNotEmpty)
+                        applyLeaveButtonView()
                       ],
-                    ),
+                    )
+                  : CW.commonNoDataFoundText()
+                  : CW.commonNoDataFoundText(),
             );
-          } else {
+          }
+          else {
             return CW.commonNoNetworkView();
           }
         }),
@@ -88,34 +101,23 @@ class AddLeaveView extends GetView<AddLeaveController> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (!controller.applyBulkLeaveValue.value)
-          controller.currentMonth.value.month !=
-                  DateTime.parse(
-                          '${controller.getLeaveDateCalenderModal.value?.isBeforeDate}')
-                      .month
+          controller.currentMonth.value.month != DateTime.parse('${controller.getLeaveDateCalenderModal.value?.isBeforeDate}').month
               ? IconButton(
-                  icon: Icon(Icons.keyboard_arrow_left,
-                      color: Col.secondary, size: 28.px),
-                  onPressed: () =>
-                      controller.clickOnReverseIconButton(index: index),
+                  icon: Icon(Icons.keyboard_arrow_left, color: Col.secondary, size: 28.px),
+                  onPressed: () => controller.clickOnReverseIconButton(index: index),
                 )
               : SizedBox(width: 50.px),
         SizedBox(width: 10.px),
         Text(
-          CMForDateTime.dateFormatForMonthYear(
-              date: '${controller.currentMonth.value}'),
+          CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}'),
           style: Theme.of(Get.context!).textTheme.displayLarge,
         ),
         SizedBox(width: 10.px),
         if (!controller.applyBulkLeaveValue.value)
-          controller.currentMonth.value.month !=
-                  DateTime.parse(
-                          '${controller.getLeaveDateCalenderModal.value?.isAfterDate}')
-                      .month
+          controller.currentMonth.value.month != DateTime.parse('${controller.getLeaveDateCalenderModal.value?.isAfterDate}').month
               ? IconButton(
-                  icon: Icon(Icons.keyboard_arrow_right,
-                      color: Col.secondary, size: 28.px),
-                  onPressed: () =>
-                      controller.clickOnForwardIconButton(index: index),
+                  icon: Icon(Icons.keyboard_arrow_right, color: Col.secondary, size: 28.px),
+                  onPressed: () => controller.clickOnForwardIconButton(index: index),
                 )
               : SizedBox(width: 50.px),
       ],
@@ -485,15 +487,31 @@ class AddLeaveView extends GetView<AddLeaveController> {
 
   Widget applyBulkLeaveView() {
     String? v;
+
     for (var element in controller.localData) {
       if(element.leaveType != null && element.leaveType!.isNotEmpty) {
         v = element.leaveType;
       }
     }
+
+    print('v::::: $v');
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(
+       controller.applyBulkLeaveButtonHideAndShowValue.value
+           ? Container(
+         width: 16.px,
+         height: 16.px,
+         decoration: BoxDecoration(
+           border: Border.all(
+             color: Col.gray,
+             width: 1.px,
+           ),
+           borderRadius: BorderRadius.circular(4.px)
+         ),
+       )
+           : SizedBox(
           height: 16.px,
           width: 16.px,
           child: CW.commonCheckBoxView(
@@ -502,6 +520,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
               if(!controller.applyBulkLeaveValue.value){
                 await controller.openBottomSheetForApplyBulkLeaves();
               }else{
+
               }
               controller.count.value++;
             },
@@ -517,10 +536,11 @@ class AddLeaveView extends GetView<AddLeaveController> {
   }
 
   Widget reasonTextFormFiled() => CW.commonTextFieldForMultiline(
-        labelText: 'Reason',
-        hintText: 'Reason',
+        labelText: 'Leave Reason',
+        hintText: 'Leave Reason',
         controller: controller.reasonController,
         maxLines: 3,
+        validator: (value) => V.isValid(value: value, title: 'Please enter leave reason'),
       );
 
   Widget attachFile() {

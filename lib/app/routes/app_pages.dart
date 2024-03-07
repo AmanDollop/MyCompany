@@ -50,6 +50,8 @@ import '../modules/job_info/bindings/job_info_binding.dart';
 import '../modules/job_info/views/job_info_view.dart';
 import '../modules/leave/bindings/leave_binding.dart';
 import '../modules/leave/views/leave_view.dart';
+import '../modules/leave_balance/bindings/leave_balance_binding.dart';
+import '../modules/leave_balance/views/leave_balance_view.dart';
 import '../modules/leave_detail/bindings/leave_detail_binding.dart';
 import '../modules/leave_detail/views/leave_detail_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -347,6 +349,11 @@ class AppPages {
       name: _Paths.ADD_LEAVE,
       page: () => const AddLeaveView(),
       binding: AddLeaveBinding(),
+    ),
+    GetPage(
+      name: _Paths.LEAVE_BALANCE,
+      page: () => const LeaveBalanceView(),
+      binding: LeaveBalanceBinding(),
     ),
   ];
 }

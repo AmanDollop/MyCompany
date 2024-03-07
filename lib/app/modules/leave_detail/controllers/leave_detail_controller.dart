@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_leave_detail_modal.dart';
-import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
 
 class LeaveDetailController extends GetxController {
@@ -45,7 +44,7 @@ class LeaveDetailController extends GetxController {
   }
 
   void clickOnEditButton() {
-    Get.toNamed(Routes.ADD_LEAVE,arguments: ['Update Leave']);
+    // Get.toNamed(Routes.ADD_LEAVE,arguments: ['Update Leave']);
   }
 
   Future<void> callingGetLeaveDetailApi() async {

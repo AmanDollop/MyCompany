@@ -50,6 +50,7 @@ abstract class Routes {
   static const LEAVE = _Paths.LEAVE;
   static const LEAVE_DETAIL = _Paths.LEAVE_DETAIL;
   static const ADD_LEAVE = _Paths.ADD_LEAVE;
+  static const LEAVE_BALANCE = _Paths.LEAVE_BALANCE;
 }
 
 abstract class _Paths {
@@ -101,4 +102,5 @@ abstract class _Paths {
   static const LEAVE = '/leave';
   static const LEAVE_DETAIL = '/leave-detail';
   static const ADD_LEAVE = '/add-leave';
+  static const LEAVE_BALANCE = '/leave-balance';
 }

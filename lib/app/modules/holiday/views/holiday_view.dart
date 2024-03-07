@@ -28,81 +28,83 @@ class HolidayView extends GetView<HolidayController> {
                   dropDownView: yearDropDownView(),
                 ),
               ),
-            ]
-        ),
+            ]),
         body: AC.isConnect.value
             ? controller.apiResValue.value
-            ? shimmerView()
-            : ModalProgress(
-             inAsyncCall: controller.apiResValue.value,
-            child: Obx(() {
-            controller.count.value;
-            if (controller.getHolidayModal.value != null) {
-              return CW.commonRefreshIndicator(
-                onRefresh: () => controller.onRefresh(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.px),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 16.px),
-                      Expanded(
-                        child: controller.holidayList != null &&
-                            controller.holidayList!.isNotEmpty
-                            ? ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: controller.holidayList?.length,
-                          // Number of items in the list
-                          itemBuilder: (BuildContext context, int index) {
-                            return cardView(index: index);
-                          },
-                        )
-                            : controller.apiResValue.value
+                ? shimmerView()
+                : ModalProgress(
+                    inAsyncCall: controller.apiResValue.value,
+                    child: Obx(() {
+                      controller.count.value;
+                      if (controller.getHolidayModal.value != null) {
+                        return CW.commonRefreshIndicator(
+                          onRefresh: () => controller.onRefresh(),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.px),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 16.px),
+                                Expanded(
+                                  child: controller.holidayList != null &&
+                                          controller.holidayList!.isNotEmpty
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          itemCount: controller.holidayList?.length,
+                                          // Number of items in the list
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return cardView(index: index);
+                                          },
+                                        )
+                                      : controller.apiResValue.value
+                                          ? const SizedBox()
+                                          : CW.commonNoDataFoundText(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return controller.apiResValue.value
                             ? const SizedBox()
-                            : CW.commonNoDataFoundText(),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return controller.apiResValue.value
-                  ? const SizedBox()
-                  : CW.commonNoDataFoundText();
-            }
-          }),
-        )
+                            : CW.commonNoDataFoundText();
+                      }
+                    }),
+                  )
             : CW.commonNoNetworkView(),
       );
     });
   }
 
-  Widget commonDropDownView({required Widget dropDownView,required GestureTapCallback onTap}) => Container(
-    height: 40.px,
-    margin: EdgeInsets.only(right: 12.px),
-    decoration: BoxDecoration(color: Col.inverseSecondary, borderRadius: BorderRadius.circular(6.px)),
-    child: InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.px),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: dropDownView,
+  Widget commonDropDownView({required Widget dropDownView, required GestureTapCallback onTap}) => Container(
+        height: 40.px,
+        margin: EdgeInsets.only(right: 12.px),
+        decoration: BoxDecoration(
+            color: Col.inverseSecondary,
+            borderRadius: BorderRadius.circular(6.px)),
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.px),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: dropDownView,
+                ),
+                Icon(Icons.arrow_drop_down, color: Col.darkGray)
+              ],
             ),
-            Icon(Icons.arrow_drop_down, color: Col.darkGray)
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget yearDropDownView() => Text(
-    controller.yearForMonthViewValue.value,
-    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-      fontWeight: FontWeight.w600,
-    ),
-  );
+        controller.yearForMonthViewValue.value,
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+      );
 
   /*Widget yearDropDownView() => DropdownButton<String>(
         value: controller.yearForMonthViewValue.value,
@@ -160,7 +162,9 @@ class HolidayView extends GetView<HolidayController> {
         margin: EdgeInsets.zero,
         padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 16.px),
         decoration: BoxDecoration(
-          color: controller.isAfterDate.value ? cardColor?.withOpacity(.2) : cardColor,
+          color: controller.isAfterDate.value
+              ? cardColor?.withOpacity(.2)
+              : cardColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(6.px),
             bottomLeft: Radius.circular(6.px),
@@ -170,9 +174,10 @@ class HolidayView extends GetView<HolidayController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            monthNameTextView(text: controller.holidayList?[index].holidayStartDate != null && controller.holidayList![index].holidayStartDate!.isNotEmpty
-                ? CMForDateTime.formatWithLeadingZeros(DateTime.parse('${controller.holidayList?[index].holidayStartDate}').day)
-                : '?'),
+            monthNameTextView(
+                text: controller.holidayList?[index].holidayStartDate != null && controller.holidayList![index].holidayStartDate!.isNotEmpty
+                    ? CMForDateTime.formatWithLeadingZeros(DateTime.parse('${controller.holidayList?[index].holidayStartDate}').day)
+                    : '?'),
             dateTextView(text: '${controller.monthNameForCalender[index]}'),
           ],
         ),
@@ -180,14 +185,20 @@ class HolidayView extends GetView<HolidayController> {
     );
   }
 
-  Widget monthNameTextView({required String text}) => Text(
+  Widget monthNameTextView({required String text, double? fontSize}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: controller.isAfterDate.value?Col.gray:Col.text ),
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+            color: controller.isAfterDate.value ? Col.gray : Col.text),
       );
 
   Widget dateTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,fontSize: 10.px,color: controller.isAfterDate.value?Col.gray:Col.text),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 10.px,
+            color: controller.isAfterDate.value ? Col.gray : Col.text),
       );
 
   Widget holidayDetailView({required int index}) => Expanded(
@@ -200,12 +211,13 @@ class HolidayView extends GetView<HolidayController> {
               monthNameTextView(
                   text: controller.holidayList?[index].holidayName != null && controller.holidayList![index].holidayName!.isNotEmpty
                       ? '${controller.holidayList?[index].holidayName}'
-                      : 'Not found!',),
+                      : 'Not found!',
+                  fontSize: 12.px),
               // SizedBox(height: 5.px),
               dateTextView(
-                  text: controller.holidayList?[index].holidayStartDate != null &&
-                          controller.holidayList![index].holidayStartDate!.isNotEmpty
-                      ? CMForDateTime.getDayNameFromDate(dateString: '${controller.holidayList?[index].holidayStartDate}')
+                  text: controller.holidayList?[index].holidayStartDate != null && controller.holidayList![index].holidayStartDate!.isNotEmpty
+                      ? CMForDateTime.getDayNameFromDate(
+                          dateString: '${controller.holidayList?[index].holidayStartDate}')
                       : 'Not found!'),
             ],
           ),
@@ -213,52 +225,52 @@ class HolidayView extends GetView<HolidayController> {
       );
 
   Widget shimmerView() => ListView.builder(
-    itemCount: 10,
-    shrinkWrap: true,
-    padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 16.px),
-    itemBuilder: (context, index){
-      Color? cardColor = controller.getRandomColorForCards().withOpacity(.4);
-      return Container(
-        margin: EdgeInsets.only(bottom: 12.px),
-        padding: EdgeInsets.zero,
-        decoration: BoxDecoration(
-          color: Col.inverseSecondary,
-          borderRadius: BorderRadius.circular(6.px),
-          boxShadow: [
-            BoxShadow(
-              color: Col.gray,
-              blurRadius: .4,
-            )
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: cardColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(6.px),
-                  bottomLeft: Radius.circular(6.px),
-                ),
-              ),
-              child: CW.commonShimmerViewForImage(height: 66.px,width: 66.px),
-            ),
-            SizedBox(width: 12.px),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CW.commonShimmerViewForImage(height: 22.px,width: 150.px),
-                SizedBox(height: 8.px),
-                CW.commonShimmerViewForImage(height: 16.px,width: 120.px),
+        itemCount: 10,
+        shrinkWrap: true,
+        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+        itemBuilder: (context, index) {
+          Color? cardColor = controller.getRandomColorForCards().withOpacity(.4);
+          return Container(
+            margin: EdgeInsets.only(bottom: 12.px),
+            padding: EdgeInsets.zero,
+            decoration: BoxDecoration(
+              color: Col.inverseSecondary,
+              borderRadius: BorderRadius.circular(6.px),
+              boxShadow: [
+                BoxShadow(
+                  color: Col.gray,
+                  blurRadius: .4,
+                )
               ],
             ),
-          ],
-        ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                    color: cardColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(6.px),
+                      bottomLeft: Radius.circular(6.px),
+                    ),
+                  ),
+                  child:
+                      CW.commonShimmerViewForImage(height: 66.px, width: 66.px),
+                ),
+                SizedBox(width: 12.px),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CW.commonShimmerViewForImage(height: 22.px, width: 150.px),
+                    SizedBox(height: 8.px),
+                    CW.commonShimmerViewForImage(height: 16.px, width: 120.px),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
       );
-    },
-  );
-
 }

@@ -15,6 +15,7 @@ import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
+import 'package:http/http.dart' as http;
 
 class AddLeaveController extends GetxController with GetTickerProviderStateMixin {
   final count = 0.obs;
@@ -27,6 +28,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   final isAfterAndBeforeCalenderDateValue = false.obs;
 
   final applyBulkLeaveValue = false.obs;
+  final applyBulkLeaveButtonHideAndShowValue = false.obs;
 
   final leaveTypeListClickValue = false.obs;
 
@@ -41,6 +43,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   List<String> formattedDateListForApi = [];
 
   final key = GlobalKey<FormState>();
+  final keyForLeaveReason = GlobalKey<FormState>();
   final leaveTypeController = TextEditingController();
   final reasonController = TextEditingController();
 
@@ -76,7 +79,9 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   List<LocalDataForLeaveType> localDataForLeaveType = [];
 
   final leaveTypeIdFromApi = ''.obs;
+  final leaveTypeForAttachmentRequired = ''.obs;
 
+  Map<String, dynamic> bodyParamsForAddLeaveApi = {};
 
   @override
   Future<void> onInit() async {
@@ -147,8 +152,6 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     }
   }
 
-  void clickOnApplyLeaveButton() {}
-
   Future<void> callingGetLeaveDateCalenderApi() async {
     try {
       apiResValue.value = true;
@@ -157,7 +160,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
         AK.year: '${currentMonth.value.year}',
         AK.month: '${currentMonth.value.month}',
       };
-      getLeaveDateCalenderModal.value = await CAI.getLeaveDateCalenderApi(bodyParams: bodyParamsForGetLeaveDateCalenderApi);
+      getLeaveDateCalenderModal.value = await CAI.getLeaveDateCalenderApi(
+          bodyParams: bodyParamsForGetLeaveDateCalenderApi);
       if (getLeaveDateCalenderModal.value != null) {
         leaveDateCalenderList = getLeaveDateCalenderModal.value?.leaveCalender;
       }
@@ -200,35 +204,36 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
             child: ListView(
               shrinkWrap: true,
               children: [
-                leaveTypeTextField(index:index),
+                leaveTypeTextField(index: index),
                 SizedBox(height: 10.px),
-                if(availableLeaveValue.value)
-                Text(availableLeave.value == 0.0
-                    ? 'Paid leaves not available : ${availableLeave.value}'
-                    : 'Available paid leaves : ${availableLeave.value}',
-                    style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontSize: 10.px,
-                     // color: availableLeave.value == 0.0
-                        //     ? Col.error
-                        //     : Col.success,
-                    ),
-                ),
-                if(availableLeaveValue.value)
-                SizedBox(height: 10.px),
+                if (availableLeaveValue.value)
+                  Text(
+                    availableLeave.value == 0.0
+                        ? 'Paid leaves not available : ${availableLeave.value}'
+                        : 'Available paid leaves : ${availableLeave.value}',
+                    style:
+                        Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
+                              fontSize: 10.px,
+                              // color: availableLeave.value == 0.0
+                              //     ? Col.error
+                              //     : Col.success,
+                            ),
+                  ),
+                if (availableLeaveValue.value) SizedBox(height: 10.px),
                 fullAndHalfDayView(),
-                if(fullAndHalfDayType.value != 'Full Day')
-                SizedBox(height: 10.px),
-                if(fullAndHalfDayType.value != 'Full Day')
-                firstAndSecondHalfView(),
+                if (fullAndHalfDayType.value != 'Full Day')
+                  SizedBox(height: 10.px),
+                if (fullAndHalfDayType.value != 'Full Day')
+                  firstAndSecondHalfView(),
                 SizedBox(height: 10.px),
                 paidAndUnPaidView(),
                 SizedBox(height: 20.px),
                 CW.commonElevatedButton(
                     onPressed: addButtonValue.value
                         ? () => null
-                        : () => clickOnAddButton(index:index),
+                        : () => clickOnAddButton(index: index),
                     buttonText: 'Add',
-                  isLoading: addButtonValue.value
-                ),
+                    isLoading: addButtonValue.value),
                 SizedBox(height: 20.px),
               ],
             ),
@@ -252,19 +257,20 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   }
 
   Widget leaveTypeTextField({required int index}) => CW.commonTextField(
-    fillColor: Colors.transparent,
-    controller: leaveTypeController,
-    labelText: 'Leave Type',
-    hintText: 'Leave Type',
-    keyboardType: TextInputType.name,
-    validator: (value) => V.isValid(value: value, title: 'Please select leave type'),
-    onChanged: (value) {
-      count.value++;
-    },
-    readOnly: true,
-    onTap: () => clickOnLeaveTypeField(),
-    suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
-  );
+        fillColor: Colors.transparent,
+        controller: leaveTypeController,
+        labelText: 'Leave Type',
+        hintText: 'Leave Type',
+        keyboardType: TextInputType.name,
+        validator: (value) =>
+            V.isValid(value: value, title: 'Please select leave type'),
+        onChanged: (value) {
+          count.value++;
+        },
+        readOnly: true,
+        onTap: () => clickOnLeaveTypeField(),
+        suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
+      );
 
   Future<void> clickOnLeaveTypeField() async {
     if (getLeaveTypeModal.value != null) {
@@ -283,18 +289,22 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                   count.value;
                   return Container(
                     margin: EdgeInsets.only(bottom: 10.px),
-                    padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
                     height: 46.px,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6.px),
-                      color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                      color: leaveTypeController.text ==
+                              leaveTypeList?[i].leaveTypeName
                           ? Col.primary.withOpacity(.08)
                           : Colors.transparent,
                       border: Border.all(
-                        color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                        color: leaveTypeController.text ==
+                                leaveTypeList?[i].leaveTypeName
                             ? Col.primary
                             : Col.darkGray,
-                        width: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                        width: leaveTypeController.text ==
+                                leaveTypeList?[i].leaveTypeName
                             ? 1.5.px
                             : 1.px,
                       ),
@@ -309,20 +319,26 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                         children: [
                           Text(
                             '${leaveTypeList?[i].leaveTypeName}',
-                            style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                            style: Theme.of(Get.context!)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w500),
                           ),
                           Container(
-                            height: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                            height: leaveTypeController.text ==
+                                    leaveTypeList?[i].leaveTypeName
                                 ? 18.px
                                 : 16.px,
-                            width: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                            width: leaveTypeController.text ==
+                                    leaveTypeList?[i].leaveTypeName
                                 ? 18.px
                                 : 16.px,
                             padding: EdgeInsets.all(2.px),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                                color: leaveTypeController.text ==
+                                        leaveTypeList?[i].leaveTypeName
                                     ? Col.primary
                                     : Col.text,
                                 width: 1.5.px,
@@ -331,7 +347,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                             child: Container(
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                                  color: leaveTypeController.text ==
+                                          leaveTypeList?[i].leaveTypeName
                                       ? Col.primary
                                       : Colors.transparent),
                             ),
@@ -346,7 +363,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
             SizedBox(height: 20.px),
           ],
         ).whenComplete(
-              () => CM.unFocusKeyBoard(),
+          () => CM.unFocusKeyBoard(),
         );
       }
     }
@@ -356,165 +373,184 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     leaveTypeListClickValue.value = true;
     leaveTypeController.text = leaveTypeList?[i].leaveTypeName ?? '';
     leaveTypeIdFromApi.value = leaveTypeList?[i].leaveTypeId ?? '';
+    if (leaveTypeList?[i].attachmentRequired == '1') {
+      leaveTypeForAttachmentRequired.value =
+          leaveTypeList?[i].attachmentRequired ?? '';
+      print(
+          'leaveTypeForAttachmentRequired.value:::: ${leaveTypeForAttachmentRequired.value}');
+    }
     await callingGetLeaveTypeBalanceApi();
     Get.back();
     leaveTypeListClickValue.value = false;
   }
 
   Widget commonContainerView({required Widget child}) => Container(
-    height: 50.px,
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.px),
-        border: Border.all(color: Col.gray)),
-    child: child,
-  );
+        height: 50.px,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.px),
+            border: Border.all(color: Col.gray)),
+        child: child,
+      );
 
-  Widget radioButtonLabelTextView({required String text,Color? color}) => Text(
-    text,
-    style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,color: color),
-  );
+  Widget radioButtonLabelTextView({required String text, Color? color}) => Text(
+        text,
+        style: Theme.of(Get.context!)
+            .textTheme
+            .labelSmall
+            ?.copyWith(fontWeight: FontWeight.w500, color: color),
+      );
 
   Widget fullAndHalfDayView() => commonContainerView(
-    child: ListView.builder(
-      itemCount: 2,
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16.px),
-      physics: const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) {
-        if(availableLeave.value == 0.5){
-          fullAndHalfDayType.value = 'Half Day';
-          fullAndHalfDayIndexValue.value = '1';
-        }
-        return Padding(
-          padding:  EdgeInsets.only(right: 15.px),
-          child: Row(
-            children: [
-              CustomRadio(
-                activeColor: Col.gray,
-                onChanged: (value) {
-                  CM.unFocusKeyBoard();
-                  if(value != null && availableLeave.value != 0.5){
-                    fullAndHalfDayIndexValue.value = value;
-                    fullAndHalfDayType.value = fullAndHalfDayText[index];
-                    count.value++;
-                  }
-                },
-                value: index.toString(),
-                groupValue: fullAndHalfDayIndexValue.value.toString(),
+        child: ListView.builder(
+          itemCount: 2,
+          shrinkWrap: true,
+          padding: EdgeInsets.symmetric(horizontal: 16.px),
+          physics: const NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            if (availableLeave.value == 0.5) {
+              fullAndHalfDayType.value = 'Half Day';
+              fullAndHalfDayIndexValue.value = '1';
+            }
+            return Padding(
+              padding: EdgeInsets.only(right: 15.px),
+              child: Row(
+                children: [
+                  CustomRadio(
+                    activeColor: Col.gray,
+                    onChanged: (value) {
+                      CM.unFocusKeyBoard();
+                      if (value != null && availableLeave.value != 0.5) {
+                        fullAndHalfDayIndexValue.value = value;
+                        fullAndHalfDayType.value = fullAndHalfDayText[index];
+                        count.value++;
+                      }
+                    },
+                    value: index.toString(),
+                    groupValue: fullAndHalfDayIndexValue.value.toString(),
+                  ),
+                  SizedBox(width: 6.px),
+                  radioButtonLabelTextView(
+                      text: fullAndHalfDayText[index],
+                      color:
+                          fullAndHalfDayText[index] == fullAndHalfDayType.value
+                              ? Col.text
+                              : Col.darkGray)
+                ],
               ),
-              SizedBox(width: 6.px),
-              radioButtonLabelTextView(text: fullAndHalfDayText[index],
-                  color: fullAndHalfDayText[index] == fullAndHalfDayType.value
-                      ? Col.text
-                      : Col.darkGray )
-            ],
-          ),
-        );
-      },
-    ),
-  );
+            );
+          },
+        ),
+      );
 
   Widget firstAndSecondHalfView() => SizedBox(
-    height: 33.px,
-    child:  ListView.builder(
-      itemCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: 16.px),
-      itemBuilder: (context, index) {
-        return Padding(
-          padding:  EdgeInsets.only(right: 15.px),
-          child: Row(
-            children: [
-              CustomRadio(
-                onChanged: (value) {
-                  CM.unFocusKeyBoard();
-                if(value != null){
-                  firstAndSecondHalfIndexValue.value = value;
-                  firstAndSecondHalfType.value = firstAndSecondHalfText[index];
-                  count.value++;
-                }
-                },
-                value: index.toString(),
-                groupValue: firstAndSecondHalfIndexValue.value.toString(),
-                activeColor: Col.gray,
+        height: 33.px,
+        child: ListView.builder(
+          itemCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.symmetric(horizontal: 16.px),
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.only(right: 15.px),
+              child: Row(
+                children: [
+                  CustomRadio(
+                    onChanged: (value) {
+                      CM.unFocusKeyBoard();
+                      if (value != null) {
+                        firstAndSecondHalfIndexValue.value = value;
+                        firstAndSecondHalfType.value =
+                            firstAndSecondHalfText[index];
+                        count.value++;
+                      }
+                    },
+                    value: index.toString(),
+                    groupValue: firstAndSecondHalfIndexValue.value.toString(),
+                    activeColor: Col.gray,
+                  ),
+                  SizedBox(width: 6.px),
+                  radioButtonLabelTextView(
+                      text: firstAndSecondHalfText[index],
+                      color: firstAndSecondHalfText[index] ==
+                              firstAndSecondHalfType.value
+                          ? Col.text
+                          : Col.darkGray)
+                ],
               ),
-              SizedBox(width: 6.px),
-              radioButtonLabelTextView(text: firstAndSecondHalfText[index],
-                  color: firstAndSecondHalfText[index] == firstAndSecondHalfType.value
-                      ? Col.text
-                      : Col.darkGray)
-            ],
-          ),
-        );
-      },
-    ),
-  );
+            );
+          },
+        ),
+      );
 
   Widget paidAndUnPaidView() => commonContainerView(
-    child: ListView.builder(
-      itemCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: 16.px),
-      itemBuilder: (context, index) {
-        if(availableLeave.value == 0.0){
-          paidAndUnPaidType.value = 'UnPaid';
-          paidAndUnPaidIndexValue.value = '1';
-        }
-        return Padding(
-          padding:  EdgeInsets.only(right: 15.px),
-          child: Row(
-            children: [
-              CustomRadio(
-                onChanged: (value) {
-                  CM.unFocusKeyBoard();
-                  if(value != null && availableLeave.value != 0.0){
-                    paidAndUnPaidIndexValue.value = value;
-                    paidAndUnPaidType.value = paidAndUnPaidText[index];
-                    count.value++;
-                  }
-                },
-                value: index.toString(),
-                groupValue: paidAndUnPaidIndexValue.value.toString(),
-                activeColor: Col.gray,
+        child: ListView.builder(
+          itemCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.symmetric(horizontal: 16.px),
+          itemBuilder: (context, index) {
+            if (availableLeave.value == 0.0) {
+              paidAndUnPaidType.value = 'UnPaid';
+              paidAndUnPaidIndexValue.value = '1';
+            }
+            return Padding(
+              padding: EdgeInsets.only(right: 15.px),
+              child: Row(
+                children: [
+                  CustomRadio(
+                    onChanged: (value) {
+                      CM.unFocusKeyBoard();
+                      if (value != null && availableLeave.value != 0.0) {
+                        paidAndUnPaidIndexValue.value = value;
+                        paidAndUnPaidType.value = paidAndUnPaidText[index];
+                        count.value++;
+                      }
+                    },
+                    value: index.toString(),
+                    groupValue: paidAndUnPaidIndexValue.value.toString(),
+                    activeColor: Col.gray,
+                  ),
+                  SizedBox(width: 6.px),
+                  radioButtonLabelTextView(
+                      text: paidAndUnPaidText[index],
+                      color: paidAndUnPaidText[index] == paidAndUnPaidType.value
+                          ? Col.text
+                          : Col.darkGray)
+                ],
               ),
-              SizedBox(width: 6.px),
-              radioButtonLabelTextView(text: paidAndUnPaidText[index],
-                  color: paidAndUnPaidText[index] == paidAndUnPaidType.value
-                      ? Col.text
-                      : Col.darkGray)
-            ],
-          ),
-        );
-      },
-    ),
-  );
+            );
+          },
+        ),
+      );
 
   void clickOnAddButton({required int index}) {
-   if(key.currentState!.validate()){
-     addButtonValue.value = true;
-     LocalData data = LocalData(
-       date: localData[index].date,
-       value: true,
-       firstAndSecondHalf: fullAndHalfDayType.value != 'Full Day'?firstAndSecondHalfType.value:'',
-       fullAndHalfDay: fullAndHalfDayType.value,
-       leaveType: leaveTypeController.text.trim(),
-       paidAndUnPaid: paidAndUnPaidType.value,
-         leaveTypeId:leaveTypeIdFromApi.value
-     );
+    if (key.currentState!.validate()) {
+      addButtonValue.value = true;
+      LocalData data = LocalData(
+          date: localData[index].date,
+          value: true,
+          firstAndSecondHalf: fullAndHalfDayType.value != 'Full Day'
+              ? firstAndSecondHalfType.value
+              : '',
+          fullAndHalfDay: fullAndHalfDayType.value,
+          leaveType: leaveTypeController.text.trim(),
+          paidAndUnPaid: paidAndUnPaidType.value,
+          leaveTypeId: leaveTypeIdFromApi.value);
 
-     updateLocalDataByDate(date: '${localData[index].date}',newData: data);
+      updateLocalDataByDate(date: '${localData[index].date}', newData: data);
 
-     Future.delayed(const Duration(milliseconds: 500),() {
-       addButtonValue.value = false;
-       Get.back();
-     },);
-   }
-
+      Future.delayed(
+        const Duration(milliseconds: 500),
+        () {
+          addButtonValue.value = false;
+          applyBulkLeaveButtonHideAndShowValue.value = true;
+          Get.back();
+        },
+      );
+    }
   }
 
   void addLocalData({required LocalData data}) {
@@ -523,7 +559,6 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   }
 
   void removeLocalDataByDate({required String date}) {
-
     dateAddForLeaveList.remove(date);
 
     localData.removeWhere((element) => element.date == date);
@@ -553,18 +588,21 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
               children: [
                 leaveTypeTextFieldForApplyBulkLeave(),
                 SizedBox(height: 10.px),
-                if(availableLeaveValue.value)
-                  Text(availableLeave.value == 0.0
-                      ? 'Paid leaves not available : ${availableLeave.value}'
-                      : 'Available paid leaves : ${availableLeave.value}',
-                    style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontSize: 10.px),
+                if (availableLeaveValue.value)
+                  Text(
+                    availableLeave.value == 0.0
+                        ? 'Paid leaves not available : ${availableLeave.value}'
+                        : 'Available paid leaves : ${availableLeave.value}',
+                    style: Theme.of(Get.context!)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontSize: 10.px),
                   ),
-                if(availableLeaveValue.value)
-                  SizedBox(height: 10.px),
+                if (availableLeaveValue.value) SizedBox(height: 10.px),
                 fullAndHalfDayView(),
-                if(fullAndHalfDayType.value != 'Full Day')
+                if (fullAndHalfDayType.value != 'Full Day')
                   SizedBox(height: 10.px),
-                if(fullAndHalfDayType.value != 'Full Day')
+                if (fullAndHalfDayType.value != 'Full Day')
                   firstAndSecondHalfView(),
                 SizedBox(height: 10.px),
                 paidAndUnPaidViewForApplyBulkLeaves(),
@@ -574,8 +612,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                         ? () => null
                         : () => clickOnAddForApplyBulkLeaveButton(),
                     buttonText: 'Add',
-                    isLoading: addButtonValue.value
-                ),
+                    isLoading: addButtonValue.value),
                 SizedBox(height: 20.px),
               ],
             ),
@@ -592,140 +629,144 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
 
       paidAndUnPaidType.value = 'UnPaid';
       paidAndUnPaidIndexValue.value = '1';
-
     });
   }
 
   Widget leaveTypeTextFieldForApplyBulkLeave() => CW.commonTextField(
-    fillColor: Colors.transparent,
-    controller: leaveTypeController,
-    labelText: 'Leave Type',
-    hintText: 'Leave Type',
-    keyboardType: TextInputType.name,
-    validator: (value) => V.isValid(value: value, title: 'Please select leave type'),
-    onChanged: (value) {
-      count.value++;
-    },
-    readOnly: true,
-    onTap: () => clickOnLeaveTypeField(),
-    suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
-  );
+        fillColor: Colors.transparent,
+        controller: leaveTypeController,
+        labelText: 'Leave Type',
+        hintText: 'Leave Type',
+        keyboardType: TextInputType.name,
+        validator: (value) =>
+            V.isValid(value: value, title: 'Please select leave type'),
+        onChanged: (value) {
+          count.value++;
+        },
+        readOnly: true,
+        onTap: () => clickOnLeaveTypeField(),
+        suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
+      );
 
   Widget paidAndUnPaidViewForApplyBulkLeaves() => commonContainerView(
-    child: ListView.builder(
-      itemCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: 16.px),
-      itemBuilder: (context, index) {
-        if(availableLeave.value == 0.0){
-          paidAndUnPaidType.value = 'UnPaid';
-          paidAndUnPaidIndexValue.value = '1';
-        }
-        return Padding(
-          padding:  EdgeInsets.only(right: 15.px),
-          child: Row(
-            children: [
-              CustomRadio(
-                onChanged: (value) {
-                  CM.unFocusKeyBoard();
-                  if(value != null && availableLeave.value != 0.0){
-                    paidAndUnPaidIndexValue.value = value;
-                    paidAndUnPaidType.value = paidAndUnPaidText[index];
-                    count.value++;
-                  }
-                },
-                value: index.toString(),
-                groupValue: paidAndUnPaidIndexValue.value.toString(),
-                activeColor: Col.gray,
+        child: ListView.builder(
+          itemCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.symmetric(horizontal: 16.px),
+          itemBuilder: (context, index) {
+            if (availableLeave.value == 0.0) {
+              paidAndUnPaidType.value = 'UnPaid';
+              paidAndUnPaidIndexValue.value = '1';
+            }
+            return Padding(
+              padding: EdgeInsets.only(right: 15.px),
+              child: Row(
+                children: [
+                  CustomRadio(
+                    onChanged: (value) {
+                      CM.unFocusKeyBoard();
+                      if (value != null && availableLeave.value != 0.0) {
+                        paidAndUnPaidIndexValue.value = value;
+                        paidAndUnPaidType.value = paidAndUnPaidText[index];
+                        count.value++;
+                      }
+                    },
+                    value: index.toString(),
+                    groupValue: paidAndUnPaidIndexValue.value.toString(),
+                    activeColor: Col.gray,
+                  ),
+                  SizedBox(width: 6.px),
+                  radioButtonLabelTextView(
+                      text: paidAndUnPaidText[index] == 'Paid'
+                          ? 'Applicable leaves'
+                          : 'All unpaid leaves',
+                      color: paidAndUnPaidText[index] == paidAndUnPaidType.value
+                          ? Col.text
+                          : Col.darkGray)
+                ],
               ),
-              SizedBox(width: 6.px),
-              radioButtonLabelTextView(text: paidAndUnPaidText[index] == 'Paid'?'Applicable leaves':'All unpaid leaves',
-                  color: paidAndUnPaidText[index] == paidAndUnPaidType.value
-                      ? Col.text
-                      : Col.darkGray)
-            ],
-          ),
-        );
-      },
-    ),
-  );
+            );
+          },
+        ),
+      );
 
   void clickOnAddForApplyBulkLeaveButton() {
-
-    if(key.currentState!.validate()){
+    if (key.currentState!.validate()) {
       addButtonValue.value = true;
 
       String? date;
-      if(availableLeave.value.toInt() != 0 && fullAndHalfDayType.value == 'Half Day'){
-        availableLeave.value = availableLeave.value.toInt()*2;
+      if (availableLeave.value.toInt() != 0 &&
+          fullAndHalfDayType.value == 'Half Day') {
+        availableLeave.value = availableLeave.value.toInt() * 2;
       }
 
       for (var element in dateAddForLeaveList) {
-        if(element != null && element!.isNotEmpty) {
-          if(paidAndUnPaidType.value == 'Paid'){
-
-            if(availableLeave.value.toInt() != 0 && fullAndHalfDayType.value == 'Full Day'){
-              date = element;
-              LocalData data = LocalData(
-                date: date,
-                value: true,
-                firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day' ? '' : firstAndSecondHalfType.value ,
-                fullAndHalfDay: fullAndHalfDayType.value,
-                leaveType: leaveTypeController.text.trim(),
-                paidAndUnPaid: paidAndUnPaidType.value,
-                leaveTypeId:leaveTypeIdFromApi.value
-              );
-              updateLocalDataByDate(date: date ?? '',newData: data);
-              availableLeave.value--;
-              if(availableLeave.value.toInt() == 0){
-                paidAndUnPaidType.value = "UnPaid";
-              }
-
-            }
-            else if(availableLeave.value.toInt() != 0 && fullAndHalfDayType.value == 'Half Day'){
+        if (element != null && element!.isNotEmpty) {
+          if (paidAndUnPaidType.value == 'Paid') {
+            if (availableLeave.value.toInt() != 0 &&
+                fullAndHalfDayType.value == 'Full Day') {
               date = element;
               LocalData data = LocalData(
                   date: date,
                   value: true,
-                  firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day' ? '' : firstAndSecondHalfType.value ,
+                  firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day'
+                      ? ''
+                      : firstAndSecondHalfType.value,
                   fullAndHalfDay: fullAndHalfDayType.value,
                   leaveType: leaveTypeController.text.trim(),
                   paidAndUnPaid: paidAndUnPaidType.value,
-                  leaveTypeId:leaveTypeIdFromApi.value
-              );
-              updateLocalDataByDate(date: date ?? '',newData: data);
+                  leaveTypeId: leaveTypeIdFromApi.value);
+              updateLocalDataByDate(date: date ?? '', newData: data);
               availableLeave.value--;
-              if(availableLeave.value.toInt() == 0){
+              if (availableLeave.value.toInt() == 0) {
+                paidAndUnPaidType.value = "UnPaid";
+              }
+            } else if (availableLeave.value.toInt() != 0 &&
+                fullAndHalfDayType.value == 'Half Day') {
+              date = element;
+              LocalData data = LocalData(
+                  date: date,
+                  value: true,
+                  firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day'
+                      ? ''
+                      : firstAndSecondHalfType.value,
+                  fullAndHalfDay: fullAndHalfDayType.value,
+                  leaveType: leaveTypeController.text.trim(),
+                  paidAndUnPaid: paidAndUnPaidType.value,
+                  leaveTypeId: leaveTypeIdFromApi.value);
+              updateLocalDataByDate(date: date ?? '', newData: data);
+              availableLeave.value--;
+              if (availableLeave.value.toInt() == 0) {
                 paidAndUnPaidType.value = "UnPaid";
               }
             }
-
-          }
-          else {
+          } else {
             date = element;
             LocalData data = LocalData(
-            date: date,
-            value: true,
-            firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day' ? '' : firstAndSecondHalfType.value ,
-            fullAndHalfDay: fullAndHalfDayType.value,
-            leaveType: leaveTypeController.text.trim(),
-            paidAndUnPaid: paidAndUnPaidType.value,
-            leaveTypeId:leaveTypeIdFromApi.value
-           );
-           updateLocalDataByDate(date: date ?? '',newData: data);
+                date: date,
+                value: true,
+                firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day'
+                    ? ''
+                    : firstAndSecondHalfType.value,
+                fullAndHalfDay: fullAndHalfDayType.value,
+                leaveType: leaveTypeController.text.trim(),
+                paidAndUnPaid: paidAndUnPaidType.value,
+                leaveTypeId: leaveTypeIdFromApi.value);
+            updateLocalDataByDate(date: date ?? '', newData: data);
           }
-
         }
       }
 
-      Future.delayed(const Duration(milliseconds: 500),() {
-        addButtonValue.value = false;
-        applyBulkLeaveValue.value = true;
-        Get.back();
-      },);
-
+      Future.delayed(
+        const Duration(milliseconds: 500),
+        () {
+          addButtonValue.value = false;
+          applyBulkLeaveValue.value = true;
+          Get.back();
+        },
+      );
     }
   }
 
@@ -736,13 +777,13 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
         AK.leaveTypeId: leaveTypeIdFromApi.value,
         AK.leaveDate: formattedDateListForApi.first,
       };
-      getLeaveTypeBalanceModal.value = await CAI.getLeaveTypeBalanceApi(bodyParams: bodyParamsForGetLeaveTypeBalanceApi);
+      getLeaveTypeBalanceModal.value = await CAI.getLeaveTypeBalanceApi(
+          bodyParams: bodyParamsForGetLeaveTypeBalanceApi);
       if (getLeaveTypeBalanceModal.value != null) {
-
-        availableLeave.value = double.parse(getLeaveTypeBalanceModal.value?.availableLeave ?? '0.0');
-        localDataForLeaveTypeMethod(leaveTypeId:leaveTypeIdFromApi.value);
+        availableLeave.value = double.parse(
+            getLeaveTypeBalanceModal.value?.availableLeave ?? '0.0');
+        localDataForLeaveTypeMethod(leaveTypeId: leaveTypeIdFromApi.value);
         availableLeaveValue.value = true;
-
       }
     } catch (e) {
       CM.error();
@@ -754,21 +795,24 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   }
 
   void localDataForLeaveTypeMethod({required String leaveTypeId}) {
-
     LocalDataForLeaveType data = LocalDataForLeaveType(
       leaveId: leaveTypeId,
       availablePaidAndUnPaidLeaveValue: availableLeave.value,
     );
 
-    int index = localDataForLeaveType.indexWhere((element) => element.leaveId == data.leaveId);
+    int index = localDataForLeaveType
+        .indexWhere((element) => element.leaveId == data.leaveId);
 
     if (index != -1) {
-
       localData.forEach((element) {
-        if(element.paidAndUnPaid == 'Paid' && element.fullAndHalfDay == 'Full Day' && element.leaveTypeId == localDataForLeaveType[index].leaveId){
+        if (element.paidAndUnPaid == 'Paid' &&
+            element.fullAndHalfDay == 'Full Day' &&
+            element.leaveTypeId == localDataForLeaveType[index].leaveId) {
           availableLeave.value--;
-        }else if(element.paidAndUnPaid == 'Paid' && element.fullAndHalfDay == 'Half Day' && element.leaveTypeId == localDataForLeaveType[index].leaveId){
-          availableLeave.value = availableLeave.value -.5;
+        } else if (element.paidAndUnPaid == 'Paid' &&
+            element.fullAndHalfDay == 'Half Day' &&
+            element.leaveTypeId == localDataForLeaveType[index].leaveId) {
+          availableLeave.value = availableLeave.value - .5;
         }
       });
 
@@ -778,13 +822,98 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
       );
       // update it
       localDataForLeaveType[index] = data;
-    }
-    else {
+    } else {
       // insert data
       localDataForLeaveType.add(data);
     }
+  }
 
+  Future<void> clickOnApplyLeaveButton() async {
+    if(keyForLeaveReason.currentState!.validate()){
+      if (imageFile.value == null && leaveTypeForAttachmentRequired.value == '1') {
+        CM.showSnackBar(message: 'Required Attachment');
+      } else {
+        applyLeaveButtonValue.value = true;
+        getIdsForApi();
+        await callingAddLeaveApi();
+      }
+    }
+  }
+
+  String? leaveTypeIds;
+  String? paidAndUnPaidIds;
+  String? fullAndHalfDayIds;
+  String? firstAndSecondHalfIds;
+
+  void getIdsForApi() {
+
+    leaveTypeIds = localData.map((data) {
+      if(data.leaveTypeId != null && data.leaveTypeId!.isNotEmpty){
+        return data.leaveTypeId;
+      }
+    }).join(',');
+
+    paidAndUnPaidIds = localData.map((data) {
+      if (data.paidAndUnPaid != null && data.paidAndUnPaid!.isNotEmpty) {
+        if (data.paidAndUnPaid == 'Paid') {
+          return '1';
+        } else {
+          return '0';
+        }
+      }
+    }).join(',');
+
+    fullAndHalfDayIds = localData.map((data) {
+      if (data.fullAndHalfDay != null && data.fullAndHalfDay!.isNotEmpty) {
+        if (data.fullAndHalfDay == 'Full Day') {
+          return '0';
+        }else{
+          return '1';
+        }
+      }
+    }).join(',');
+
+    firstAndSecondHalfIds = localData.map((data) {
+      if (data.fullAndHalfDay != null && data.fullAndHalfDay!.isNotEmpty) {
+        if (data.fullAndHalfDay == 'Full Day') {
+          return '0';
+        } else {
+          if(data.firstAndSecondHalf != null && data.firstAndSecondHalf!.isNotEmpty){
+            if (data.firstAndSecondHalf == 'First Half') {
+              return '1';
+            } else {
+              return '2';
+            }
+          }
+        }
+      }
+    }).join(',');
 
   }
 
+  Future<void> callingAddLeaveApi() async {
+    try {
+      bodyParamsForAddLeaveApi = {
+        AK.action: ApiEndPointAction.addLeave,
+        AK.leaveDate: formattedDateListForApi.join(','),
+        AK.leaveTypeId: leaveTypeIds,
+        AK.leaveDayType: fullAndHalfDayIds,
+        AK.leaveDayTypeSession: firstAndSecondHalfIds,
+        AK.isPaid: paidAndUnPaidIds,
+        AK.leaveReason: reasonController.text.trim().toString(),
+      };
+      http.Response? response = await CAI.addLeaveApi(bodyParams: bodyParamsForAddLeaveApi, filePath: imageFile.value);
+      if (response != null && response.statusCode == 200) {
+        CM.showSnackBar(message: 'Add Leave Successfully');
+        Get.back();
+      } else {
+        CM.error();
+      }
+    } catch (e) {
+      CM.error();
+      applyLeaveButtonValue.value = false;
+      print('callingAddLeaveApi:::  error::::  $e');
+    }
+    applyLeaveButtonValue.value = false;
+  }
 }

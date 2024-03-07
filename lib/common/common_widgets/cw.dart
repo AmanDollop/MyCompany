@@ -317,13 +317,13 @@ class CW {
         ),
       );
 
-  static commonProgressBarView(
-          {Color? color, Color? backgroundColor, double? value}) =>
+  static commonProgressBarView({Color? color, Color? backgroundColor, double? value,double? strokeWidth}) =>
       CircularProgressIndicator(
         backgroundColor: backgroundColor ?? Col.gray,
         color: color ?? Col.inverseSecondary,
         value: value,
-        strokeWidth: 3,
+        strokeWidth: strokeWidth ?? 3,
+        strokeCap: StrokeCap.round,
       );
 
   /// --------------------------Common TextField Collection--------------------------

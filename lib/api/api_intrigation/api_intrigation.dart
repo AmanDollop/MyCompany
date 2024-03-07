@@ -19,6 +19,7 @@ import 'package:task/api/api_model/get_department_employee_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
 import 'package:task/api/api_model/get_leave_date_calender_modal.dart';
 import 'package:task/api/api_model/get_leave_detail_modal.dart';
+import 'package:task/api/api_model/get_leave_type_balance_count_modal.dart';
 import 'package:task/api/api_model/get_leave_type_balance_modal.dart';
 import 'package:task/api/api_model/get_leave_type_modal.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
@@ -1380,6 +1381,62 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getLeaveDetailModal = GetLeaveDetailModal.fromJson(jsonDecode(response.body));
         return getLeaveDetailModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> addLeaveApi({
+    required Map<String, dynamic> bodyParams,
+    File? filePath
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await userToken(stringToken: true);
+
+    http.Response? response = await MyHttp.multipartRequest(
+        url: '$baseUrl${AU.endPointLeaveControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        userProfileImageKey: AK.leaveAttachment,
+        image: filePath,
+        multipartRequestType: 'POST',
+        token: '$token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetLeaveTypeBalanceCountModal?> getLeaveBalanceCountApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetLeaveTypeBalanceCountModal? getLeaveTypeBalanceCountModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointLeaveControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getLeaveTypeBalanceCountModal = GetLeaveTypeBalanceCountModal.fromJson(jsonDecode(response.body));
+        return getLeaveTypeBalanceCountModal;
       } else {
         return null;
       }

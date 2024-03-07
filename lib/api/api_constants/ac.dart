@@ -183,7 +183,12 @@ class AK {
   static const leaveYear = "leave_year";
   static const leaveId = "leave_id";
   static const leaveTypeId = "leave_type_id";
-  static const leaveDate = "leaveDate";
+  static const leaveAttachment = "leave_attachment";
+  static const leaveDate = "leave_date";
+  static const leaveDayType = "leave_day_type";
+  static const leaveDayTypeSession = "leave_day_type_session";
+  static const isPaid = "is_paid";
+  static const leaveReason = "leave_reason";
 
 
 }
@@ -360,6 +365,10 @@ class ApiEndPointAction{
   static  const getLeaveTypeBalance = 'getLeaveTypeBalance';
 
   static  const getLeaveDetails = 'getLeaveDetails';
+
+  static  const addLeave = 'addLeave';
+
+  static  const getLeaveTypeBalanceCount = 'getLeaveTypeBlanceCount';
 
 
 }

@@ -682,12 +682,9 @@ class HomeView extends GetView<HomeController> {
                 mainAxisSpacing: 10.px,
               ),
               itemBuilder: (context, index) {
-                Color convertedColor = CW.apiColorConverterMethod(
-                    colorString:
-                        '${controller.isHeadingMenuList[index].backgroundColor}');
+                Color convertedColor = CW.apiColorConverterMethod(colorString: '${controller.isHeadingMenuList[index].backgroundColor}');
                 return InkWell(
-                  onTap: () =>
-                      controller.clickOnHeadingCards(headingCardIndex: index),
+                  onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
                   borderRadius: BorderRadius.circular(10.px),
                   child: Ink(
                     height: 100.px,
@@ -703,8 +700,7 @@ class HomeView extends GetView<HomeController> {
                       borderRadius: BorderRadius.circular(8.px),
                     ),
                     child: Ink(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 8.px, vertical: 8.px),
+                      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
                       decoration: BoxDecoration(
                         color: Col.inverseSecondary,
                         borderRadius: BorderRadius.circular(6.px),
@@ -722,11 +718,7 @@ class HomeView extends GetView<HomeController> {
                               borderRadius: BorderRadius.circular(6.px),
                             ),
                             child: Center(
-                              child: controller.isHeadingMenuList[index]
-                                              .menuImage ==
-                                          null &&
-                                      controller.isHeadingMenuList[index]
-                                          .menuImage!.isEmpty
+                              child: controller.isHeadingMenuList[index].menuImage == null && controller.isHeadingMenuList[index].menuImage!.isEmpty
                                   ? CW.commonNetworkImageView(
                                       path: 'assets/images/default_image.jpg',
                                       isAssetImage: true,
@@ -747,12 +739,7 @@ class HomeView extends GetView<HomeController> {
                           Flexible(
                             child: Text(
                               '${controller.isHeadingMenuList[index].menuName}',
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .labelSmall
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 10.px),
+                              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
