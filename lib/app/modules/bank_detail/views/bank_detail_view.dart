@@ -32,24 +32,36 @@ class BankDetailView extends GetView<BankDetailController> {
                 : controller.getBankDetailModal.value != null
                 ? controller.getBankList != null && controller.getBankList!.isNotEmpty
                     ? ListView.builder(
-                      // physics: const ScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: controller.getBankList?.length,
                       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                       itemBuilder: (context, index) {
-                        return Card(
-                          color: Col.inverseSecondary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.px),
-                            side: BorderSide(
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: controller.getBankList?[index].isPrimary == '0'
+                                ? Col.inverseSecondary
+                                : Col.primary.withOpacity(.1),
+                            borderRadius: BorderRadius.circular(8.px),
+                            boxShadow: [
+                              BoxShadow(
                                 color: controller.getBankList?[index].isPrimary == '0'
-                                    ? Col.gray
+                                    ? Col.primary.withOpacity(.1)
+                                    : Col.inverseSecondary,
+                                // blurRadius: 1,
+                                spreadRadius: 2 ,
+                                blurRadius: 4 ,
+                                // offset: const Offset(0, 3),
+                              )
+                            ],
+                            border: Border.all(
+                                color: controller.getBankList?[index].isPrimary == '0'
+                                    ? Colors.transparent
                                     : Col.primary,
                                 width: controller.getBankList?[index].isPrimary == '0'
-                                    ? .5.px
-                                    : 1.5.px),
+                                    ? 0.px
+                                    : 1.px
+                            )
                           ),
-                          elevation: 0,
                           margin: EdgeInsets.only(bottom: index==controller.getBankList!.length-1?60.px :10.px),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,12 +69,14 @@ class BankDetailView extends GetView<BankDetailController> {
                               Padding(
                                 padding: EdgeInsets.only(left: 12.px),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
-                                        bankNameTextView(text: 'Bank of India'),
+                                        bankNameTextView(text: controller.getBankList?[index].bankName != null &&
+                                            controller.getBankList![index].bankName!.isNotEmpty
+                                            ? '${controller.getBankList?[index].bankName}'
+                                            : 'Data not found!'),
                                         SizedBox(width: 12.px),
                                         if (controller.getBankList?[index].isPrimary == '1')
                                           primaryContainerView()
@@ -169,7 +183,7 @@ class BankDetailView extends GetView<BankDetailController> {
                         );
                       },
                     )
-                    : CW.commonNoDataFoundText()
+                 : CW.commonNoDataFoundText()
                 :  CW.commonNoDataFoundText(text: controller.apiResValue.value ? '':'No Data Found!'),
           )
               : CW.commonNoNetworkView(),
@@ -280,15 +294,32 @@ class BankDetailView extends GetView<BankDetailController> {
       shrinkWrap: true,
       itemCount: 5,
       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-      itemBuilder:(context, index) => Card(
-        color: Col.inverseSecondary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.px),
-          side: BorderSide(
-              color:Col.gray,
-              width: .5.px),
+      itemBuilder:(context, index) => Container(
+        decoration: BoxDecoration(
+            color: index != 0
+                ? Col.inverseSecondary
+                : Col.primary.withOpacity(.1),
+            borderRadius: BorderRadius.circular(8.px),
+            boxShadow: [
+              BoxShadow(
+                color:  index != 0
+                    ? Col.primary.withOpacity(.1)
+                    : Col.inverseSecondary,
+                // blurRadius: 1,
+                spreadRadius: 2 ,
+                blurRadius: 4 ,
+                // offset: const Offset(0, 3),
+              )
+            ],
+            border: Border.all(
+                color:  index != 0
+                    ? Colors.transparent
+                    : Col.primary,
+                width:  index != 0
+                    ? 0.px
+                    : 1.px
+            )
         ),
-        elevation: 0,
         margin: EdgeInsets.only(bottom: 10.px),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,6 +352,7 @@ class BankDetailView extends GetView<BankDetailController> {
             ),
           ],
         ),
-      ), );
+      ),
+  );
 
 }

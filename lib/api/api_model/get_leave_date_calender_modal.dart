@@ -1,16 +1,16 @@
 class GetLeaveDateCalenderModal {
   String? message;
-  String? isAfterDate;
   String? isBeforeDate;
+  String? isAfterDate;
   List<LeaveCalender>? leaveCalender;
 
   GetLeaveDateCalenderModal(
-      {this.message, this.isAfterDate, this.isBeforeDate, this.leaveCalender});
+      {this.message, this.isBeforeDate, this.isAfterDate, this.leaveCalender});
 
   GetLeaveDateCalenderModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    isAfterDate = json['isAfterDate'];
     isBeforeDate = json['isBeforeDate'];
+    isAfterDate = json['isAfterDate'];
     if (json['leaveCalender'] != null) {
       leaveCalender = <LeaveCalender>[];
       json['leaveCalender'].forEach((v) {
@@ -22,8 +22,8 @@ class GetLeaveDateCalenderModal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
-    data['isAfterDate'] = isAfterDate;
     data['isBeforeDate'] = isBeforeDate;
+    data['isAfterDate'] = isAfterDate;
     if (leaveCalender != null) {
       data['leaveCalender'] =
           leaveCalender!.map((v) => v.toJson()).toList();
@@ -33,16 +33,42 @@ class GetLeaveDateCalenderModal {
 }
 
 class LeaveCalender {
+  String? monthName;
+  List<MonthDates>? monthDates;
+
+  LeaveCalender({this.monthName, this.monthDates});
+
+  LeaveCalender.fromJson(Map<String, dynamic> json) {
+    monthName = json['monthName'];
+    if (json['monthDates'] != null) {
+      monthDates = <MonthDates>[];
+      json['monthDates'].forEach((v) {
+        monthDates!.add(MonthDates.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['monthName'] = monthName;
+    if (monthDates != null) {
+      data['monthDates'] = monthDates!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class MonthDates {
   String? date;
   bool? holiday;
   bool? weekOff;
   bool? isLeave;
   bool? isPresent;
 
-  LeaveCalender(
+  MonthDates(
       {this.date, this.holiday, this.weekOff, this.isLeave, this.isPresent});
 
-  LeaveCalender.fromJson(Map<String, dynamic> json) {
+  MonthDates.fromJson(Map<String, dynamic> json) {
     date = json['date'];
     holiday = json['holiday'];
     weekOff = json['week_off'];

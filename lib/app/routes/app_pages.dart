@@ -62,6 +62,8 @@ import '../modules/my_face_attendance/bindings/my_face_attendance_binding.dart';
 import '../modules/my_face_attendance/views/my_face_attendance_view.dart';
 import '../modules/my_profile/bindings/my_profile_binding.dart';
 import '../modules/my_profile/views/my_profile_view.dart';
+import '../modules/my_team/bindings/my_team_binding.dart';
+import '../modules/my_team/views/my_team_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/otp_verification/bindings/otp_verification_binding.dart';
@@ -96,6 +98,8 @@ import '../modules/upcoming_celebrations/bindings/upcoming_celebrations_binding.
 import '../modules/upcoming_celebrations/views/upcoming_celebrations_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
+import '../modules/work_report/bindings/work_report_binding.dart';
+import '../modules/work_report/views/work_report_view.dart';
 
 part 'app_routes.dart';
 
@@ -354,6 +358,16 @@ class AppPages {
       name: _Paths.LEAVE_BALANCE,
       page: () => const LeaveBalanceView(),
       binding: LeaveBalanceBinding(),
+    ),
+    GetPage(
+      name: _Paths.MY_TEAM,
+      page: () => const MyTeamView(),
+      binding: MyTeamBinding(),
+    ),
+    GetPage(
+      name: _Paths.WORK_REPORT,
+      page: () => const WorkReportView(),
+      binding: WorkReportBinding(),
     ),
   ];
 }

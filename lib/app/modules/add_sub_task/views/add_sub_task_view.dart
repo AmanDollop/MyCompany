@@ -31,55 +31,56 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
             controller.count.value;
             return AC.isConnect.value
                 ? Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Form(
-                  key: controller.key,
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+                    alignment: Alignment.bottomCenter,
                     children: [
-                      subTaskTextFormFiled(),
-                      SizedBox(height: 10.px),
-                      selectPriorityTextFormFiled(),
-                      SizedBox(height: 10.px),
-                      taskStartDateTextFormFiled(),
-                      SizedBox(height: 10.px),
-                      dueStartDateTextFormFiled(),
-                      SizedBox(height: 10.px),
-                      dueTimeTextFormFiled(),
-                      // SizedBox(height: 10.px),
-                      // commonCheckBoxView(
-                      //   text: 'Pending Attendance If Task Not Completed',
-                      //   value: controller.notCompletedTaskValue.value,
-                      //   onChanged: (value) {
-                      //     controller.notCompletedTaskValue.value =
-                      //         !controller.notCompletedTaskValue.value;
-                      //     controller.count.value++;
-                      //   },
-                      // ),
-                      // SizedBox(height: 10.px),
-                      // commonCheckBoxView(
-                      //   text: 'Repeat Task',
-                      //   value: controller.repeatTaskValue.value,
-                      //   onChanged: (value) {
-                      //     controller.repeatTaskValue.value =
-                      //         !controller.repeatTaskValue.value;
-                      //     controller.count.value++;
-                      //   },
-                      // ),
-                      SizedBox(height: 10.px),
-                      assignView(context: context),
-                      SizedBox(height: 10.px),
-                      remarkTextFormFiled(),
-                      SizedBox(height: 10.px),
-                      attachFile(),
-                      SizedBox(height: 10.h),
+                      Form(
+                        key: controller.key,
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.px, vertical: 16.px),
+                          children: [
+                            subTaskTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            selectPriorityTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            taskStartDateTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            dueStartDateTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            dueTimeTextFormFiled(),
+                            // SizedBox(height: 10.px),
+                            // commonCheckBoxView(
+                            //   text: 'Pending Attendance If Task Not Completed',
+                            //   value: controller.notCompletedTaskValue.value,
+                            //   onChanged: (value) {
+                            //     controller.notCompletedTaskValue.value =
+                            //         !controller.notCompletedTaskValue.value;
+                            //     controller.count.value++;
+                            //   },
+                            // ),
+                            // SizedBox(height: 10.px),
+                            // commonCheckBoxView(
+                            //   text: 'Repeat Task',
+                            //   value: controller.repeatTaskValue.value,
+                            //   onChanged: (value) {
+                            //     controller.repeatTaskValue.value =
+                            //         !controller.repeatTaskValue.value;
+                            //     controller.count.value++;
+                            //   },
+                            // ),
+                            SizedBox(height: 10.px),
+                            assignView(context: context),
+                            SizedBox(height: 10.px),
+                            remarkTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            attachFile(),
+                            SizedBox(height: 10.h),
+                          ],
+                        ),
+                      ),
+                      addAndUpdateButtonView()
                     ],
-                  ),
-                ),
-                addAndUpdateButtonView()
-              ],
-            )
+                  )
                 : CW.commonNoNetworkView();
           },
         ),
@@ -182,8 +183,8 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         width: double.infinity,
         padding: EdgeInsets.only(top: 8.px, bottom: 8.px, left: 18.px, right: 10.px),
         decoration: BoxDecoration(
-            color: Col.primary.withOpacity(.1),
-            borderRadius: BorderRadius.circular(12.px),
+          color: Col.primary.withOpacity(.1),
+          borderRadius: BorderRadius.circular(12.px),
         ),
         child: Column(
           children: [
@@ -198,7 +199,11 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
             ListTile(
               horizontalTitleGap: 12.px,
               contentPadding: EdgeInsets.only(right: 2.px),
-              leading: profileView(context: context),
+              leading: profileView(context: context,
+                  imagePath: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
+                  userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
+                      ? controller.userShortName.value
+                      : '?'),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -214,85 +219,91 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               ),
               // trailing: removeButtonView(),
             ),
-            // AnimatedCrossFade(
-            //     firstChild: assignToListView(),
-            //     secondChild: const SizedBox(),
-            //     crossFadeState: controller.assignToListViewValue.value
-            //     ? CrossFadeState.showFirst
-            //     : CrossFadeState.showSecond,
-            //     duration: const Duration(milliseconds: 500),
-            //   reverseDuration: const Duration(microseconds: 0),
-            // ),
+            if(controller.selectedMyTeamMemberList.isNotEmpty)
+              assignToListView(),
           ],
         ),
       );
 
   Widget assignToListView() => ListView.builder(
-    padding: EdgeInsets.only(top: 5.px),
-    physics: const NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-    itemCount: 10,
-    itemBuilder: (context, index) {
-      return Column(
-        children: [
-          ListTile(
-            horizontalTitleGap: 12.px,
-            contentPadding: EdgeInsets.only(right: 2.px),
-            leading: profileView(context: context),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                assignTextView(
-                    text: controller.userFullName.value != 'null' && controller.userFullName.value.isNotEmpty
-                        ? controller.userFullName.value
-                        : 'Employee Name'),
-                developerTypeTextView(
-                    text: controller.developer.value != 'null' && controller.developer.value.isNotEmpty
-                        ? controller.developer.value
-                        : 'Designation'),
-              ],
-            ),
-            trailing: removeButtonView(),
-          ),
-          if(index != 9)
-            CW.commonDividerView()
-        ],
-      );
-    },);
-
-  Widget assignTextView({required String text,Color? color}) => Text(
-        text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: color),
-      );
-
-  Widget addAssignButtonView() => InkWell(
-        borderRadius: BorderRadius.circular(6.px),
-        onTap: () {
-          controller.assignToListViewValue.value = !controller.assignToListViewValue.value;
+        // padding: EdgeInsets.only(top: 5.px),
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: controller.selectedMyTeamMemberList.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              CW.commonDividerView(),
+              ListTile(
+                horizontalTitleGap: 12.px,
+                contentPadding: EdgeInsets.only(right: 2.px),
+                leading: profileView(context: context,
+                    imagePath: '${AU.baseUrlAllApisImage}${controller.selectedMyTeamMemberList[index].userProfilePic}',
+                    userShortName: controller.selectedMyTeamMemberList[index].shortName != null && controller.selectedMyTeamMemberList[index].shortName!.isNotEmpty
+                        ? '${controller.selectedMyTeamMemberList[index].shortName}'
+                        :  '?'),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    assignTextView(
+                        text: controller.selectedMyTeamMemberList[index].userFullName != null && controller.selectedMyTeamMemberList[index].userFullName!.isNotEmpty
+                            ? '${controller.selectedMyTeamMemberList[index].userFullName}'
+                            : 'Employee Name'),
+                    developerTypeTextView(
+                        text: controller.selectedMyTeamMemberList[index].userDesignation != null && controller.selectedMyTeamMemberList[index].userDesignation!.isNotEmpty
+                            ? '${controller.selectedMyTeamMemberList[index].userDesignation}'
+                            : 'Designation'),
+                  ],
+                ),
+                trailing: removeButtonView(index:index),
+              ),
+              // if (index != controller.selectedMyTeamMemberList.length-1)
+              //   CW.commonDividerView()
+            ],
+          );
         },
-        child: Container(
-          width: 24.px,
-          height: 24.px,
-          decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            borderRadius: BorderRadius.circular(6.px),
-          ),
-          child: Center(
-            child: controller.assignToListViewValue.value
-                ? CW.commonNetworkImageView(
-              path: 'assets/icons/outline_minus_icon.png',
-              height: 12.px,
-              width: 12.px,
-              isAssetImage: true,
-            ) : CW.commonNetworkImageView(
-              path: 'assets/icons/outline_add_icon.png',
-              height: 12.px,
-              width: 12.px,
-              isAssetImage: true,
-            ),
+      );
+
+  Widget assignTextView({required String text, Color? color}) => Text(
+        text,
+        style: Theme.of(Get.context!)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.w600, color: color),
+      );
+
+  Widget addAssignButtonView() {
+    if(controller.selectedMyTeamMemberList.isEmpty){
+      controller.assignToListViewValue.value = false;
+    }
+    return InkWell(
+      borderRadius: BorderRadius.circular(6.px),
+      onTap: () => controller.clickOnAssignToAddButton(),
+      child: Container(
+        width: 24.px,
+        height: 24.px,
+        decoration: BoxDecoration(
+          color: Col.inverseSecondary,
+          borderRadius: BorderRadius.circular(6.px),
+        ),
+        child: Center(
+          child: controller.assignToListViewValue.value
+              ? CW.commonNetworkImageView(
+            path: 'assets/icons/outline_minus_icon.png',
+            height: 12.px,
+            width: 12.px,
+            isAssetImage: true,
+          ) :
+          CW.commonNetworkImageView(
+            path: 'assets/icons/outline_add_icon.png',
+            height: 12.px,
+            width: 12.px,
+            isAssetImage: true,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   void showOverlay({required BuildContext context, required String imagePath, required String userShortName}) {
     controller.overlayEntry = CW.showOverlay(
@@ -304,46 +315,50 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         borderRadius: 100.px);
   }
 
-  Widget profileView({required BuildContext context}) => GestureDetector(
-    onLongPress: () {
-      // Show overlay entry
-      showOverlay(context: context, userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
-          ? controller.userShortName.value
-          : '?',imagePath: '${AU.baseUrlAllApisImage}${controller.userPic.value}',);
-    },
-    onLongPressCancel: () {
-      controller.overlayEntry.remove();
-    },
-    onLongPressEnd: (details) {
-      controller.overlayEntry.remove();
-    },
-    child: Container(
+  Widget profileView({required BuildContext context,required String imagePath,required String userShortName}) => GestureDetector(
+        onLongPress: () {
+          // Show overlay entry
+          showOverlay(
+            context: context,
+            userShortName: userShortName,
+            imagePath: imagePath,
+          );
+        },
+        onLongPressCancel: () {
+          controller.overlayEntry.remove();
+        },
+        onLongPressEnd: (details) {
+          controller.overlayEntry.remove();
+        },
+        child: Container(
           width: 40.px,
           height: 40.px,
-          decoration: BoxDecoration(color: Col.inverseSecondary, shape: BoxShape.circle),
+          decoration: BoxDecoration(
+              color: Col.inverseSecondary, shape: BoxShape.circle),
           child: Center(
             child: ClipRRect(
-                    borderRadius: BorderRadius.circular(31.px),
-                    child: CW.commonNetworkImageView(
-                        path: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
-                        isAssetImage: false,
-                        width: 40.px,
-                        height: 40.px,
-                      errorImageValue: true,
-                      userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
-                          ? controller.userShortName.value
-                          : '?',
-                    ),
-                  ),
+              borderRadius: BorderRadius.circular(31.px),
+              child: CW.commonNetworkImageView(
+                path: imagePath,
+                isAssetImage: false,
+                width: 40.px,
+                height: 40.px,
+                errorImageValue: true,
+                userShortName: userShortName,
+              ),
+            ),
           ),
         ),
-  );
+      );
 
   Widget developerTypeTextView({required String text}) => Text(text, style: Theme.of(Get.context!).textTheme.labelSmall);
 
-  Widget removeButtonView() => InkWell(
+  Widget removeButtonView({required int index}) => InkWell(
         borderRadius: BorderRadius.circular(8.px),
-        onTap: () {},
+        onTap: () {
+          controller.selectedMyTeamMemberList.remove(controller.selectedMyTeamMemberList[index]);
+          controller.count.value++;
+        },
         child: CW.commonNetworkImageView(
           path: 'assets/icons/substack_icon.png',
           height: 16.px,
@@ -390,10 +405,13 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         child: controller.docType.value == 'Unknown'
             ? attachRowTextView()
             : controller.docType.value == 'Image'
-            ? controller.imagePathForAdd.value.isNotEmpty
-                ? fileImageAndNetworkImageView(isFileImage: true, imagePath: controller.imagePathForAdd.value)
-                : fileImageAndNetworkImageView(imagePath: controller.imagePathFoeUpDate.value)
-            : docImageView(imagePath: controller.docLogo.value),
+                ? controller.imagePathForAdd.value.isNotEmpty
+                    ? fileImageAndNetworkImageView(
+                        isFileImage: true,
+                        imagePath: controller.imagePathForAdd.value)
+                    : fileImageAndNetworkImageView(
+                        imagePath: controller.imagePathFoeUpDate.value)
+                : docImageView(imagePath: controller.docLogo.value),
       );
     } else {
       return Row(
@@ -502,5 +520,4 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               isLoading: controller.addSubTaskButtonValue.value),
         ),
       );
-
 }

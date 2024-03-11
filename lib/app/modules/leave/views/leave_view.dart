@@ -102,7 +102,12 @@ class LeaveView extends GetView<LeaveController> {
                                                       text2: '${controller.getLeaveList[index].leaveTypeName} (${controller.getLeaveList[index].isPaidView})'),
                                                   commonRowForCardView(
                                                       text1: 'Leave Day Type ',
-                                                      text2: '${controller.getLeaveList[index].leaveDayTypeView}'),
+                                                      text2: controller.getLeaveList[index].leaveDayTypeSessionView != null
+                                                          && controller.getLeaveList[index].leaveDayTypeSessionView!.isNotEmpty
+                                                          && controller.getLeaveList[index].leaveDayTypeSessionView != 'Full Day'
+                                                          ? '${controller.getLeaveList[index].leaveDayTypeView} (${controller.getLeaveList[index].leaveDayTypeSessionView})'
+                                                          : '${controller.getLeaveList[index].leaveDayTypeView}',
+                                                  ),
                                                   if(controller.getLeaveList[index].leaveStartDate != null && controller.getLeaveList[index].leaveStartDate!.isNotEmpty)
                                                   commonRowForCardView(
                                                       text1: 'Date',

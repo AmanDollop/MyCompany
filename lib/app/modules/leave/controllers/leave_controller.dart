@@ -141,14 +141,20 @@ class LeaveController extends GetxController {
   Future<void> clickOnYearValue({required int index}) async {
     yearForMonthViewValue.value = yearForMonthViewList[index];
     apiResValue.value=true;
+    offset.value = 0;
+    getLeaveList.clear();
     await callingGetAllLeaveApi();
     count.value++;
     Get.back();
   }
 
-  void clickOnViewMoreButton({required int index}) {
+  Future<void> clickOnViewMoreButton({required int index}) async {
     if(getLeaveList[index].leaveId != null && getLeaveList[index].leaveId!.isNotEmpty) {
-      Get.toNamed(Routes.LEAVE_DETAIL,arguments: [getLeaveList[index].leaveId]);
+      await Get.toNamed(Routes.LEAVE_DETAIL,arguments: [getLeaveList[index].leaveId]);
+      apiResValue.value = true;
+      offset.value = 0;
+      getLeaveList.clear();
+      callingGetAllLeaveApi();
     }
   }
 

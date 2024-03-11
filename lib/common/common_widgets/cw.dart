@@ -478,6 +478,18 @@ class CW {
                         : BorderSide.none,
                     borderRadius: BorderRadius.circular(
                         borderRadius ?? C.textFieldRadius)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.primary, width: 1.5.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderSide: isBorder
+                        ? BorderSide(color: Col.error, width: 1.px)
+                        : BorderSide.none,
+                    borderRadius: BorderRadius.circular(
+                        borderRadius ?? C.textFieldRadius)),
                 border: OutlineInputBorder(
                     borderSide: isBorder
                         ? BorderSide(color: Col.primary, width: 1.px)
@@ -485,11 +497,8 @@ class CW {
                     borderRadius: BorderRadius.circular(
                         borderRadius ?? C.textFieldRadius)),
                 enabledBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(
-                            color: filled
-                                ? initialBorderColor ?? Col.gray
-                                : Col.secondary,
+                    borderSide: isBorder ? BorderSide(
+                            color: filled ? initialBorderColor ?? Col.gray : Col.secondary,
                             width: initialBorderWidth ?? 1.px)
                         : BorderSide.none,
                     borderRadius: BorderRadius.circular(
@@ -1327,6 +1336,7 @@ class CW {
                   width: width ?? 136.px,
                   errorImageValue: true,
                   userShortName: userShortName,
+                  userShortNameValue: true,
                 ),
               ),
             ),
@@ -1363,7 +1373,7 @@ class CW {
           String? userShortName,
           Color? userShortNameColor,
           Color? userShortNameBackgroundColor,
-          bool errorImageValue = false}) =>
+          bool errorImageValue = false, bool userShortNameValue = false}) =>
       InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
@@ -1383,8 +1393,7 @@ class CW {
                   width: width,
                   color: color,
                   fit: fit,
-                  loadingBuilder: loadingBuilder ??
-                      (context, child, loadingProgress) {
+                  loadingBuilder: loadingBuilder ?? (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return CW.commonShimmerViewForImage(
                             height: height,
@@ -1407,12 +1416,7 @@ class CW {
                         child: Center(
                           child: Text(
                             userShortName ?? "",
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                    color: userShortNameColor ??
-                                        Col.inverseSecondary),
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.inverseSecondary,fontSize: userShortNameValue ? 30.px:14.px ),
                           ),
                         ),
                       );

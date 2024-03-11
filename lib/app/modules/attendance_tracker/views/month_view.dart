@@ -26,14 +26,12 @@ class MonthView extends GetView<AttendanceTrackerController> {
                           Row(
                             children: [
                               commonDropDownView(
-                                onTap: () =>
-                                    controller.clickOnMonthNameFromMonthView(),
+                                onTap: () => controller.clickOnMonthNameFromMonthView(),
                                 dropDownView: monthDropDownView(),
                               ),
                               SizedBox(width: 10.px),
                               commonDropDownView(
-                                onTap: () =>
-                                    controller.clickOnYearFromMonthView(),
+                                onTap: () => controller.clickOnYearFromMonthView(),
                                 dropDownView: yearDropDownView(),
                               ),
                             ],
@@ -208,18 +206,11 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   children: [
                     titleTextView(text: 'Total time', color: Col.secondary),
                     SizedBox(height: 2.px),
-                    subTitleTextView(
-                        text: CMForDateTime.calculateTimeForHourAndMin(
-                            minute:
-                                '${controller.getMonthlyAttendanceData?.totalMonthlyTime}')),
+                    subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalMonthlyTime}')),
                     SizedBox(height: 5.px),
-                    titleTextView(
-                        text: 'Monthly Hours Spent', color: Col.secondary),
+                    titleTextView(text: 'Monthly Hours Spent', color: Col.secondary),
                     SizedBox(height: 2.px),
-                    subTitleTextView(
-                        text: CMForDateTime.calculateTimeForHourAndMin(
-                            minute:
-                                '${controller.getMonthlyAttendanceData?.totalSpendMinutes}')),
+                    subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalSpendMinutes}')),
                   ],
                 ),
               ),
@@ -233,24 +224,15 @@ class MonthView extends GetView<AttendanceTrackerController> {
             children: [
               titleTextView(text: 'Total Productive Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(
-                  text: CMForDateTime.calculateTimeForHourAndMin(
-                      minute:
-                          '${controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes}')),
+              subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalProductiveWorkingMinutes}')),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Extra Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(
-                  text: CMForDateTime.calculateTimeForHourAndMin(
-                      minute:
-                          '${controller.getMonthlyAttendanceData?.totalExtraMinutes}')),
+              subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalExtraMinutes}')),
               SizedBox(height: 5.px),
               titleTextView(text: 'Total Remaining Time'),
               SizedBox(height: 2.px),
-              subTitleTextView(
-                  text: CMForDateTime.calculateTimeForHourAndMin(
-                      minute:
-                          '${controller.getMonthlyAttendanceData?.totalRemainingMinutes}')),
+              subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalRemainingMinutes}')),
             ],
           ),
         ),
@@ -422,17 +404,17 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Color calendarGridColorView({required int index}) {
-    if (controller.monthlyHistoryList?[index].present == true &&
-        controller.monthlyHistoryList?[index].attendnacePending == false) {
+    if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false && controller.monthlyHistoryList?[index].isPunchOutMissing == false) {
       return const Color(0xffF2FFF3);
+    } else if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].isPunchOutMissing == true) {
+      return const Color(0xffEEEED1);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
       return const Color(0xffDDE0FB);
     } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
       return const Color(0xffE6E6E6);
     } else if (controller.monthlyHistoryList?[index].leave ?? false) {
       return const Color(0xffE0F1FF);
-    } else if (controller.monthlyHistoryList?[index].attendnacePending ??
-        false) {
+    } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
       return const Color(0xffFFE2D3);
     } else if (controller.monthlyHistoryList?[index].isAbsent ?? false) {
       return const Color(0xffFFD9D9);
@@ -442,17 +424,17 @@ class MonthView extends GetView<AttendanceTrackerController> {
   }
 
   Color calendarGridTextColorView({required int index}) {
-    if (controller.monthlyHistoryList?[index].present == true &&
-        controller.monthlyHistoryList?[index].attendnacePending == false) {
+    if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false && controller.monthlyHistoryList?[index].isPunchOutMissing == false) {
       return const Color(0xff02930D);
+    } else if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].isPunchOutMissing == true) {
+      return const Color(0xff6F7106);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
       return const Color(0xff0717AF);
     } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
       return const Color(0xff616161);
     } else if (controller.monthlyHistoryList?[index].leave ?? false) {
       return const Color(0xff249CFF);
-    } else if (controller.monthlyHistoryList?[index].attendnacePending ??
-        false) {
+    } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
       return const Color(0xffFF5700);
     } else if (controller.monthlyHistoryList?[index].isAbsent ?? false) {
       return const Color(0xffCE1212);

@@ -370,5 +370,8 @@ class ApiEndPointAction{
 
   static  const getLeaveTypeBalanceCount = 'getLeaveTypeBlanceCount';
 
+  static  const deleteLeave = 'deleteLeave';
+  static  const updateLeave = 'updateLeave';
+
 
 }

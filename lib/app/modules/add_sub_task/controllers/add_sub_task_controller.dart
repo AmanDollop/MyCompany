@@ -8,8 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
+import 'package:task/api/api_model/get_my_team_member_modal.dart';
 import 'package:task/api/api_model/sub_task_data_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
+import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/commmon_date_time/cdt.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
@@ -71,6 +73,8 @@ class AddSubTaskController extends GetxController {
 
 
   late OverlayEntry overlayEntry;
+
+  List<MyTeam> selectedMyTeamMemberList = [];
 
   @override
   void onInit() {
@@ -331,6 +335,16 @@ class AddSubTaskController extends GetxController {
 
   Future<void> callingAddSubTaskApi() async {
     try {
+     String userIds;
+     if(selectedMyTeamMemberList.isNotEmpty){
+       userIds = userId.value+(',')+selectedMyTeamMemberList.map((data) {
+         if(data.userId != null && data.userId!.isNotEmpty){
+           return data.userId;
+         }
+       }).join(',');
+     }else{
+       userIds = userId.value;
+     }
 
       bodyParamsForAddSubTask = {
         AK.action: ApiEndPointAction.addTask,
@@ -342,7 +356,7 @@ class AddSubTaskController extends GetxController {
         AK.taskDueTime: dueTimeController.text.trim().toString(),
         AK.taskName: subTaskNameController.text.trim().toString(),
         AK.taskNote: remarkController.text.trim().toString(),
-        AK.taskAssignTo: userId.value,
+        AK.taskAssignTo: userIds,
       };
       print('imageFile.value::::: ${imageFile.value}');
       http.Response? response = await CAI.addSubTaskApi(bodyParams: bodyParamsForAddSubTask, filePath: imageFile.value);
@@ -358,6 +372,20 @@ class AddSubTaskController extends GetxController {
       addSubTaskButtonValue.value = false;
       CM.error();
     }
+  }
+
+  Future<void> clickOnAssignToAddButton() async {
+    if(assignToListViewValue.value){
+      selectedMyTeamMemberList.clear();
+      assignToListViewValue.value = false;
+    }else{
+      var result  = await Get.toNamed(Routes.MY_TEAM);
+      if(result != null){
+        selectedMyTeamMemberList = result;
+        assignToListViewValue.value = true;
+      }
+    }
+    count.value++;
   }
 
 }

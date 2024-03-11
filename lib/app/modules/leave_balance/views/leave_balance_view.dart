@@ -60,8 +60,7 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
                                           containerColor: Col.primary),
                                       commonRowForTotalAndUsedLeaveTextView(
                                           text: 'Used Leave',
-                                          containerColor:
-                                              Col.primary.withOpacity(.2)),
+                                          containerColor: Col.primary.withOpacity(.2),),
                                     ],
                                   ),
                                   SizedBox(height: 16.px),

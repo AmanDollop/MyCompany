@@ -28,7 +28,7 @@ class ContactDetailController extends GetxController {
   final mobileNumber = ''.obs;
   final countryCode = ''.obs;
 
-  final companyDetail = ''.obs;
+  final companyDetailFromLocalDataBase = ''.obs;
   GetCompanyDetails? getCompanyDetails;
 
   final userDataFromLocalDataBase =''.obs;
@@ -94,8 +94,8 @@ class ContactDetailController extends GetxController {
     userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
     contactInfo=userData?.contactInfo;
 
-    companyDetail.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail,tableName: DataBaseConstant.tableNameForCompanyDetail);
-    getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetail.value)).getCompanyDetails;
+    companyDetailFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.companyDetail,tableName: DataBaseConstant.tableNameForCompanyDetail);
+    getCompanyDetails = CompanyDetailsModal.fromJson(jsonDecode(companyDetailFromLocalDataBase.value)).getCompanyDetails;
 
       mobileNumber.value = contactInfo?.userMobile??'';
       contactController.text = contactInfo?.userMobile??'';

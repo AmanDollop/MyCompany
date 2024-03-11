@@ -1,11 +1,16 @@
 class GetLeaveDetailModal {
   String? message;
+  bool? isEdit;
+  bool? isDelete;
   GetLeaveDetails? getLeaveDetails;
 
-  GetLeaveDetailModal({this.message, this.getLeaveDetails});
+  GetLeaveDetailModal(
+      {this.message, this.isEdit, this.isDelete, this.getLeaveDetails});
 
   GetLeaveDetailModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
+    isEdit = json['is_edit'];
+    isDelete = json['is_delete'];
     getLeaveDetails = json['getLeaveDetails'] != null
         ? GetLeaveDetails.fromJson(json['getLeaveDetails'])
         : null;
@@ -14,6 +19,8 @@ class GetLeaveDetailModal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
+    data['is_edit'] = isEdit;
+    data['is_delete'] = isDelete;
     if (getLeaveDetails != null) {
       data['getLeaveDetails'] = getLeaveDetails!.toJson();
     }
@@ -22,9 +29,12 @@ class GetLeaveDetailModal {
 }
 
 class GetLeaveDetails {
+  String? leaveTypeId;
   String? leaveTypeName;
   String? leaveDayType;
   String? leaveDayTypeView;
+  String? leaveDayTypeSession;
+  String? leaveDayTypeSessionView;
   String? leaveStartDate;
   String? leaveStatus;
   String? isPaid;
@@ -35,9 +45,12 @@ class GetLeaveDetails {
   String? shortName;
 
   GetLeaveDetails(
-      {this.leaveTypeName,
+      {this.leaveTypeId,
+        this.leaveTypeName,
         this.leaveDayType,
         this.leaveDayTypeView,
+        this.leaveDayTypeSession,
+        this.leaveDayTypeSessionView,
         this.leaveStartDate,
         this.leaveStatus,
         this.isPaid,
@@ -48,9 +61,12 @@ class GetLeaveDetails {
         this.shortName});
 
   GetLeaveDetails.fromJson(Map<String, dynamic> json) {
+    leaveTypeId = json['leave_type_id'];
     leaveTypeName = json['leave_type_name'];
     leaveDayType = json['leave_day_type'];
     leaveDayTypeView = json['leave_day_type_view'];
+    leaveDayTypeSession = json['leave_day_type_session'];
+    leaveDayTypeSessionView = json['leave_day_type_session_view'];
     leaveStartDate = json['leave_start_date'];
     leaveStatus = json['leave_status'];
     isPaid = json['is_paid'];
@@ -63,9 +79,12 @@ class GetLeaveDetails {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['leave_type_id'] = leaveTypeId;
     data['leave_type_name'] = leaveTypeName;
     data['leave_day_type'] = leaveDayType;
     data['leave_day_type_view'] = leaveDayTypeView;
+    data['leave_day_type_session'] = leaveDayTypeSession;
+    data['leave_day_type_session_view'] = leaveDayTypeSessionView;
     data['leave_start_date'] = leaveStartDate;
     data['leave_status'] = leaveStatus;
     data['is_paid'] = isPaid;

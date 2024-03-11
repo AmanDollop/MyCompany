@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
@@ -64,6 +65,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
 
   final getLeaveDateCalenderModal = Rxn<GetLeaveDateCalenderModal>();
   List<LeaveCalender>? leaveDateCalenderList;
+  List<MonthDates>? monthDatesList;
   Map<String, dynamic> bodyParamsForGetLeaveDateCalenderApi = {};
 
   final getLeaveTypeModal = Rxn<GetLeaveTypeModal>();
@@ -82,6 +84,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   final leaveTypeForAttachmentRequired = ''.obs;
 
   Map<String, dynamic> bodyParamsForAddLeaveApi = {};
+
+  PageController pageController = PageController();
 
   @override
   Future<void> onInit() async {
@@ -106,6 +110,12 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     super.onClose();
   }
 
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   void increment() => count.value++;
 
   void clickOnBackButton() {
@@ -119,18 +129,26 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     }
   }
 
-  Future<void> clickOnReverseIconButton({required index}) async {
+  Future<void> clickOnReverseIconButton() async {
     CM.unFocusKeyBoard();
-    currentMonth.value =
-        CMForDateTime.subtractMonths(date: currentMonth.value, months: 1);
-    await callingGetLeaveDateCalenderApi();
+    monthTotalDaysListDataAdd();
+    await pageController.previousPage(
+      duration: const Duration(milliseconds: 1000),
+      curve: Curves.easeInOut,
+    );
+    currentMonth.value = CMForDateTime.subtractMonths(date: currentMonth.value, months: 1);
+    count.value--;
   }
 
-  Future<void> clickOnForwardIconButton({required index}) async {
+  Future<void> clickOnForwardIconButton() async {
     CM.unFocusKeyBoard();
-    currentMonth.value =
-        CMForDateTime.addMonths(date: currentMonth.value, months: 1);
-    await callingGetLeaveDateCalenderApi();
+    monthTotalDaysListDataAdd();
+    await pageController.nextPage(
+      duration: const Duration(milliseconds: 1000),
+      curve: Curves.easeInOut,
+    );
+    currentMonth.value = CMForDateTime.addMonths(date: currentMonth.value, months: 1);
+    count.value++;
   }
 
   Future<void> clickOnAttachmentButton() async {
@@ -157,13 +175,18 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
       apiResValue.value = true;
       bodyParamsForGetLeaveDateCalenderApi = {
         AK.action: ApiEndPointAction.getLeaveCalender,
-        AK.year: '${currentMonth.value.year}',
-        AK.month: '${currentMonth.value.month}',
+        // AK.year: '${currentMonth.value.year}',
+        // AK.month: '${currentMonth.value.month}',
       };
-      getLeaveDateCalenderModal.value = await CAI.getLeaveDateCalenderApi(
-          bodyParams: bodyParamsForGetLeaveDateCalenderApi);
+      getLeaveDateCalenderModal.value = await CAI.getLeaveDateCalenderApi(bodyParams: bodyParamsForGetLeaveDateCalenderApi);
       if (getLeaveDateCalenderModal.value != null) {
         leaveDateCalenderList = getLeaveDateCalenderModal.value?.leaveCalender;
+        for (var i = 0; i < leaveDateCalenderList!.length; i++) {
+          if(leaveDateCalenderList?[i].monthName == DateFormat('MMMM').format(DateTime.now())){
+            pageController = PageController(initialPage: i);
+            count.value++;
+          }
+        }
       }
     } catch (e) {
       CM.error();
@@ -374,10 +397,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     leaveTypeController.text = leaveTypeList?[i].leaveTypeName ?? '';
     leaveTypeIdFromApi.value = leaveTypeList?[i].leaveTypeId ?? '';
     if (leaveTypeList?[i].attachmentRequired == '1') {
-      leaveTypeForAttachmentRequired.value =
-          leaveTypeList?[i].attachmentRequired ?? '';
-      print(
-          'leaveTypeForAttachmentRequired.value:::: ${leaveTypeForAttachmentRequired.value}');
+      leaveTypeForAttachmentRequired.value = leaveTypeList?[i].attachmentRequired ?? '';
+      print('leaveTypeForAttachmentRequired.value:::: ${leaveTypeForAttachmentRequired.value}');
     }
     await callingGetLeaveTypeBalanceApi();
     Get.back();
@@ -394,10 +415,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
 
   Widget radioButtonLabelTextView({required String text, Color? color}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelSmall
-            ?.copyWith(fontWeight: FontWeight.w500, color: color),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500, color: color),
       );
 
   Widget fullAndHalfDayView() => commonContainerView(
@@ -432,8 +450,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                   SizedBox(width: 6.px),
                   radioButtonLabelTextView(
                       text: fullAndHalfDayText[index],
-                      color:
-                          fullAndHalfDayText[index] == fullAndHalfDayType.value
+                      color: fullAndHalfDayText[index] == fullAndHalfDayType.value
                               ? Col.text
                               : Col.darkGray)
                 ],
@@ -473,8 +490,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                   SizedBox(width: 6.px),
                   radioButtonLabelTextView(
                       text: firstAndSecondHalfText[index],
-                      color: firstAndSecondHalfText[index] ==
-                              firstAndSecondHalfType.value
+                      color: firstAndSecondHalfText[index] == firstAndSecondHalfType.value
                           ? Col.text
                           : Col.darkGray)
                 ],
@@ -695,36 +711,15 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   void clickOnAddForApplyBulkLeaveButton() {
     if (key.currentState!.validate()) {
       addButtonValue.value = true;
-
       String? date;
-      if (availableLeave.value.toInt() != 0 &&
-          fullAndHalfDayType.value == 'Half Day') {
+      if (availableLeave.value.toInt() != 0 && fullAndHalfDayType.value == 'Half Day') {
         availableLeave.value = availableLeave.value.toInt() * 2;
       }
 
       for (var element in dateAddForLeaveList) {
         if (element != null && element!.isNotEmpty) {
           if (paidAndUnPaidType.value == 'Paid') {
-            if (availableLeave.value.toInt() != 0 &&
-                fullAndHalfDayType.value == 'Full Day') {
-              date = element;
-              LocalData data = LocalData(
-                  date: date,
-                  value: true,
-                  firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day'
-                      ? ''
-                      : firstAndSecondHalfType.value,
-                  fullAndHalfDay: fullAndHalfDayType.value,
-                  leaveType: leaveTypeController.text.trim(),
-                  paidAndUnPaid: paidAndUnPaidType.value,
-                  leaveTypeId: leaveTypeIdFromApi.value);
-              updateLocalDataByDate(date: date ?? '', newData: data);
-              availableLeave.value--;
-              if (availableLeave.value.toInt() == 0) {
-                paidAndUnPaidType.value = "UnPaid";
-              }
-            } else if (availableLeave.value.toInt() != 0 &&
-                fullAndHalfDayType.value == 'Half Day') {
+            if (availableLeave.value.toInt() != 0 && fullAndHalfDayType.value == 'Full Day') {
               date = element;
               LocalData data = LocalData(
                   date: date,
@@ -742,7 +737,26 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                 paidAndUnPaidType.value = "UnPaid";
               }
             }
-          } else {
+            else if (availableLeave.value.toInt() != 0 && fullAndHalfDayType.value == 'Half Day') {
+              date = element;
+              LocalData data = LocalData(
+                  date: date,
+                  value: true,
+                  firstAndSecondHalf: fullAndHalfDayType.value == 'Full Day'
+                      ? ''
+                      : firstAndSecondHalfType.value,
+                  fullAndHalfDay: fullAndHalfDayType.value,
+                  leaveType: leaveTypeController.text.trim(),
+                  paidAndUnPaid: paidAndUnPaidType.value,
+                  leaveTypeId: leaveTypeIdFromApi.value);
+              updateLocalDataByDate(date: date ?? '', newData: data);
+              availableLeave.value--;
+              if (availableLeave.value.toInt() == 0) {
+                paidAndUnPaidType.value = "UnPaid";
+              }
+            }
+          }
+          else {
             date = element;
             LocalData data = LocalData(
                 date: date,
@@ -777,11 +791,9 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
         AK.leaveTypeId: leaveTypeIdFromApi.value,
         AK.leaveDate: formattedDateListForApi.first,
       };
-      getLeaveTypeBalanceModal.value = await CAI.getLeaveTypeBalanceApi(
-          bodyParams: bodyParamsForGetLeaveTypeBalanceApi);
+      getLeaveTypeBalanceModal.value = await CAI.getLeaveTypeBalanceApi(bodyParams: bodyParamsForGetLeaveTypeBalanceApi);
       if (getLeaveTypeBalanceModal.value != null) {
-        availableLeave.value = double.parse(
-            getLeaveTypeBalanceModal.value?.availableLeave ?? '0.0');
+        availableLeave.value = double.parse(getLeaveTypeBalanceModal.value?.availableLeave ?? '0.0');
         localDataForLeaveTypeMethod(leaveTypeId: leaveTypeIdFromApi.value);
         availableLeaveValue.value = true;
       }
@@ -794,14 +806,13 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     apiResValue.value = false;
   }
 
-  void localDataForLeaveTypeMethod({required String leaveTypeId}) {
+  void localDataForLeaveTypeMethod({required String leaveTypeId}){
     LocalDataForLeaveType data = LocalDataForLeaveType(
       leaveId: leaveTypeId,
       availablePaidAndUnPaidLeaveValue: availableLeave.value,
     );
 
-    int index = localDataForLeaveType
-        .indexWhere((element) => element.leaveId == data.leaveId);
+    int index = localDataForLeaveType.indexWhere((element) => element.leaveId == data.leaveId);
 
     if (index != -1) {
       localData.forEach((element) {

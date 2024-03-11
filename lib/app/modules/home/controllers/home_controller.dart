@@ -793,6 +793,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       Get.toNamed(Routes.ATTENDANCE_TRACKER, arguments: [isHeadingMenuList[headingCardIndex].menuName]);
     }else if (isHeadingMenuList[headingCardIndex].menuClick == 'leave') {
       Get.toNamed(Routes.LEAVE, arguments: [isHeadingMenuList[headingCardIndex].menuName]);
+    }else if (isHeadingMenuList[headingCardIndex].menuClick == 'work_report') {
+      Get.toNamed(Routes.WORK_REPORT, arguments: [isHeadingMenuList[headingCardIndex].menuName]);
     } else {
       CM.showSnackBar(message: 'Coming soon');
     }

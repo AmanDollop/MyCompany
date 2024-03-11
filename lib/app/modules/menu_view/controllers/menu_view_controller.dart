@@ -119,6 +119,8 @@ class MenuViewController extends GetxController {
         Get.toNamed(Routes.HOLIDAY, arguments: [getMenuListForSearch[index].menuName]);
       }else if (getMenuListForSearch[index].menuClick == 'leave') {
         Get.toNamed(Routes.LEAVE, arguments: [getMenuListForSearch[index].menuName]);
+      } else if (getMenuListForSearch[index].menuClick == 'work_report') {
+        Get.toNamed(Routes.WORK_REPORT, arguments: [getMenuListForSearch[index].menuName]);
       } else {
         CM.showSnackBar(message: 'Coming soon');
       }
@@ -136,6 +138,8 @@ class MenuViewController extends GetxController {
         Get.toNamed(Routes.HOLIDAY, arguments: [getMenuList[index].menuName]);
       }else if (getMenuList[index].menuClick == 'leave') {
         Get.toNamed(Routes.LEAVE, arguments: [getMenuList[index].menuName]);
+      } else if (getMenuList[index].menuClick == 'work_report') {
+        Get.toNamed(Routes.WORK_REPORT, arguments: [getMenuList[index].menuName]);
       } else {
         CM.showSnackBar(message: 'Coming soon');
       }
