@@ -14,6 +14,8 @@ import '../modules/add_social_info/bindings/add_social_info_binding.dart';
 import '../modules/add_social_info/views/add_social_info_view.dart';
 import '../modules/add_sub_task/bindings/add_sub_task_binding.dart';
 import '../modules/add_sub_task/views/add_sub_task_view.dart';
+import '../modules/add_template_question/bindings/add_template_question_binding.dart';
+import '../modules/add_template_question/views/add_template_question_view.dart';
 import '../modules/all_task/bindings/all_task_binding.dart';
 import '../modules/all_task/views/all_task_view.dart';
 import '../modules/attendance_tracker/bindings/attendance_tracker_binding.dart';
@@ -94,12 +96,16 @@ import '../modules/sub_task/bindings/sub_task_binding.dart';
 import '../modules/sub_task/views/sub_task_view.dart';
 import '../modules/task_time_line/bindings/task_time_line_binding.dart';
 import '../modules/task_time_line/views/task_time_line_view.dart';
+import '../modules/template_question/bindings/template_question_binding.dart';
+import '../modules/template_question/views/template_question_view.dart';
 import '../modules/upcoming_celebrations/bindings/upcoming_celebrations_binding.dart';
 import '../modules/upcoming_celebrations/views/upcoming_celebrations_view.dart';
 import '../modules/utilities/bindings/utilities_binding.dart';
 import '../modules/utilities/views/utilities_view.dart';
 import '../modules/work_report/bindings/work_report_binding.dart';
 import '../modules/work_report/views/work_report_view.dart';
+import '../modules/work_report_detail/bindings/work_report_detail_binding.dart';
+import '../modules/work_report_detail/views/work_report_detail_view.dart';
 
 part 'app_routes.dart';
 
@@ -368,6 +374,21 @@ class AppPages {
       name: _Paths.WORK_REPORT,
       page: () => const WorkReportView(),
       binding: WorkReportBinding(),
+    ),
+    GetPage(
+      name: _Paths.TEMPLATE_QUESTION,
+      page: () => const TemplateQuestionView(),
+      binding: TemplateQuestionBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_TEMPLATE_QUESTION,
+      page: () => const AddTemplateQuestionView(),
+      binding: AddTemplateQuestionBinding(),
+    ),
+    GetPage(
+      name: _Paths.WORK_REPORT_DETAIL,
+      page: () => const WorkReportDetailView(),
+      binding: WorkReportDetailBinding(),
     ),
   ];
 }

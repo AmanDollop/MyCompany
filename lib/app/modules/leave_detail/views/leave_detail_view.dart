@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:markdown_toolbar/markdown_toolbar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/app_controller/ac.dart';
@@ -23,14 +22,14 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
           isLeading: true,
           onBackPressed: () => controller.clickOnBackButton(),
           actions: [
-            if (controller.getLeaveDetailModal.value?.isEdit ?? false)
+            if (controller.isUpDate.value)
               CW.commonIconButton(
                 onPressed: () => controller.clickOnEditButton(),
                 isAssetImage: true,
                 imagePath: 'assets/icons/edit_pen_icon.png',
                 color: Col.inverseSecondary, //assets/icons/delete_icon.png
               ),
-            if (controller.getLeaveDetailModal.value?.isDelete ?? false)
+            if (controller.isDelete.value)
               CW.commonIconButton(
                 onPressed: () => controller.clickOnDeleteButton(),
                 isAssetImage: true,
@@ -50,63 +49,60 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
                     child: controller.apiResValue.value
                         ? shimmerView()
                         : controller.getLeaveDetailModal.value != null
-                            ? controller.getLeaveDetailsList != null
+                            ? controller.getLeaveDetails != null
                                 ? ListView(
                                     padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
                                     children: [
-                                      commonColumnView(text1: 'Leave Type', text2: '${controller.getLeaveDetailsList?.leaveTypeName} (${controller.getLeaveDetailsList?.isPaidView})'),
-                                      if (controller.getLeaveDetailsList?.leaveDayTypeView != null &&
-                                          controller.getLeaveDetailsList!.leaveDayTypeView!.isNotEmpty)
+                                      commonColumnView(
+                                          text1: 'Leave Type',
+                                          text2: '${controller.getLeaveDetails?.leaveTypeName} (${controller.getLeaveDetails?.isPaidView})'),
+                                      if (controller.getLeaveDetails?.leaveDayTypeView != null && controller.getLeaveDetails!.leaveDayTypeView!.isNotEmpty)
                                         SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetailsList?.leaveDayTypeView != null && controller.getLeaveDetailsList!.leaveDayTypeView!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveDayTypeView != null && controller.getLeaveDetails!.leaveDayTypeView!.isNotEmpty)
                                         commonColumnView(
                                           text1: 'Leave Day Type',
-                                          text2: controller.getLeaveDetailsList?.leaveDayTypeSession != 'Full Day' &&
-                                                  controller.getLeaveDetailsList?.leaveDayTypeSession != null &&
-                                                  controller.getLeaveDetailsList!.leaveDayTypeSession!.isNotEmpty
-                                              ? '${controller.getLeaveDetailsList?.leaveDayTypeView} (${controller.getLeaveDetailsList?.leaveDayTypeSession})'
-                                              : '${controller.getLeaveDetailsList?.leaveDayTypeView}',
+                                          text2: controller.getLeaveDetails?.leaveDayTypeSession != 'Full Day' && controller.getLeaveDetails?.leaveDayTypeSession != null && controller.getLeaveDetails!.leaveDayTypeSession!.isNotEmpty
+                                              ? '${controller.getLeaveDetails?.leaveDayTypeView} (${controller.getLeaveDetails?.leaveDayTypeSession})'
+                                              : '${controller.getLeaveDetails?.leaveDayTypeView}',
                                         ),
-                                      if (controller.getLeaveDetailsList?.leaveStatus != null && controller.getLeaveDetailsList!.leaveStatus!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveStatus != null && controller.getLeaveDetails!.leaveStatus!.isNotEmpty)
                                         SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetailsList?.leaveStatus != null &&
-                                          controller.getLeaveDetailsList!.leaveStatus!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveStatus != null && controller.getLeaveDetails!.leaveStatus!.isNotEmpty)
                                         commonColumnView(
                                             text1: 'Leave Status',
-                                            text2: controller.getLeaveDetailsList?.leaveStatus == '0'
+                                            text2: controller.getLeaveDetails?.leaveStatus == '0'
                                                 ? 'Padding'
-                                                : controller.getLeaveDetailsList?.leaveStatus == '1'
+                                                : controller.getLeaveDetails?.leaveStatus == '1'
                                                     ? 'Approved'
                                                     : 'Rejected',
-                                            color: controller.getLeaveDetailsList?.leaveStatus == '0'
+                                            color: controller.getLeaveDetails?.leaveStatus == '0'
                                                 ? Col.yellow
-                                                : controller.getLeaveDetailsList?.leaveStatus == '1'
+                                                : controller.getLeaveDetails?.leaveStatus == '1'
                                                     ? Col.success
                                                     : Col.error,
                                             containerValue: true),
-                                      if (controller.getLeaveDetailsList?.leaveStartDate != null && controller.getLeaveDetailsList!.leaveStartDate!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveStartDate != null && controller.getLeaveDetails!.leaveStartDate!.isNotEmpty)
                                         SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetailsList?.leaveStartDate != null && controller.getLeaveDetailsList!.leaveStartDate!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveStartDate != null && controller.getLeaveDetails!.leaveStartDate!.isNotEmpty)
                                         commonColumnView(
                                             text1: 'Date',
-                                            text2: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.getLeaveDetailsList?.leaveStartDate}')),
+                                            text2: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.getLeaveDetails?.leaveStartDate}')),
                                       SizedBox(height: 6.px),
                                       commonColumnView(
                                           text1: 'Approved by',
-                                          text2: '${controller.getLeaveDetailsList?.leaveAddedByType}'),
-                                      if (controller.getLeaveDetailsList?.leaveReason != null && controller.getLeaveDetailsList!.leaveReason!.isNotEmpty)
+                                          text2: '${controller.getLeaveDetails?.leaveAddedByType}'),
+                                      if (controller.getLeaveDetails?.leaveReason != null && controller.getLeaveDetails!.leaveReason!.isNotEmpty)
                                         SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetailsList?.leaveReason != null && controller.getLeaveDetailsList!.leaveReason!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveReason != null && controller.getLeaveDetails!.leaveReason!.isNotEmpty)
                                         commonColumnView(
                                             text1: 'Reason',
-                                            text2: '${controller.getLeaveDetailsList?.leaveReason}'),
-                                      if (controller.getLeaveDetailsList?.leaveAttachment != null && controller.getLeaveDetailsList!.leaveAttachment!.isNotEmpty)
+                                            text2: '${controller.getLeaveDetails?.leaveReason}'),
+                                      if (controller.getLeaveDetails?.leaveAttachment != null && controller.getLeaveDetails!.leaveAttachment!.isNotEmpty)
                                         SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetailsList?.leaveAttachment != null &&
-                                          controller.getLeaveDetailsList!.leaveAttachment!.isNotEmpty)
+                                      if (controller.getLeaveDetails?.leaveAttachment != null && controller.getLeaveDetails!.leaveAttachment!.isNotEmpty)
                                         commonColumnView(
                                             text1: 'Attachment',
-                                            text2: '${AU.baseUrlAllApisImage}${controller.getLeaveDetailsList?.leaveAttachment}',
+                                            text2: '${AU.baseUrlAllApisImage}${controller.getLeaveDetails?.leaveAttachment}',
                                             attachmentValue: true),
                                       SizedBox(height: 6.px),
                                     ],
@@ -126,7 +122,10 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
         children: [
           Text(
             text1,
-            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
+            style: Theme.of(Get.context!)
+                .textTheme
+                .labelMedium
+                ?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -157,10 +156,7 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
                     if (containerValue) SizedBox(width: 6.px),
                     Text(
                       text2,
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .labelSmall
-                          ?.copyWith(fontWeight: FontWeight.w600, color: color),
+                      style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, color: color),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -206,8 +202,8 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
           CW.commonShimmerViewForImage(height: 2.px, radius: 0.px),
         ],
       );
-}
 
+}
 
 /*
                   MarkdownToolbar(

@@ -289,24 +289,25 @@ class MyHttp {
     if (await CM.internetConnectionCheckerMethod()) {
         try {
           http.Response res;
-          var request =
-              http.MultipartRequest(multipartRequestType, Uri.parse(uri));
+          var request = http.MultipartRequest(multipartRequestType, Uri.parse(uri));
           request.headers.addAll({'Content-Type': 'multipart/form-data'});
           if (kDebugMode) print("CALLING:: $uri");
           if(imageMap!=null)
             {
               imageMap.forEach((key, value) {
-                request.files.add(getUserProfileImageFile(
-                    image: value, userProfileImageKey: key));
+                request.files.add(getUserProfileImageFile(image: value, userProfileImageKey: key));
               });
             }
           for (int i = 0; i < images.length; i++) {
             var stream = http.ByteStream(images[i].openRead());
             var length = await images[i].length();
-            var multipartFile = http.MultipartFile(imageKey, stream, length,
-                filename: images[i].path);
+            var multipartFile = http.MultipartFile(imageKey, stream, length, filename: images[i].path);
             request.files.add(multipartFile);
           }
+          print('token::::token::::: $token');
+          print('imageKey::::imageKey::::: $imageKey');
+          print('bodyParams::::bodyParams::::: $bodyParams');
+          print('images::::images::::: $images');
           bodyParams.forEach((key, value) {
             request.fields[key] = value;
           });

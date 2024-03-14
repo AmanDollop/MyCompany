@@ -96,6 +96,7 @@ class AllTaskController extends GetxController {
     getTaskDataModal.value = null;
     taskCountList?.clear();
     taskCategoryList.clear();
+    isLastPage.value = false;
     await onInit();
   }
 
@@ -104,6 +105,7 @@ class AllTaskController extends GetxController {
     taskCategoryList.clear();
     offset.value = 0;
     apiResValue.value= true;
+    isLastPage.value = false;
     await callingGetTaskDataApi();
   }
 
@@ -251,6 +253,7 @@ class AllTaskController extends GetxController {
         getTaskDataModal.value = null;
         taskCategoryList.clear();
         taskCountList?.clear();
+        isLastPage.value = false;
         await callingGetTaskDataApi();
       } else {
         CM.error();
@@ -288,6 +291,7 @@ class AllTaskController extends GetxController {
         taskCategoryList[taskCardListViewIndex].taskCategoryName
       ]);
       offset.value = 0;
+      isLastPage.value = false;
       taskCategoryList.clear();
       onInit();
     } else {

@@ -190,6 +190,13 @@ class AK {
   static const isPaid = "is_paid";
   static const leaveReason = "leave_reason";
 
+  static const monthStartDate = "monthStartDate";
+  static const monthEndDate = "monthEndDate";
+  static const workReportFile = "work_report_file[]";
+  static const workReport = "work_report";
+  static const workReportDate = "work_report_date";
+  static const workReportId = "work_report_id";
+
 
 }
 
@@ -231,6 +238,8 @@ class AU {
   static const endPointPenaltyControllerApi = "api/PenaltyContoller.php";
 
   static const endPointLeaveControllerApi = "api/LeaveController.php";
+
+  static const endPointWorkReportControllerApi = "api/WorkReportController.php";
 
 
 
@@ -371,7 +380,14 @@ class ApiEndPointAction{
   static  const getLeaveTypeBalanceCount = 'getLeaveTypeBlanceCount';
 
   static  const deleteLeave = 'deleteLeave';
+
   static  const updateLeave = 'updateLeave';
+
+  static  const getWorkReport = 'getWorkReport';
+
+  static  const addWorkReport = 'addWorkReport';
+
+  static  const workDetails = 'workDetails';
 
 
 }

@@ -53,6 +53,9 @@ abstract class Routes {
   static const LEAVE_BALANCE = _Paths.LEAVE_BALANCE;
   static const MY_TEAM = _Paths.MY_TEAM;
   static const WORK_REPORT = _Paths.WORK_REPORT;
+  static const TEMPLATE_QUESTION = _Paths.TEMPLATE_QUESTION;
+  static const ADD_TEMPLATE_QUESTION = _Paths.ADD_TEMPLATE_QUESTION;
+  static const WORK_REPORT_DETAIL = _Paths.WORK_REPORT_DETAIL;
 }
 
 abstract class _Paths {
@@ -107,4 +110,7 @@ abstract class _Paths {
   static const LEAVE_BALANCE = '/leave-balance';
   static const MY_TEAM = '/my-team';
   static const WORK_REPORT = '/work-report';
+  static const TEMPLATE_QUESTION = '/template-question';
+  static const ADD_TEMPLATE_QUESTION = '/add-template-question';
+  static const WORK_REPORT_DETAIL = '/work-report-detail';
 }

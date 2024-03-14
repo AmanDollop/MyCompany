@@ -360,6 +360,7 @@ class CW {
       bool isUnderlineBorder = false,
       bool isHideText = false,
       bool isCountrySelection = false,
+        FocusNode? focusNode,
       VoidCallback? clickOnArrowDown,
       String selectedCountryCode = "",
       String countryFlagPath = "",
@@ -369,6 +370,7 @@ class CW {
       child: TextFormField(
         cursorHeight: cursorHeight,
         onTap: onTap,
+        focusNode: focusNode,
         controller: controller,
         onChanged: keyboardType == TextInputType.number
             ? (value) {}

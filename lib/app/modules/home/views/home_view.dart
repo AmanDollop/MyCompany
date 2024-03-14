@@ -1168,7 +1168,7 @@ class HomeView extends GetView<HomeController> {
         commonCard(
           titleText: 'My Team',
           viewAllButtonValue: true,
-          onPressedViewAllButton: () => controller.clickOnUpcomingCelebrationsButton(),
+          onPressedViewAllButton: () {},
           listWidget: GridView.builder(
             shrinkWrap: true,
             padding: EdgeInsets.all(10.px),

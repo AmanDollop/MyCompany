@@ -91,9 +91,7 @@ class EditProfileController extends GetxController {
         key: DataBaseConstant.userDetail,
         tableName: DataBaseConstant.tableNameForUserDetail);
 
-    userData =
-        UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
-            .userDetails;
+    userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
 
     personalInfo = userData?.personalInfo;
     contactInfo = userData?.contactInfo;
@@ -144,8 +142,7 @@ class EditProfileController extends GetxController {
         countryCode.value.isNotEmpty &&
         mobileNumber.value != 'null' &&
         mobileNumber.value.isNotEmpty) {
-      mobileNumberController.text =
-          '${countryCode.value} ${mobileNumber.value}';
+      mobileNumberController.text = '${countryCode.value} ${mobileNumber.value}';
     }
     userDesignation.value = jobInfo?.userDesignation ?? '';
   }
@@ -206,14 +203,13 @@ class EditProfileController extends GetxController {
             initialDate: dobController.text.isNotEmpty
                 ? DateFormat('dd MMM yyyy').parse(dobController.text)
                 : DateTime.now(),
-           firstDate:  dobController.text.isNotEmpty
-               ? DateFormat('dd MMM yyyy').parse(dobController.text)
-               : DateTime(DateTime.now().year - 18),
-      lastDate: dobController.text.isNotEmpty
-          ? DateTime(DateFormat('dd MMM yyyy').parse(dobController.text).year+5)
-          : DateTime(DateTime.now().year + 5),
-    )
-        .whenComplete(
+           // firstDate:  dobController.text.isNotEmpty
+           //     ? DateFormat('dd MMM yyyy').parse(dobController.text)
+           //     : DateTime(DateTime.now().year - 18),
+          lastDate: dobController.text.isNotEmpty
+           ? DateTime(DateFormat('dd MMM yyyy').parse(dobController.text).year+5)
+           : DateTime(DateTime.now().year + 5),
+    ).whenComplete(
           () => CM.unFocusKeyBoard(),
         );
   }

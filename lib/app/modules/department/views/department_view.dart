@@ -244,7 +244,7 @@ class DepartmentView extends GetView<DepartmentController> {
                   fontSize: 10.px,
                   color: controller.selectedDepartments.value == department.departmentName
                       ? Col.inverseSecondary
-                      : Col.text,
+                      : Col.primary,
                   fontWeight: FontWeight.w600),
             ),
             selected: controller.selectedDepartments.value == department.departmentName

@@ -65,16 +65,17 @@ class AddSubTaskController extends GetxController {
   PersonalInfo? personalInfo;
   JobInfo? jobInfo;
 
-  final userId = ''.obs;
+  /*final userId = ''.obs;
   final userPic = ''.obs;
   final userFullName = ''.obs;
   final userShortName = ''.obs;
-  final developer = ''.obs;
+  final developer = ''.obs;*/
 
 
   late OverlayEntry overlayEntry;
 
   List<MyTeam> selectedMyTeamMemberList = [];
+  MyTeam? selfDataForMyTeamMember;
 
   @override
   void onInit() {
@@ -115,12 +116,26 @@ class AddSubTaskController extends GetxController {
       imagePathFoeUpDate.value = '${AU.baseUrlAllApisImage}${subTaskList?.taskAttachment}';
     }
 
-    userId.value = subTaskList?.assignUserId ?? '';
+   /* userId.value = subTaskList?.assignUserId ?? '';
     userFullName.value = subTaskList?.userName ?? '';
     userShortName.value = subTaskList?.shortName ?? '';
     userPic.value = subTaskList?.userProfile ?? '';
     print('userPic.value:::: ${AU.baseUrlAllApisImage}${userPic.value}');
-    developer.value = subTaskList?.userDesignation ?? '';
+    developer.value = subTaskList?.userDesignation ?? '';*/
+
+    selfDataForMyTeamMember = MyTeam(
+      branchId:  '',
+      departmentId:  '',
+      shortName: subTaskList?.shortName ?? '',
+      userDesignation: subTaskList?.userDesignation ?? '',
+      userFullName: subTaskList?.userName ?? '',
+      userId: subTaskList?.assignUserId ?? '',
+      userProfilePic: subTaskList?.userProfile ?? '',
+    );
+    print('selfDataForMyTeamMember:: UPDATE:: $selfDataForMyTeamMember');
+    if(selfDataForMyTeamMember != null){
+      selectedMyTeamMemberList.insert(0, selfDataForMyTeamMember!);
+    }
 
   }
 
@@ -130,11 +145,27 @@ class AddSubTaskController extends GetxController {
       userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
       personalInfo=userData?.personalInfo;
       jobInfo=userData?.jobInfo;
-      userId.value = personalInfo?.userId??'';
-      userFullName.value = personalInfo?.userFullName??'';
-      userShortName.value = personalInfo?.shortName??'';
-      userPic.value = personalInfo?.userProfilePic??'';
-      developer.value = jobInfo?.userDesignation??'';
+
+     /* userId.value = personalInfo?.userId??'';
+      userFullName.value = personalInfo?.userFullName ?? '';
+      userShortName.value = personalInfo?.shortName ?? '';
+      userPic.value = personalInfo?.userProfilePic ?? '';
+      developer.value = jobInfo?.userDesignation ?? '';*/
+
+      selfDataForMyTeamMember = MyTeam(
+        branchId: jobInfo?.branchId ?? '',
+        departmentId: jobInfo?.departmentId ?? '',
+        shortName: personalInfo?.shortName ?? '',
+        userDesignation: jobInfo?.userDesignation ?? '',
+        userFullName: personalInfo?.userFullName ?? '',
+        userId: personalInfo?.userId ?? '',
+        userProfilePic: personalInfo?.userProfilePic ?? '',
+      );
+      print('selfDataForMyTeamMember:: ADD:: $selfDataForMyTeamMember');
+      if(selfDataForMyTeamMember != null){
+        selectedMyTeamMemberList.insert(0, selfDataForMyTeamMember!);
+      }
+
       count.value++;
     }catch(e){
       print('error from user data :::: $e');
@@ -337,13 +368,13 @@ class AddSubTaskController extends GetxController {
     try {
      String userIds;
      if(selectedMyTeamMemberList.isNotEmpty){
-       userIds = userId.value+(',')+selectedMyTeamMemberList.map((data) {
+       userIds = selfDataForMyTeamMember?.userId ?? ',${selectedMyTeamMemberList.map((data) {
          if(data.userId != null && data.userId!.isNotEmpty){
            return data.userId;
          }
-       }).join(',');
+       }).join(',')}';
      }else{
-       userIds = userId.value;
+       userIds = selfDataForMyTeamMember?.userId ?? '';
      }
 
       bodyParamsForAddSubTask = {

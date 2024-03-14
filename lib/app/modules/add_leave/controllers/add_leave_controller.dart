@@ -203,8 +203,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
         AK.action: ApiEndPointAction.getLeaveType,
         AK.year: '${currentMonth.value.year}',
       };
-      getLeaveTypeModal.value = await CAI.getLeaveTypeModalApi(
-          bodyParams: bodyParamsForGetLeaveTypeApi);
+      getLeaveTypeModal.value = await CAI.getLeaveTypeModalApi(bodyParams: bodyParamsForGetLeaveTypeApi);
       if (getLeaveTypeModal.value != null) {
         leaveTypeList = getLeaveTypeModal.value?.leaveType;
       }
@@ -317,17 +316,14 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                     height: 46.px,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6.px),
-                      color: leaveTypeController.text ==
-                              leaveTypeList?[i].leaveTypeName
+                      color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                           ? Col.primary.withOpacity(.08)
                           : Colors.transparent,
                       border: Border.all(
-                        color: leaveTypeController.text ==
-                                leaveTypeList?[i].leaveTypeName
+                        color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                             ? Col.primary
                             : Col.darkGray,
-                        width: leaveTypeController.text ==
-                                leaveTypeList?[i].leaveTypeName
+                        width: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                             ? 1.5.px
                             : 1.px,
                       ),
@@ -342,26 +338,20 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                         children: [
                           Text(
                             '${leaveTypeList?[i].leaveTypeName}',
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(fontWeight: FontWeight.w500),
+                            style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
                           ),
                           Container(
-                            height: leaveTypeController.text ==
-                                    leaveTypeList?[i].leaveTypeName
+                            height: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                                 ? 18.px
                                 : 16.px,
-                            width: leaveTypeController.text ==
-                                    leaveTypeList?[i].leaveTypeName
+                            width: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                                 ? 18.px
                                 : 16.px,
                             padding: EdgeInsets.all(2.px),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: leaveTypeController.text ==
-                                        leaveTypeList?[i].leaveTypeName
+                                color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                                     ? Col.primary
                                     : Col.text,
                                 width: 1.5.px,
@@ -370,8 +360,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                             child: Container(
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: leaveTypeController.text ==
-                                          leaveTypeList?[i].leaveTypeName
+                                  color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                                       ? Col.primary
                                       : Colors.transparent),
                             ),
@@ -398,7 +387,6 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
     leaveTypeIdFromApi.value = leaveTypeList?[i].leaveTypeId ?? '';
     if (leaveTypeList?[i].attachmentRequired == '1') {
       leaveTypeForAttachmentRequired.value = leaveTypeList?[i].attachmentRequired ?? '';
-      print('leaveTypeForAttachmentRequired.value:::: ${leaveTypeForAttachmentRequired.value}');
     }
     await callingGetLeaveTypeBalanceApi();
     Get.back();

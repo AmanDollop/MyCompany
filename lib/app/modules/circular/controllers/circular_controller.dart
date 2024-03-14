@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
@@ -124,9 +121,7 @@ class CircularController extends GetxController {
 
   Future<void> clickOnImageView({required int index,}) async {
     if (circularList[index].attachment != null && circularList[index].attachment!.isNotEmpty) {
-
       String docTypeValue = CM.getDocumentType(filePath: '${circularList[index].attachment}');
-
       if (docTypeValue == 'Image') {
         await showGeneralDialog(
           context: Get.context!,

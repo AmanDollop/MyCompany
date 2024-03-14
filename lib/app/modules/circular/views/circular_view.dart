@@ -11,7 +11,6 @@ import 'package:task/theme/colors/colors.dart';
 import '../controllers/circular_controller.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-
 class CircularView extends GetView<CircularController> {
   const CircularView({Key? key}) : super(key: key);
 
@@ -29,91 +28,89 @@ class CircularView extends GetView<CircularController> {
               isLeading: true,
               onBackPressed: () => controller.clickOnBackButton(),
               actions: [
-                CW.commonIconButton(onPressed: () {
-                  controller.hideSearchFieldValue.value = !controller.hideSearchFieldValue.value;
-                  controller.searchController.clear();
-                },
+                CW.commonIconButton(
+                    onPressed: () {
+                      controller.hideSearchFieldValue.value =
+                          !controller.hideSearchFieldValue.value;
+                      controller.searchController.clear();
+                    },
                     isAssetImage: false,
                     icon: controller.hideSearchFieldValue.value
                         ? Icons.search_off
                         : Icons.search,
                     color: Col.inverseSecondary),
                 SizedBox(width: 10.px)
-              ]
-          ),
+              ]),
           body: Obx(() {
             controller.count.value;
             return AC.isConnect.value
                 ? ModalProgress(
-              inAsyncCall: controller.apiResValue.value,
-              isLoader: false,
-              child: controller.apiResValue.value
-                  ? shimmerView()
-                  : Obx(() {
-                controller.count.value;
-                if (controller.circularDetailModal.value != null) {
-                  return CW.commonRefreshIndicator(
-                    onRefresh: () => controller.onRefresh(),
-                    child: LM(
-                      noMoreWidget: const SizedBox(),
-                      isLastPage: controller.isLastPage.value,
-                      onLoadMore: () => controller.onLoadMore(),
-                      child: ListView(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.only(left: 12.px, right: 12.px, top: 16.px),
-                        children: [
-                          AnimatedCrossFade(
-                            firstChild: const SizedBox(),
-                            secondChild: circularSearchTextFieldView(),
-                            crossFadeState: controller.hideSearchFieldValue
-                                .value
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
-                            duration: const Duration(milliseconds: 500),
-                          ),
-                          if(controller.hideSearchFieldValue.value)
-                            SizedBox(height: 16.px),
-                          Row(
-                            children: [
-                              Expanded(child: startTextField()),
-                              SizedBox(width: 24.px),
-                              Expanded(child: endTextField())
-                            ],
-                          ),
-                           controller.circularList.isNotEmpty
-                              ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.circularList.length,
-                            padding: EdgeInsets.only(top: 20.px),
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: index !=
-                                    controller.circularList.length - 1
-                                    ? 14.px
-                                    : 0),
-                                child: cardView(index: index),
+                    inAsyncCall: controller.apiResValue.value,
+                    isLoader: false,
+                    child: controller.apiResValue.value
+                        ? shimmerView()
+                        : Obx(() {
+                            controller.count.value;
+                            if (controller.circularDetailModal.value != null) {
+                              return CW.commonRefreshIndicator(
+                                onRefresh: () => controller.onRefresh(),
+                                child: LM(
+                                  noMoreWidget: const SizedBox(),
+                                  isLastPage: controller.isLastPage.value,
+                                  onLoadMore: () => controller.onLoadMore(),
+                                  child: ListView(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.only(left: 12.px, right: 12.px, top: 16.px),
+                                    children: [
+                                      AnimatedCrossFade(
+                                        firstChild: const SizedBox(),
+                                        secondChild: circularSearchTextFieldView(),
+                                        crossFadeState: controller.hideSearchFieldValue.value
+                                            ? CrossFadeState.showSecond
+                                            : CrossFadeState.showFirst,
+                                        duration: const Duration(milliseconds: 500),
+                                      ),
+                                      if (controller.hideSearchFieldValue.value)
+                                        SizedBox(height: 16.px),
+                                      Row(
+                                        children: [
+                                          Expanded(child: startTextField()),
+                                          SizedBox(width: 24.px),
+                                          Expanded(child: endTextField())
+                                        ]
+                                      ),
+                                      controller.circularList.isNotEmpty
+                                          ? ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              itemCount: controller.circularList.length,
+                                              padding: EdgeInsets.only(top: 20.px),
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(bottom: index != controller.circularList.length - 1
+                                                          ? 14.px
+                                                          : 0),
+                                                  child: cardView(index: index),
+                                                );
+                                              },
+                                            )
+                                          : SizedBox(
+                                              height: 60.h,
+                                              child: CW.commonNoDataFoundText(),
+                                            ),
+                                    ],
+                                  ),
+                                ),
                               );
-                            },
-                          )
-                              : SizedBox(
-                            height: 60.h,
-                            child: CW.commonNoDataFoundText(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                else {
-                  return CW.commonNoDataFoundText(
-                      text: controller.apiResValue.value
-                          ? ''
-                          : 'No Data Found!');
-                }
-              }),
-            )
+                            } else {
+                              return CW.commonNoDataFoundText(
+                                  text: controller.apiResValue.value
+                                      ? ''
+                                      : 'No Data Found!');
+                            }
+                          }),
+                  )
                 : CW.commonNoNetworkView();
           }),
         ),
@@ -141,23 +138,23 @@ class CircularView extends GetView<CircularController> {
         onChanged: (value) => controller.searchOnChange(value: value),
         suffixIcon: controller.searchController.text.isNotEmpty
             ? SizedBox(
-          width: 24.px,
-          height: 24.px,
-          child: InkWell(
-            onTap: () {
-              controller.searchController.clear();
-              controller.count.value++;
-            },
-            child: Center(
-              child: CW.commonNetworkImageView(
-                  path: 'assets/icons/cancel_white_icon.png',
-                  color: Col.text,
-                  isAssetImage: true,
-                  width: 12.px,
-                  height: 12.px),
-            ),
-          ),
-        )
+                width: 24.px,
+                height: 24.px,
+                child: InkWell(
+                  onTap: () {
+                    controller.searchController.clear();
+                    controller.count.value++;
+                  },
+                  child: Center(
+                    child: CW.commonNetworkImageView(
+                        path: 'assets/icons/cancel_white_icon.png',
+                        color: Col.text,
+                        isAssetImage: true,
+                        width: 12.px,
+                        height: 12.px),
+                  ),
+                ),
+              )
             : const SizedBox(),
         prefixIcon: SizedBox(
           width: 24.px,
@@ -246,11 +243,13 @@ class CircularView extends GetView<CircularController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          cardTitleTextView(text: '${controller
-                              .circularList[index].createdByName}'),
+                          cardTitleTextView(
+                              text:
+                                  '${controller.circularList[index].createdByName}'),
                           SizedBox(height: 6.px),
-                          cardDateTextView(text: '${controller
-                              .circularList[index].createdDate}')
+                          cardDateTextView(
+                              text:
+                                  '${controller.circularList[index].createdDate}')
                         ],
                       ),
                     ),
@@ -264,12 +263,9 @@ class CircularView extends GetView<CircularController> {
     );
   }
 
-  Widget cardTitleTextView({required String text, TextAlign? textAlign}) =>Text(
+  Widget cardTitleTextView({required String text, TextAlign? textAlign}) => Text(
         text,
-        style: Theme
-            .of(Get.context!)
-            .textTheme
-            .titleLarge,
+        style: Theme.of(Get.context!).textTheme.titleLarge,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign,
@@ -279,14 +275,10 @@ class CircularView extends GetView<CircularController> {
         onPressed: () => controller.clickOnViewMoreButton(index: index),
         child: Text(
           'View More',
-          style: Theme
-              .of(Get.context!)
-              .textTheme
-              .labelSmall
-              ?.copyWith(
-            color: Col.primary,
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+                color: Col.primary,
+                fontWeight: FontWeight.w600,
+              ),
         ),
       );
 
@@ -303,23 +295,19 @@ class CircularView extends GetView<CircularController> {
             fontWeight: FontWeight.w500,
             color: Col.secondary,
             maxLines: 2,
-            textOverflow: TextOverflow.ellipsis
-        ),
+            textOverflow: TextOverflow.ellipsis),
       },
     );
   }
 
   Widget imageView({required int index}) {
-    controller.docType.value = CM.getDocumentTypeLogo(
-        fileType: CM.getDocumentType(
-            filePath: '${controller.circularList[index].attachment}'));
+    controller.docType.value = CM.getDocumentTypeLogo(fileType: CM.getDocumentType(filePath: '${controller.circularList[index].attachment}'));
     print('controller.docType.value:::: ${controller.docType.value}');
     return InkWell(
       onTap: () => controller.clickOnImageView(index: index),
       child: CW.commonNetworkImageView(
           path: controller.docType.value == 'Image'
-              ? '${AU.baseUrlAllApisImage}${controller.circularList[index]
-              .attachment}'
+              ? '${AU.baseUrlAllApisImage}${controller.circularList[index].attachment}'
               : controller.docType.value,
           isAssetImage: controller.docType.value == 'Image' ? false : true,
           height: 40.px,
@@ -329,13 +317,11 @@ class CircularView extends GetView<CircularController> {
 
   Widget cardDateTextView({required String text}) => Text(
         text,
-        style: Theme
-            .of(Get.context!)
+        style: Theme.of(Get.context!)
             .textTheme
             .labelMedium
             ?.copyWith(fontSize: 10.px),
       );
-
 
   Widget shimmerView() => ListView(
         shrinkWrap: true,
@@ -346,9 +332,13 @@ class CircularView extends GetView<CircularController> {
           SizedBox(height: 16.px),
           Row(
             children: [
-              Expanded(child: CW.commonShimmerViewForImage(height: 44.px),),
+              Expanded(
+                child: CW.commonShimmerViewForImage(height: 44.px),
+              ),
               SizedBox(width: 24.px),
-              Expanded(child: CW.commonShimmerViewForImage(height: 44.px),),
+              Expanded(
+                child: CW.commonShimmerViewForImage(height: 44.px),
+              ),
             ],
           ),
           SizedBox(height: 16.px),
@@ -357,72 +347,69 @@ class CircularView extends GetView<CircularController> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: 3,
             shrinkWrap: true,
-            itemBuilder: (context, index) =>
-                Container(
-                  margin: EdgeInsets.only(bottom: 14.px),
-                  decoration: BoxDecoration(
-                      color: Col.inverseSecondary,
-                      borderRadius: BorderRadius.circular(6.px),
-                      boxShadow: [
-                        BoxShadow(color: Col.gray, blurRadius: 2.px)
-                      ]),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.px, right: 12.px, top: 10.px),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CW.commonShimmerViewForImage(
-                                height: 25.px, width: 200.px),
-                            CW.commonShimmerViewForImage(
-                                height: 20.px, width: 80.px),
-                          ],
-                        ),
-                      ),
-                      CW.commonDividerView(color: Col.gray),
-                      SizedBox(height: 6.px),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.px, right: 12.px, bottom: 12.px),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CW.commonShimmerViewForImage(
-                                height: 16.px, width: double.infinity.px),
-                            SizedBox(height: 5.px),
-                            CW.commonShimmerViewForImage(
-                                height: 16.px, width: 250.px),
-                            SizedBox(height: 12.px),
-                            CW.commonShimmerViewForImage(
-                                height: 40.px, width: 40.px),
-                            SizedBox(height: 12.px),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      CW.commonShimmerViewForImage(
-                                          height: 20.px, width: 100.px),
-                                      SizedBox(height: 6.px),
-                                      CW.commonShimmerViewForImage(
-                                          height: 20.px, width: 150.px)
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+            itemBuilder: (context, index) => Container(
+              margin: EdgeInsets.only(bottom: 14.px),
+              decoration: BoxDecoration(
+                  color: Col.inverseSecondary,
+                  borderRadius: BorderRadius.circular(6.px),
+                  boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: 12.px, right: 12.px, top: 10.px),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CW.commonShimmerViewForImage(
+                            height: 25.px, width: 200.px),
+                        CW.commonShimmerViewForImage(
+                            height: 20.px, width: 80.px),
+                      ],
+                    ),
                   ),
-                ),)
+                  CW.commonDividerView(color: Col.gray),
+                  SizedBox(height: 6.px),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 12.px, right: 12.px, bottom: 12.px),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CW.commonShimmerViewForImage(
+                            height: 16.px, width: double.infinity.px),
+                        SizedBox(height: 5.px),
+                        CW.commonShimmerViewForImage(
+                            height: 16.px, width: 250.px),
+                        SizedBox(height: 12.px),
+                        CW.commonShimmerViewForImage(
+                            height: 40.px, width: 40.px),
+                        SizedBox(height: 12.px),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  CW.commonShimmerViewForImage(
+                                      height: 20.px, width: 100.px),
+                                  SizedBox(height: 6.px),
+                                  CW.commonShimmerViewForImage(
+                                      height: 20.px, width: 150.px)
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       );
-
 }

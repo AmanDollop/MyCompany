@@ -196,29 +196,6 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
               ],
             ),
             SizedBox(height: 5.px),
-            ListTile(
-              horizontalTitleGap: 12.px,
-              contentPadding: EdgeInsets.only(right: 2.px),
-              leading: profileView(context: context,
-                  imagePath: '${AU.baseUrlAllApisImage}${controller.userPic.value}',
-                  userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
-                      ? controller.userShortName.value
-                      : '?'),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  assignTextView(
-                      text: controller.userFullName.value != 'null' && controller.userFullName.value.isNotEmpty
-                          ? controller.userFullName.value
-                          : 'Employee Name'),
-                  developerTypeTextView(
-                      text: controller.developer.value != 'null' && controller.developer.value.isNotEmpty
-                          ? controller.developer.value
-                          : 'Designation'),
-                ],
-              ),
-              // trailing: removeButtonView(),
-            ),
             if(controller.selectedMyTeamMemberList.isNotEmpty)
               assignToListView(),
           ],
@@ -502,22 +479,20 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
 
   Widget addAndUpdateButtonView() => Container(
         height: 80.px,
-        padding: EdgeInsets.only(
-            left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
+        padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
         color: Col.inverseSecondary,
         child: Center(
           child: CW.commonElevatedButton(
               onPressed: controller.addSubTaskButtonValue.value
                   ? () => null
+                  : controller.selectedMyTeamMemberList.isEmpty
+                  ? () => null
                   : () => controller.clickOnAddAndUpdateButton(),
-              // buttonColor: controller.notCompletedTaskValue.value &&
-              //         controller.repeatTaskValue.value
-              //     ? Col.primary
-              //     : Col.primary.withOpacity(.7),
-              buttonText:
-                  controller.pageName.value == 'Add Task' ? 'Add' : 'Update',
+              buttonText: controller.pageName.value == 'Add Task' ? 'Add' : 'Update',
               borderRadius: 10.px,
-              isLoading: controller.addSubTaskButtonValue.value),
+              isLoading: controller.addSubTaskButtonValue.value,
+             buttonColor: controller.selectedMyTeamMemberList.isNotEmpty?Col.primary:Col.primary.withOpacity(.7)
+          ),
         ),
       );
 }

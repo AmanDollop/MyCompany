@@ -81,6 +81,44 @@ class CM {
     }
   }
 
+  static bool isImage({required File file}) {
+    final imageExtensions = ['jpg', 'jpeg', 'png'];
+    final ext = file.path.split('.').last.toLowerCase();
+    return imageExtensions.contains(ext);
+  }
+
+  static bool isPDF({required File file}) {
+    final pdfExtensions = ['pdf'];
+    final ext = file.path.split('.').last.toLowerCase();
+    return pdfExtensions.contains(ext);
+  }
+
+  static bool isDoc({required File file}) {
+    final docExtensions = ['doc', 'docx'];
+    final ext = file.path.split('.').last.toLowerCase();
+    return docExtensions.contains(ext);
+  }
+
+  static bool isPPT({required File file}) {
+    final pptExtensions = ['ppt', 'pptx'];
+    final ext = file.path.split('.').last.toLowerCase();
+    return pptExtensions.contains(ext);
+  }
+
+  static bool isExcel({required File file}) {
+    final pptExtensions = ['.xls', '.xlsx'];
+    final ext = file.path.split('.').last.toLowerCase();
+    return pptExtensions.contains(ext);
+  }
+
+  static bool isAssetImage({required String assetImagePath}){
+    return assetImagePath.contains('assets/');
+  }
+
+  static String removeHtmlTags(String htmlString) {
+    return htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
+  }
+
   ///  flutter pub add internet_connection_checker -- For Check Internet
   static Future<bool> internetConnectionCheckerMethod() async {
     bool result = await InternetConnectionChecker().hasConnection;
@@ -122,7 +160,7 @@ class CM {
       Color? backgroundColor,
       bool showCloseIcon = false}) {
     backgroundColor = Col.primary;
-     Vibration.vibrate(duration: 500);
+     // Vibration.vibrate(duration: 500);
     if (isFloating) {
       /*var snackBar = SnackBar(
         elevation: .4,
@@ -176,7 +214,7 @@ class CM {
   }
 
   static void error() {
-    Vibration.vibrate(duration: 500);
+    // Vibration.vibrate(duration: 500);
     Fluttertoast.showToast(
         msg: 'Something went wrong!',
         toastLength: Toast.LENGTH_LONG,

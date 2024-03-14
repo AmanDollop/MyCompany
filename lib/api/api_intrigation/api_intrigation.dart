@@ -29,6 +29,8 @@ import 'package:task/api/api_model/get_reporting_person_modal.dart';
 import 'package:task/api/api_model/get_task_time_line_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/get_weekly_attendance_data_modal.dart';
+import 'package:task/api/api_model/get_work_report_detail_modal.dart';
+import 'package:task/api/api_model/get_work_report_modal.dart';
 import 'package:task/api/api_model/holiday_modal.dart';
 import 'package:task/api/api_model/menus_modal.dart';
 import 'package:task/api/api_model/promotion_modal.dart';
@@ -1437,6 +1439,92 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getLeaveTypeBalanceCountModal = GetLeaveTypeBalanceCountModal.fromJson(jsonDecode(response.body));
         return getLeaveTypeBalanceCountModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetWorkReportModal?> getWorkReportApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetWorkReportModal? getWorkReportModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getWorkReportModal = GetWorkReportModal.fromJson(jsonDecode(response.body));
+        return getWorkReportModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> addWorkReportApi({
+    required Map<String, dynamic> bodyParams,
+    required List<File> filePath
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await userToken(stringToken: true);
+
+    http.Response? response = await MyHttp.uploadMultipleImagesWithBody(
+        uri: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        imageKey: AK.workReportFile,
+        images: filePath,
+        multipartRequestType: 'POST',
+        token: '$token'
+    );
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true,wantShowSuccessResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetWorkReportDetailModal?> getWorkReportDetailApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetWorkReportDetailModal? getWorkReportDetailModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getWorkReportDetailModal = GetWorkReportDetailModal.fromJson(jsonDecode(response.body));
+        return getWorkReportDetailModal;
       } else {
         return null;
       }
