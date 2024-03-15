@@ -12,21 +12,24 @@ class SplashView extends GetView<SplashController> {
   Widget build(BuildContext context) {
     return Obx(() {
       controller.count.value;
-      return Scaffold(
-        body: Center(
-          child: Container(
-            height: 150.px,
-            width: 150.px,
-            decoration: BoxDecoration(
-              color: Col.primary,
-              shape: BoxShape.circle
-            ),
-            child: Center(
-              child: CW.commonNetworkImageView(
-                path: 'assets/images/logo.png',
-                isAssetImage: true,
-                height: 50.px,
-                width: 50.px,
+      return CW.commonScaffoldBackgroundColor(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Container(
+              height: 150.px,
+              width: 150.px,
+              decoration: BoxDecoration(
+                color: Col.primary,
+                shape: BoxShape.circle
+              ),
+              child: Center(
+                child: CW.commonNetworkImageView(
+                  path: 'assets/images/logo.png',
+                  isAssetImage: true,
+                  height: 50.px,
+                  width: 50.px,
+                ),
               ),
             ),
           ),

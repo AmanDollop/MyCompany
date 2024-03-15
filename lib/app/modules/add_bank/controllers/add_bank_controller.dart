@@ -24,15 +24,35 @@ class AddBankController extends GetxController {
   PersonalInfo? personalInfo;
 
   final accountHolderNameController = TextEditingController();
+  FocusNode focusNodeForAccountHolderName = FocusNode();
+
   final bankNameController = TextEditingController();
+  FocusNode focusNodeForBankName = FocusNode();
+
   final bankBranchNameController = TextEditingController();
+  FocusNode focusNodeForBankBranchName = FocusNode();
+
   final accountNoController = TextEditingController();
+  FocusNode focusNodeForAccountNo = FocusNode();
+
   final reAccountNoController = TextEditingController();
+  FocusNode focusNodeForReAccountNo = FocusNode();
+
   final ifscCodeController = TextEditingController();
+  FocusNode focusNodeForIfscCode = FocusNode();
+
   final customerIDCRNNoController = TextEditingController();
+  FocusNode focusNodeForCustomerIDCRNNo = FocusNode();
+
   final esicNoController = TextEditingController();
+  FocusNode focusNodeForEsicNo = FocusNode();
+
   final panCardNoController = TextEditingController();
+  FocusNode focusNodeForPanCardNo = FocusNode();
+
   final pFUANNoController = TextEditingController();
+  FocusNode focusNodeForPFUANNo = FocusNode();
+
 
   final accountTypeText = ['Saving','Current'];
   final accountTypeIndexValue = '0'.obs;

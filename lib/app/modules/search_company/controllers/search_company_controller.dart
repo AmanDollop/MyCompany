@@ -10,6 +10,7 @@ class SearchCompanyController extends GetxController {
 
   final count = 0.obs;
   final searchController = TextEditingController();
+  FocusNode focusNodeForSearch = FocusNode();
 
   Map<String, dynamic> bodyParams = {};
   final searchCompanyModel = Rxn<SearchCompanyModal?>();

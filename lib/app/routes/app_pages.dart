@@ -48,6 +48,8 @@ import '../modules/holiday/bindings/holiday_binding.dart';
 import '../modules/holiday/views/holiday_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/home_dark/bindings/home_dark_binding.dart';
+import '../modules/home_dark/views/home_dark_view.dart';
 import '../modules/job_info/bindings/job_info_binding.dart';
 import '../modules/job_info/views/job_info_view.dart';
 import '../modules/leave/bindings/leave_binding.dart';
@@ -389,6 +391,11 @@ class AppPages {
       name: _Paths.WORK_REPORT_DETAIL,
       page: () => const WorkReportDetailView(),
       binding: WorkReportDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.HOME_DARK,
+      page: () => const HomeDarkView(),
+      binding: HomeDarkBinding(),
     ),
   ];
 }

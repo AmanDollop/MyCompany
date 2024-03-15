@@ -18,12 +18,25 @@ class ContactDetailController extends GetxController {
 
   final count = 0.obs;
   final key = GlobalKey<FormState>();
+
   final contactController = TextEditingController();
+  FocusNode focusNodeForContact = FocusNode();
+
   final whatsappController = TextEditingController();
+  FocusNode focusNodeForWhatsapp = FocusNode();
+
   final companyEmailController = TextEditingController();
+  FocusNode focusNodeForCompanyEmail = FocusNode();
+
   final personalEmailController = TextEditingController();
+  FocusNode focusNodeForPersonalEmail = FocusNode();
+
   final currentAddressController = TextEditingController();
+  FocusNode focusNodeForCurrentAddress = FocusNode();
+
   final permanentAddressController = TextEditingController();
+  FocusNode focusNodeForPermanentAddress = FocusNode();
+
 
   final mobileNumber = ''.obs;
   final countryCode = ''.obs;

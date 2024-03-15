@@ -16,11 +16,23 @@ class AddExperienceController extends GetxController {
   final key = GlobalKey<FormState>();
 
   final designationController = TextEditingController();
+  FocusNode focusNodeForDesignation = FocusNode();
+
   final companyNameController = TextEditingController();
+  FocusNode focusNodeForCompanyName = FocusNode();
+
   final joiningDateController = TextEditingController();
+  FocusNode focusNodeForJoiningDate = FocusNode();
+
   final releaseDateController = TextEditingController();
+  FocusNode focusNodeForReleaseDate = FocusNode();
+
   final locationController = TextEditingController();
+  FocusNode focusNodeForLocation = FocusNode();
+
   final remarkController = TextEditingController();
+  FocusNode focusNodeForRemark = FocusNode();
+
   final sendChangeRequestButtonValue = false.obs;
 
   Map<String, dynamic> bodyParamsForUpdateExperienceDetails = {};

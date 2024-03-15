@@ -14,9 +14,17 @@ class AddSocialInfoController extends GetxController {
   final count = 0.obs;
   final key = GlobalKey<FormState>();
   final twitterController = TextEditingController();
+  FocusNode focusNodeForTwitter = FocusNode();
+
   final facebookController = TextEditingController();
+  FocusNode focusNodeForFacebook = FocusNode();
+
   final instagramController = TextEditingController();
+  FocusNode focusNodeForInstagram = FocusNode();
+
   final linkedinController = TextEditingController();
+  FocusNode focusNodeForLinkedin = FocusNode();
+
 
   final saveButtonValue = false.obs;
 

@@ -23,16 +23,38 @@ class SignUpController extends GetxController {
 
   final key = GlobalKey<FormState>();
   final firstNameController = TextEditingController();
+  FocusNode focusNodeForFirstName = FocusNode();
+
   final lastNameController = TextEditingController();
+  FocusNode focusNodeForLastName = FocusNode();
+
   final selectYourDepartmentController = TextEditingController();
+  FocusNode focusNodeForSelectYourDepartment = FocusNode();
+
   final selectYourBranchController = TextEditingController();
+  FocusNode focusNodeForSelectYourBranch = FocusNode();
+
   final shiftTimeController = TextEditingController();
+  FocusNode focusNodeForShiftTime = FocusNode();
+
   final joiningDateController = TextEditingController();
+  FocusNode focusNodeForJoiningDate = FocusNode();
+
   final designationController = TextEditingController();
+  FocusNode focusNodeForDesignation = FocusNode();
+
   final emailController = TextEditingController();
+  FocusNode focusNodeForEmail = FocusNode();
+
   final mobileNumberController = TextEditingController();
+  FocusNode focusNodeForMobileNumber = FocusNode();
+
   final searchCountryController = TextEditingController();
+  FocusNode focusNodeForSearchCountry = FocusNode();
+
   final passwordController = TextEditingController();
+  FocusNode focusNodeForPassword = FocusNode();
+
 
   final genderText = ['Male', 'Female'].obs;
   final genderIndexValue = '-1'.obs;

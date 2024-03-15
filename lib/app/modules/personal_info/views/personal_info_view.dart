@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/theme/colors/colors.dart';
 
 import '../controllers/personal_info_controller.dart';
@@ -14,131 +15,113 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: appBarView(),
-        floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
-            ? Padding(
-          padding: EdgeInsets.only(bottom: 10.px),
-          child: CW.commonOutlineButton(
-              onPressed: () => controller.clickOnEditViewButton(),
-              child: Icon(
-                Icons.edit,
-                color: Col.inverseSecondary,
-                size: 22.px,
-              ),
-              height: 50.px,
-              width: 50.px,
-              backgroundColor: Col.primary,
-              borderColor: Colors.transparent,
-              borderRadius: 25.px),
-        )
-            : const SizedBox(),
-        body: Obx(() {
-          controller.count.value;
-          if (controller.apiResponseValue.value) {
-            return Center(
-              child: CW.commonProgressBarView(color: Col.primary),
-            );
-          } else {
-            return Stack(
-              alignment: Alignment.bottomCenter,
+    return CW.commonScaffoldBackgroundColor(
+      child: GestureDetector(
+        onTap: () {
+          CM.unFocusKeyBoard();
+        },
+        child: SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Column(
               children: [
-                ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
-                  children: [
-                    profileView(),
-                    SizedBox(height: 25.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/user_icon.png',
-                        title: 'Employee Name',
-                        subTitle: controller.userFullName.value.isNotEmpty
-                            ? controller.userFullName.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/email_icon.png',
-                        title: 'Email Address',
-                        subTitle: controller.email.value.isNotEmpty
-                            ? controller.email.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/contact_phone_icon.png',
-                        title: 'Mobile Number',
-                        subTitle: controller.mobileNumber.value.isNotEmpty
-                            ? controller.mobileNumber.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/dob_icon.png',
-                        title: 'Date of Birth',
-                        subTitle: controller.dob.value.isNotEmpty
-                            ? controller.dob.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/blood_group_icon.png',
-                        title: 'Blood Group',
-                        subTitle: controller.bloodGroup.value.isNotEmpty
-                            ? controller.bloodGroup.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/gender_icon.png',
-                        title: 'Gender',
-                        subTitle: controller.gender.value.isNotEmpty
-                            ? controller.gender.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/interest_hobbies_icon.png',
-                        title: 'Interest/Hobbies',
-                        subTitle: controller.interestHobbies.value.isNotEmpty
-                            ? controller.interestHobbies.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/location_icon.png',
-                        title: 'Special Skills',
-                        subTitle: controller.specialSkills.value.isNotEmpty
-                            ? controller.specialSkills.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 5.px),
-                    commonRowForContactDetailView(
-                        imagePath: 'assets/icons/languages_known_icon.png',
-                        title: 'Languages Known',
-                        subTitle: controller.languagesKnown.value.isNotEmpty
-                            ? controller.languagesKnown.value
-                            : 'No Data Available!'),
-                    SizedBox(height: 20.px),
-                  ],
-                ),
-                /*Container(
-                  color: Col.inverseSecondary,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 12.px),
-                    child: CW.commonElevatedButton(
-                        onPressed: () => controller.clickOnEditViewButton(),
-                        buttonText: 'Edit Detail'),
-                  ),
-                )*/
+                appBarView(),
+                Obx(() {
+                  controller.count.value;
+                  if (controller.apiResponseValue.value) {
+                    return Center(
+                      child: CW.commonProgressBarView(color: Col.primary),
+                    );
+                  } else {
+                    return Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.all(12.px),
+                        children: [
+                          profileView(),
+                          SizedBox(height: 25.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/user_icon.png',
+                              title: 'Employee Name',
+                              subTitle: controller.userFullName.value.isNotEmpty
+                                  ? controller.userFullName.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/email_icon.png',
+                              title: 'Email Address',
+                              subTitle: controller.email.value.isNotEmpty
+                                  ? controller.email.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/contact_phone_icon.png',
+                              title: 'Mobile Number',
+                              subTitle: controller.mobileNumber.value.isNotEmpty
+                                  ? controller.mobileNumber.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/dob_icon.png',
+                              title: 'Date of Birth',
+                              subTitle: controller.dob.value.isNotEmpty
+                                  ? controller.dob.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/blood_group_icon.png',
+                              title: 'Blood Group',
+                              subTitle: controller.bloodGroup.value.isNotEmpty
+                                  ? controller.bloodGroup.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/gender_icon.png',
+                              title: 'Gender',
+                              subTitle: controller.gender.value.isNotEmpty
+                                  ? controller.gender.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/interest_hobbies_icon.png',
+                              title: 'Interest/Hobbies',
+                              subTitle: controller.interestHobbies.value.isNotEmpty
+                                  ? controller.interestHobbies.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/location_icon.png',
+                              title: 'Special Skills',
+                              subTitle: controller.specialSkills.value.isNotEmpty
+                                  ? controller.specialSkills.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/languages_known_icon.png',
+                              title: 'Languages Known',
+                              subTitle: controller.languagesKnown.value.isNotEmpty
+                                  ? controller.languagesKnown.value
+                                  : 'No Data Available!'),
+                          SizedBox(height: 20.px),
+                        ],
+                      ),
+                    );
+                  }
+                }),
               ],
-            );
-          }
-        }),
+            ),
+            floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
+                ? CW.commonFloatingActionButton(icon: Icons.edit, onPressed: () => controller.clickOnEditViewButton())
+                : const SizedBox(),
+          ),
+        ),
       ),
     );
   }
 
-  AppBar appBarView() => CW.commonAppBarView(
+  Widget appBarView() => CW.myAppBarView(
         title: controller.profileMenuName.value,
-        isLeading: true,
-        onBackPressed: () => controller.clickOnBackButton(),
+        onLeadingPressed: () => controller.clickOnBackButton(),
+        padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
       );
 
   Widget profileView() => Center(
@@ -173,12 +156,13 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
           double? height,
           double? width,
           bool isAssetImage = true,
-          Color? imageColor}) =>
-      SizedBox(
-        width: height ?? 24.px,
-        height: width ?? 24.px,
-        child: Center(
-          child: CW.commonNetworkImageView(
+          Color? imageColor}) => SizedBox(
+          width: height ?? 24.px,
+          height: width ?? 24.px,
+          child: Center(
+          child: isAssetImage
+              ? GradientImageWidget(assetPath: imagePath)
+              : CW.commonNetworkImageView(
               path: imagePath,
               color: imageColor,
               isAssetImage: isAssetImage,
@@ -198,22 +182,16 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            commonIconImageForTextField(
-                imagePath: imagePath, imageColor: Col.darkGray),
+            commonIconImageForTextField(imagePath: imagePath, imageColor: Col.primary),
             SizedBox(width: 10.px),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                commonTitleTextView(
-                    title: title,
-                    textAlign: TextAlign.start,
-                    color: Col.darkGray,
-                    fontWeight: FontWeight.w500),
+                commonTitleTextView(title: title, textAlign: TextAlign.start, color: Col.gray, fontWeight: FontWeight.w500),
                 SizedBox(height: 6.px),
                 if (subTitle.isNotEmpty)
-                  commonTitleTextView(
-                      title: subTitle, textAlign: TextAlign.end, maxLines: 3),
+                  commonTitleTextView(title: subTitle, textAlign: TextAlign.end, maxLines: 3,color: Col.inverseSecondary),
               ],
             ),
           ],
@@ -230,13 +208,9 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
           TextAlign? textAlign,
           int? maxLines,
           Color? color,
-          FontWeight? fontWeight}) =>
-      Text(
+          FontWeight? fontWeight}) => Text(
         title,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .displayLarge
-            ?.copyWith(fontSize: 14.px, color: color, fontWeight: fontWeight),
+        style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(fontSize: 14.px, color: color, fontWeight: fontWeight),
         maxLines: maxLines ?? 1,
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign ?? TextAlign.start,

@@ -64,10 +64,10 @@ class AllTaskView extends GetView<AllTaskController> {
                   SizedBox(height: 16.px),
                   controller.apiResValue.value
                       ? Expanded(
-                    child: shimmerView(),
-                  )
+                        child: shimmerView(),
+                       )
                       : Expanded(
-                    child: ModalProgress(
+                        child: ModalProgress(
                       inAsyncCall: controller.apiResValue.value,
                       child: CW.commonRefreshIndicator(
                         onRefresh: () => controller.onRefresh(),

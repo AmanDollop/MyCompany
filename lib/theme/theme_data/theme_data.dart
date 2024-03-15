@@ -36,7 +36,8 @@ class AppThemeData {
       useMaterial3: true,
       textTheme: CommonTextTheme().textTheme(fontFamily: fontFamily),
       primaryColor: Col.primaryColor,
-      scaffoldBackgroundColor: Col.scaffoldBackgroundColor,
+      // scaffoldBackgroundColor: Col.scaffoldBackgroundColor,
+      scaffoldBackgroundColor: Colors.transparent,
 
       colorScheme: ColorScheme(
         primary: Col.primary,

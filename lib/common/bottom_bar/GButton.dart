@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/bottom_bar/Button.dart';
 
 

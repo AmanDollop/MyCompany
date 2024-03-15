@@ -13,34 +13,47 @@ class PromotionView extends GetView<PromotionController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-          title: controller.profileMenuName.value,
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton()),
-      body: Obx(() {
-        controller.count.value;
-        return AC.isConnect.value
-            ? ModalProgress(
-          inAsyncCall: controller.apiResValue.value,
-          child: controller.apiResValue.value
-              ? shimmerView()
-              : controller.promotionModal.value != null
-              ? controller.getPromotionDetails != null && controller.getPromotionDetails!.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: controller.getPromotionDetails?.length,
-                      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                      itemBuilder: (context, index) {
-                        return cardView(index: index);
-                      },
-                    )
-                  : CW.commonNoDataFoundText()
-              : CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'No Data Found!'),
-        )
-            : CW.commonNoNetworkView();
-      }),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(() {
+                  controller.count.value;
+                  return AC.isConnect.value
+                      ? ModalProgress(
+                    inAsyncCall: controller.apiResValue.value,
+                    child: controller.apiResValue.value
+                        ? shimmerView()
+                        : controller.promotionModal.value != null
+                        ? controller.getPromotionDetails != null && controller.getPromotionDetails!.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: controller.getPromotionDetails?.length,
+                                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                                itemBuilder: (context, index) {
+                                  return cardView(index: index);
+                                },
+                              )
+                            : CW.commonNoDataFoundText()
+                        : CW.commonNoDataFoundText(text: controller.apiResValue.value ? '' : 'No Data Found!'),
+                  )
+                      : CW.commonNoNetworkView();
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: controller.profileMenuName.value,
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget cardView({required int index}) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +119,7 @@ class PromotionView extends GetView<PromotionController> {
 
   Widget companyNameTextView({required String text}) => Text(
     text,
-    style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+    style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
     maxLines: 1,
     overflow: TextOverflow.ellipsis,
   );
@@ -119,7 +132,7 @@ class PromotionView extends GetView<PromotionController> {
 
   Widget designationTextView({required String text}) => Text(
     text,
-    style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.textGrayColor, fontWeight: FontWeight.w500),
+    style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.gray, fontWeight: FontWeight.w500),
     maxLines: 2,
     overflow: TextOverflow.ellipsis,
   );

@@ -14,115 +14,132 @@ class MyProfileView extends GetView<MyProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-          title: 'My Profile',
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton()),
-      body: Obx(() {
-        controller.count.value;
-        return ModalProgress(
-          isLoader: false,
-          inAsyncCall: controller.apiResponseValue.value,
-          child: CW.commonRefreshIndicator(
-            onRefresh: () => controller.onRefresh(),
-            child: controller.apiResponseValue.value
-                ? shimmerView()
-                : ListView(
-                    padding: EdgeInsets.zero,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                        child: Column(
-                          children: [
-                            Row(
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          // appBar: CW.commonAppBarView(
+          //     title: 'My Profile',
+          //     isLeading: true,
+          //     onBackPressed: () => controller.clickOnBackButton()),
+          body: Obx(() {
+            controller.count.value;
+            return Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: ModalProgress(
+                    isLoader: false,
+                    inAsyncCall: controller.apiResponseValue.value,
+                    child: CW.commonRefreshIndicator(
+                      onRefresh: () => controller.onRefresh(),
+                      child: controller.apiResponseValue.value
+                          ? shimmerView()
+                          : ListView(
+                              padding: EdgeInsets.zero,
                               children: [
-                                profileImageView(),
-                                Expanded(
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      nameTextView(),
-                                      userDetailTextView(),
+                                      Row(
+                                        children: [
+                                          profileImageView(),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                nameTextView(),
+                                                userDetailTextView(),
+                                              ],
+                                            ),
+                                          ),
+                                          editButtonView()
+                                        ],
+                                      ),
+                                      SizedBox(height: 20.px),
+                                      commonRowForEmailAndNumber(
+                                          title: 'Mobile Number',
+                                          name: controller.mobileNumber.value != 'null' && controller.mobileNumber.isNotEmpty && controller.countryCode.value != 'null' && controller.countryCode.isNotEmpty
+                                              ? '${controller.countryCode} ${controller.mobileNumber}'
+                                              : '+91 1234567890'),
+                                      SizedBox(height: 2.px),
+                                      commonRowForEmailAndNumber(
+                                          title: 'Email Address',
+                                          name: controller.email.value != 'null' && controller.email.isNotEmpty
+                                              ? '${controller.email}'
+                                              : 'test@gmail.com'),
                                     ],
                                   ),
                                 ),
-                                editButtonView()
+                                commonDividerView(),
+                                SizedBox(height: 6.px),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12.px),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          commonContainerForSocialButton(
+                                            imagePath: controller.twitterUrl.value.isNotEmpty
+                                                ? 'assets/images/twitter_dark_image.png'
+                                                : 'assets/images/twitter_light_image.png',
+                                            onTap: () => controller.clickOnTwitterButton(),
+                                          ),
+                                          SizedBox(width: 10.px),
+                                          commonContainerForSocialButton(
+                                            imagePath: controller.linkedinUrl.isNotEmpty
+                                                ? 'assets/images/linkdin_dark_image.png'
+                                                : 'assets/images/linkdin_light_image.png',
+                                            onTap: () => controller.clickOnLinkedinButton(),
+                                          ),
+                                          SizedBox(width: 10.px),
+                                          commonContainerForSocialButton(
+                                            imagePath: controller.instagramUrl.isNotEmpty
+                                                ? 'assets/images/instagram_dark_image.png'
+                                                : 'assets/images/instagram_light_image.png',
+                                            onTap: () => controller.clickOnInstagramButton(),
+                                          ),
+                                          SizedBox(width: 10.px),
+                                          commonContainerForSocialButton(
+                                            imagePath: controller.facebookUrl.isNotEmpty
+                                                ? 'assets/images/facebook_dark_image.png'
+                                                : 'assets/images/facebook_light_image.png',
+                                            onTap: () => controller.clickOnFacebookButton(),
+                                          ),
+                                        ],
+                                      ),
+                                      commonContainerForSocialButton(
+                                          imagePath: 'assets/icons/edit_icon.png',
+                                          onTap: () => controller.clickOnEditSocialInfoButton(),
+                                          width: 36.px,
+                                          height: 36.px),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 6.px),
+                                commonDividerView(),
+                                SizedBox(height: 16.px),
+                                profileMenuListView(),
+                                SizedBox(height: 30.px),
                               ],
                             ),
-                            SizedBox(height: 20.px),
-                            commonRowForEmailAndNumber(
-                                title: 'Mobile Number',
-                                name: controller.mobileNumber.value != 'null' && controller.mobileNumber.isNotEmpty && controller.countryCode.value != 'null' && controller.countryCode.isNotEmpty
-                                    ? '${controller.countryCode} ${controller.mobileNumber}'
-                                    : '+91 1234567890'),
-                            SizedBox(height: 2.px),
-                            commonRowForEmailAndNumber(
-                                title: 'Email Address',
-                                name: controller.email.value != 'null' && controller.email.isNotEmpty
-                                    ? '${controller.email}'
-                                    : 'test@gmail.com'),
-                          ],
-                        ),
-                      ),
-                      commonDividerView(),
-                      SizedBox(height: 6.px),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                commonContainerForSocialButton(
-                                  imagePath: controller.twitterUrl.value.isNotEmpty
-                                      ? 'assets/images/twitter_dark_image.png'
-                                      : 'assets/images/twitter_light_image.png',
-                                  onTap: () => controller.clickOnTwitterButton(),
-                                ),
-                                SizedBox(width: 10.px),
-                                commonContainerForSocialButton(
-                                  imagePath: controller.linkedinUrl.isNotEmpty
-                                      ? 'assets/images/linkdin_dark_image.png'
-                                      : 'assets/images/linkdin_light_image.png',
-                                  onTap: () => controller.clickOnLinkedinButton(),
-                                ),
-                                SizedBox(width: 10.px),
-                                commonContainerForSocialButton(
-                                  imagePath: controller.instagramUrl.isNotEmpty
-                                      ? 'assets/images/instagram_dark_image.png'
-                                      : 'assets/images/instagram_light_image.png',
-                                  onTap: () => controller.clickOnInstagramButton(),
-                                ),
-                                SizedBox(width: 10.px),
-                                commonContainerForSocialButton(
-                                  imagePath: controller.facebookUrl.isNotEmpty
-                                      ? 'assets/images/facebook_dark_image.png'
-                                      : 'assets/images/facebook_light_image.png',
-                                  onTap: () => controller.clickOnFacebookButton(),
-                                ),
-                              ],
-                            ),
-                            commonContainerForSocialButton(
-                                imagePath: 'assets/icons/edit_icon.png',
-                                onTap: () => controller.clickOnEditSocialInfoButton(),
-                                width: 36.px,
-                                height: 36.px),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 6.px),
-                      commonDividerView(),
-                      SizedBox(height: 16.px),
-                      profileMenuListView(),
-                      SizedBox(height: 30.px),
-                    ],
+                    ),
                   ),
-          ),
-        );
-      }),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: 'My Profile',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget profileImageView() {
     return Container(
@@ -151,13 +168,10 @@ class MyProfileView extends GetView<MyProfileController> {
 
   Widget nameTextView() => Text(
       controller.userFullName.value != 'null' &&
-              controller.userFullName.isNotEmpty
+          controller.userFullName.isNotEmpty
           ? controller.userFullName.value
           : 'Employee Name',
-      style: Theme.of(Get.context!)
-          .textTheme
-          .bodyLarge
-          ?.copyWith(fontWeight: FontWeight.w600),
+      style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
       maxLines: 1,
       overflow: TextOverflow.ellipsis);
 
@@ -165,10 +179,7 @@ class MyProfileView extends GetView<MyProfileController> {
       controller.developer.value != 'null' && controller.developer.isNotEmpty
           ? '${controller.developer}'
           : 'Designation',
-      style: Theme.of(Get.context!)
-          .textTheme
-          .titleMedium
-          ?.copyWith(fontWeight: FontWeight.w500),
+      style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500,color: Col.gray),
       maxLines: 1,
       overflow: TextOverflow.ellipsis);
 
@@ -177,7 +188,8 @@ class MyProfileView extends GetView<MyProfileController> {
       isAssetImage: true,
       imagePath: 'assets/icons/edit_icon.png',
       width: 40.px,
-      size: 40.px);
+      size: 40.px,
+  );
 
   Widget commonRowForEmailAndNumber({required String title, required String name}) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,10 +198,7 @@ class MyProfileView extends GetView<MyProfileController> {
             flex: 4,
             child: Text(
               title,
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w500),
+              style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500,color: Col.gray),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               textAlign: TextAlign.start,
@@ -199,10 +208,7 @@ class MyProfileView extends GetView<MyProfileController> {
             flex: 7,
             child: Text(
               name,
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               textAlign: TextAlign.end,
@@ -217,7 +223,7 @@ class MyProfileView extends GetView<MyProfileController> {
             length: 99.w,
             dashLength: 5.px,
             dashThickness: .5.px,
-            dashColor: Col.secondary),
+            dashColor: Col.inverseSecondary),
       );
 
   Widget commonContainerForSocialButton({required String imagePath, GestureTapCallback? onTap, double? height, double? width}) => InkWell(
@@ -237,37 +243,24 @@ class MyProfileView extends GetView<MyProfileController> {
         ),
       );
 
-  Widget commonCardForList({required Widget listWidget, required String titleText, VoidCallback? onPressedViewAllButton}) => Card(
-        margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
-        color: Col.inverseSecondary,
-        shadowColor: Col.secondary.withOpacity(.1),
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Col.gray.withOpacity(.5)),
-            borderRadius: BorderRadius.circular(12.px)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (titleText != '')
-              Padding(
-                padding: EdgeInsets.only(
-                    left: 12.px, right: 12.px, top: 12.px, bottom: 2.px),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      titleText,
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
+  Widget commonCardForList({required Widget listWidget, required String titleText, VoidCallback? onPressedViewAllButton}) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+        Padding(
+          padding: EdgeInsets.only(left: 12.px, right: 12.px, top: 12.px, bottom: 2.px),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                titleText,
+                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
               ),
-            listWidget
-          ],
+            ],
+          ),
         ),
-      );
+      listWidget
+    ],
+  );
 
   Widget profileMenuListView() {
     return Obx(() {
@@ -295,20 +288,13 @@ class MyProfileView extends GetView<MyProfileController> {
                   height: 134.px,
                   padding: EdgeInsets.only(left: 3.px),
                   decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 24.px,
-                        color: Col.secondary.withOpacity(.05),
-                      )
-                    ],
-                    color: Col.inverseSecondary,
+                    color: Col.gCardColor,
                     borderRadius: BorderRadius.circular(8.px),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 12.px),
                       CW.commonCachedNetworkImageView1(
                           path: '${AU.baseUrlAllApisImage}${controller.getEmployeeDetails![index].profileMenuPhoto}' ,
                           width:  44.px,
@@ -320,7 +306,7 @@ class MyProfileView extends GetView<MyProfileController> {
                             controller.getEmployeeDetails![index].profileMenuName!.isNotEmpty
                             ? '${controller.getEmployeeDetails![index].profileMenuName}'
                             : 'Menu Name Not Found!',
-                        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
+                        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700,color: Col.inverseSecondary),
                         maxLines:2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,

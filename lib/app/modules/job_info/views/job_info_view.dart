@@ -12,60 +12,70 @@ class JobInfoView extends GetView<JobInfoController> {
   const JobInfoView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: Scaffold(
-        appBar: appBarView(),
-        body: Obx(() {
-          controller.count.value;
-          if (controller.apiResponseValue.value) {
-            return Center(
-              child: CW.commonProgressBarView(color: Col.primary),
-            );
-          } else {
-            return ListView(
-              padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            CM.unFocusKeyBoard();
+          },
+          child: Scaffold(
+            // appBar: appBarView(),
+            body: Column(
               children: [
-                commonRowForContactDetailView(
-                    imagePath: 'assets/icons/dob_icon.png',
-                    title: 'Designation',
-                    subTitle: controller.designation.value.isNotEmpty
-                        ?controller.designation.value:'No Data Available!'),
-                SizedBox(height: 5.px),
-                commonRowForContactDetailView(
-                    imagePath: 'assets/icons/dob_icon.png',
-                    title: 'Employee Id',
-                    subTitle: controller.employeeID.value.isNotEmpty
-                        ?controller.employeeID.value:'No Data Available!'),
-                SizedBox(height: 5.px),
-                commonRowForContactDetailView(
-                    imagePath: 'assets/icons/dob_icon.png',
-                    title: 'Employee Type',
-                    subTitle: controller.employeeType.value.isNotEmpty
-                        ?controller.employeeType.value:'No Data Available!'),
-                SizedBox(height: 5.px),
-                commonRowForContactDetailView(
-                    imagePath: 'assets/icons/dob_icon.png',
-                    title: 'Joining Date',
-                    subTitle: controller.joiningDate.value.isNotEmpty
-                        ?controller.joiningDate.value:'No Data Available!'),
+                appBarView(),
+                Expanded(
+                  child: Obx(() {
+                    controller.count.value;
+                    if (controller.apiResponseValue.value) {
+                      return Center(
+                        child: CW.commonProgressBarView(color: Col.primary),
+                      );
+                    } else {
+                      return ListView(
+                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
+                        children: [
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/dob_icon.png',
+                              title: 'Designation',
+                              subTitle: controller.designation.value.isNotEmpty
+                                  ?controller.designation.value:'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/dob_icon.png',
+                              title: 'Employee Id',
+                              subTitle: controller.employeeID.value.isNotEmpty
+                                  ?controller.employeeID.value:'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/dob_icon.png',
+                              title: 'Employee Type',
+                              subTitle: controller.employeeType.value.isNotEmpty
+                                  ?controller.employeeType.value:'No Data Available!'),
+                          SizedBox(height: 5.px),
+                          commonRowForContactDetailView(
+                              imagePath: 'assets/icons/dob_icon.png',
+                              title: 'Joining Date',
+                              subTitle: controller.joiningDate.value.isNotEmpty
+                                  ?controller.joiningDate.value:'No Data Available!'),
 
-                SizedBox(height: 5.px),
+                          SizedBox(height: 5.px),
+                        ],
+                      );
+                    }
+                  }),
+                ),
               ],
-            );
-          }
-        }),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  AppBar appBarView() => CW.commonAppBarView(
+  Widget appBarView() => CW.myAppBarView(
     title: controller.profileMenuName.value,
-    isLeading: true,
-    onBackPressed: () => controller.clickOnBackButton(),
-
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
   );
 
   Widget commonIconImageForTextField({required String imagePath, double? height, double? width, bool isAssetImage = true,Color? imageColor}) => SizedBox(
@@ -93,40 +103,29 @@ class JobInfoView extends GetView<JobInfoController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            commonIconImageForTextField(
-                imagePath: imagePath, imageColor: Col.darkGray),
+            commonIconImageForTextField(imagePath: imagePath, imageColor: Col.primary),
             SizedBox(width: 10.px),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                commonTitleTextView(
-                    title: title,
-                    textAlign: TextAlign.start,
-                    color: Col.darkGray,
-                    fontWeight: FontWeight.w500),
+                commonTitleTextView(title: title, textAlign: TextAlign.start, color: Col.gray, fontWeight: FontWeight.w500),
                 SizedBox(height: 6.px),
                 if (subTitle.isNotEmpty)
-                  commonTitleTextView(
-                      title: subTitle, textAlign: TextAlign.end, maxLines: 3),
+                  commonTitleTextView(title: subTitle, textAlign: TextAlign.end, maxLines: 3,color: Col.inverseSecondary),
               ],
             ),
           ],
         ),
-        if (subTitle.isNotEmpty) SizedBox(height: 4.px),
-        CW.commonDividerView(leftPadding: 20.px),
+        if (subTitle.isNotEmpty)
+          SizedBox(height: 4.px),
+        CW.commonDividerView(leftPadding: 32.px),
         SizedBox(height: 10.px),
       ],
     );
   }
 
-  Widget commonTitleTextView(
-      {required String title,
-        TextAlign? textAlign,
-        int? maxLines,
-        Color? color,
-        FontWeight? fontWeight}) =>
-      Text(
+  Widget commonTitleTextView({required String title, TextAlign? textAlign, int? maxLines, Color? color, FontWeight? fontWeight}) => Text(
         title,
         style: Theme.of(Get.context!)
             .textTheme

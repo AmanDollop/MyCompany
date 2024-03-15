@@ -26,14 +26,32 @@ class EditProfileController extends GetxController {
   final image = Rxn<File?>();
 
   final firstNameController = TextEditingController();
+  FocusNode focusNodeForFirstName = FocusNode();
+
   final lastNameController = TextEditingController();
+  FocusNode focusNodeForLastName = FocusNode();
+
   final emailController = TextEditingController();
+  FocusNode focusNodeForEmail = FocusNode();
+
   final mobileNumberController = TextEditingController();
+  FocusNode focusNodeForMobileNumber = FocusNode();
+
   final hobbiesAndInterestController = TextEditingController();
+  FocusNode focusNodeForHobbiesAndInterest = FocusNode();
+
   final skillsController = TextEditingController();
+  FocusNode focusNodeForSkills = FocusNode();
+
   final languageKnownController = TextEditingController();
+  FocusNode focusNodeForLanguageKnown = FocusNode();
+
   final dobController = TextEditingController();
+  FocusNode focusNodeForDob = FocusNode();
+
   final bloodGroupController = TextEditingController();
+  FocusNode focusNodeForBloodGroup = FocusNode();
+
 
   final userFullName = ''.obs;
   final userShortName = ''.obs;

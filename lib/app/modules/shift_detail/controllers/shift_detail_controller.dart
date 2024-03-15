@@ -79,7 +79,7 @@ class ShiftDetailController extends GetxController {
     shiftTimeList = shiftDetails?.shiftTime;
   }
 
-  void clickOnBack() {
+  void clickOnBackButton() {
     Get.back();
   }
 

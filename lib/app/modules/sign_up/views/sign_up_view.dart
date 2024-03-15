@@ -14,90 +14,95 @@ class SignUpView extends GetView<SignUpController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: Scaffold(
-        appBar: CW.commonAppBarView(
-          title: 'Registration',
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton(),
-        ),
-        body: Obx(() {
-          controller.count.value;
-          return Form(
-            key: controller.key,
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+    return CW.commonScaffoldBackgroundColor(
+      child: GestureDetector(
+        onTap: () {
+          CM.unFocusKeyBoard();
+        },
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            // appBar: CW.commonAppBarView(
+            //   title: 'Registration',
+            //   isLeading: true,
+            //   onBackPressed: () => controller.clickOnBackButton(),
+            // ),
+            body: Obx(() {
+              controller.count.value;
+              return Form(
+                key: controller.key,
+                child: ListView(
+                  padding: EdgeInsets.all(12.px),
                   children: [
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [profileView(), cameraView()],
+                    CW.myAppBarView(title: 'Welcome Developer',onLeadingPressed: () => controller.clickOnBackButton(),),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [profileView(), cameraView()],
+                        ),
+                      ],
                     ),
+                    SizedBox(height: 20.px),
+                    firstNameTextField(),
+                    SizedBox(height: 16.px),
+                    lastNameTextField(),
+                    SizedBox(height: 16.px),
+                    emailTextField(),
+                    SizedBox(height: 16.px),
+                    mobileNumberTextField(),
+                    SizedBox(height: 16.px),
+                    selectYourBranchTextField(),
+                    if(controller.selectYourBranchController.text.isNotEmpty)
+                    SizedBox(height: 16.px),
+                    if(controller.selectYourBranchController.text.isNotEmpty)
+                    selectYourDepartmentTextField(),
+                    SizedBox(height: 16.px),
+                    shiftTimeTextField(),
+                    SizedBox(height: 16.px),
+                    joiningDateTextField(),
+                    SizedBox(height: 16.px),
+                    designationTextField(),
+                    SizedBox(height: 16.px),
+                    textFiledLabelTextView(text: 'Gender'),
+                    SizedBox(height: 6.px),
+                    SizedBox(
+                      height: 30.px,
+                      child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                CW.commonRadioView(
+                                  onChanged: (value) {
+                                    CM.unFocusKeyBoard();
+                                    controller.genderIndexValue.value = value;
+                                    controller.genderType.value = controller.genderText.value[index];
+                                    controller.count.value++;
+                                  },
+                                  index: index.toString(),
+                                  selectedIndex: controller.genderIndexValue.value.toString(),
+                                ),
+                                genderLabelTextView(text: controller.genderText[index])
+                              ],
+                            );
+                          },
+                          itemCount: 2,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal),
+                    ),
+                    SizedBox(height: 25.px),
+                    CW.myElevatedButton(onPressed:controller.registerButtonValue.value
+                        ? () => null
+                        :() => controller.clickOnRegisterButton(),
+                        buttonText: 'Register',isLoading: controller.registerButtonValue.value),
                   ],
                 ),
-                SizedBox(height: 20.px),
-                firstNameTextField(),
-                SizedBox(height: 16.px),
-                lastNameTextField(),
-                SizedBox(height: 16.px),
-                emailTextField(),
-                SizedBox(height: 16.px),
-                mobileNumberTextField(),
-                SizedBox(height: 16.px),
-                selectYourBranchTextField(),
-                if(controller.selectYourBranchController.text.isNotEmpty)
-                SizedBox(height: 16.px),
-                if(controller.selectYourBranchController.text.isNotEmpty)
-                selectYourDepartmentTextField(),
-                SizedBox(height: 16.px),
-                shiftTimeTextField(),
-                SizedBox(height: 16.px),
-                joiningDateTextField(),
-                SizedBox(height: 16.px),
-                designationTextField(),
-                SizedBox(height: 16.px),
-                textFiledLabelTextView(text: 'Gender'),
-                SizedBox(height: 6.px),
-                SizedBox(
-                  height: 30.px,
-                  child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            CW.commonRadioView(
-                              onChanged: (value) {
-                                CM.unFocusKeyBoard();
-                                controller.genderIndexValue.value = value;
-                                controller.genderType.value = controller.genderText.value[index];
-                                controller.count.value++;
-                              },
-                              index: index.toString(),
-                              selectedIndex: controller.genderIndexValue.value.toString(),
-                            ),
-                            genderLabelTextView(text: controller.genderText[index])
-                          ],
-                        );
-                      },
-                      itemCount: 2,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.horizontal),
-                ),
-                SizedBox(height: 25.px),
-                CW.commonElevatedButton(onPressed:controller.registerButtonValue.value
-                    ? () => null
-                    :() => controller.clickOnRegisterButton(),
-                    buttonText: 'Register',isLoading: controller.registerButtonValue.value),
-
-              ],
-            ),
-          );
-        }),
+              );
+            }),
+          ),
+        ),
       ),
     );
   }
@@ -141,27 +146,28 @@ class SignUpView extends GetView<SignUpController> {
         style: Theme.of(Get.context!).textTheme.titleMedium,
       );
 
-  Widget firstNameTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
-        controller: controller.firstNameController,
-        labelText: 'First Name',
-        hintText: 'First Name',
-        keyboardType: TextInputType.name,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter first name'),
-        onChanged: (value) {
-          controller.count.value++;
-        },
-      );
+  Widget firstNameTextField() {
+    return CW.commonTextField(
+      focusNode: controller.focusNodeForFirstName,
+      controller: controller.firstNameController,
+      labelText: 'First Name',
+      hintText: 'First Name',
+      keyboardType: TextInputType.name,
+      prefixIconPath: 'assets/icons/user_icon.png',
+      validator: (value) => V.isValid(value: value, title: 'Please enter first name'),
+      onChanged: (value) {
+        controller.count.value++;
+      },
+    );
+  }
 
   Widget lastNameTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.lastNameController,
+        focusNode: controller.focusNodeForLastName,
         labelText: 'Last Name',
         hintText: 'Last Name',
         keyboardType: TextInputType.name,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
+        prefixIconPath: 'assets/icons/user_icon.png',
         validator: (value) =>
             V.isValid(value: value, title: 'Please enter last name'),
         onChanged: (value) {
@@ -170,13 +176,13 @@ class SignUpView extends GetView<SignUpController> {
       );
 
   Widget selectYourBranchTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.selectYourBranchController,
+        focusNode: controller.focusNodeForSelectYourBranch,
         labelText: 'Select Your Branch',
         hintText: 'Select Your Branch',
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/department_icon.png'),
+        prefixIconPath: 'assets/icons/department_icon.png',
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.inverseSecondary),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -185,14 +191,13 @@ class SignUpView extends GetView<SignUpController> {
       );
 
   Widget selectYourDepartmentTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.selectYourDepartmentController,
+    focusNode: controller.focusNodeForSelectYourDepartment,
         labelText: 'Select Your Department',
         hintText: 'Select Your Department',
-        prefixIcon:
-            commonIconImage(imagePath: 'assets/icons/department_icon.png'),
+        prefixIconPath: 'assets/icons/department_icon.png',
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.inverseSecondary),
         onTap: () => controller.clickOnSelectYourDepartmentTextField(),
         onChanged: (value) {
           controller.count.value++;
@@ -201,13 +206,13 @@ class SignUpView extends GetView<SignUpController> {
       );
 
   Widget shiftTimeTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.shiftTimeController,
+        focusNode: controller.focusNodeForShiftTime,
         labelText: 'Shift Time',
         hintText: 'Shift Time',
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/watch_icon.png'),
+        prefixIconPath: 'assets/icons/watch_icon.png',
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 26.px, color: Col.inverseSecondary),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -217,27 +222,26 @@ class SignUpView extends GetView<SignUpController> {
       );
 
   Widget joiningDateTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.joiningDateController,
+        focusNode: controller.focusNodeForJoiningDate,
         labelText: 'Joining Date',
         hintText: 'Joining Date',
-        prefixIcon:
-            commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
+        prefixIconPath: 'assets/icons/calender_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
         onTap: () => controller.clickOnJoiningDateTextField(),
         readOnly: true,
-        suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
+        suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.inverseSecondary),
         validator: (value) => V.isValid(value: value, title: 'Please enter joining date'),
       );
 
   Widget designationTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.designationController,
+        focusNode: controller.focusNodeForDesignation,
         labelText: 'Designation',
         hintText: 'Designation',
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
+        prefixIconPath: 'assets/icons/email_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -246,12 +250,12 @@ class SignUpView extends GetView<SignUpController> {
       );
 
   Widget emailTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.emailController,
+        focusNode: controller.focusNodeForEmail,
         keyboardType: TextInputType.emailAddress,
         labelText: 'Email Address',
         hintText: 'Email Address',
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
+        prefixIconPath: 'assets/icons/email_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -260,8 +264,8 @@ class SignUpView extends GetView<SignUpController> {
       );
 
   Widget mobileNumberTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
         controller: controller.mobileNumberController,
+       focusNode: controller.focusNodeForMobileNumber,
         keyboardType: TextInputType.number,
         labelText: 'Mobile Number',
         hintText: 'Mobile Number',
@@ -285,13 +289,13 @@ class SignUpView extends GetView<SignUpController> {
               path: imagePath,
               isAssetImage: true,
               width: width ?? 24.px,
-              height: height ?? 24.px),
+              height: height ?? 24.px,color: Col.inverseSecondary),
         ),
       );
 
   Widget genderLabelTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,color: Col.inverseSecondary),
       );
 
 }

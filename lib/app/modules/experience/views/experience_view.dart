@@ -12,57 +12,57 @@ class ExperienceView extends GetView<ExperienceController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-          title: controller.profileMenuName.value,
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton()),
-      body: Obx(() {
-        controller.count.value;
-        return AC.isConnect.value
-            ? ModalProgress(
-          inAsyncCall: controller.apiResValue.value,
-          isLoader: false,
-          child: controller.apiResValue.value
-              ? shimmerView()
-              : controller.experienceModal.value != null
-              ? controller.getExperienceDetails != null && controller.getExperienceDetails!.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: controller.getExperienceDetails?.length,
-                      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                            borderRadius: BorderRadius.circular(6.px),
-                            onTap: () =>
-                                controller.clickOnExperience(index: index),
-                            child: cardView(index: index));
-                      },
-                    )
-                  : CW.commonNoDataFoundText()
-              : CW.commonNoDataFoundText(
-              text: controller.apiResValue.value ? '' : 'No Data Found!'),
-        )
-            : CW.commonNoNetworkView();
-      }),
-      floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
-          ? Padding(
-              padding: EdgeInsets.only(bottom: 10.px),
-              child: CW.commonOutlineButton(
-                  onPressed: () => controller.clickOnAddViewButton(),
-                  child: Icon(
-                    Icons.add,
-                    color: Col.inverseSecondary,
-                    size: 22.px,
-                  ),
-                  height: 50.px,
-                  width: 50.px,
-                  backgroundColor: Col.primary,
-                  borderColor: Colors.transparent,
-                  borderRadius: 25.px),
-            )
-          : const SizedBox(),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          // appBar: CW.commonAppBarView(
+          //     title: controller.profileMenuName.value,
+          //     isLeading: true,
+          //     onBackPressed: () => controller.clickOnBackButton()),
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(() {
+                  controller.count.value;
+                  return AC.isConnect.value
+                      ? ModalProgress(
+                         inAsyncCall: controller.apiResValue.value,
+                         isLoader: false,
+                         child: controller.apiResValue.value
+                        ? shimmerView()
+                        : controller.experienceModal.value != null
+                        ? controller.getExperienceDetails != null && controller.getExperienceDetails!.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: controller.getExperienceDetails?.length,
+                                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                      borderRadius: BorderRadius.circular(6.px),
+                                      onTap: () => controller.clickOnExperience(index: index),
+                                      child: cardView(index: index));
+                                },
+                              )
+                            : CW.commonNoDataFoundText()
+                        : CW.commonNoDataFoundText(
+                        text: controller.apiResValue.value ? '' : 'No Data Found!'),
+                  ) : CW.commonNoNetworkView();
+                }),
+              ),
+            ],
+          ),
+          floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
+              ? CW.commonFloatingActionButton(icon: Icons.add, onPressed: () => controller.clickOnAddViewButton())
+              : const SizedBox(),
+        ),
+      ),
     );
   }
+  Widget appBarView() => CW.myAppBarView(
+    title: controller.profileMenuName.value,
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget cardView({required int index}) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,10 +136,7 @@ class ExperienceView extends GetView<ExperienceController> {
 
   Widget companyNameTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .bodySmall
-            ?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -152,20 +149,14 @@ class ExperienceView extends GetView<ExperienceController> {
 
   Widget designationTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .titleMedium
-            ?.copyWith(color: Col.textGrayColor, fontWeight: FontWeight.w500),
+        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.gray, fontWeight: FontWeight.w500),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       );
 
   Widget locationTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .titleMedium
-            ?.copyWith(fontSize: 12.px),
+        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontSize: 12.px),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );

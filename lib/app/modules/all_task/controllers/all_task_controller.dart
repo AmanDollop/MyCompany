@@ -172,8 +172,7 @@ class AllTaskController extends GetxController {
                   isSearchLabelText: true,
                   hintText: 'Enter Task Category',
                   controller: addTaskCategoryController,
-                  validator: (value) => V.isValid(
-                      value: value, title: 'Please enter task category'),
+                  validator: (value) => V.isValid(value: value, title: 'Please enter task category'),
                 ),
               ),
               SizedBox(height: 14.px),
@@ -182,19 +181,9 @@ class AllTaskController extends GetxController {
                     ? () => null
                     : () => taskCardListViewIndex != null
                         ? clickOnUpdateTaskButton(
-                            taskCategoryId:
-                                taskCategoryList[taskCardListViewIndex]
-                                        .taskCategoryId ??
-                                    '',
-                            addTaskCategoryControllerValue:
-                                addTaskCategoryController.text
-                                    .trim()
-                                    .toString())
-                        : clickOnCreateTaskButton(
-                            addTaskCategoryControllerValue:
-                                addTaskCategoryController.text
-                                    .trim()
-                                    .toString()),
+                            taskCategoryId: taskCategoryList[taskCardListViewIndex].taskCategoryId ?? '',
+                            addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString())
+                        : clickOnCreateTaskButton(addTaskCategoryControllerValue: addTaskCategoryController.text.trim().toString()),
                 buttonText: taskCardListViewIndex != null
                     ? 'Update Task'
                     : 'Create Task',
@@ -253,7 +242,6 @@ class AllTaskController extends GetxController {
         getTaskDataModal.value = null;
         taskCategoryList.clear();
         taskCountList?.clear();
-        isLastPage.value = false;
         await callingGetTaskDataApi();
       } else {
         CM.error();

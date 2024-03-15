@@ -15,6 +15,7 @@ class LoginController extends GetxController {
   final termsCheckBoxValue = false.obs;
   final key = GlobalKey<FormState>();
   final emailController = TextEditingController();
+  FocusNode focusNodeForEmail = FocusNode();
 
   String apiBaseUrl = '';
   String companyLogo = '';

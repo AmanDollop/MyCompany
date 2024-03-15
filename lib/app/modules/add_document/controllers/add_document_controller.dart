@@ -13,7 +13,11 @@ class AddDocumentController extends GetxController {
   final count = 0.obs;
   final key = GlobalKey<FormState>();
   final docNameController = TextEditingController();
+  FocusNode focusNodeForDocName = FocusNode();
+
   final remarkController = TextEditingController();
+  FocusNode focusNodeForRemark = FocusNode();
+
 
   final result = Rxn<FilePickerResult>();
   final imageFile = Rxn<File>();

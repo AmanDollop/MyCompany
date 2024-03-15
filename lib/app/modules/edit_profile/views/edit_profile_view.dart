@@ -13,34 +13,32 @@ class EditProfileView extends GetView<EditProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => CM.unFocusKeyBoard(),
-      child: Scaffold(
-        body: Obx(() {
-          controller.count.value;
-          if(controller.apiResponseValue.value){
-            return Center(
-              child: CW.commonProgressBarView(color: Col.primary),
-            );
-          }
-          else{
-            return Stack(
-              children: [
-                Column(
+    return CW.commonScaffoldBackgroundColor(
+      child: GestureDetector(
+        onTap: () => CM.unFocusKeyBoard(),
+        child: SafeArea(
+          child: Scaffold(
+            body: Obx(() {
+              controller.count.value;
+              if(controller.apiResponseValue.value){
+                return Center(
+                  child: CW.commonProgressBarView(color: Col.primary),
+                );
+              }
+              else{
+                return Column(
                   children: [
-                    CW.commonNetworkImageView(
-                        path: 'assets/images/edit_profile_back_image.png',
-                        isAssetImage: true,
-                        height: 290.px,
-                        width: double.infinity),
+                    appBarView(),
                     Expanded(
                       child: Form(
                         key: controller.key,
                         child: ListView(
-                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 18.px),
+                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
                           shrinkWrap: true,
                           physics: const ScrollPhysics(),
                           children: [
+                            profileView(),
+                            SizedBox(height: 16.px),
                             firstNameTextField(),
                             SizedBox(height: 16.px),
                             lastNameTextField(),
@@ -73,7 +71,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                           index: index.toString(),
                                           selectedIndex: controller.genderIndexValue.value.toString(),
                                         ),
-                                        genderLabelTextView(text: controller.genderText[index])
+                                        genderLabelTextView(text: controller.genderText[index],color: Col.inverseSecondary)
                                       ],
                                     );
                                   },
@@ -86,14 +84,13 @@ class EditProfileView extends GetView<EditProfileController> {
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
-                ),
-                profileView(),
-              ],
-            );
-          }
-        }),
+                );
+              }
+            }),
+          ),
+        ),
       ),
     );
   }
@@ -103,7 +100,6 @@ class EditProfileView extends GetView<EditProfileController> {
           padding: EdgeInsets.only(left: 12.px, right: 6.px),
           child: Column(
             children: [
-              appBarView(),
               SizedBox(height: 18.px),
               profileImageView(),
               SizedBox(height: 6.px),
@@ -115,45 +111,13 @@ class EditProfileView extends GetView<EditProfileController> {
         ),
       );
 
-  Widget appBarView() => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              backButtonView(),
-              SizedBox(width: 16.px),
-              editProfileTextView(),
-            ],
-          ),
-          saveButtonView(),
-        ],
-      );
-
-  Widget backButtonView() => SizedBox(
-        height: 45.px,
-        width: 45.px,
-        child: Center(
-          child: IconButton(
-            onPressed: () => controller.clickOnBackButton(),
-            style: IconButton.styleFrom(
-              backgroundColor: Col.inverseSecondary,
-              maximumSize: Size(45.px, 45.px),
-            ),
-            splashRadius: 24.px,
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              Icons.arrow_back,
-              color: Col.secondary,
-              size: 22.px,
-            ),
-          ),
-        ),
-      );
-
-  Widget editProfileTextView() => Text(
-        'Edit Profile',
-        style: Theme.of(Get.context!).textTheme.displaySmall,
-      );
+  Widget appBarView() => CW.myAppBarView(
+      title: 'Edit Profile',
+      onLeadingPressed: () => controller.clickOnBackButton(),
+      actionValue: true,
+      action: saveButtonView(),
+      padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget saveButtonView() => controller.saveButtonValue.value
       ? Padding(
@@ -225,25 +189,14 @@ class EditProfileView extends GetView<EditProfileController> {
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget commonIconImage({required String imagePath, double? height, double? width}) => SizedBox(
-        width: height ?? 24.px,
-        height: width ?? 24.px,
-        child: Center(
-          child: CW.commonNetworkImageView(
-              path: imagePath,
-              isAssetImage: true,
-              width: width ?? 24.px,
-              height: height ?? 24.px),
-        ),
-      );
-
   Widget firstNameTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.firstNameController,
+        focusNode: controller.focusNodeForFirstName,
         labelText: 'First Name',
         hintText: 'First Name',
         keyboardType: TextInputType.name,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
+        prefixIconPath: 'assets/icons/user_icon.png',
         validator: (value) => V.isValid(value: value, title: 'Please enter first name'),
         onChanged: (value) {
           controller.count.value++;
@@ -253,12 +206,13 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget lastNameTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.lastNameController,
+        focusNode: controller.focusNodeForLastName,
         labelText: 'Last Name',
         hintText: 'Last Name',
         keyboardType: TextInputType.name,
 
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
-    validator: (value) => V.isValid(value: value, title: 'Please enter last name'),
+        prefixIconPath: 'assets/icons/user_icon.png',
+        validator: (value) => V.isValid(value: value, title: 'Please enter last name'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -267,12 +221,13 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget emailTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.emailController,
+    focusNode: controller.focusNodeForEmail,
         labelText: 'Email Address',
         hintText: 'Email Address',
         keyboardType: TextInputType.emailAddress,
        textCapitalization: TextCapitalization.none,
         validator: (value) => V.isValid(value: value, title: 'Please enter email address'),
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/email_icon.png'),
+        prefixIconPath: 'assets/icons/email_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -281,10 +236,11 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget hobbiesAndInterestTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.hobbiesAndInterestController,
+        focusNode: controller.focusNodeForHobbiesAndInterest,
         labelText: 'Hobbies/Interest',
         hintText: 'Hobbies/Interest',
 
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/interest_hobbies_icon.png'),
+        prefixIconPath: 'assets/icons/interest_hobbies_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -293,10 +249,11 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget skillsTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.skillsController,
+        focusNode: controller.focusNodeForSkills,
         labelText: 'Skills',
         hintText: 'Skills',
 
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/location_icon.png'),
+        prefixIconPath: 'assets/icons/location_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -305,10 +262,11 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget languageKnownTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.languageKnownController,
+        focusNode: controller.focusNodeForLanguageKnown,
         labelText: 'Language Known',
         hintText: 'Language Known',
 
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/languages_known_icon.png'),
+        prefixIconPath: 'assets/icons/languages_known_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -317,10 +275,10 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget dobTextField() => CW.commonTextField(
     fillColor: Colors.transparent,
     controller: controller.dobController,
+    focusNode: controller.focusNodeForDob,
     labelText: 'Date Of Birth',
     hintText: 'Date Of Birth',
-    prefixIcon:
-    commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
+    prefixIconPath: 'assets/icons/calender_icon.png',
     onChanged: (value) {
       controller.count.value++;
     },
@@ -332,12 +290,10 @@ class EditProfileView extends GetView<EditProfileController> {
   Widget bloodGroupTextField() => CW.commonTextField(
     fillColor: Colors.transparent,
     controller: controller.bloodGroupController,
+    focusNode: controller.focusNodeForBloodGroup,
     labelText: 'Blood Group',
     hintText: 'Blood Group',
-    labelStyle: Theme.of(Get.context!).textTheme.titleMedium,
-    hintStyle: Theme.of(Get.context!).textTheme.titleMedium,
-    prefixIcon:
-    commonIconImage(imagePath: 'assets/icons/blood_group_icon.png'),
+    prefixIconPath: 'assets/icons/blood_group_icon.png',
     onChanged: (value) {
       controller.count.value++;
     },
@@ -347,9 +303,9 @@ class EditProfileView extends GetView<EditProfileController> {
     // validator: (value) => V.isValid(value: value, title: 'Please enter Blood Group'),
   );
 
-  Widget genderLabelTextView({required String text}) => Text(
+  Widget genderLabelTextView({required String text,Color? color}) => Text(
     text,
-    style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+    style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,color: color),
   );
 
 }

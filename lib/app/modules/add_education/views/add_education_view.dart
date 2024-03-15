@@ -15,27 +15,38 @@ class AddEducationView extends GetView<AddEducationController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: Obx(() {
-        controller.count.value;
-        return Scaffold(
-          appBar: CW.commonAppBarView(
-              title: controller.profileMenuName.value,
-              isLeading: true,
-              onBackPressed: () => controller.clickOnBackButton()),
-          body: Obx(() {
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () => CM.unFocusKeyBoard(),
+          child: Obx(() {
             controller.count.value;
-            return AC.isConnect.value
-                ? achievementsView()
-                : CW.commonNoNetworkView();
+            return Scaffold(
+              body: Column(
+                children: [
+                  appBarView(),
+                  Expanded(
+                    child: Obx(() {
+                      controller.count.value;
+                      return AC.isConnect.value
+                          ? achievementsView()
+                          : CW.commonNoNetworkView();
+                    }),
+                  ),
+                ],
+              ),
+            );
           }),
-        );
-      }),
+        ),
+      ),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: controller.profileMenuName.value,
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget commonIconImage({required String imagePath, double? height, double? width}) => SizedBox(
         width: height ?? 24.px,
@@ -76,7 +87,6 @@ class AddEducationView extends GetView<AddEducationController> {
                               onChanged: (value) {
                                 CM.unFocusKeyBoard();
                                 controller.achievementAndEducationType.value = value.toString();
-                                print('achievementAndEducationType::: ${value}');
                                 controller.count.value++;
                               },
                               index: index.toString(),
@@ -97,11 +107,10 @@ class AddEducationView extends GetView<AddEducationController> {
           ),
           Container(
             height: 80.px,
-            padding: EdgeInsets.only(
-                left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
-            color: Col.inverseSecondary,
+            padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
+            color: Col.gBottom,
             child: Center(
-              child: CW.commonElevatedButton(
+              child: CW.myElevatedButton(
                   onPressed: controller.achievementAndEducationType.value != 'null' && controller.achievementAndEducationType.value.isNotEmpty
                       ? !controller.sendAddRequestButtonValue.value
                       ? () => controller.clickOnSendAddRequestButton()
@@ -122,12 +131,12 @@ class AddEducationView extends GetView<AddEducationController> {
   Widget achievementNameTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.achievementNameController,
+        focusNode: controller.focusNodeForAchievementName,
         labelText: 'Class/Achievement',
         hintText: 'Class/Achievement',
         keyboardType: TextInputType.name,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter achievement name'),
+        prefixIconPath: 'assets/icons/user_icon.png',
+        validator: (value) => V.isValid(value: value, title: 'Please enter achievement name'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -136,12 +145,12 @@ class AddEducationView extends GetView<AddEducationController> {
   Widget universityLocationTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.universityLocationController,
+        focusNode: controller.focusNodeForUniversityLocation,
         labelText: 'University Location',
         hintText: 'University Location',
         keyboardType: TextInputType.name,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter university location'),
+        prefixIconPath: 'assets/icons/user_icon.png',
+        validator: (value) => V.isValid(value: value, title: 'Please enter university location'),
         onChanged: (value) {
           controller.count.value++;
         },
@@ -150,29 +159,29 @@ class AddEducationView extends GetView<AddEducationController> {
   Widget yearTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.yearController,
+        focusNode: controller.focusNodeForYear,
         labelText: 'Year',
         hintText: 'Year',
         keyboardType: TextInputType.name,
-        prefixIcon:
-            commonIconImage(imagePath: 'assets/icons/calender_icon.png'),
+        prefixIconPath: 'assets/icons/calender_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
         onTap: () => controller.clickOnYearTextField(),
         readOnly: true,
         suffixIcon: Icon(Icons.arrow_right, size: 30.px, color: Col.gray),
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please enter year'),
+        validator: (value) => V.isValid(value: value, title: 'Please enter year'),
       );
 
   Widget remarkTextField() => CW.commonTextFieldForMultiline(
         fillColor: Colors.transparent,
         textInputAction: TextInputAction.newline,
         controller: controller.remarkController,
+        focusNode: controller.focusNodeForRemark,
         labelText: 'Remark',
         hintText: 'Remark',
         keyboardType: TextInputType.multiline,
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/user_icon.png'),
+        prefixIconPath: 'assets/icons/user_icon.png',
         onChanged: (value) {
           controller.count.value++;
         },
@@ -180,9 +189,7 @@ class AddEducationView extends GetView<AddEducationController> {
 
   Widget labelTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .titleSmall
-            ?.copyWith(fontWeight: FontWeight.w500),
+        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,color: Col.inverseSecondary),
       );
+
 }

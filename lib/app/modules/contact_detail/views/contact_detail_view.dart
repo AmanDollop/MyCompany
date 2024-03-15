@@ -12,172 +12,166 @@ class ContactDetailView extends GetView<ContactDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      controller.count.value;
-      return WillPopScope(
-        onWillPop: () => controller.clickOnBackButton(),
-        child: GestureDetector(
-          onTap: () {
-            CM.unFocusKeyBoard();
-          },
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: appBarView(),
-            body: Obx(() {
-              controller.count.value;
-              if (controller.apiResponseValue.value) {
-                return Center(
-                  child: CW.commonProgressBarView(color: Col.primary),
-                );
-              } else {
-                return Stack(
-                  alignment: Alignment.bottomCenter,
+    return CW.commonScaffoldBackgroundColor(
+      child: Obx(() {
+        controller.count.value;
+        return SafeArea(
+          child: WillPopScope(
+            onWillPop: () => controller.clickOnBackButton(),
+            child: GestureDetector(
+              onTap: () {
+                CM.unFocusKeyBoard();
+              },
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                // appBar: appBarView(),
+                body: Column(
                   children: [
-                     Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
-                        children: [
-                          AnimatedCrossFade(
-                            crossFadeState: controller.valueForEditFiled.value
-                                ? CrossFadeState.showFirst
-                                : CrossFadeState.showSecond,
-                            duration: const Duration(milliseconds: 500),
-                            firstChild: Form(
-                              key: controller.key,
-                              child: ListView(
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                children: [
-                                  SizedBox(height: 8.px),
-                                  contactTextField(),
-                                  SizedBox(height: 20.px),
-                                  whatsappNumberTextField(),
-                                  SizedBox(height: 20.px),
-                                  companyEmailTextField(),
-                                  SizedBox(height: 20.px),
-                                  personalEmailTextField(),
-                                  SizedBox(height: 20.px),
-                                  currentAddressTextField(),
-                                  SizedBox(height: 10.px),
-                                  if(controller.currentAddressController.text.isNotEmpty)
-                                  Row(
-                                    children: [
-                                      checkBoxForPermanentAddressView(),
-                                      SizedBox(width: 5.px),
-                                      permanentAddressTextView(),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.px),
-                                  permanentAddressTextField(),
-                                  SizedBox(height: 20.px),
-                                ],
+                    appBarView(),
+                    Expanded(
+                      child: Obx(() {
+                        controller.count.value;
+                        if (controller.apiResponseValue.value) {
+                          return Center(
+                            child: CW.commonProgressBarView(color: Col.primary),
+                          );
+                        } else {
+                          return Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                               Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                child: ListView(
+                                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 20.px),
+                                  children: [
+                                    AnimatedCrossFade(
+                                      crossFadeState: controller.valueForEditFiled.value
+                                          ? CrossFadeState.showFirst
+                                          : CrossFadeState.showSecond,
+                                      duration: const Duration(milliseconds: 500),
+                                      firstChild: Form(
+                                        key: controller.key,
+                                        child: ListView(
+                                          shrinkWrap: true,
+                                          physics: const ScrollPhysics(),
+                                          children: [
+                                            SizedBox(height: 8.px),
+                                            contactTextField(),
+                                            SizedBox(height: 20.px),
+                                            whatsappNumberTextField(),
+                                            SizedBox(height: 20.px),
+                                            companyEmailTextField(),
+                                            SizedBox(height: 20.px),
+                                            personalEmailTextField(),
+                                            SizedBox(height: 20.px),
+                                            currentAddressTextField(),
+                                            SizedBox(height: 10.px),
+                                            if(controller.currentAddressController.text.isNotEmpty)
+                                            Row(
+                                              children: [
+                                                checkBoxForPermanentAddressView(),
+                                                SizedBox(width: 5.px),
+                                                permanentAddressTextView(),
+                                              ],
+                                            ),
+                                            SizedBox(height: 10.px),
+                                            permanentAddressTextField(),
+                                            SizedBox(height: 20.px),
+                                          ],
+                                        ),
+                                      ),
+                                      secondChild: ListView(
+                                        shrinkWrap: true,
+                                        physics: const ScrollPhysics(),
+                                        children: [
+                                          commonRowForContactDetailView(
+                                              imagePath: 'assets/icons/contact_phone_icon.png',
+                                              title: 'Contact',
+                                              subTitle: controller.countryCode.value.isNotEmpty || controller.mobileNumber.value.isNotEmpty
+                                                  ? '${controller.countryCode.value} ${controller.mobileNumber}'
+                                                  : 'No Data Available!'),
+                                          SizedBox(height: 5.px),
+                                          commonRowForContactDetailView(
+                                              imagePath: 'assets/icons/contact_phone_icon.png',
+                                              title: 'Whatsapp Number',
+                                              subTitle: controller.countryCode.value.isNotEmpty &&
+                                                      controller.whatsappController.text.isNotEmpty
+                                                  ? '${controller.countryCode} ${controller.whatsappController.text}'
+                                                  : 'No Data Available!'),
+                                          SizedBox(height: 5.px),
+                                          commonRowForContactDetailView(
+                                              imagePath: 'assets/icons/email_icon.png',
+                                              title: 'Company Email',
+                                              subTitle: controller.companyEmailController.text.isNotEmpty
+                                                  ? controller.companyEmailController.text
+                                                  : 'No Data Available!'),
+                                          SizedBox(height: 5.px),
+                                          commonRowForContactDetailView(
+                                              imagePath: 'assets/icons/email_icon.png',
+                                              title: 'Personal Email',
+                                              subTitle: controller.personalEmailController.text.isNotEmpty
+                                                  ? controller.personalEmailController.text
+                                                  : 'No Data Available!'),
+                                          SizedBox(height: 5.px),
+                                          commonRowForContactDetailView(
+                                              imagePath:
+                                                  'assets/icons/current_location_icon.png',
+                                              title: 'Current Address',
+                                              subTitle: controller.currentAddressController.text.isNotEmpty
+                                                  ? controller.currentAddressController.text
+                                                  : 'No Data Available!'),
+                                          SizedBox(height: 5.px),
+                                          commonRowForContactDetailView(
+                                              imagePath: 'assets/icons/location_icon.png',
+                                              title: 'Permanent Address',
+                                              subTitle: controller.permanentAddressController.text.isNotEmpty
+                                                  ? controller.permanentAddressController.text
+                                                  : 'No Data Available!'),
+                                          SizedBox(height: 5.px),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            secondChild: ListView(
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              children: [
-                                commonRowForContactDetailView(
-                                    imagePath: 'assets/icons/contact_phone_icon.png',
-                                    title: 'Contact',
-                                    subTitle: controller.countryCode.value.isNotEmpty || controller.mobileNumber.value.isNotEmpty
-                                        ? '${controller.countryCode.value} ${controller.mobileNumber}'
-                                        : 'No Data Available!'),
-                                SizedBox(height: 5.px),
-                                commonRowForContactDetailView(
-                                    imagePath:
-                                        'assets/icons/contact_phone_icon.png',
-                                    title: 'Whatsapp Number',
-                                    subTitle: controller.countryCode.value.isNotEmpty &&
-                                            controller.whatsappController.text.isNotEmpty
-                                        ? '${controller.countryCode} ${controller.whatsappController.text}'
-                                        : 'No Data Available!'),
-                                SizedBox(height: 5.px),
-                                commonRowForContactDetailView(
-                                    imagePath: 'assets/icons/email_icon.png',
-                                    title: 'Company Email',
-                                    subTitle: controller.companyEmailController.text.isNotEmpty
-                                        ? controller.companyEmailController.text
-                                        : 'No Data Available!'),
-                                SizedBox(height: 5.px),
-                                commonRowForContactDetailView(
-                                    imagePath: 'assets/icons/email_icon.png',
-                                    title: 'Personal Email',
-                                    subTitle: controller.personalEmailController.text.isNotEmpty
-                                        ? controller.personalEmailController.text
-                                        : 'No Data Available!'),
-                                SizedBox(height: 5.px),
-                                commonRowForContactDetailView(
-                                    imagePath:
-                                        'assets/icons/current_location_icon.png',
-                                    title: 'Current Address',
-                                    subTitle: controller.currentAddressController.text.isNotEmpty
-                                        ? controller.currentAddressController.text
-                                        : 'No Data Available!'),
-                                SizedBox(height: 5.px),
-                                commonRowForContactDetailView(
-                                    imagePath: 'assets/icons/location_icon.png',
-                                    title: 'Permanent Address',
-                                    subTitle: controller.permanentAddressController.text.isNotEmpty
-                                        ? controller.permanentAddressController.text
-                                        : 'No Data Available!'),
-                                SizedBox(height: 5.px),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                              if (controller.valueForEditFiled.value)
+                                Container(
+                                  height: 80.px,
+                                  padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: CW.myElevatedButton(
+                                        onPressed: () => controller.clickOnEditUpdateButton(),
+                                        buttonText: 'Save',
+                                      isLoading: controller.saveButtonValue.value
+                                    ),
+                                  ),
+                                )
+                            ],
+                          );
+                        }
+                      }),
                     ),
-                    if (controller.valueForEditFiled.value)
-                      Container(
-                        height: 80.px,
-                        padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
-                        color: Col.inverseSecondary,
-                        child: Center(
-                          child: CW.commonElevatedButton(
-                              onPressed: () => controller.clickOnEditUpdateButton(),
-                              buttonText: 'Save',
-                            isLoading: controller.saveButtonValue.value
-                          ),
-                        ),
-                      )
                   ],
-                );
-              }
-            }),
-            floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
-                ? controller.valueForEditFiled.value
-                ? const SizedBox()
-                : Padding(
-                    padding: EdgeInsets.only(bottom: 10.px),
-                    child: CW.commonOutlineButton(
-                        onPressed: () => controller.clickOnEditViewButton(),
-                        child: Icon(
-                          Icons.edit,
-                          color: Col.inverseSecondary,
-                          size: 22.px,
-                        ),
-                        height: 50.px,
-                        width: 50.px,
-                        backgroundColor: Col.primary,
-                        borderColor: Colors.transparent,
-                        borderRadius: 25.px),
-                  )
-                : const SizedBox(),
+                ),
+                floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
+                    ? controller.valueForEditFiled.value
+                    ? const SizedBox()
+                    : CW.commonFloatingActionButton(icon: Icons.edit, onPressed: () => controller.clickOnEditViewButton(),)
+                    : const SizedBox(),
+              ),
+            ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 
-  AppBar appBarView() => CW.commonAppBarView(
-        title: controller.valueForEditFiled.value
-            ? 'Update ${controller.profileMenuName.value}'
-            : controller.profileMenuName.value,
-        isLeading: true,
-        onBackPressed: () => controller.clickOnBackButton(),
-      );
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Update ${controller.profileMenuName.value}',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget commonIconImageForTextField({required String imagePath, double? height, double? width, Color? imageColor, bool isAssetImage = true}) => SizedBox(
         width: height ?? 24.px,
@@ -195,6 +189,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
   Widget contactTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.contactController,
+        focusNode: controller.focusNodeForContact,
         labelText: 'Contact',
         hintText: 'Contact',
         readOnly: true,
@@ -203,7 +198,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         selectedCountryCode: controller.countryCode.value,
         countryFlagPath: controller.countryImagePath.value,
         clickOnArrowDown: () => controller.clickOnCountryCode(),
-        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/email_icon.png'),
+        prefixIconPath:  'assets/icons/email_icon.png',
         isCountrySelection: true,
         onChanged: (value) {
           controller.count.value++;
@@ -213,6 +208,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
   Widget whatsappNumberTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.whatsappController,
+        focusNode: controller.focusNodeForWhatsapp,
         keyboardType: TextInputType.number,
         labelText: 'Whatsapp Number',
         hintText: 'Whatsapp Number',
@@ -221,7 +217,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         isCountrySelection: true,
         selectedCountryCode: controller.countryCode.value,
         countryFlagPath: controller.countryImagePath.value,
-         prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/email_icon.png'),
+         prefixIconPath:  'assets/icons/email_icon.png',
         clickOnArrowDown: () => controller.clickOnCountryCode(),
         onChanged: (value) {
           controller.count.value++;
@@ -231,14 +227,14 @@ class ContactDetailView extends GetView<ContactDetailController> {
   Widget companyEmailTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.companyEmailController,
+        focusNode: controller.focusNodeForCompanyEmail,
         labelText: 'Company Email',
         hintText: 'Company Email',
         readOnly: true,
         suffixIcon: Icon(Icons.lock, color: Col.gray, size: 20.px),
         keyboardType: TextInputType.emailAddress,
        textCapitalization: TextCapitalization.none,
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/email_icon.png'),
+        prefixIconPath:  'assets/icons/email_icon.png',
         validator: (value) => V.isEmailValid(value: value),
         onChanged: (value) {
           controller.count.value++;
@@ -248,12 +244,12 @@ class ContactDetailView extends GetView<ContactDetailController> {
   Widget personalEmailTextField() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: controller.personalEmailController,
+        focusNode: controller.focusNodeForPersonalEmail,
         labelText: 'Personal Email',
         hintText: 'Personal Email',
         keyboardType: TextInputType.emailAddress,
         textCapitalization: TextCapitalization.none,
-        prefixIcon: commonIconImageForTextField(
-            imagePath: 'assets/icons/email_icon.png'),
+        prefixIconPath: 'assets/icons/email_icon.png',
         validator: (value) => V.isEmailValid(value: value),
         onChanged: (value) {
           controller.count.value++;
@@ -263,15 +259,16 @@ class ContactDetailView extends GetView<ContactDetailController> {
   Widget locationIconView() => Icon(
         Icons.my_location_rounded,
         size: 18.px,
-        color: Col.secondary,
+        color: Col.inverseSecondary,
       );
 
   Widget currentAddressTextField() => CW.commonTextFieldForMultiline(
         fillColor: Colors.transparent,
         controller: controller.currentAddressController,
+        focusNode: controller.focusNodeForCurrentAddress,
         labelText: 'Current Address',
         hintText: 'Current Address',
-        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/current_location_icon.png'),
+        prefixIconPath:  'assets/icons/current_location_icon.png',
         validator: (value) => V.isValid(value: value, title: 'Please enter current address'),
         onChanged: (value) {
           controller.count.value++;
@@ -308,14 +305,15 @@ class ContactDetailView extends GetView<ContactDetailController> {
     ),
   );
 
-  Widget permanentAddressTextView() => Text('Permanent address same as above',style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500));
+  Widget permanentAddressTextView() => Text('Permanent address same as above',style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,color: Col.inverseSecondary));
 
   Widget permanentAddressTextField() => CW.commonTextFieldForMultiline(
         fillColor: Colors.transparent,
         controller: controller.permanentAddressController,
+        focusNode: controller.focusNodeForPermanentAddress,
         labelText: 'Permanent Address',
         hintText: 'Permanent Address',
-        prefixIcon: commonIconImageForTextField(imagePath: 'assets/icons/location_icon.png'),
+        prefixIconPath: 'assets/icons/location_icon.png',
         validator: (value) => V.isValid(value: value, title: 'Please enter permanent address'),
         onChanged: (value) {
           controller.count.value++;
@@ -342,8 +340,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            commonIconImageForTextField(
-                imagePath: imagePath, imageColor: Col.darkGray),
+            commonIconImageForTextField(imagePath: imagePath, imageColor: Col.primary),
             SizedBox(width: 10.px),
             Flexible(
               child: Column(
@@ -353,11 +350,11 @@ class ContactDetailView extends GetView<ContactDetailController> {
                   commonTitleTextView(
                       title: title,
                       textAlign: TextAlign.start,
-                      color: Col.darkGray,
+                      color: Col.gray,
                       fontWeight: FontWeight.w500),
                   SizedBox(height: 6.px),
                   if (subTitle.isNotEmpty)
-                    commonTitleTextView(title: subTitle, textAlign: TextAlign.start, maxLines: 3),
+                    commonTitleTextView(title: subTitle, textAlign: TextAlign.start, maxLines: 3,color: Col.inverseSecondary),
                 ],
               ),
             ),

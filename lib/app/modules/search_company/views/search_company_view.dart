@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/theme/colors/colors.dart';
-
 import '../controllers/search_company_controller.dart';
 
 class SearchCompanyView extends GetView<SearchCompanyController> {
@@ -14,72 +13,79 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-      },
-      child: Scaffold(
-        appBar: CW.commonAppBarView(
-          title: 'Search Company',
-          isLeading: false,
-          titleSpacing: 12.px,
-          onBackPressed: () {},
+    return CW.commonScaffoldBackgroundColor(
+      child: GestureDetector(
+        onTap: () {
+          CM.unFocusKeyBoard();
+        },
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Obx(() {
+              controller.count.value;
+              return Padding(
+                padding: EdgeInsets.all(12.px),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Search Company',
+                      style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 16.px),
+                    ),
+                    SizedBox(height: 16.px),
+                    searchTextField(),
+                    controller.searchController.text.isEmpty
+                        ? Expanded(child: commonSearchImageView())
+                        : controller.apiResponseValue.value
+                            ? Expanded(child: Center(child: CW.commonProgressBarView(color: Col.primary),),)
+                            : controller.searchCompanyList != null && controller.searchCompanyList!.isNotEmpty
+                                ? Expanded(
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.symmetric(vertical: 20.px),
+                                    physics: const BouncingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: controller.searchCompanyList?.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          InkWell(
+                                            onTap: () => controller.clickOnCompany(index: index),
+                                            borderRadius: BorderRadius.circular(6.px),
+                                            child: ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              leading: listTileLeadingLogoView(index: index),
+                                              title: listTileTitleTextView(index: index),
+                                              subtitle: listTileSubTitleTextView(index: index),
+                                            ),
+                                          ),
+                                          CW.commonDividerView()
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                )
+                                : controller.searchController.text.length >= 3
+                                ? Expanded(child: CW.commonNoDataFoundText())
+                                : Expanded(child: commonSearchImageView()),
+                  ],
+                ),
+              );
+            }),
+          ),
         ),
-        body: Obx(() {
-          controller.count.value;
-          return Padding(
-            padding: EdgeInsets.all(12.px),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                searchTextField(),
-                controller.searchController.text.isEmpty
-                    ? commonSearchImageView()
-                    : controller.apiResponseValue.value
-                        ? CW.commonProgressBarView(color: Col.primary)
-                        : controller.searchCompanyList != null && controller.searchCompanyList!.isNotEmpty
-                            ? Expanded(
-                              child: ListView.builder(
-                                padding: EdgeInsets.symmetric(vertical: 20.px),
-                                physics: const BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: controller.searchCompanyList?.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () => controller.clickOnCompany(index: index),
-                                        borderRadius: BorderRadius.circular(6.px),
-                                        child: ListTile(
-                                          contentPadding: EdgeInsets.zero,
-                                          leading: listTileLeadingLogoView(index: index),
-                                          title: listTileTitleTextView(index: index),
-                                          subtitle: listTileSubTitleTextView(index: index),
-                                        ),
-                                      ),
-                                      CW.commonDividerView()
-                                    ],
-                                  );
-                                },
-                              ),
-                            )
-                            : controller.searchController.text.length >= 3? CW.commonNoDataFoundText() : commonSearchImageView(),
-                const SizedBox()
-              ],
-            ),
-          );
-        }),
       ),
     );
   }
 
   Widget searchTextField() => CW.commonTextField(
-        fillColor: Colors.transparent,
+        fillColor: Col.primary.withOpacity(.2),
         controller: controller.searchController,
+        focusNode: controller.focusNodeForSearch,
         isSearchLabelText: true,
         hintText: 'Search your Company',
-        prefixIcon: commonIconImage(imagePath: 'assets/icons/search_icon.png'),
-        suffixIcon: commonIconImage(imagePath: 'assets/icons/audio_icon.png'),
+        prefixIconPath: 'assets/icons/search_icon.png',
+        // suffixIcon: commonIconImage(imagePath: 'assets/icons/audio_icon.png',color: Col.inverseSecondary),
         onChanged: (value) => controller.searchOnChanged(value: value),
       );
 
@@ -91,7 +97,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
             height: 184.px),
       );
 
-  Widget commonIconImage({required String imagePath, bool? isAssetImage, double? width, double? height}) =>
+  Widget commonIconImage({required String imagePath, bool? isAssetImage, double? width, double? height,Color? color}) =>
       SizedBox(
         width: width ?? 24.px,
         height: height ?? 24.px,
@@ -100,7 +106,8 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
               path: imagePath,
               isAssetImage: isAssetImage ?? true,
               width: width ?? 24.px,
-              height: height ?? 24.px),
+              errorImage: 'assets/images/logo.png',
+              height: height ?? 24.px,color: color),
         ),
       );
 
@@ -108,7 +115,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
         height: 50.px,
         width: 50.px,
         decoration: BoxDecoration(
-          color: Col.gray.withOpacity(.6),
+          color: Col.primary,
           borderRadius: BorderRadius.circular(8.px),
         ),
         child: commonIconImage(
@@ -123,7 +130,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
                 controller.searchCompanyList![index].companyName!.isNotEmpty
             ? '${controller.searchCompanyList?[index].companyName}'
             : 'Company Name Not Found!',
-        style: Theme.of(Get.context!).textTheme.titleLarge,
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -133,7 +140,7 @@ class SearchCompanyView extends GetView<SearchCompanyController> {
                 controller.searchCompanyList![index].companyAddress!.isNotEmpty
             ? '${controller.searchCompanyList?[index].companyAddress}'
             : 'Company Address Not Found!',
-        style: Theme.of(Get.context!).textTheme.labelMedium,
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.gray),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       );

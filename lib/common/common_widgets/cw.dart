@@ -6,6 +6,8 @@ import 'package:task/common/common_packages/rating/rating_bar.dart';
 import 'package:task/common/common_packages/read_more/read_more.dart';
 import 'package:task/common/common_packages/scroll_behavior/scroll_behavior.dart';
 import 'package:task/common/common_packages/shimmer/shimmer.dart';
+import 'package:task/common/custom_outline_button.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
 import 'package:flutter/material.dart';
@@ -77,6 +79,171 @@ class CW {
                     .displaySmall
                     ?.copyWith(fontSize: 14.px, color: buttonTextColor),
               ),
+    );
+  }
+
+  static Widget myElevatedButton(
+      {required VoidCallback onPressed,
+      double? height,
+      double? width,
+      double? progressBarHeight,
+      double? progressBarWidth,
+      EdgeInsetsGeometry? margin,
+      EdgeInsetsGeometry? padding,
+      double? borderRadius,
+      Color? splashColor,
+      Color? buttonColor,
+      Color? buttonTextColor,
+      double? elevation,
+      bool isContentSizeButton = true,
+      Widget? child,
+      String? buttonText,
+      bool isLoading = false}) {
+    return Container(
+      height: height ?? 46.px,
+      // margin: margin ?? EdgeInsets.symmetric(horizontal: Zconstant.margin),
+      width: width ?? double.infinity,
+      decoration: BoxDecoration(
+        gradient: commonLinearGradientForButtonsView(),
+        borderRadius: BorderRadius.circular(borderRadius ?? C.radius),
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          elevation: elevation ?? 0.px,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          padding: padding,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? C.radius),
+          ),
+          backgroundColor: buttonColor ?? Colors.transparent,
+          foregroundColor: splashColor ?? Colors.transparent,
+          minimumSize: Size(width ?? double.infinity, height ?? 46.px),
+          shadowColor: Colors.transparent,
+        ),
+        child: isLoading
+            ? Center(
+                child: SizedBox(
+                  height: progressBarHeight ?? 24.px,
+                  width: progressBarWidth ?? 24.px,
+                  child: CW.commonProgressBarView(
+                      color: Col.gBottom, backgroundColor: Col.gray),
+                ),
+              )
+            : child ??
+                Text(
+                  buttonText ?? '',
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(
+                          fontSize: 14.px, color: buttonTextColor ?? Col.text),
+                ),
+      ),
+    );
+  }
+
+  static Widget myOutlinedButton(
+      {required VoidCallback onPressed,
+      double? strokeWidth,
+      double? height,
+      double? width,
+      EdgeInsetsGeometry? margin,
+      EdgeInsetsGeometry? padding,
+      double? radius,
+      bool wantFixedSize = true,
+      double? progressBarHeight,
+      double? progressBarWidth,
+      Widget? child,
+      String? buttonText,
+      bool isLoading = false,
+      Color? buttonTextColor,
+      LinearGradient? linearGradient}) {
+    return wantFixedSize
+        ? SizedBox(
+            height: height ?? 50.px,
+            width: width ?? double.infinity,
+            // margin: margin ?? EdgeInsets.symmetric(horizontal: 20.px),
+            child: CustomOutlineButton(
+              onPressed: onPressed,
+              strokeWidth: strokeWidth ?? 1,
+              radius: radius ?? 25.px,
+              gradient: linearGradient ?? commonLinearGradientForButtonsView(),
+              child: isLoading
+                  ? Center(
+                      child: SizedBox(
+                        height: progressBarHeight ?? 24.px,
+                        width: progressBarWidth ?? 24.px,
+                        child: CW.commonProgressBarView(
+                            color: Col.inverseSecondary,
+                            backgroundColor: Col.gray),
+                      ),
+                    )
+                  : child ??
+                      Text(
+                        buttonText ?? '',
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .displaySmall
+                            ?.copyWith(fontSize: 14.px, color: buttonTextColor),
+                      ),
+            ),
+          )
+        : SizedBox(
+            height: height ?? 50.px,
+            // margin: margin ?? EdgeInsets.symmetric(horizontal: 20.px),
+            child: CustomOutlineButton(
+              onPressed: onPressed,
+              strokeWidth: strokeWidth ?? 1,
+              padding: padding,
+              radius: radius ?? 25.px,
+              gradient: linearGradient ?? commonLinearGradientForButtonsView(),
+              child: isLoading
+                  ? Center(
+                      child: SizedBox(
+                        height: progressBarHeight ?? 24.px,
+                        width: progressBarWidth ?? 24.px,
+                        child: CW.commonProgressBarView(
+                            color: Col.inverseSecondary,
+                            backgroundColor: Col.gray),
+                      ),
+                    )
+                  : child ??
+                      Text(
+                        buttonText ?? '',
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .displaySmall
+                            ?.copyWith(fontSize: 14.px, color: buttonTextColor),
+                      ),
+            ),
+          );
+  }
+
+  static Widget commonFloatingActionButton(
+      {required IconData icon, required VoidCallback onPressed}) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.px),
+      child: Container(
+        height: 50.px,
+        // margin: margin ?? EdgeInsets.symmetric(horizontal: Zconstant.margin),
+        width: 50.px,
+        decoration: BoxDecoration(
+            gradient: commonLinearGradientForButtonsView(),
+            shape: BoxShape.circle),
+        child: CW.commonOutlineButton(
+            onPressed: onPressed,
+            child: Icon(
+              icon,
+              color: Col.inverseSecondary,
+              size: 22.px,
+            ),
+            height: 50.px,
+            width: 50.px,
+            backgroundColor: Colors.transparent,
+            borderColor: Colors.transparent,
+            borderRadius: 25.px),
+      ),
     );
   }
 
@@ -175,8 +342,7 @@ class CW {
     IconData? icon,
     Color? color,
     Color? splashColor,
-  }) =>
-      IconButton(
+  }) => IconButton(
         onPressed: onPressed,
         splashRadius: size != null ? size + 4.px : 24.px,
         icon: imagePath != null && imagePath.isNotEmpty
@@ -200,12 +366,22 @@ class CW {
   /// --------------------------Common Gradiant Button Collection--------------------------
 
   ///Gradiant Section
-  static LinearGradient commonLinearGradientView() => const LinearGradient(
+  static LinearGradient commonLinearGradientView() => LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          Color(0xFFFBAD33),
-          Color(0xFFF2653A),
+          Col.gTop,
+          Col.gBottom,
+        ],
+      );
+
+  static LinearGradient commonLinearGradientForButtonsView() => LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        stops: const [0.0, 0.8],
+        colors: [
+          Col.primary,
+          Col.primaryColor,
         ],
       );
 
@@ -317,7 +493,11 @@ class CW {
         ),
       );
 
-  static commonProgressBarView({Color? color, Color? backgroundColor, double? value,double? strokeWidth}) =>
+  static commonProgressBarView(
+          {Color? color,
+          Color? backgroundColor,
+          double? value,
+          double? strokeWidth}) =>
       CircularProgressIndicator(
         backgroundColor: backgroundColor ?? Col.gray,
         color: color ?? Col.inverseSecondary,
@@ -325,6 +505,24 @@ class CW {
         strokeWidth: strokeWidth ?? 3,
         strokeCap: StrokeCap.round,
       );
+
+  static commonScaffoldBackgroundColor({required Widget child}) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.0, 0.4],
+          tileMode: TileMode.decal,
+          colors: [
+            Col.gTop,
+            Col.gBottom,
+          ],
+        ),
+      ),
+      child: child,
+    );
+  }
 
   /// --------------------------Common TextField Collection--------------------------
   static Widget commonTextField(
@@ -343,6 +541,7 @@ class CW {
       TextCapitalization textCapitalization = TextCapitalization.sentences,
       GestureTapCallback? onTap,
       Widget? prefixIcon,
+      String? prefixIconPath,
       Widget? suffixIcon,
       EdgeInsetsGeometry? contentPadding,
       EdgeInsetsGeometry? suffixPadding,
@@ -360,244 +559,306 @@ class CW {
       bool isUnderlineBorder = false,
       bool isHideText = false,
       bool isCountrySelection = false,
-        FocusNode? focusNode,
+      FocusNode? focusNode,
       VoidCallback? clickOnArrowDown,
       String selectedCountryCode = "",
       String countryFlagPath = "",
       int? maxLength}) {
-    return Theme(
-      data: ThemeData(),
-      child: TextFormField(
-        cursorHeight: cursorHeight,
-        onTap: onTap,
-        focusNode: focusNode,
-        controller: controller,
-        onChanged: keyboardType == TextInputType.number
-            ? (value) {}
-            : onChanged ??
-                (value) {
-                  value = value.trim();
-                  if (value.isEmpty || value.replaceAll(" ", "").isEmpty) {
-                    controller?.text = "";
-                  }
-                },
-        obscureText: isHideText,
-        obscuringCharacter: hideTextCharacter ?? '•',
-        validator: validator,
-        keyboardType: keyboardType,
-        readOnly: readOnly,
-        autofocus: autofocus,
-        inputFormatters: keyboardType == TextInputType.number
-            ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
-            : inputFormatters,
-        textCapitalization: textCapitalization,
-        style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
-        maxLength: maxLength,
-        decoration: isUnderlineBorder
-            ? InputDecoration(
-                labelText: isSearchLabelText ? '' : labelText,
-                errorStyle: errorStyle ??
-                    Theme.of(Get.context!)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(color: Col.error),
-                labelStyle:
-                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                hintText: hintText,
-                fillColor: fillColor ?? Col.inverseSecondary,
-                filled: filled ? true : false,
-                contentPadding: contentPadding ??
-                    EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
-                hintStyle:
-                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                disabledBorder: UnderlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.inverseSecondary, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                border: UnderlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.primary, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(
-                            color: filled
-                                ? initialBorderColor ?? Col.inverseSecondary
-                                : Col.secondary,
-                            width: initialBorderWidth ?? 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                errorBorder: UnderlineInputBorder(
-                  borderSide: isBorder
-                      ? BorderSide(color: Col.error, width: 1.px)
-                      : BorderSide.none,
-                  borderRadius:
-                      BorderRadius.circular(borderRadius ?? C.textFieldRadius),
-                ),
-                constraints: labelText != null && labelText.isNotEmpty
-                    ? null
-                    : BoxConstraints(maxHeight: 38.px),
-                /* suffixIconConstraints: BoxConstraints(maxHeight: 45.px),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Theme(
+          data: ThemeData(),
+          child: Focus(
+            onFocusChange: (hasFocus) {
+              setState(() {
+                // Update label color based on focus
+              });
+            },
+            child: TextFormField(
+              cursorHeight: cursorHeight,
+              onTap: onTap,
+              focusNode: focusNode,
+              controller: controller,
+              onChanged: keyboardType == TextInputType.number
+                  ? (value) {}
+                  : onChanged ?? (value) {
+                        value = value.trim();
+                        if (value.isEmpty || value.replaceAll(" ", "").isEmpty) {
+                          controller?.text = "";
+                        }
+                      },
+              obscureText: isHideText,
+              obscuringCharacter: hideTextCharacter ?? '•',
+              validator: validator,
+              keyboardType: keyboardType,
+              readOnly: readOnly,
+              autofocus: autofocus,
+              inputFormatters: keyboardType == TextInputType.number
+                  ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+                  : inputFormatters,
+              textCapitalization: textCapitalization,
+              style: style ?? Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+              maxLength: maxLength,
+              decoration: isUnderlineBorder
+                  ? InputDecoration(
+                      labelText: isSearchLabelText ? '' : labelText,
+                      errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                      labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                      hintText: hintText,
+                      fillColor: fillColor ?? Colors.transparent,
+                      filled: filled ? true : false,
+                      contentPadding: contentPadding ?? EdgeInsets.only(left: 8.px, right: 8.px, top: 3.px),
+                      hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
+                      disabledBorder: UnderlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(
+                                  color: Col.inverseSecondary, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      border: UnderlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.primary, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(
+                                  color: filled
+                                      ? initialBorderColor ??
+                                          Col.inverseSecondary
+                                      : Col.secondary,
+                                  width: initialBorderWidth ?? 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      errorBorder: UnderlineInputBorder(
+                        borderSide: isBorder
+                            ? BorderSide(color: Col.error, width: 1.px)
+                            : BorderSide.none,
+                        borderRadius: BorderRadius.circular(
+                            borderRadius ?? C.textFieldRadius),
+                      ),
+                      constraints: labelText != null && labelText.isNotEmpty
+                          ? null
+                          : BoxConstraints(maxHeight: 38.px),
+                      /* suffixIconConstraints: BoxConstraints(maxHeight: 45.px),
 
-                  prefixIconConstraints: BoxConstraints(maxHeight: 80.px,minHeight: 80.px),*/
+                    prefixIconConstraints: BoxConstraints(maxHeight: 80.px,minHeight: 80.px),*/
 
-                suffixIcon: Padding(
-                  padding: suffixPadding ?? EdgeInsets.zero,
-                  child: suffixIcon,
-                ),
-                prefixIcon: prefixIcon != null
-                    ? Padding(
-                        padding: prefixPadding ?? EdgeInsets.zero,
-                        child: prefixIcon,
-                      )
-                    : null,
-              )
-            : InputDecoration(
-                counterText: '',
-                labelText: labelText,
-                labelStyle:
-                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                errorStyle: errorStyle ??
-                    Theme.of(Get.context!)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(color: Col.error),
-                hintText: hintText,
-                fillColor: fillColor ?? Col.inverseSecondary,
-                filled: filled,
-                contentPadding:
-                    contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
-                hintStyle:
-                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                disabledBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.gray, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.primary, width: 1.5.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                focusedErrorBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.error, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                border: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.primary, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: isBorder ? BorderSide(
-                            color: filled ? initialBorderColor ?? Col.gray : Col.secondary,
-                            width: initialBorderWidth ?? 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                errorBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.error, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                suffixIcon: suffixIcon != null
-                    ? Padding(
+                      suffixIcon: Padding(
                         padding: suffixPadding ?? EdgeInsets.zero,
                         child: suffixIcon,
-                      )
-                    : null,
-                prefixIcon: prefixIcon != null
-                    ? Padding(
-                        padding: prefixPadding ?? EdgeInsets.zero,
-                        child: isCountrySelection
-                            ? InkWell(
-                                onTap: clickOnArrowDown,
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                child: IntrinsicHeight(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      SizedBox(width: 10.px),
-                                      Icon(Icons.arrow_drop_down,
-                                          size: 26.px, color: Col.gray),
-                                      Center(
-                                        child: CW.commonNetworkImageView(
-                                            path: countryFlagPath,
-                                            isAssetImage: false,
-                                            height: 14.px,
-                                            width: 20.px),
+                      ),
+                      prefixIcon: prefixIcon != null
+                          ? Padding(
+                              padding: prefixPadding ?? EdgeInsets.zero,
+                              child: prefixIcon,
+                            )
+                          : null,
+                    )
+                  : InputDecoration(
+                      counterText: '',
+                      labelText: labelText,
+                      labelStyle: labelStyle ??
+                          Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+                            color: focusNode?.hasFocus == true /*|| (controller?.text != null && controller!.text.isNotEmpty)*/
+                                    ? Col.primary
+                                    : Col.gray,
+                              ),
+                      errorStyle: errorStyle ?? Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                      hintText: hintText,
+                      fillColor: focusNode?.hasFocus == true
+                          ? Col.primary.withOpacity(.1)
+                          : Colors.transparent,
+                      filled: filled,
+                      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px),
+                      hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.inverseSecondary),
+                      disabledBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.gray, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.primary, width: 1.5.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.error, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      border: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.primary, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(
+                                  color: filled
+                                      ? initialBorderColor ?? Col.gray
+                                      : Col.secondary,
+                                  width: initialBorderWidth ?? 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.error, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      suffixIcon: suffixIcon != null
+                          ? Padding(
+                              padding: suffixPadding ?? EdgeInsets.zero,
+                              child: suffixIcon,
+                            )
+                          : null,
+                      prefixIcon: prefixIcon != null
+                          ? Padding(
+                              padding: prefixPadding ?? EdgeInsets.zero,
+                              child: isCountrySelection
+                                  ? InkWell(
+                                      onTap: clickOnArrowDown,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SizedBox(width: 10.px),
+                                            Icon(Icons.arrow_drop_down,
+                                                size: 26.px,
+                                                color:
+                                                    focusNode?.hasFocus == true
+                                                        ? Col.primary
+                                                        : Col.inverseSecondary),
+                                            Center(
+                                              child: CW.commonNetworkImageView(
+                                                  path: countryFlagPath,
+                                                  isAssetImage: false,
+                                                  height: 14.px,
+                                                  width: 20.px),
+                                            ),
+                                            SizedBox(width: 4.px),
+                                            Text(selectedCountryCode,
+                                                style: Theme.of(Get.context!)
+                                                    .textTheme
+                                                    .titleSmall
+                                                    ?.copyWith(
+                                                        color: Col
+                                                            .inverseSecondary)),
+                                            SizedBox(width: 6.px),
+                                            VerticalDivider(
+                                              width: 2,
+                                              indent: 10.px,
+                                              endIndent: 10.px,
+                                              color: Col.inverseSecondary,
+                                              thickness: 1.px,
+                                            ),
+                                            SizedBox(width: 10.px),
+                                          ],
+                                        ),
                                       ),
-                                      SizedBox(width: 4.px),
-                                      Text(selectedCountryCode,
-                                          style: Theme.of(Get.context!)
-                                              .textTheme
-                                              .titleSmall),
-                                      SizedBox(width: 6.px),
-                                      VerticalDivider(
-                                        width: 2,
-                                        indent: 10.px,
-                                        endIndent: 10.px,
-                                        color: Col.secondary,
-                                        thickness: 1.px,
-                                      ),
-                                      SizedBox(width: 10.px),
-                                    ],
+                                    )
+                                  : prefixIconPath != null && prefixIconPath.isNotEmpty
+                                      ? focusNode?.hasFocus == true
+                                          ? SizedBox(
+                                width: 24.px,
+                                height: 24.px,
+                                child: Center(
+                                  child: GradientImageWidget(
+                                    assetPath: prefixIconPath,
+                                    width: 24.px,
+                                    height: 24.px,
                                   ),
                                 ),
                               )
-                            : prefixIcon,
-                      )
-                    : isCountrySelection
-                        ? InkWell(
-                            onTap: clickOnArrowDown,
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            child: IntrinsicHeight(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(width: 10.px),
-                                  Text(selectedCountryCode,
-                                      style: Theme.of(Get.context!)
-                                          .textTheme
-                                          .titleSmall),
-                                  SizedBox(width: 4.px),
-                                  Icon(Icons.keyboard_arrow_down,
-                                      size: 20.px, color: Col.secondary),
-                                  SizedBox(width: 4.px),
-                                  VerticalDivider(
-                                    width: 2,
-                                    indent: 10.px,
-                                    endIndent: 10.px,
-                                    color: Col.secondary,
-                                    thickness: 2.px,
+                                          : commonIconImage(imagePath: prefixIconPath, color: Col.inverseSecondary)
+                                      : prefixIcon,
+                            )
+                          : isCountrySelection
+                              ? InkWell(
+                                  onTap: clickOnArrowDown,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(width: 10.px),
+                                        Text(selectedCountryCode,
+                                            style: Theme.of(Get.context!)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                    color:
+                                                        Col.inverseSecondary)),
+                                        SizedBox(width: 4.px),
+                                        Icon(Icons.keyboard_arrow_down,
+                                            size: 20.px,
+                                            color: focusNode?.hasFocus == true
+                                                ? Col.primary
+                                                : Col.inverseSecondary),
+                                        SizedBox(width: 4.px),
+                                        VerticalDivider(
+                                          width: 2,
+                                          indent: 10.px,
+                                          endIndent: 10.px,
+                                          color: Col.inverseSecondary,
+                                          thickness: 2.px,
+                                        ),
+                                        SizedBox(width: 10.px),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(width: 10.px),
-                                ],
-                              ),
-                            ),
-                          )
-                        : null,
-              ),
-      ),
+                                )
+                              : prefixIconPath != null && prefixIconPath.isNotEmpty
+                               ? focusNode?.hasFocus == true
+                                      ? SizedBox(
+                                          width: 24.px,
+                                          height: 24.px,
+                                          child: Center(
+                                            child: GradientImageWidget(
+                                              assetPath: prefixIconPath,
+                                              width: 24.px,
+                                              height: 24.px,
+                                            ),
+                                          ),
+                                        )
+                                      : commonIconImage(imagePath: prefixIconPath, color: Col.inverseSecondary)
+                                  : prefixIcon,
+                    ),
+            ),
+          ),
+        );
+      },
     );
   }
+
+  static Widget commonIconImage({required String imagePath, Color? color}) =>
+      SizedBox(
+        width: 24.px,
+        height: 24.px,
+        child: Center(
+          child: CW.commonNetworkImageView(
+              path: imagePath,
+              isAssetImage: true,
+              width: 24.px,
+              height: 24.px,
+              color: color),
+        ),
+      );
 
   static Widget commonTextFieldForMultiline({
     String? hintText,
     TextStyle? hintStyle,
+    FocusNode? focusNode,
     String? labelText,
     TextStyle? labelStyle,
     TextStyle? style,
@@ -609,6 +870,7 @@ class CW {
     TextCapitalization textCapitalization = TextCapitalization.sentences,
     GestureTapCallback? onTap,
     Widget? prefixIcon,
+    String? prefixIconPath,
     Widget? suffixIcon,
     EdgeInsetsGeometry? contentPadding,
     EdgeInsetsGeometry? suffixPadding,
@@ -627,82 +889,200 @@ class CW {
     bool filled = true,
     TextInputAction? textInputAction,
   }) {
-    return Theme(
-      data: ThemeData(),
-      child: SizedBox(
-        height: maxHeight,
-        child: Card(
-          elevation: elevation ?? 0.px,
-          margin: EdgeInsets.zero,
-          color: Col.inverseSecondary,
-          shape: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(borderRadius ?? C.textFieldRadius),
-              borderSide: BorderSide.none),
-          child: TextFormField(
-            textInputAction: textInputAction,
-            cursorHeight: cursorHeight,
-            controller: controller,
-            maxLines: maxLines,
-            validator: validator,
-            keyboardType: keyboardType,
-            readOnly: readOnly,
-            autofocus: autofocus,
-            inputFormatters: inputFormatters,
-            textCapitalization: textCapitalization,
-            style: style ?? Theme.of(Get.context!).textTheme.titleLarge,
-            decoration: InputDecoration(
-                labelText: labelText,
-                labelStyle:
-                    labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                errorStyle: Theme.of(Get.context!)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(color: Col.error),
-                hintText: hintText,
-                fillColor: fillColor ?? Col.inverseSecondary,
-                filled: filled,
-                contentPadding: contentPadding ??
-                    EdgeInsets.symmetric(horizontal: 20.px, vertical: 10.px),
-                hintStyle:
-                    hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium,
-                disabledBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.gray, width: 1.px)
-                        : BorderSide.none,
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Theme(
+          data: ThemeData(),
+          child: Focus(
+            onFocusChange: (hasFocus) {
+              setState(() {
+                // Update label color based on focus
+              });
+            },
+            child: SizedBox(
+              height: maxHeight,
+              child: Card(
+                elevation: elevation ?? 0.px,
+                margin: EdgeInsets.zero,
+                color: Colors.transparent,
+                shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                border: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.primary, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(
-                            color: filled
-                                ? initialBorderColor ?? Col.gray
-                                : Col.secondary,
-                            width: initialBorderWidth ?? 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                errorBorder: OutlineInputBorder(
-                    borderSide: isBorder
-                        ? BorderSide(color: Col.error, width: 1.px)
-                        : BorderSide.none,
-                    borderRadius: BorderRadius.circular(
-                        borderRadius ?? C.textFieldRadius)),
-                suffixIcon: suffixIcon != null
-                    ? Padding(
-                        padding: suffixPadding ?? EdgeInsets.zero,
-                        child: suffixIcon,
+                        borderRadius ?? C.textFieldRadius),
+                    borderSide: BorderSide.none),
+                child: TextFormField(
+                  textInputAction: textInputAction,
+                  cursorHeight: cursorHeight,
+                  focusNode: focusNode,
+                  controller: controller,
+                  maxLines: maxLines,
+                  validator: validator,
+                  keyboardType: keyboardType,
+                  readOnly: readOnly,
+                  autofocus: autofocus,
+                  inputFormatters: inputFormatters,
+                  textCapitalization: textCapitalization,
+                  style: style ?? Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
+                  decoration: InputDecoration(
+                      labelText: labelText,
+                      labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+                                color: focusNode?.hasFocus == true /*|| (controller?.text != null && controller!.text.isNotEmpty)*/ ? Col.primary : Col.gray,
+                              ),
+                      errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
+                      hintText: hintText,
+                      fillColor: focusNode?.hasFocus == true
+                          ? Col.primary.withOpacity(.1)
+                          : Colors.transparent,
+                      filled: filled,
+                      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20.px, vertical: 10.px),
+                      hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.inverseSecondary),
+                      disabledBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.gray, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.primary, width: 1.5.px)
+                              : BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              borderRadius ?? C.textFieldRadius)),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderSide: isBorder
+                              ? BorderSide(color: Col.error, width: 1.px)
+                              : BorderSide.none,
+                          borderRadius:
+                              BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      border: OutlineInputBorder(borderSide: isBorder ? BorderSide(color: Col.primary, width: 1.px) : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      enabledBorder: OutlineInputBorder(borderSide: isBorder ? BorderSide(color: filled ? initialBorderColor ?? Col.gray : Col.secondary, width: initialBorderWidth ?? 1.px) : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      errorBorder: OutlineInputBorder(borderSide: isBorder ? BorderSide(color: Col.error, width: 1.px) : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      suffixIcon: suffixIcon != null
+                          ? Padding(
+                              padding: suffixPadding ?? EdgeInsets.zero,
+                              child: suffixIcon,
+                            )
+                          : null,
+                      prefixIcon: prefixIconPath != null && prefixIconPath.isNotEmpty ?
+                      focusNode?.hasFocus == true
+                          ? SizedBox(
+                        width: 24.px,
+                        height: 24.px,
+                        child: Center(
+                          child: GradientImageWidget(
+                            assetPath: prefixIconPath,
+                            width: 24.px,
+                            height: 24.px,
+                          ),
+                        ),
                       )
-                    : null,
-                prefixIcon: prefixIcon),
+                          : commonIconImage(
+                          imagePath: prefixIconPath,
+                          color: Col.inverseSecondary) : prefixIcon),
+                ),
+              ),
+            ),
           ),
-        ),
+        );
+      },
+    );
+  }
+
+  static myAppBarView(
+      {VoidCallback? onActionButtonPressed,
+      String? actionButtonImagePath,
+      bool actionValue = false,
+      bool homeValue = false,
+      VoidCallback? onLeadingPressed,
+      String? leadingButtonImagePath,
+      required String title,
+      EdgeInsetsGeometry? padding,
+      Widget? action}) {
+    return Padding(
+      padding: padding ?? EdgeInsets.only(bottom: 24.px),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              homeValue
+                  ? InkWell(
+                      onTap: onLeadingPressed,
+                      child: CW.commonNetworkImageView(
+                          path: 'assets/icons/drawer_menu_icon.png',
+                          isAssetImage: true,
+                          height: 24.px,
+                          width: 24.px,
+                          color: Col.inverseSecondary),
+                    )
+                  : Container(
+                      height: 44.px,
+                      width: 44.px,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: const [0.0, 0.8],
+                          colors: [
+                            Col.primary,
+                            Col.primaryColor,
+                          ],
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: IconButton(
+                          onPressed: onLeadingPressed,
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            maximumSize: Size(40.px, 40.px),
+                          ),
+                          splashRadius: 24.px,
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: Col.text,
+                            size: 22.px,
+                          ),
+                        ),
+                      ),
+                    ),
+              SizedBox(width: 16.px),
+              if (homeValue)
+                CW.commonNetworkImageView(
+                    path: 'assets/images/logo.png',
+                    isAssetImage: true,
+                    height: 24.px,
+                    width: 24.px),
+              if (homeValue) SizedBox(width: 5.px),
+              Text(
+                title,
+                style: Theme.of(Get.context!)
+                    .textTheme
+                    .displaySmall
+                    ?.copyWith(fontSize: 16.px),
+              ),
+            ],
+          ),
+          if (actionValue)
+            action ??
+                SizedBox(
+                  height: 44.px,
+                  width: 44.px,
+                  child: Center(
+                    child: InkWell(
+                      onTap: onActionButtonPressed,
+                      borderRadius: BorderRadius.circular(22.px),
+                      child: Center(
+                        child: CW.commonNetworkImageView(
+                            path: actionButtonImagePath ?? '',
+                            isAssetImage: true,
+                            width: 20.px,
+                            height: 24.px),
+                      ),
+                    ),
+                  ),
+                )
+        ],
       ),
     );
   }
@@ -1262,9 +1642,10 @@ class CW {
   }) =>
       Radio(
         toggleable: true,
-        // fillColor: MaterialStateProperty.all(focusColor?? Col.primary),
-        overlayColor: MaterialStateProperty.all(focusColor?? Col.gray),
-        focusColor: focusColor ?? Col.gray,
+        fillColor: MaterialStateProperty.all(focusColor ?? Col.primary),
+        overlayColor:
+            MaterialStateProperty.all(focusColor ?? Col.inverseSecondary),
+        focusColor: focusColor ?? Col.inverseSecondary,
         activeColor: activeColor ?? Col.primary,
         value: index,
         groupValue: selectedIndex,
@@ -1297,7 +1678,8 @@ class CW {
         checkColor: checkColor ?? Col.inverseSecondary,
         splashRadius: 24.px,
         side: BorderSide(color: borderColor ?? Col.darkGray, width: 1.px),
-        shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
+        shape: shape ??
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
       );
 
   static Widget commonDividerView({
@@ -1325,7 +1707,7 @@ class CW {
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         return Material(
-          color: Col.primary.withOpacity(.6),
+          color: Col.primary.withOpacity(.2),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.px),
             child: Center(
@@ -1375,7 +1757,8 @@ class CW {
           String? userShortName,
           Color? userShortNameColor,
           Color? userShortNameBackgroundColor,
-          bool errorImageValue = false, bool userShortNameValue = false}) =>
+          bool errorImageValue = false,
+          bool userShortNameValue = false}) =>
       InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius ?? 0.px),
@@ -1395,7 +1778,8 @@ class CW {
                   width: width,
                   color: color,
                   fit: fit,
-                  loadingBuilder: loadingBuilder ?? (context, child, loadingProgress) {
+                  loadingBuilder: loadingBuilder ??
+                      (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return CW.commonShimmerViewForImage(
                             height: height,
@@ -1412,13 +1796,14 @@ class CW {
                         width: width,
                         // margin: EdgeInsets.zero,
                         decoration: BoxDecoration(
-                            color: userShortNameBackgroundColor ?? Col.primary,
+                            gradient: commonLinearGradientForButtonsView(),
+                            // color: userShortNameBackgroundColor ?? Col.primary,
                             // shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.px)),
                         child: Center(
                           child: Text(
                             userShortName ?? "",
-                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.inverseSecondary,fontSize: userShortNameValue ? 30.px:14.px ),
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.inverseSecondary, fontSize: userShortNameValue ? 30.px : 14.px),
                           ),
                         ),
                       );
@@ -1640,17 +2025,18 @@ class CW {
       Color? imageColor}) {
     return CachedNetworkImage(
       imageUrl: path,
-      imageBuilder: (context, imageProvider) => Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius ?? 0.px),
-          image: DecorationImage(
-            image: imageProvider,
-            fit: fit,
-          ),
-        ),
-      ),
+      color: imageColor,
+      // imageBuilder: (context, imageProvider) => Container(
+      //   height: height,
+      //   width: width,
+      //   decoration: BoxDecoration(
+      //     borderRadius: BorderRadius.circular(radius ?? 0.px),
+      //     image: DecorationImage(
+      //       image: imageProvider,
+      //       fit: fit,
+      //     ),
+      //   ),
+      // ),
       placeholder: loadingBuilder ??
           (context, url) {
             return CW.commonShimmerViewForImage(
@@ -1750,23 +2136,25 @@ class CustomRadio<T> extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: groupValue == value ? Col.primary :activeColor,width: 2.px),
+          border: Border.all(
+              color: groupValue == value ? Col.primary : activeColor,
+              width: 2.px),
         ),
         child: Padding(
           padding: EdgeInsets.all(2.px),
           child: groupValue == value
               ? Container(
-            width: 8.px,
-            height: 8.px,
-            decoration:  BoxDecoration(
-              shape: BoxShape.circle,
-              color: Col.primary,
-            ),
-          )
+                  width: 8.px,
+                  height: 8.px,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Col.primary,
+                  ),
+                )
               : SizedBox(
-            height: 8.px,
-            width: 8.px,
-          ),
+                  height: 8.px,
+                  width: 8.px,
+                ),
         ),
       ),
     );

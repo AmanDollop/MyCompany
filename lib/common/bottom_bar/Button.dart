@@ -153,30 +153,12 @@ class _ButtonState extends State<Button> with TickerProviderStateMixin {
                               child: Opacity(
                                 opacity: _expanded
                                     ? pow(expandController.value, 13) as double
-                                    : expandController
-                                        .drive(
-                                          CurveTween(curve: Curves.easeIn),
-                                        )
-                                        .value,
+                                    : expandController.drive(CurveTween(curve: Curves.easeIn),).value,
                                 child: Padding(
                                   padding: EdgeInsets.only(
                                       left: widget.gap! +
-                                          8 -
-                                          (8 *
-                                              expandController
-                                                  .drive(
-                                                    CurveTween(
-                                                        curve:
-                                                            Curves.easeOutSine),
-                                                  )
-                                                  .value),
-                                      right: 8 *
-                                          expandController
-                                              .drive(
-                                                CurveTween(
-                                                    curve: Curves.easeOutSine),
-                                              )
-                                              .value),
+                                          8 - (8 * expandController.drive(CurveTween(curve: Curves.easeOutSine),).value),
+                                      right: 8 * expandController.drive(CurveTween(curve: Curves.easeOutSine),).value),
                                   child: widget.text,
                                 ),
                               ),

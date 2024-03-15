@@ -21,9 +21,17 @@ class AddEducationController extends GetxController {
   final educationAchievementId = ''.obs;
 
   final achievementNameController = TextEditingController();
+  FocusNode focusNodeForAchievementName = FocusNode();
+
   final universityLocationController = TextEditingController();
+  FocusNode focusNodeForUniversityLocation = FocusNode();
+
   final yearController = TextEditingController();
+  FocusNode focusNodeForYear = FocusNode();
+
   final remarkController = TextEditingController();
+  FocusNode focusNodeForRemark = FocusNode();
+
 
   final sendAddRequestButtonValue = false.obs;
   Map<String, dynamic> bodyParams = {};

@@ -12,126 +12,128 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      controller.count.value;
-      return Drawer(
-        width: 75.w,
-        shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.only(bottomRight: Radius.circular(20.px))),
-        backgroundColor: Col.scaffoldBackgroundColor,
-        child: ListView(
-          physics: const ScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            // SizedBox(height: 16.px),
-            Stack(
-              alignment: Alignment.center,
+    return CW.commonScaffoldBackgroundColor(
+      child: Obx(() {
+        controller.count.value;
+        return Drawer(
+          width: 75.w,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(20.px))),
+          backgroundColor: Colors.transparent,
+          child: SafeArea(
+            child: ListView(
+              physics: const ScrollPhysics(),
+              padding: EdgeInsets.zero,
               children: [
-                CW.commonNetworkImageView(
-                    path: 'assets/images/drawer_view_back_image.png',
-                    isAssetImage: true,
-                    height: 142.px,
-                    width: double.infinity),
-                Padding(
-                  padding: EdgeInsets.only(top: 24.px),
-                  child: InkWell(
-                    onTap: () => controller.clickOnUserProfileView(),
-                    borderRadius: BorderRadius.circular(8.px),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.px),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          userProfileView(),
-                          // SizedBox(width: 10.px),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                userNameTextView(
-                                    text: controller.userFullName.value != 'null' && controller.userFullName.value.isNotEmpty
-                                        ? controller.userFullName.value
-                                        : 'Employee Name',
-                                    color: Col.inverseSecondary,
-                                    fontSize: 16.px),
-                                SizedBox(height: 2.px),
-                                userDetailTextView(
-                                  text: controller.developer.value != 'null' && controller.developer.value.isNotEmpty
-                                      ? controller.developer.value
-                                      : 'Designation',
+                // SizedBox(height: 16.px),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // CW.commonNetworkImageView(
+                    //     path: 'assets/images/drawer_view_back_image.png',
+                    //     isAssetImage: true,
+                    //     height: 142.px,
+                    //     width: double.infinity),
+                    Padding(
+                      padding: EdgeInsets.only(top: 12.px),
+                      child: InkWell(
+                        onTap: () => controller.clickOnUserProfileView(),
+                        borderRadius: BorderRadius.circular(8.px),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12.px),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              userProfileView(),
+                              // SizedBox(width: 10.px),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    userNameTextView(
+                                        text: controller.userFullName.value != 'null' && controller.userFullName.value.isNotEmpty
+                                            ? controller.userFullName.value
+                                            : 'Employee Name',
+                                        color: Col.inverseSecondary,
+                                        fontSize: 16.px),
+                                    SizedBox(height: 2.px),
+                                    userDetailTextView(
+                                      text: controller.developer.value != 'null' && controller.developer.value.isNotEmpty
+                                          ? controller.developer.value
+                                          : 'Designation',
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Icon(
+                                Icons.keyboard_arrow_right,
+                                color: Col.inverseSecondary,
+                                size: 24.px,
+                              )
+                            ],
                           ),
-                          Icon(
-                            Icons.keyboard_arrow_right,
-                            color: Col.inverseSecondary,
-                            size: 24.px,
-                          )
-                        ],
+                        ),
                       ),
                     ),
+                  ],
+                ),
+                SizedBox(height: 10.px),
+                CW.commonDividerView(color: Col.gray.withOpacity(.4), wight: 1.px),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 10.px),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      companyTextView(),
+                      SizedBox(width: 6.px),
+                      Flexible(
+                        child: userNameTextView(
+                            text: controller.getCompanyDetails?.companyName != null && controller.getCompanyDetails!.companyName!.isNotEmpty
+                                ? '${controller.getCompanyDetails?.companyName}'
+                                : 'Company Name',
+                            fontSize: 14.px,
+                            color: Col.primary,
+                            maxLines: 2,
+                            textAlign: TextAlign.end),
+                      )
+                    ],
                   ),
                 ),
+                CW.commonDividerView(color: Col.gray.withOpacity(.4), wight: 1.px),
+                ListView.builder(
+                  padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: controller.iconList.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () => controller.clickOnList(index: index),
+                      borderRadius: BorderRadius.circular(6.px),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.px, horizontal: 12.px),
+                        child: Row(
+                          children: [
+                            CW.commonNetworkImageView(
+                                path: controller.iconList[index],
+                                isAssetImage: true,
+                                height: 22.px,
+                                width: 22.px,
+                                color: Col.primary),
+                            SizedBox(width: 12.px),
+                            titleTextView(text: controller.titleList[index])
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
               ],
             ),
-            SizedBox(height: 10.px),
-            CW.commonDividerView(color: Col.gray.withOpacity(.4), wight: 1.px),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 10.px),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  companyTextView(),
-                  SizedBox(width: 6.px),
-                  Flexible(
-                    child: userNameTextView(
-                        text: controller.getCompanyDetails?.companyName != null && controller.getCompanyDetails!.companyName!.isNotEmpty
-                            ? '${controller.getCompanyDetails?.companyName}'
-                            : 'Company Name',
-                        fontSize: 14.px,
-                        color: Col.primary,
-                        maxLines: 2,
-                        textAlign: TextAlign.end),
-                  )
-                ],
-              ),
-            ),
-            CW.commonDividerView(color: Col.gray.withOpacity(.4), wight: 1.px),
-            ListView.builder(
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: controller.iconList.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () => controller.clickOnList(index: index),
-                  borderRadius: BorderRadius.circular(6.px),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10.px, horizontal: 12.px),
-                    child: Row(
-                      children: [
-                        CW.commonNetworkImageView(
-                            path: controller.iconList[index],
-                            isAssetImage: true,
-                            height: 22.px,
-                            width: 22.px,
-                            color: Col.darkGray.withOpacity(.8)),
-                        SizedBox(width: 12.px),
-                        titleTextView(text: controller.titleList[index])
-                      ],
-                    ),
-                  ),
-                );
-              },
-            )
-          ],
-        ),
-      );
-    });
+          ),
+        );
+      }),
+    );
   }
 
   Widget userProfileView() => Container(
@@ -139,7 +141,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
         height: 72.px,
         margin: EdgeInsets.only(right: 12.px),
         decoration: BoxDecoration(
-            color:  Col.inverseSecondary,
+             gradient: CW.commonLinearGradientForButtonsView(),
             shape: BoxShape.circle),
         child:  Center(
                 child: ClipRRect(
@@ -149,12 +151,10 @@ class DrawerViewView extends GetView<DrawerViewController> {
                       isAssetImage: false,
                       width: 66.px,
                       height: 66.px,
-                    userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
+                      userShortName: controller.userShortName.value != 'null' && controller.userShortName.value.isNotEmpty
                         ? controller.userShortName.value
                         : '?',
                     errorImageValue: true,
-                    userShortNameBackgroundColor: Col.inverseSecondary,
-                    userShortNameColor: Col.primary
                   ),
                 ),
               ),
@@ -165,8 +165,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
           Color? color,
           int? maxLines,
           TextAlign? textAlign,
-          double? fontSize}) =>
-      Text(
+          double? fontSize}) => Text(
         text,
         style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(
             color: color,
@@ -180,10 +179,7 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   Widget userDetailTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .titleLarge
-            ?.copyWith(color: Col.inverseSecondary),
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.gray),
         maxLines: 2,
         textAlign: TextAlign.start,
         overflow: TextOverflow.ellipsis,
@@ -191,16 +187,16 @@ class DrawerViewView extends GetView<DrawerViewController> {
 
   Widget companyTextView() => Text(
         'Company',
-        style: Theme.of(Get.context!).textTheme.titleLarge,
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
         maxLines: 2,
         textAlign: TextAlign.start,
       );
 
   Widget titleTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600, color: Col.darkGray.withOpacity(.8)),
+        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: Col.inverseSecondary),
         maxLines: 1,
         textAlign: TextAlign.start,
       );
+
 }

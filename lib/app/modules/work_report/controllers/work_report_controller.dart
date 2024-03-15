@@ -115,7 +115,6 @@ class WorkReportController extends GetxController {
         }else {
           isLastPage.value = true;
         }
-
       }
     }catch(e){
       CM.error();

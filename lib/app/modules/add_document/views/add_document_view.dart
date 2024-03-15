@@ -7,6 +7,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
 import '../controllers/add_document_controller.dart';
@@ -16,52 +17,67 @@ class AddDocumentView extends GetView<AddDocumentController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => CM.unFocusKeyBoard(),
-      child: Scaffold(
-        appBar: CW.commonAppBarView(
-            title: 'Document',
-            isLeading: true,
-            onBackPressed: () => controller.clickOnBackButton()),
-        body: Obx(() {
-          controller.count.value;
-          print('imageFile::: ${controller.imageFile.value}');
-          return AC.isConnect.value
-              ? Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
-            child: Form(
-              key: controller.key,
-              child: Column(
-                children: [
-                  docNameTextFormFiled(),
-                  SizedBox(height: 10.px),
-                  remarkTextFormFiled(),
-                  SizedBox(height: 10.px),
-                  attachFile(),
-                  const Spacer(),
-                  CW.commonElevatedButton(
-                    onPressed:controller.addButtonValue.value? () => null : () => controller.clickOnAddAndUpdateButton(),
-                    buttonText: 'Add',
-                    buttonColor: controller.imageFile.value == null
-                        ? Col.primary.withOpacity(.5)
-                        : Col.primary,
-                    isLoading: controller.addButtonValue.value
-                  ),
-                  SizedBox(height: 20.px),
-                ],
-              ),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () => CM.unFocusKeyBoard(),
+          child: Scaffold(
+            // appBar: CW.commonAppBarView(
+            //     title: 'Document',
+            //     isLeading: true,
+            //     onBackPressed: () => controller.clickOnBackButton()),
+            body: Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: Obx(() {
+                    controller.count.value;
+                    print('imageFile::: ${controller.imageFile.value}');
+                    return AC.isConnect.value
+                        ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
+                      child: Form(
+                        key: controller.key,
+                        child: Column(
+                          children: [
+                            docNameTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            remarkTextFormFiled(),
+                            SizedBox(height: 10.px),
+                            attachFile(),
+                            const Spacer(),
+                            if(controller.imageFile.value != null)
+                            CW.myElevatedButton(
+                              onPressed:controller.addButtonValue.value? () => null : () => controller.clickOnAddAndUpdateButton(),
+                              buttonText: 'Add',
+                              isLoading: controller.addButtonValue.value
+                            ),
+                            SizedBox(height: 20.px),
+                          ],
+                        ),
+                      ),
+                    ) : CW.commonNoNetworkView();
+                  }),
+                ),
+              ],
             ),
-          )
-              : CW.commonNoNetworkView();
-        }),
+          ),
+        ),
       ),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Document',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget docNameTextFormFiled() => CW.commonTextField(
         labelText: 'Enter Document Name',
         hintText: 'Enter Document Name',
         controller: controller.docNameController,
+        focusNode: controller.focusNodeForDocName,
         validator: (value) => V.isValid(value: value, title: 'Please enter doc name'),
       );
 
@@ -69,6 +85,7 @@ class AddDocumentView extends GetView<AddDocumentController> {
       labelText: 'Remark',
       hintText: 'Remark',
       controller: controller.remarkController,
+      focusNode: controller.focusNodeForRemark,
       maxLines: 3);
 
   Widget attachFile() {
@@ -128,15 +145,15 @@ class AddDocumentView extends GetView<AddDocumentController> {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CW.commonNetworkImageView(
-                          path: 'assets/icons/attach_file_icon.png',
-                          isAssetImage: true,
+                      GradientImageWidget(
+                          assetPath: 'assets/icons/attach_file_icon.png',
+                          // isAssetImage: true,
                           width: 24.px,
                           height: 24.px),
                       SizedBox(width: 10.px),
                       Text(
                         'Attach File',
-                        style: Theme.of(Get.context!).textTheme.titleMedium,
+                        style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.inverseSecondary),
                       )
                     ],
                   ),

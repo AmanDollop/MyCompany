@@ -22,8 +22,8 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         // key: controller.scaffoldKey,
         drawerEdgeDragWidth: 30.w,
         drawer: const DrawerViewView(),
-        backgroundColor: Col.inverseSecondary,
-        appBar: selectedBottomNavigationIndex.value == 0
+        backgroundColor: Colors.transparent,
+        /*appBar: selectedBottomNavigationIndex.value == 0
             ? CW.commonAppBarView(
             homeAppBarValue: true,
             title: 'Hello, ${controller.userFullName.value.isNotEmpty?controller.userFullName.value:'Employee Name'}',
@@ -66,14 +66,14 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
                     title: 'Menu',
                     isLeading: true,
                     onBackPressed: () => controller.willPop(pageIndex: 2),
-                  ),
+                  ),*/
         body: controller.pageCalling(
           selectedIndex: selectedBottomNavigationIndex.value.toInt(),
         ),
         bottomNavigationBar: scrollPositionBottomNavigationValue.value <= 100
             ? Container(
                 decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
+                  color: Col.gTop,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(24.px),
                       topRight: Radius.circular(24.px)),
@@ -85,10 +85,10 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
                   ],
                 ),
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      top: 12.px, bottom: 14.px, left: 20.px, right: 20.px),
+                  padding: EdgeInsets.only(top: 12.px, bottom: 14.px, left: 20.px, right: 20.px),
                   child: GNav(
                     padding: EdgeInsets.zero,
+                    // backgroundColor: Colors.red,
                     duration: const Duration(milliseconds: 50),
                     tabBackgroundColor: Col.primary.withOpacity(.1),
                     tabs: [
@@ -96,12 +96,10 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
                         textSize: 20,
                         icon: selectedBottomNavigationIndex.value == 0
                             ? selectedCommonButtonView(
-                                imagePath:
-                                    'assets/bottom_bar_icons/dark_home_icon.png',
+                                imagePath: 'assets/bottom_bar_icons/dark_home_icon.png',
                                 title: 'Home')
                             : unSelectedCommonButtonView(
-                                imagePath:
-                                    'assets/bottom_bar_icons/light_home_icon.png',
+                                imagePath: 'assets/bottom_bar_icons/light_home_icon.png',
                                 title: 'Home'),
                       ),
                       GButton(
@@ -140,20 +138,33 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
     });
   }
 
-  Widget selectedCommonButtonView({required String imagePath, required String title}) =>
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 18.px, vertical: 12.px),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              imagePath,
-              width: 20.px,
-              height: 20.px,
-            ),
-            SizedBox(width: 14.px),
-            selectedTitleTextView(title: title),
-          ],
+  Widget selectedCommonButtonView({required String imagePath, required String title}) => Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xff75EEC3),
+              Color(0xff6AE8F7),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(25.px),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18.px, vertical: 12.px),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                imagePath,
+                width: 20.px,
+                height: 20.px,
+                color: Col.gBottom,
+              ),
+              SizedBox(width: 14.px),
+              selectedTitleTextView(title: title,),
+            ],
+          ),
         ),
       );
 
@@ -161,7 +172,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         style: Theme.of(Get.context!)
             .textTheme
             .titleLarge
-            ?.copyWith(fontWeight: FontWeight.w700, color: Col.primary),
+            ?.copyWith(fontWeight: FontWeight.w700, color: Col.gBottom),
         title,
       );
 

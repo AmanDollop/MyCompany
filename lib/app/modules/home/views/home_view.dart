@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/app/app_controller/ac.dart';
-import 'package:task/app/modules/bottom_navigation/views/bottom_navigation_view.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -19,144 +18,146 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
-      child: Scaffold(
-        backgroundColor: Col.inverseSecondary,
-        body: Obx(() {
-          controller.count.value;
-          return NotificationListener(
-            onNotification: (scrollNotification) {
-              /* if (scrollNotification is ScrollEndNotification) {
-                 scrollPositionBottomNavigationValue.value = controller.scrollController.value.position.pixels;
-                   controller.count.value++;
-              }*/
-              return false;
-            },
-            child: CW.commonRefreshIndicator(
-              onRefresh: () async {
-                controller.apiResValue.value = true;
-                controller.isHeadingMenuList.clear();
-                await controller.onInit();
+      child: CW.commonScaffoldBackgroundColor(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Obx(() {
+            controller.count.value;
+            return NotificationListener(
+              onNotification: (scrollNotification) {
+                /* if (scrollNotification is ScrollEndNotification) {
+                   scrollPositionBottomNavigationValue.value = controller.scrollController.value.position.pixels;
+                     controller.count.value++;
+                }*/
+                return false;
               },
-              child: ModalProgress(
-                inAsyncCall: controller.apiResValue.value,
-                child: ListView(
-                  controller: controller.scrollController.value,
-                  padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 0.px),
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12.px),
-                      padding: EdgeInsets.zero,
-                      decoration: BoxDecoration(
-                          color: Col.inverseSecondary,
-                          borderRadius: BorderRadius.circular(10.px),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Col.primary.withOpacity(.1),
-                                // blurRadius: 1,
-                              spreadRadius: 2,
-                              blurRadius: 4,
-                              // offset: const Offset(0, 3),
-                            )
-                          ],
-                      ),
-                      child: punchInAndPunchOutView(),
-                    ),
-                    controller.apiResValue.value
-                        ? Padding(
-                          padding:EdgeInsets.only(top: 16.px),
-                          child: menusListViewForShimmer(),
-                        )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (controller.hideBanner.value)
-                                SizedBox(height: 16.px),
-                              if (controller.hideBanner.value)
-                              bannerView(),
-                              SizedBox(height: 16.px),
-                              appMenusListView(),
-                              if(AC.isConnect.value)
-                                Column(
+              child: SafeArea(
+                child: CW.commonRefreshIndicator(
+                  onRefresh: () async {
+                    controller.apiResValue.value = true;
+                    controller.isHeadingMenuList.clear();
+                    await controller.onInit();
+                  },
+                  child: ModalProgress(
+                    inAsyncCall: controller.apiResValue.value,
+                    child: ListView(
+                      controller: controller.scrollController.value,
+                      // padding: EdgeInsets.symmetric(vertical: 0.px, horizontal: 0.px),
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 6.px,bottom: 6.px, left: 12.px,right: 6.px),
+                          child: CW.myAppBarView(
+                            padding: EdgeInsets.zero,
+                            title: 'Hello, ${controller.userData?.personalInfo?.userFullName != null && controller.userData!.personalInfo!.userFullName!.isNotEmpty ? controller.userData?.personalInfo?.userFullName : 'Employee Name'}',
+                            onLeadingPressed: () {Scaffold.of(context).openDrawer();},
+                            homeValue: true,
+                            actionValue: true,
+                            actionButtonImagePath: 'assets/icons/notification_icon.png',
+                            onActionButtonPressed: () => controller.clickOnNotificationButton(),
+                          ),
+                        ),
+                        SizedBox(height: 10.px),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 12.px),
+                          padding: EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                            color: Col.gCardColor,
+                            borderRadius: BorderRadius.circular(10.px),
+                            border: Border.all(color: Col.primary, width: .3.px),
+                          ),
+                          child: punchInAndPunchOutView(),
+                        ),
+                        controller.apiResValue.value
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 16.px),
+                                child: menusListViewForShimmer(),
+                              )
+                            : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (controller.hideUpcomingCelebration.value)
-                                   SizedBox(height: 16.px),
-                                  if (controller.hideUpcomingCelebration.value)
-                                   upcomingCelebrationsButtonView(),
-                                  if (controller.hideMyTeam.value)
-                                  if(controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
-                                   SizedBox(height: 14.px),
-                                  if (controller.hideMyTeam.value)
-                                  if(controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
-                                   myTeamListView(),
-                                  if (controller.hideMyReportingPerson.value)
-                                  if(controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
-                                   SizedBox(height: 14.px),
-                                  if (controller.hideMyReportingPerson.value)
-                                  if(controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
-                                   reportingPersonListView(),
-                                  if (controller.hideMyDepartment.value)
-                                  if(controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
-                                   SizedBox(height: 14.px),
-                                  if (controller.hideMyDepartment.value)
-                                  if(controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
-                                   yourDepartmentListView(),
-                                  if (controller.hideGallery.value)
-                                   Padding(
-                                      padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          cardTextView(text: 'Gallery', fontSize: 16.px),
-                                          viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
-                                        ],
-                                      ),
-                                    ),
-                                  if (controller.hideGallery.value)
-                                   galleryListView(),
-                                  SizedBox(height: 10.px),
+                                  if (controller.hideBanner.value)
+                                    SizedBox(height: 16.px),
+                                  if (controller.hideBanner.value) bannerView(),
+                                  SizedBox(height: 16.px),
+                                  appMenusListView(),
+                                  if (AC.isConnect.value)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        if (controller.hideUpcomingCelebration.value)
+                                          // SizedBox(height: 16.px),
+                                          if (controller.hideUpcomingCelebration.value)
+                                            upcomingCelebrationsButtonView(),
+                                        if (controller.hideMyTeam.value)
+                                          if (controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
+                                            SizedBox(height: 14.px),
+                                        if (controller.hideMyTeam.value)
+                                          if (controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty)
+                                            myTeamListView(),
+                                        if (controller.hideMyReportingPerson.value)
+                                          if (controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
+                                            SizedBox(height: 14.px),
+                                        if (controller.hideMyReportingPerson.value)
+                                          if (controller.myReportingTeamList != null && controller.myReportingTeamList!.isNotEmpty)
+                                            reportingPersonListView(),
+                                        if (controller.hideMyDepartment.value)
+                                          if (controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
+                                            // SizedBox(height: 14.px),
+                                            if (controller.hideMyDepartment.value)
+                                              if (controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty)
+                                                yourDepartmentListView(),
+                                        if (controller.hideGallery.value)
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 4.px),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                cardTextView(text: 'Gallery', fontSize: 16.px),
+                                                viewAllTextButtonView(onPressedViewAllButton: () => controller.clickOnGalleryViewAllButton())
+                                              ],
+                                            ),
+                                          ),
+                                        if (controller.hideGallery.value)
+                                          galleryListView(),
+                                        SizedBox(height: 10.px),
+                                      ],
+                                    )
                                 ],
                               )
-                            ],
-                          )
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
 
   Widget punchInAndPunchOutView() {
-    DateTime breakStartTime =
-        controller.getTodayAttendanceDetail?.breakStartTime != null && controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
+    DateTime breakStartTime = controller.getTodayAttendanceDetail?.breakStartTime != null && controller.getTodayAttendanceDetail!.breakStartTime!.isNotEmpty
             ? DateFormat('HH:mm:ss').parse('${controller.getTodayAttendanceDetail?.breakStartTime}')
             : DateTime(0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (controller.breakValue.value)
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.px)),
-            color: Col.primary.withOpacity(.1),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.px,vertical: 8.px),
-              child: SizedBox(
-                width: double.infinity,
-                child: cardTextView(
-                    text: controller.currentTimeForBreakTimer.hour != 0
-                        ? '${controller.getTodayAttendanceDetail?.breakTypeName} (${DateFormat('HH:mm:ss').format(controller.currentTimeForBreakTimer)})'
-                        : '${controller.getTodayAttendanceDetail?.breakTypeName} (${DateFormat('mm:ss').format(controller.currentTimeForBreakTimer)})',
-                    maxLines: 2,
-                    fontSize: 12.px,
-                    fontWeight: FontWeight.w600),
-              ),
-            ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 8.px),
+          child: SizedBox(
+            width: double.infinity,
+            child: cardTextView(
+                text: controller.currentTimeForBreakTimer.hour != 0
+                    ? '${controller.getTodayAttendanceDetail?.breakTypeName} (${DateFormat('HH:mm:ss').format(controller.currentTimeForBreakTimer)})'
+                    : '${controller.getTodayAttendanceDetail?.breakTypeName} (${DateFormat('mm:ss').format(controller.currentTimeForBreakTimer)})',
+                maxLines: 2,
+                fontSize: 12.px,
+                fontWeight: FontWeight.w600,
+                color: Col.inverseSecondary),
           ),
+        ),
         Row(
           children: [
             Expanded(
@@ -167,8 +168,7 @@ class HomeView extends GetView<HomeController> {
                     height: 180.px,
                     width: 180.px,
                     child: CustomPaint(
-                      painter: MyClockPainter(
-                          currentTime: controller.currentTimeForTimer),
+                      painter: MyClockPainter(currentTime: controller.currentTimeForTimer),
                     ),
                   ),
                   Stack(
@@ -179,13 +179,38 @@ class HomeView extends GetView<HomeController> {
                         width: 120.px,
                         child: circularProgressIndicatorView(),
                       ),
-                      Container(
-                        height: 110.px,
-                        width: 110.px,
-                        decoration: BoxDecoration(
-                            color: Col.inverseSecondary,
-                            shape: BoxShape.circle),
-                        child: circularProgressIndicatorTextView(),
+                      InkWell(
+                        onTap: controller.checkInAndCheckOutButtonValue.value
+                            ? () => null
+                            : () => controller.clickOnSwitchButton(),
+                        child: Container(
+                          // height: 120.px,
+                          // width: 120.px,
+                          height: 104.px,
+                          width: 104.px,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: const [0.0, 0.8],
+                                tileMode: TileMode.decal,
+                                colors: [
+                                  Col.primary,
+                                  Col.primaryColor,
+                                ],
+                              ),
+                              shape: BoxShape.circle),
+                          // child: circularProgressIndicatorTextView(),
+                          child: Center(
+                            child: CW.commonNetworkImageView(
+                                path: controller.checkInValue.value
+                                    ? 'assets/images/finger_print_image.png'
+                                    : 'assets/images/b_finger_print_image.png',
+                                isAssetImage: true,
+                                width: 50.px,
+                                height: 50.px),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -197,18 +222,19 @@ class HomeView extends GetView<HomeController> {
                 padding: EdgeInsets.only(right: 12.px),
                 child: Column(
                   children: [
-                    commonSwitchButtonView(),
-                    SizedBox(height: 14.px),
+                    // commonSwitchButtonView(),
+                    circularProgressIndicatorTextView(),
+                    SizedBox(height: 16.px),
                     controller.checkInValue.value && controller.checkOutValue.value
-                        ? CW.commonElevatedButton(
+                        ? CW.myOutlinedButton(
                             onPressed: () {
                               CM.showSnackBar(message: 'You have already performed punch in and punch out this day.');
                             },
                             buttonText: 'Take a Break',
                             // width: 150.px,
                             height: 38.px,
-                            borderRadius: 20.px,
-                            buttonColor: Col.primary.withOpacity(.5),
+                            // borderRadius: 20.px,
+                            // buttonColor: Col.primary.withOpacity(.5),
                           )
                         : controller.breakValue.value
                             ? Row(
@@ -217,11 +243,13 @@ class HomeView extends GetView<HomeController> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      cardTextView(text: 'Break time'),
                                       cardTextView(
-                                          text: DateFormat('hh:mm:ss a')
-                                              .format(breakStartTime),
-                                          fontSize: 12.px),
+                                          text: 'Break time',
+                                          color: Col.inverseSecondary),
+                                      cardTextView(
+                                          text: DateFormat('hh:mm:ss a').format(breakStartTime),
+                                          fontSize: 12.px,
+                                          color: Col.inverseSecondary),
                                     ],
                                   ),
                                   InkWell(
@@ -232,26 +260,32 @@ class HomeView extends GetView<HomeController> {
                                         Container(
                                           height: 24.px,
                                           width: 24.px,
-                                          decoration: BoxDecoration(color: Col.primary, shape: BoxShape.circle),
-                                          child: Icon(Icons.play_arrow, color: Col.inverseSecondary, size: 16.px),
+                                          decoration: BoxDecoration(
+                                              color: Col.primary,
+                                              shape: BoxShape.circle),
+                                          child: Icon(Icons.play_arrow,
+                                              color: Col.inverseSecondary,
+                                              size: 16.px),
                                         ),
-                                        cardTextView(text: 'End', color: Col.primary),
+                                        cardTextView(
+                                            text: 'End', color: Col.primary),
                                       ],
                                     ),
                                   ),
                                 ],
                               )
-                            : CW.commonElevatedButton(
+                            : CW.myOutlinedButton(
                                 onPressed: !controller.checkInValue.value
                                     ? () => null
                                     : () => controller.clickOnTakeBreakButton(),
                                 buttonText: 'Take a Break',
                                 // width: 150.px,
                                 height: 38.px,
-                                borderRadius: 20.px,
+                                /*borderRadius: 20.px,
                                 buttonColor: !controller.checkInValue.value
                                     ? Col.primary.withOpacity(.5)
-                                    : Col.primary),
+                                    : Col.primary*/
+                              ),
                   ],
                 ),
               ),
@@ -272,9 +306,10 @@ class HomeView extends GetView<HomeController> {
 
   Widget commonCircularProgressBar({required double value}) {
     return CircularProgressIndicator(
-      strokeWidth: 8.px,
+      strokeWidth: 6.px,
       value: value,
       backgroundColor: Col.primary.withOpacity(.2),
+      color: Col.primary,
       strokeCap: StrokeCap.round,
     );
   }
@@ -282,14 +317,6 @@ class HomeView extends GetView<HomeController> {
   Widget circularProgressIndicatorTextView() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          circularProgressIndicatorCheckInTextView(
-              firstText: 'Check In', fontSize: 8.px),
-          if (controller.checkInValue.value)
-            circularProgressIndicatorCheckInTextView(
-                firstText:
-                    '(${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
-                fontSize: 8.px),
-          SizedBox(height: 2.px),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -307,9 +334,14 @@ class HomeView extends GetView<HomeController> {
           ),
           SizedBox(height: 4.px),
           circularProgressIndicatorCheckInTextView(
-              firstText:
-                  DateFormat('EE, MMM dd').format(controller.currentDateTime),
-              fontSize: 10.px),
+            firstText: DateFormat('EEEE, MMM dd').format(controller.currentDateTime),
+            fontSize: 10.px,
+          ),
+          SizedBox(height: 2.px),
+          if (controller.checkInValue.value)
+            circularProgressIndicatorCheckInTextView(
+                firstText: 'Check In - (${DateFormat('hh:mm:ss a').format(DateTime.parse('2024-01-22 ${controller.getTodayAttendanceDetail?.punchInTime}'))})',
+                fontSize: 8.px),
         ],
       );
 
@@ -325,14 +357,14 @@ class HomeView extends GetView<HomeController> {
 
   Widget circularProgressIndicatorTimeTextView({required String firstText}) => Text(
         firstText,
-        style: Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 18.px),
+        style: Theme.of(Get.context!).textTheme.headlineLarge?.copyWith(fontSize: 18.px,color: Col.inverseSecondary),
       );
 
   Widget circularProgressIndicatorCheckInTextView({required String firstText, double? fontSize}) => Text(
         firstText,
         style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w500,
-            color: Col.primary,
+            color: Col.inverseSecondary,
             fontSize: fontSize),
       );
 
@@ -499,168 +531,172 @@ class HomeView extends GetView<HomeController> {
       onPressedViewAllButton: () => controller.clickOnUpcomingCelebrationsButton(),
       listWidget: controller.upcomingCelebrationList != null && controller.upcomingCelebrationList!.isNotEmpty
           ? GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 0.px,
-            mainAxisSpacing: 0.px,
-            childAspectRatio: .8
-                    ),
-                    itemCount: controller.upcomingCelebrationList?.length,
-                    itemBuilder: (context, index) {
-          final screenWidth = MediaQuery.of(context).size.width;
-          final screenHeight = MediaQuery.of(context).size.height;
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 0.px,
+                  mainAxisSpacing: 0.px,
+                  childAspectRatio: .8),
+              itemCount: controller.upcomingCelebrationList?.length,
+              itemBuilder: (context, index) {
+                final screenWidth = MediaQuery.of(context).size.width;
+                final screenHeight = MediaQuery.of(context).size.height;
 
-          final cardWidth = (screenWidth - 30) / 2; // Adjust as needed
-          final cardHeight = cardWidth * 0.8; // Adjust the aspect ratio as needed
+                final cardWidth = (screenWidth - 30) / 2; // Adjust as needed
+                final cardHeight = cardWidth * 0.8; // Adjust the aspect ratio as needed
 
-          return Container(
-            width: cardWidth,
-            height: cardHeight,
-            // margin:  EdgeInsets.only(left: index % 2 == 0 ? 6.px : 2.px,right: index % 2 == 0 ? 2.px : 6.px),
-            padding: EdgeInsets.zero,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6.px),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CW.commonNetworkImageView(
-                    path: controller.upcomingCelebrationList?[index].celebrationType == 'Birthday'
-                        ? 'assets/images/birthday_background_image.png'
-                        : 'assets/images/work_anniversary_background_image.png',
-                    isAssetImage: true,
-                    fit: BoxFit.fill,
-                  ),
-                  Container(
-                    width: cardWidth,
-                    padding: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
-                    margin: EdgeInsets.symmetric(horizontal: 12.px,vertical: 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                return Container(
+                  width: cardWidth,
+                  height: cardHeight,
+                  // margin:  EdgeInsets.only(left: index % 2 == 0 ? 6.px : 2.px,right: index % 2 == 0 ? 2.px : 6.px),
+                  padding: EdgeInsets.zero,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6.px),
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        // SizedBox(height: 6.px),
+                        CW.commonNetworkImageView(
+                          path: /*controller.upcomingCelebrationList?[index].celebrationType == 'Birthday'
+                                       ? 'assets/images/birthday_background_image.png'
+                                       : 'assets/images/work_anniversary_background_image.png'*/'assets/images/upcoming_celebrations.png',
+                          isAssetImage: true,
+                          fit: BoxFit.fill,
+                        ),
                         Container(
-                          width: 50.px,
-                          height: 50.px,
-                          margin: EdgeInsets.zero,
-                          decoration: BoxDecoration(
-                            color: Col.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: controller.upcomingCelebrationList?[index].userProfilePic != null &&
-                                controller.upcomingCelebrationList![index].userProfilePic!.isNotEmpty
-                                ? ClipRRect(
-                              borderRadius: BorderRadius.circular(25.px),
-                              child: CW.commonNetworkImageView(
-                                path: '${AU.baseUrlAllApisImage}${controller.upcomingCelebrationList?[index].userProfilePic}',
-                                isAssetImage: false,
-                                errorImage: 'assets/images/profile.png',
+                          width: cardWidth,
+                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0),
+                          margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // SizedBox(height: 6.px),
+                              Container(
                                 width: 50.px,
                                 height: 50.px,
+                                margin: EdgeInsets.zero,
+                                decoration: BoxDecoration(
+                                  color: Col.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(25.px),
+                                          child: CW.commonNetworkImageView(
+                                            path: '${AU.baseUrlAllApisImage}${controller.upcomingCelebrationList?[index].userProfilePic}',
+                                            isAssetImage: false,
+                                            errorImage: 'assets/images/profile.png',
+                                            userShortName: controller.upcomingCelebrationList?[index].shortName != null && controller.upcomingCelebrationList![index].shortName!.isNotEmpty
+                                                ? '${controller.upcomingCelebrationList?[index].shortName}'
+                                                : '?',
+                                            errorImageValue: true,
+                                            width: 50.px,
+                                            height: 50.px,
+                                          ),
+                                        ),
+                                ),
                               ),
-                            )
-                                : Text(
-                              controller.upcomingCelebrationList?[index].shortName != null && controller.upcomingCelebrationList![index].shortName!.isNotEmpty
-                                  ? '${controller.upcomingCelebrationList?[index].shortName}'
-                                  : '?',
-                              style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
-                            ),
+                              SizedBox(height: 6.px),
+                              cardTextView(
+                                  text: controller.upcomingCelebrationList?[index].userFullName != null && controller.upcomingCelebrationList![index].userFullName!.isNotEmpty
+                                      ? '${controller.upcomingCelebrationList?[index].userFullName}'
+                                      : '?',
+                                  fontWeight: FontWeight.w700,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  fontSize: 12.px,
+                                   color: Col.inverseSecondary
+                              ),
+                              SizedBox(height: 2.px),
+                              cardTextView(
+                                  text: controller.upcomingCelebrationList?[index].userDesignation != null && controller.upcomingCelebrationList![index].userDesignation!.isNotEmpty
+                                      ? '${controller.upcomingCelebrationList?[index].userDesignation}'
+                                      : '?',
+                                  fontWeight: FontWeight.w500,
+                                  maxLines: 1,
+                                  fontSize: 8.px,
+                                  textAlign: TextAlign.center,color: Col.inverseSecondary),
+                              SizedBox(height: 2.px),
+                              cardTextView(
+                                  text: controller.upcomingCelebrationList?[index].branchName != null && controller.upcomingCelebrationList![index].branchName!.isNotEmpty
+                                      ? '${controller.upcomingCelebrationList?[index].branchName} - ${controller.upcomingCelebrationList?[index].departmentName}'
+                                      : '?',
+                                  fontWeight: FontWeight.w500,
+                                  maxLines: 2,
+                                  fontSize: 8.px,
+                                  textAlign: TextAlign.center,color: Col.inverseSecondary),
+                              SizedBox(height: 2.px),
+                              cardTextView(
+                                  text: controller.upcomingCelebrationList?[index].celebrationYear != null && controller.upcomingCelebrationList![index].celebrationYear!.isNotEmpty
+                                      ? '(${controller.upcomingCelebrationList?[index].celebrationYear})'
+                                      : '?',
+                                  fontWeight: FontWeight.w600,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  fontSize: 10.px,color: Col.inverseSecondary),
+                              SizedBox(height: 2.px),
+                              cardTextView(
+                                  text: controller.upcomingCelebrationList?[index].celebrationDate != null && controller.upcomingCelebrationList![index].celebrationDate!.isNotEmpty
+                                      ? '${controller.upcomingCelebrationList?[index].celebrationDate}'
+                                      : '?',
+                                  fontWeight: FontWeight.w600,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  fontSize: 10.px,color: Col.inverseSecondary),
+                              SizedBox(height: 8.px),
+                              CW.myElevatedButton(onPressed: () {},buttonText: 'Send wishes',height: 30.px,)
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 6.px),
-                        cardTextView(
-                            text: controller.upcomingCelebrationList?[index].userFullName != null && controller.upcomingCelebrationList![index].userFullName!.isNotEmpty
-                                ? '${controller.upcomingCelebrationList?[index].userFullName}'
-                                : '?',
-                            fontWeight: FontWeight.w700,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            fontSize: 10.px),
-                        SizedBox(height: 2.px),
-                        cardTextView(
-                            text: controller.upcomingCelebrationList?[index].userDesignation != null && controller.upcomingCelebrationList![index].userDesignation!.isNotEmpty
-                                ? '${controller.upcomingCelebrationList?[index].userDesignation}'
-                                : '?',
-                            fontWeight: FontWeight.w600,
-                            maxLines: 1,
-                            fontSize: 8.px,
-                            textAlign: TextAlign.center),
-                        cardTextView(
-                            text: controller.upcomingCelebrationList?[index].branchName != null && controller.upcomingCelebrationList![index].branchName!.isNotEmpty
-                                ? '${controller.upcomingCelebrationList?[index].branchName} - ${controller.upcomingCelebrationList?[index].departmentName}'
-                                : '?',
-                            fontWeight: FontWeight.w600,
-                            maxLines: 2,
-                            fontSize: 8.px,
-                            textAlign: TextAlign.center),
-                        SizedBox(height: 2.px),
-                        cardTextView(
-                            text: controller.upcomingCelebrationList?[index].celebrationYear != null && controller.upcomingCelebrationList![index].celebrationYear!.isNotEmpty
-                                ? '(${controller.upcomingCelebrationList?[index].celebrationYear})'
-                                : '?',
-                            fontWeight: FontWeight.w500,
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            fontSize: 8.px),
-                        SizedBox(height: 6.px),
-                        cardTextView(
-                            text: controller.upcomingCelebrationList?[index].celebrationDate != null && controller.upcomingCelebrationList![index].celebrationDate!.isNotEmpty
-                                ? '${controller.upcomingCelebrationList?[index].celebrationDate}'
-                                : '?',
-                            fontWeight: FontWeight.w700,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            fontSize: 10.px),
+                        )
                       ],
                     ),
-                  )
-                ],
-              ),
-            ),
-          );
-                    },
-                  )
-          : SizedBox(height: 8.px),
+                  ),
+                );
+              },
+            )
+          : SizedBox(height: 0.px),
     );
   }
 
-  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Card(
-        margin: EdgeInsets.symmetric(horizontal: 12.px, vertical: 0.px),
-        color: Col.inverseSecondary,
-        elevation: 1,
-        shadowColor: Col.secondary.withOpacity(.1),
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Col.gray.withOpacity(.5),width: .5.px),
-            borderRadius: BorderRadius.circular(12.px),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 12.px, right: 12.px, top: viewAllButtonValue ? 6.px : 10.px),
-              child: Row(
-                mainAxisAlignment: viewAllButtonValue
-                    ? MainAxisAlignment.spaceBetween
-                    : MainAxisAlignment.start,
-                children: [
-                  cardTextView(text: titleText, fontSize: 14.px,fontWeight: FontWeight.w600),
-                  if (viewAllButtonValue)
-                    viewAllTextButtonView(onPressedViewAllButton: onPressedViewAllButton ?? () {})
-                ],
-              ),
+  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+                left: 12.px,
+                right: 12.px,
+                top: viewAllButtonValue ? 6.px : 10.px),
+            child: Row(
+              mainAxisAlignment: viewAllButtonValue
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.start,
+              children: [
+                cardTextView(
+                    text: titleText,
+                    fontSize: 16.px,
+                    color: Col.inverseSecondary,
+                    fontWeight: FontWeight.w600),
+                if (viewAllButtonValue)
+                  viewAllTextButtonView(
+                      onPressedViewAllButton: onPressedViewAllButton ?? () {})
+              ],
             ),
-            listWidget
-          ],
-        ),
+          ),
+          listWidget
+        ],
       );
 
-  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) => CW.commonTextButton(
+  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) =>
+      CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',
-          style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(color: Col.primary, fontWeight: FontWeight.w700),
+          style: Theme.of(Get.context!)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: Col.primary, fontWeight: FontWeight.w700),
         ),
       );
 
@@ -677,7 +713,7 @@ class HomeView extends GetView<HomeController> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.isHeadingMenuList.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 4,
                 crossAxisSpacing: 10.px,
                 mainAxisSpacing: 10.px,
               ),
@@ -686,67 +722,45 @@ class HomeView extends GetView<HomeController> {
                 return InkWell(
                   onTap: () => controller.clickOnHeadingCards(headingCardIndex: index),
                   borderRadius: BorderRadius.circular(10.px),
-                  child: Ink(
-                    height: 100.px,
-                    padding: EdgeInsets.only(left: 3.px),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
                     decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 24.px,
-                          color: Col.secondary.withOpacity(.05),
-                        )
-                      ],
-                      color: convertedColor,
-                      borderRadius: BorderRadius.circular(8.px),
+                      color: Col.gCardColor,
+                      borderRadius: BorderRadius.circular(6.px),
                     ),
-                    child: Ink(
-                      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
-                      decoration: BoxDecoration(
-                        color: Col.inverseSecondary,
-                        borderRadius: BorderRadius.circular(6.px),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40.px,
-                            height: 40.px,
-                            padding: EdgeInsets.all(2.px),
-                            decoration: BoxDecoration(
-                              color: convertedColor,
-                              borderRadius: BorderRadius.circular(6.px),
-                            ),
-                            child: Center(
-                              child: controller.isHeadingMenuList[index].menuImage == null && controller.isHeadingMenuList[index].menuImage!.isEmpty
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: controller.isHeadingMenuList[index].menuImage == null && controller.isHeadingMenuList[index].menuImage!.isEmpty
                                   ? CW.commonNetworkImageView(
                                       path: 'assets/images/default_image.jpg',
                                       isAssetImage: true,
-                                      width: 44.px,
-                                      height: 44.px,
+                                      width: 26.px,
+                                      height: 26.px,
                                     )
                                   : SizedBox(
-                                      width: 22.px,
-                                      height: 22.px,
+                                      width: 26.px,
+                                      height: 26.px,
                                       child: CW.commonCachedNetworkImageView(
                                         path:
                                             '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
+                                        imageColor: Col.primary,
                                       ),
                                     ),
-                            ),
+                        ),
+                        SizedBox(height: 5.px),
+                        Flexible(
+                          child: Text(
+                            '${controller.isHeadingMenuList[index].menuName}',
+                            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px, color: Col.inverseSecondary),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 10.px),
-                          Flexible(
-                            child: Text(
-                              '${controller.isHeadingMenuList[index].menuName}',
-                              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -770,9 +784,10 @@ class HomeView extends GetView<HomeController> {
     return commonCard(
       titleText: 'Your Department',
       viewAllButtonValue: true,
-      onPressedViewAllButton: () => controller.clickOnYourDepartmentViewAllButton(),
+      onPressedViewAllButton: () =>
+          controller.clickOnYourDepartmentViewAllButton(),
       listWidget: GridView.builder(
-        padding: EdgeInsets.only(right: 10.px,bottom: 10.px,left: 10.px),
+        padding: EdgeInsets.only(right: 10.px, bottom: 10.px, left: 10.px),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 10.px,
@@ -785,12 +800,22 @@ class HomeView extends GetView<HomeController> {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => controller.clickOnYourDepartmentCards(yourDepartmentCardIndex: index),
+            onTap: () => controller.clickOnYourDepartmentCards(
+                yourDepartmentCardIndex: index),
             onLongPress: () {
               // Show overlay entry
-              showOverlay(context: context, userShortName: controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
-                  ? '${controller.getDepartmentEmployeeList?[index].shortName}'
-                  : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',);
+              showOverlay(
+                context: context,
+                userShortName: controller
+                                .getDepartmentEmployeeList?[index].shortName !=
+                            null &&
+                        controller.getDepartmentEmployeeList![index].shortName!
+                            .isNotEmpty
+                    ? '${controller.getDepartmentEmployeeList?[index].shortName}'
+                    : '?',
+                imagePath:
+                    '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
+              );
             },
             onLongPressCancel: () {
               controller.overlayEntry.remove();
@@ -798,18 +823,12 @@ class HomeView extends GetView<HomeController> {
             onLongPressEnd: (details) {
               controller.overlayEntry.remove();
             },
-            child: Ink(
+            child: Container(
               height: 106.px,
               width: 100.px,
               padding: EdgeInsets.only(left: 3.px),
               decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 24.px,
-                    color: Col.secondary.withOpacity(.05),
-                  )
-                ],
-                color: Col.inverseSecondary,
+                color: Col.gCardColor,
                 borderRadius: BorderRadius.circular(8.px),
               ),
               child: Column(
@@ -826,38 +845,52 @@ class HomeView extends GetView<HomeController> {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child:  ClipRRect(
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(27.px),
                         child: CW.commonNetworkImageView(
-                            path: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
+                            path:
+                                '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
                             isAssetImage: false,
                             errorImage: 'assets/images/profile.png',
                             width: 40.px,
                             height: 40.px,
                             errorImageValue: true,
-                            userShortName: controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
+                            userShortName: controller
+                                            .getDepartmentEmployeeList?[index]
+                                            .shortName !=
+                                        null &&
+                                    controller.getDepartmentEmployeeList![index]
+                                        .shortName!.isNotEmpty
                                 ? '${controller.getDepartmentEmployeeList?[index].shortName}'
-                                : '?'
-                        ),
+                                : '?'),
                       ),
                     ),
                   ),
                   SizedBox(height: 6.px),
                   cardTextView(
-                      text: controller.getDepartmentEmployeeList?[index].userFullName!=null && controller.getDepartmentEmployeeList![index].userFullName!.isNotEmpty
+                      text: controller.getDepartmentEmployeeList?[index]
+                                      .userFullName !=
+                                  null &&
+                              controller.getDepartmentEmployeeList![index]
+                                  .userFullName!.isNotEmpty
                           ? '${controller.getDepartmentEmployeeList?[index].userFullName}'
                           : '?',
                       fontWeight: FontWeight.w700,
                       maxLines: 2,
-                      fontSize: 10.px,
+                      fontSize: 12.px,
+                      color: Col.inverseSecondary,
                       textAlign: TextAlign.center),
                   cardTextView(
-                      text: controller.getDepartmentEmployeeList?[index].userDesignation!=null && controller.getDepartmentEmployeeList![index].userDesignation!.isNotEmpty
+                      text: controller.getDepartmentEmployeeList?[index]
+                                      .userDesignation !=
+                                  null &&
+                              controller.getDepartmentEmployeeList![index]
+                                  .userDesignation!.isNotEmpty
                           ? '${controller.getDepartmentEmployeeList?[index].userDesignation}'
                           : '?',
                       maxLines: 2,
                       fontSize: 10.px,
-                      color: Col.darkGray,
+                      color: Col.gray,
                       textAlign: TextAlign.center),
                 ],
               ),
@@ -868,8 +901,8 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget myTeamListView(){
-    return  commonCard(
+  Widget myTeamListView() {
+    return commonCard(
       titleText: 'My Team',
       listWidget: GridView.builder(
         shrinkWrap: true,
@@ -877,19 +910,26 @@ class HomeView extends GetView<HomeController> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.myTeamMemberList?.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10.px,
-          mainAxisSpacing: 10.px,
-          childAspectRatio: 2.2
-        ),
+            crossAxisCount: 2,
+            crossAxisSpacing: 10.px,
+            mainAxisSpacing: 10.px,
+            childAspectRatio: 2.2),
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () => controller.clickOnMyTeamCards(myTeamCardIndex: index),
             onLongPress: () {
               // Show overlay entry
-              showOverlay(context: context, userShortName: controller.myTeamMemberList?[index].shortName != null && controller.myTeamMemberList![index].shortName!.isNotEmpty
-                  ? '${controller.myTeamMemberList?[index].shortName}'
-                  : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.myTeamMemberList?[index].userProfilePic}',);
+              showOverlay(
+                context: context,
+                userShortName:
+                    controller.myTeamMemberList?[index].shortName != null &&
+                            controller
+                                .myTeamMemberList![index].shortName!.isNotEmpty
+                        ? '${controller.myTeamMemberList?[index].shortName}'
+                        : '?',
+                imagePath:
+                    '${AU.baseUrlAllApisImage}${controller.myTeamMemberList?[index].userProfilePic}',
+              );
             },
             onLongPressCancel: () {
               controller.overlayEntry.remove();
@@ -901,13 +941,7 @@ class HomeView extends GetView<HomeController> {
               height: 132.px,
               padding: EdgeInsets.only(left: 10.px),
               decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 24.px,
-                    color: Col.secondary.withOpacity(.05),
-                  )
-                ],
-                color: Col.inverseSecondary,
+                color: Col.gCardColor,
                 borderRadius: BorderRadius.circular(8.px),
               ),
               child: Row(
@@ -919,8 +953,8 @@ class HomeView extends GetView<HomeController> {
                     height: 44.px,
                     margin: EdgeInsets.zero,
                     decoration: BoxDecoration(
-                        color: Col.primary,
-                        shape: BoxShape.circle,
+                      color: Col.primary,
+                      shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: ClipRRect(
@@ -934,8 +968,8 @@ class HomeView extends GetView<HomeController> {
                           userShortName: controller.myTeamMemberList?[index].shortName != null && controller.myTeamMemberList![index].shortName!.isNotEmpty
                               ? '${controller.myTeamMemberList?[index].shortName}'
                               : '?',
-                            errorImageValue: true,
-                      ),
+                          errorImageValue: true,
+                        ),
                       ),
                     ),
                   ),
@@ -946,21 +980,21 @@ class HomeView extends GetView<HomeController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         cardTextView(
-                            text: controller.myTeamMemberList?[index].userFullName!=null && controller.myTeamMemberList![index].userFullName!.isNotEmpty
+                            text: controller.myTeamMemberList?[index].userFullName != null && controller.myTeamMemberList![index].userFullName!.isNotEmpty
                                 ? '${controller.myTeamMemberList?[index].userFullName}'
                                 : '?',
                             maxLines: 2,
-                            fontSize: 10.px,
+                            fontSize: 12.px,
                             textAlign: TextAlign.center,
-                            fontWeight: FontWeight.w700),
+                            fontWeight: FontWeight.w700,color: Col.inverseSecondary),
                         // SizedBox(height: 2.px),
                         cardTextView(
-                            text: controller.myTeamMemberList?[index].userDesignation!=null && controller.myTeamMemberList![index].userDesignation!.isNotEmpty
+                            text: controller.myTeamMemberList?[index].userDesignation != null && controller.myTeamMemberList![index].userDesignation!.isNotEmpty
                                 ? '${controller.myTeamMemberList?[index].userDesignation}'
                                 : '?',
                             maxLines: 2,
                             fontSize: 10.px,
-                            color: Col.darkGray,
+                            color: Col.gray,
                             textAlign: TextAlign.center),
                       ],
                     ),
@@ -989,12 +1023,18 @@ class HomeView extends GetView<HomeController> {
             childAspectRatio: 2.2),
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => controller.clickOnReportingPersonCard(reportingPersonIndex: index),
+            onTap: () => controller.clickOnReportingPersonCard(
+                reportingPersonIndex: index),
             onLongPress: () {
               // Show overlay entry
-              showOverlay(context: context, userShortName: controller.myReportingTeamList?[index].shortName != null && controller.myReportingTeamList![index].shortName!.isNotEmpty
-                  ? '${controller.myReportingTeamList?[index].shortName}'
-                  : '?' ,imagePath: '${AU.baseUrlAllApisImage}${controller.myReportingTeamList?[index].userProfilePic}',);
+              showOverlay(
+                context: context,
+                userShortName:
+                    controller.myReportingTeamList?[index].shortName != null && controller.myReportingTeamList![index].shortName!.isNotEmpty
+                        ? '${controller.myReportingTeamList?[index].shortName}'
+                        : '?',
+                imagePath: '${AU.baseUrlAllApisImage}${controller.myReportingTeamList?[index].userProfilePic}',
+              );
             },
             onLongPressCancel: () {
               controller.overlayEntry.remove();
@@ -1006,13 +1046,7 @@ class HomeView extends GetView<HomeController> {
               height: 132.px,
               padding: EdgeInsets.only(left: 10.px),
               decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 24.px,
-                    color: Col.secondary.withOpacity(.05),
-                  )
-                ],
-                color: Col.inverseSecondary,
+                color: Col.gCardColor,
                 borderRadius: BorderRadius.circular(8.px),
               ),
               child: Row(
@@ -1052,21 +1086,22 @@ class HomeView extends GetView<HomeController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         cardTextView(
-                            text: controller.myReportingTeamList?[index].userFullName!=null && controller.myReportingTeamList![index].userFullName!.isNotEmpty
+                            text: controller.myReportingTeamList?[index].userFullName != null && controller.myReportingTeamList![index].userFullName!.isNotEmpty
                                 ? '${controller.myReportingTeamList?[index].userFullName}'
                                 : '?',
                             maxLines: 2,
-                            fontSize: 10.px,
+                            fontSize: 12.px,
                             textAlign: TextAlign.center,
-                            fontWeight: FontWeight.w700),
+                            fontWeight: FontWeight.w700,
+                            color: Col.inverseSecondary),
                         // SizedBox(height: 2.px),
                         cardTextView(
-                            text: controller.myReportingTeamList?[index].userDesignation!=null && controller.myReportingTeamList![index].userDesignation!.isNotEmpty
+                            text: controller.myReportingTeamList?[index].userDesignation != null && controller.myReportingTeamList![index].userDesignation!.isNotEmpty
                                 ? '${controller.myReportingTeamList?[index].userDesignation}'
                                 : '?',
                             maxLines: 2,
                             fontSize: 10.px,
-                            color: Col.darkGray,
+                            color: Col.gray,
                             textAlign: TextAlign.center),
                       ],
                     ),
@@ -1139,32 +1174,28 @@ class HomeView extends GetView<HomeController> {
             ),
             itemBuilder: (context, index) {
               return Container(
-                height: 100.px,
+                  height: 100.px,
                   padding: EdgeInsets.symmetric(horizontal: 8.px),
                   decoration: BoxDecoration(
-                    color: Col.inverseSecondary,
-                    borderRadius: BorderRadius.circular(6.px)
-                  ),
+                      color: Col.gCardColor,
+                      borderRadius: BorderRadius.circular(6.px)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CW.commonShimmerViewForImage(height: 36.px,width: 36.px),
+                      CW.commonShimmerViewForImage(height: 36.px, width: 36.px),
                       SizedBox(height: 6.px),
-                      CW.commonShimmerViewForImage(height: 10.px,width: 80.px,radius: 2.px),
+                      CW.commonShimmerViewForImage(
+                          height: 10.px, width: 80.px, radius: 2.px),
                     ],
-                  )
-              );
+                  ));
             },
           ),
         ),
-        SizedBox(height: 14.px),
         commonCard(
-          titleText: 'Upcoming Celebration',
-          listWidget:  SizedBox(height: 4.px),
-          viewAllButtonValue: true
-        ),
-        SizedBox(height: 14.px),
+            titleText: 'Upcoming Celebration',
+            listWidget: SizedBox(height: 4.px),
+            viewAllButtonValue: true),
         commonCard(
           titleText: 'My Team',
           viewAllButtonValue: true,
@@ -1181,7 +1212,8 @@ class HomeView extends GetView<HomeController> {
                 childAspectRatio: 2.4),
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: () => controller.clickOnReportingPersonCard(reportingPersonIndex: index),
+                onTap: () => controller.clickOnReportingPersonCard(
+                    reportingPersonIndex: index),
                 borderRadius: BorderRadius.circular(8.px),
                 child: Ink(
                   height: 132.px,
@@ -1193,23 +1225,26 @@ class HomeView extends GetView<HomeController> {
                         color: Col.secondary.withOpacity(.05),
                       )
                     ],
-                    color: Col.inverseSecondary,
+                    color: Col.gCardColor,
                     borderRadius: BorderRadius.circular(8.px),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CW.commonShimmerViewForImage(height: 44.px,width: 44.px,radius: 22.px),
+                      CW.commonShimmerViewForImage(
+                          height: 44.px, width: 44.px, radius: 22.px),
                       SizedBox(width: 6.px),
                       Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CW.commonShimmerViewForImage(height: 10.px,width: 80.px,radius: 2.px),
+                            CW.commonShimmerViewForImage(
+                                height: 10.px, width: 80.px, radius: 2.px),
                             SizedBox(height: 2.px),
-                            CW.commonShimmerViewForImage(height: 10.px,width: 60.px,radius: 2.px),
+                            CW.commonShimmerViewForImage(
+                                height: 10.px, width: 60.px, radius: 2.px),
                           ],
                         ),
                       ),
@@ -1225,7 +1260,7 @@ class HomeView extends GetView<HomeController> {
   }
 }
 
-class MyClockPainter extends CustomPainter {
+/*class MyClockPainter extends CustomPainter {
   final DateTime currentTime;
 
   const MyClockPainter({required this.currentTime});
@@ -1250,13 +1285,81 @@ class MyClockPainter extends CustomPainter {
     for (var i = 0; i < totalNumberOfTicks; i++) {
       if (i == currentTime.second) {
         if (selectedBottomNavigationIndex.value == 0) {
-          canvas.drawColor(Col.primary1, BlendMode.softLight);
+          canvas.drawColor(Col.primary, BlendMode.softLight);
         }
         canvas.drawLine(Offset(0, -radius + 16), Offset(0, -radius + 23),
-            minutesTicksPaint1);
+          minutesTicksPaint1);
       } else {
         canvas.drawLine(Offset(0, -radius + 16), Offset(0, -radius + 23),
             minutesTicksPaint);
+      }
+      canvas.rotate(rotatedAngle);
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(MyClockPainter oldDelegate) => true;
+
+  @override
+  bool shouldRebuildSemantics(MyClockPainter oldDelegate) => true;
+}*/
+
+class MyClockPainter extends CustomPainter {
+  final DateTime currentTime;
+  final int totalNumberOfTicks;
+
+  const MyClockPainter({
+    required this.currentTime,
+    this.totalNumberOfTicks = 60,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final height = size.height;
+    final radius = height / 2;
+    final centerOffset = Offset(size.width / 2, height / 2);
+    final rotatedAngle = 2 * pi / totalNumberOfTicks;
+
+    Paint minutesTicksPaint = Paint()
+      ..color = Col.primary
+      ..strokeWidth = 1.6.px;
+    Paint currentSecondTickPaint = Paint()
+      ..color = Col.primary
+      ..strokeWidth = 1.6.px; // Color for current second tick
+    Paint belowCurrentSecondTickPaint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = 1.6; // Color for ticks below current second
+
+    canvas.save();
+    canvas.translate(centerOffset.dx, centerOffset.dy);
+
+    for (var i = 0; i < totalNumberOfTicks; i++) {
+      if (i == currentTime.second) {
+        if (i == 0) {
+          canvas.drawCircle(Offset(0, -radius + 20), 2,
+              currentSecondTickPaint); // Draw filled circle for the first tick
+        } else {
+          canvas.drawLine(
+            Offset(0, -radius + 16),
+            Offset(0, -radius + 23),
+            currentSecondTickPaint,
+          ); // Draw filled arc for other ticks
+        }
+      } else if (i > currentTime.second) {
+        // Ticks below current second
+        canvas.drawLine(
+          Offset(0, -radius + 16),
+          Offset(0, -radius + 23),
+          belowCurrentSecondTickPaint,
+        );
+      } else {
+        // Ticks above current second
+        canvas.drawLine(
+          Offset(0, -radius + 16),
+          Offset(0, -radius + 23),
+          minutesTicksPaint,
+        );
       }
       canvas.rotate(rotatedAngle);
     }
