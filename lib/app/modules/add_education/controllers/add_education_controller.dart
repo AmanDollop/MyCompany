@@ -7,6 +7,7 @@ import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
+import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
 import '../../../../api/api_constants/ac.dart';
@@ -91,6 +92,8 @@ class AddEducationController extends GetxController {
     await CBS.commonBottomSheet(
       isDismissible: false,
       children: [
+        Center(child: Text('Select Year', style: Theme.of(Get.context!).textTheme.displaySmall)),
+        SizedBox(height: 16.px),
         SizedBox(
           height: 140,
           child: CupertinoPicker(
@@ -102,71 +105,22 @@ class AddEducationController extends GetxController {
               return Center(
                 child: Text(
                   '${DateTime.now().year - index}',
-                  style: const TextStyle(fontSize: 24),
+                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                 ),
               );
             }),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              onTap: () {
-                Get.back();
-              },
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
-                  borderRadius: BorderRadius.circular(10.px),
-                  border: Border.all(color: Col.secondary, width: 1.px),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 10.px,
-                      horizontal: MediaQuery.of(Get.context!).size.width / 7),
-                  child: Center(
-                    child: Text(
-                      C.textCancel,
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(color: Col.primary),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                yearController.text = selectedYear.toString();
-                Get.back();
-              },
-              borderRadius: BorderRadius.circular(10.px),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
-                  borderRadius: BorderRadius.circular(10.px),
-                  border: Border.all(color: Col.secondary, width: 1.px),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 10.px,
-                      horizontal: MediaQuery.of(Get.context!).size.width / 7),
-                  child: Center(
-                    child: Text(
-                      C.textSelect,
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(color: Col.primary),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+        CW.myElevatedButton(
+            borderRadius: 4.px,
+            height: 40.px,
+            onPressed:  () {
+              yearController.text = selectedYear.toString();
+              Get.back();
+            },
+            progressBarWidth: 20.px,
+            progressBarHeight: 20.px,
+            buttonText: C.textSelect
         ),
         SizedBox(height: 20.px),
       ],

@@ -29,6 +29,7 @@ import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -118,7 +119,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   final key = GlobalKey<FormState>();
   final lateInAndLateOutRangeController = TextEditingController();
+  FocusNode focusNodeLateInAndLateOutRange = FocusNode();
+
   final lateInAndLateOutRangeReasonController = TextEditingController();
+  FocusNode focusNodeLateInAndLateOutRangeReason = FocusNode();
+
   final image = Rxn<File?>();
   late AnimationController rotationController;
   String punchInOutOfRange = '0';
@@ -491,14 +496,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CW.commonNetworkImageView(
-                      path: 'assets/icons/location_icon.png',
-                      isAssetImage: true,
+                  GradientImageWidget(
+                      assetPath: 'assets/icons/location_icon.png',
                       width: 18.px,
                       height: 18.px,
-                      color: punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')
-                          ? Col.primary
-                          : Col.error),
+                  ),
                   if (punchInAndPunchOutRange.value < double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
                     SizedBox(width: 6.px),
                     Flexible(
@@ -529,7 +531,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                     ),
                   ),
                   if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
-                    CW.commonElevatedButton(
+                    CW.myElevatedButton(
                       padding: EdgeInsets.symmetric(horizontal: 8.px),
                       height: 30.px,
                       width: 30.px,
@@ -542,10 +544,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                         rotationController.stop();
                       },
                       child: RotationTransition(
-                        turns: Tween(begin: 0.0, end: 30.0)
-                            .animate(rotationController),
-                        child: Icon(Icons.refresh,
-                            color: Col.inverseSecondary, size: 20.px),
+                        turns: Tween(begin: 0.0, end: 30.0).animate(rotationController),
+                        child: Icon(Icons.refresh, color: Col.inverseSecondary, size: 20.px),
                       ),
                     ),
                 ],
@@ -564,58 +564,73 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                     children: [
                       !checkInValue.value
                           ? isLatePunchIn.value
-                          ? CW.commonTextFieldForMultiline(
-                        contentPadding: EdgeInsets.all(8.px),
-                        textInputAction: TextInputAction.newline,
-                        keyboardType: TextInputType.multiline,
-                        borderRadius: 4.px,
-                        controller: lateInAndLateOutRangeController,
-                        labelText: shiftDetails?.lateInReasonRequired == '1'
-                            ? 'Late in reason*'
-                            : 'Late in reason',
-                        hintText: shiftDetails?.lateInReasonRequired == '1'
-                            ? 'Late in reason*'
-                            : 'Late in reason',
-                        validator: (value) {
-                          if (isLatePunchIn.value) {
-                            if (value == null ||
-                                value.trim().toString().isEmpty) {
-                              return "Please enter late reason";
-                            } else {
-                              return null;
-                            }
-                          } else {
-                            return null;
-                          }
-                        },
-                      )
+                          ? Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if(shiftDetails?.lateInReasonRequired == '1')
+                                Text('Late in reason*',style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(color: Col.inverseSecondary)),
+                              if(shiftDetails?.lateInReasonRequired == '1')
+                                SizedBox(height: 6.px),
+                               CW.commonTextFieldForMultiline(
+                                  contentPadding: EdgeInsets.all(8.px),
+                                  textInputAction: TextInputAction.newline,
+                                  keyboardType: TextInputType.multiline,
+                                  borderRadius: 4.px,
+                                  controller: lateInAndLateOutRangeController,
+                                  focusNode: focusNodeLateInAndLateOutRange,
+                                  isSearchLabelText: false,
+                                  hintText: 'Late in reason',
+                                  validator: (value) {
+                                    if (isLatePunchIn.value) {
+                                      if (value == null ||
+                                          value.trim().toString().isEmpty) {
+                                        return "Please enter late reason";
+                                      } else {
+                                        return null;
+                                      }
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                            ],
+                          )
                           : const SizedBox()
                           : isEarlyPunchOut.value
-                          ? CW.commonTextFieldForMultiline(
-                        contentPadding: EdgeInsets.all(8.px),
-                        textInputAction: TextInputAction.newline,
-                        keyboardType: TextInputType.multiline,
-                        borderRadius: 4.px,
-                        controller: lateInAndLateOutRangeController,
-                        labelText: shiftDetails?.lateInReasonRequired == '1'
-                            ? 'Early out reason*'
-                            : 'Early out reason',
-                        hintText: shiftDetails?.lateInReasonRequired == '1'
-                            ? 'Early out reason*'
-                            : 'Early out reason',
-                        validator: (value) {
-                          if (isEarlyPunchOut.value) {
-                            if (value == null ||
-                                value.trim().toString().isEmpty) {
-                              return "Please enter early out reason";
-                            } else {
-                              return null;
-                            }
-                          } else {
-                            return null;
-                          }
-                        },
-                      )
+                          ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if(shiftDetails?.earlyOutReasonRequired == '1')
+                              Text('Early out reason*',style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(color: Col.inverseSecondary)),
+                              if(shiftDetails?.earlyOutReasonRequired == '1')
+                              SizedBox(height: 6.px),
+                              CW.commonTextFieldForMultiline(
+                                 contentPadding: EdgeInsets.all(8.px),
+                                 textInputAction: TextInputAction.newline,
+                                 keyboardType: TextInputType.multiline,
+                                 borderRadius: 4.px,
+                                 controller: lateInAndLateOutRangeController,
+                                 focusNode: focusNodeLateInAndLateOutRange,
+                                 // labelText: shiftDetails?.earlyOutReasonRequired == '1'
+                                 //     ? 'Early out reason*'
+                                 //     : 'Early out reason',
+                                 isSearchLabelText: false,
+                                 hintText:  'Enter early out reason',
+                                 validator: (value) {
+                                   if (isEarlyPunchOut.value) {
+                                     if (value == null ||
+                                         value.trim().toString().isEmpty) {
+                                       return "Please enter early out reason";
+                                     } else {
+                                       return null;
+                                     }
+                                   } else {
+                                     return null;
+                                   }
+                                 },
+                                                       ),
+                            ],
+                          )
                           : const SizedBox(),
                       if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}'))
                         SizedBox(height: 5.px),
@@ -626,14 +641,13 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
                             keyboardType: TextInputType.multiline,
                             borderRadius: 4.px,
                             controller: lateInAndLateOutRangeReasonController,
+                            focusNode: focusNodeLateInAndLateOutRangeReason,
                             labelText: shiftDetails?.outOfRangeReasonRequired == '1'
                                 ? 'Out of range reason*'
                                 : 'Out of range reason',
                             hintText: 'Type here',
                             validator: (value) {
-                              if (punchInAndPunchOutRange.value >
-                                  double.parse(
-                                      '${getTodayAttendanceDetail?.branchGeofenceRange}')) {
+                              if (punchInAndPunchOutRange.value > double.parse('${getTodayAttendanceDetail?.branchGeofenceRange}')) {
                                 if (value == null || value.trim().toString().isEmpty) {
                                   return "Please enter out of reason";
                                 } else {
@@ -651,63 +665,32 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
           ),
         ),
         SizedBox(height: 10.px),
-        Row(
-          children: [
-            Expanded(
-              child: CW.commonOutlineButton(
-                onPressed: () {
-                  Get.back();
-                },
-                height: 40.px,
-                borderRadius: 4.px,
-                borderWidth: 1.px,
-                borderColor: Col.darkGray,
-                child: Text(
-                  'Close',
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .labelLarge
-                      ?.copyWith(color: Col.darkGray,fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-            SizedBox(width: 10.px),
-            Expanded(
-              child: Obx(() {
-                count.value;
-                return CW.commonElevatedButton(
-                  borderRadius: 4.px,
-                  height: 40.px,
-                  onPressed: !checkInValue.value
-                      ? punchInAndPunchOutButtonValue.value?() => null : () => clickOnPunchInButton()
-                      : punchInAndPunchOutButtonValue.value?() => null : () => clickOnPunchOutButton(),
-                  isLoading: punchInAndPunchOutButtonValue.value,
-                  progressBarWidth: 20.px,
-                  progressBarHeight: 20.px,
-                  child: Text(
-                    !checkInValue.value ? 'Punch In' : 'Punch out',
-                    style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                );
-              }),
-            ),
-          ],
-        ),
+        Obx(() {
+          count.value;
+          return CW.myElevatedButton(
+            borderRadius: 4.px,
+            height: 40.px,
+            onPressed: !checkInValue.value
+                ? punchInAndPunchOutButtonValue.value?() => null : () => clickOnPunchInButton()
+                : punchInAndPunchOutButtonValue.value?() => null : () => clickOnPunchOutButton(),
+            isLoading: punchInAndPunchOutButtonValue.value,
+            progressBarWidth: 20.px,
+            progressBarHeight: 20.px,
+            buttonText: !checkInValue.value ? 'Punch In' : 'Punch out',
+          );
+        }),
         SizedBox(height: 20.px),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Auto Close in : ",
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(fontWeight: FontWeight.w600)),
+                style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary)),
             Countdown(
               seconds: 60,
               build: (_, double time) {
                 return Text(
                   "00:${time.toInt()}",
-                  style: Theme.of(Get.context!).textTheme.titleLarge,
+                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                 );
               },
               interval: const Duration(milliseconds: 100),

@@ -5,8 +5,6 @@ import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/attendance_tracker/views/month_view.dart';
 import 'package:task/app/modules/attendance_tracker/views/week_view.dart';
 import 'package:task/common/common_widgets/cw.dart';
-import 'package:task/theme/colors/colors.dart';
-
 import '../controllers/attendance_tracker_controller.dart';
 
 class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
@@ -14,119 +12,65 @@ class AttendanceTrackerView extends GetView<AttendanceTrackerController> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => controller.clickOnBackButton(),
-      child: Scaffold(
-          appBar: CW.commonAppBarView(
-            title: controller.menuName.value,
-            isLeading: true,
-            onBackPressed: () => controller.clickOnBackButton(),
-          ),
-          body: Obx(() {
-            controller.count.value;
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: WillPopScope(
+          onWillPop: () => controller.clickOnBackButton(),
+          child: Scaffold(
+            body: Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: Obx(() {
+                    controller.count.value;
 
-            ///Tab Bar View For Month And Week
-            return AC.isConnect.value
-                ? CW.commonRefreshIndicator(
-                    onRefresh: controller.tabBarValue.value == 'Month'
-                        ? () => controller.monthViewOnRefresh()
-                        : () => controller.weekViewOnRefresh(),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.px),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 16.px),
-                          tabBarView(),
-                          Expanded(
+                    ///Tab Bar View For Month And Week
+                    return AC.isConnect.value
+                        ? CW.commonRefreshIndicator(
+                            onRefresh: controller.tabBarValue.value == 'Month'
+                                ? () => controller.monthViewOnRefresh()
+                                : () => controller.weekViewOnRefresh(),
                             child: Padding(
-                              padding: EdgeInsets.only(top: 16.px),
-                              child: controller.tabBarValue.value == 'Month'
-                                  ? AnimatedCrossFade(
-                                crossFadeState: controller.tabBarValue.value == 'Month'
-                                        ? CrossFadeState.showFirst
-                                        : CrossFadeState.showSecond,
-                                duration: const Duration(milliseconds: 100),
-                                firstCurve: Curves.fastOutSlowIn,
-                                secondCurve: Curves.fastOutSlowIn,
-                                firstChild: const MonthView(),
-                                secondChild: const SizedBox(),
-                              )
-                                  : AnimatedCrossFade(
-                                crossFadeState:
-                                    controller.tabBarValue.value == 'Month'
-                                        ? CrossFadeState.showFirst
-                                        : CrossFadeState.showSecond,
-                                duration: const Duration(milliseconds: 100),
-                                firstCurve: Curves.fastOutSlowIn,
-                                secondCurve: Curves.fastOutSlowIn,
-                                firstChild: const SizedBox(),
-                                secondChild: const WeekView(),
+                              padding: EdgeInsets.symmetric(horizontal: 12.px),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 16.px),
+                                  tabBarView(),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 16.px),
+                                      child: controller.tabBarValue.value == 'Month'
+                                          ? const MonthView()
+                                          : const WeekView(),
+                                    ),
+                                  ),
+                                  SizedBox(height: 12.px)
+                                ],
                               ),
                             ),
-                          ),
-                          SizedBox(height: 12.px)
-                        ],
-                      ),
-                    ),
-                  )
-                : CW.commonNoNetworkView();
-            // return Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 12.px),
-            //   child: Column(
-            //     children: [
-            //       SizedBox(height: 16.px),
-            //       const Expanded(child: MonthView()),
-            //     ],
-            //   ),
-            // );
-          }),
+                          )
+                        : CW.commonNoNetworkView();
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget tabBarView() => AnimatedContainer(
-        height: 44.px,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 6.px),
-        decoration: BoxDecoration(
-            color: Col.primary, borderRadius: BorderRadius.circular(6.px)),
-        duration: const Duration(milliseconds: 500),
-        child: Row(
-          children: [
-            Expanded(
-              child: monthButtonView(),
-            ),
-            SizedBox(width: 8.px),
-            Expanded(
-              child: weekButtonView(),
-            ),
-          ],
-        ),
+  Widget appBarView() => CW.myAppBarView(
+        title: controller.menuName.value,
+        onLeadingPressed: () => controller.clickOnBackButton(),
+        padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
       );
 
-  Widget monthButtonView() => CW.commonElevatedButton(
-        onPressed: () => controller.clickOnMonthTab(),
-        buttonText: 'Month',
-        height: 36.px,
-        borderRadius: 6.px,
-        buttonColor: controller.tabBarValue.value == 'Month'
-            ? Col.inverseSecondary
-            : Col.primary,
-        buttonTextColor: controller.tabBarValue.value == 'Month'
-            ? Col.primary
-            : Col.inverseSecondary,
-      );
+  Widget tabBarView() => CW.myCommonTabBarView(
+      tabBarValue: controller.tabBarValue.value,
+      tab1ButtonText: 'Month',
+      tab2ButtonText: 'Week',
+      tab1ButtonOnPressed: () => controller.clickOnMonthTab(),
+      tab2ButtonOnPressed: () => controller.clickOnWeekTab());
 
-  Widget weekButtonView() => CW.commonElevatedButton(
-        onPressed: () => controller.clickOnWeekTab(),
-        buttonText: 'Week',
-        height: 36.px,
-        borderRadius: 6.px,
-        buttonColor: controller.tabBarValue.value == 'Week'
-            ? Col.inverseSecondary
-            : Col.primary,
-        buttonTextColor: controller.tabBarValue.value == 'Week'
-            ? Col.primary
-            : Col.inverseSecondary,
-      );
 }

@@ -1,43 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
-
 import '../controllers/circular_detail_controller.dart';
 
 class CircularDetailView extends GetView<CircularDetailController> {
   const CircularDetailView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-        title: 'Circulars Detail',
-        isLeading: true,
-        onBackPressed: () => controller.clickOnBackButton(),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(() {
+                  controller.count.value;
+                  return ListView(
+                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
+                    children: [
+                      cardView(),
+                    ],
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Obx(() {
-        controller.count.value;
-        return ListView(
-          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 24.px),
-          children: [
-            cardView(),
-          ],
-        );
-      }),
     );
   }
 
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Circulars Detail',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
 
   Widget cardView() => Container(
     decoration: BoxDecoration(
-        color: Col.inverseSecondary,
+        color: Col.gCardColor,
         borderRadius: BorderRadius.circular(6.px),
-        boxShadow: [
-          BoxShadow(color: Col.gray,blurRadius: 2.px)
-        ]
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +85,7 @@ class CircularDetailView extends GetView<CircularDetailController> {
 
   Widget cardTitleTextView({required String text}) => Text(
     text,
-    style: Theme.of(Get.context!).textTheme.titleLarge,
+    style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
     maxLines: 1,
     overflow: TextOverflow.ellipsis,
   );
@@ -95,14 +101,15 @@ class CircularDetailView extends GetView<CircularDetailController> {
             fontFamily: "KumbhSans",
             fontSize: FontSize(10.px),
             fontWeight: FontWeight.w500,
-            color: Col.secondary),
+            color: Col.inverseSecondary,
+        ),
       },
     );
   }
 
   Widget cardDateTextView({required String text}) => Text(
     text,
-    style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px),
+    style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px,color: Col.inverseSecondary),
   );
 
 }

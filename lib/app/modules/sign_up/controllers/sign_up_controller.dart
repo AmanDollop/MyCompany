@@ -122,7 +122,6 @@ class SignUpController extends GetxController {
     CBS.commonBottomSheetForImagePicker(
       clickOnTakePhoto: () => clickOnTakePhoto(),
       clickOnChooseFromLibrary: () => clickOnChooseFromLibrary(),
-      clickOnRemovePhoto: () => clickOnRemovePhoto(),
     );
   }
 
@@ -138,15 +137,9 @@ class SignUpController extends GetxController {
     image.value = await IP.pickImage(isCropper: true, pickFromGallery: true);
   }
 
-  void clickOnRemovePhoto() {
-    Get.back();
-    image.value = null;
-  }
-
   Future<void> clickOnSelectYourBranchTextField() async {
     CM.unFocusKeyBoard();
-    Get.toNamed(Routes.SELECT_BRANCE,
-            arguments: [getYourBranch.value, companyId, getYourBranchId.value])
+    Get.toNamed(Routes.SELECT_BRANCE, arguments: [getYourBranch.value, companyId, getYourBranchId.value])
         ?.then((value) {
       if (value != null) {
         getYourBranch.value = value[0];
@@ -195,7 +188,6 @@ class SignUpController extends GetxController {
 
   Future<void> clickOnJoiningDateTextField() async {
     CM.unFocusKeyBoard();
-
     await CDT.iosPicker1(
         context: Get.context!,
         dateController: joiningDateController,
@@ -208,8 +200,8 @@ class SignUpController extends GetxController {
   Future<void> clickOnCountryCode() async {
     CM.unFocusKeyBoard();
     await CBS.commonBottomSheetForCountry(
+      focusNode: focusNodeForSearchCountry,
       searchController: searchCountryController,
-
       onChanged: (value) {
         countryCodeListSearch.clear();
         if (value.isEmpty) {
@@ -261,10 +253,8 @@ class SignUpController extends GetxController {
                         ),
                         SizedBox(width: 6.px),
                         Text(
-                          searchCountryController.text.isNotEmpty
-                              ?'${countryCodeListSearch[index].phonecode}'
-                              :'${countryCodeList?[index].phonecode}',
-                          style: Theme.of(context).textTheme.labelSmall,
+                          searchCountryController.text.isNotEmpty ?'${countryCodeListSearch[index].phonecode}' :'${countryCodeList?[index].phonecode}',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Col.inverseSecondary),
                         ),
                         SizedBox(width: 10.px),
                         Flexible(
@@ -272,7 +262,7 @@ class SignUpController extends GetxController {
                             searchCountryController.text.isNotEmpty
                                 ?'${countryCodeListSearch[index].countryName}'
                                 :'${countryCodeList?[index].countryName}',
-                            style: Theme.of(context).textTheme.titleSmall,
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Col.inverseSecondary),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),

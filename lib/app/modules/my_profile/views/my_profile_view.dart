@@ -277,6 +277,7 @@ class MyProfileView extends GetView<MyProfileController> {
               crossAxisCount: 3,
               crossAxisSpacing: 10.px,
               mainAxisSpacing: 10.px,
+              childAspectRatio: 1.4
             ),
             itemBuilder: (context, index) {
               return InkWell(
@@ -286,7 +287,7 @@ class MyProfileView extends GetView<MyProfileController> {
                 borderRadius: BorderRadius.circular(8.px),
                 child: Ink(
                   height: 134.px,
-                  padding: EdgeInsets.only(left: 3.px),
+                  padding: EdgeInsets.symmetric(horizontal: 6.px),
                   decoration: BoxDecoration(
                     color: Col.gCardColor,
                     borderRadius: BorderRadius.circular(8.px),
@@ -297,8 +298,8 @@ class MyProfileView extends GetView<MyProfileController> {
                     children: [
                       CW.commonCachedNetworkImageView1(
                           path: '${AU.baseUrlAllApisImage}${controller.getEmployeeDetails![index].profileMenuPhoto}' ,
-                          width:  44.px,
-                          height: 44.px,
+                          width:  30.px,
+                          height: 30.px,
                       ),
                       SizedBox(height: 6.px),
                       Text(
@@ -306,7 +307,7 @@ class MyProfileView extends GetView<MyProfileController> {
                             controller.getEmployeeDetails![index].profileMenuName!.isNotEmpty
                             ? '${controller.getEmployeeDetails![index].profileMenuName}'
                             : 'Menu Name Not Found!',
-                        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700,color: Col.inverseSecondary),
+                        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 10.px, color: Col.inverseSecondary),
                         maxLines:2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,

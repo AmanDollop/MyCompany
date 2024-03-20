@@ -52,10 +52,12 @@ class EducationController extends GetxController {
 
   void clickOnEducationTab() {
     tabBarValue.value = 'Education';
+    count.value++;
   }
 
   void clickOnAchievementsTab() {
     tabBarValue.value = 'Achievement';
+    count.value++;
   }
 
   Future<void> callingGetEducationOrAchievementsApi() async {

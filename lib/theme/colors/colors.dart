@@ -10,10 +10,14 @@ class Col {
   static Color gTop = const Color(0xFF13253D);
 
   static Color gBottom = const Color(0xFF040415);
-  static Color gCardColor = const Color(0xff122634);
+  static Color gCardColor = const Color(0xff0D1D28);
+  // static Color gCardColor = const Color(0xff122634);
+
+  static Color gTextColor = const Color(0xffD7D7D7);
 
 
-  static Color primary = const Color(0xff75EEC3);
+  static Color primary = const Color(0xcc75EEC3);
+  // static Color primary = const Color(0xff75EEC3);
 
   static Color primaryColor = const Color(0xff6AE8F7);
 

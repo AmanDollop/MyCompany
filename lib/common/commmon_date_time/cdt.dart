@@ -197,8 +197,7 @@ class CDT {
       CupertinoDatePickerMode mode = CupertinoDatePickerMode.date,
       DatePickerDateOrder order = DatePickerDateOrder.dmy,
       TextEditingController? dateController}) async {
-    String formattedDate =
-        CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
+    String formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '${DateTime.now()}');
 
     CBS.commonBottomSheet(
       children: [
@@ -213,23 +212,19 @@ class CDT {
             child: Column(
               children: [
                 CupertinoTheme(
-                  data: const CupertinoThemeData(
+                  data:  CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle:
-                          TextStyle(fontSize: 16, color: Colors.black),
+                      dateTimePickerTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                     ),
                   ),
                   child: SizedBox(
                     height: height ?? MediaQuery.of(context).size.height / 3.5,
                     child: CupertinoDatePicker(
-                      initialDateTime:
-                          initialDate ?? DateTime(DateTime.now().year - 18),
+                      initialDateTime: initialDate ?? DateTime(DateTime.now().year - 18),
                       minimumDate: firstDate ?? DateTime(1900),
                       maximumDate: lastDate ?? DateTime.now(),
                       onDateTimeChanged: (value) {
-                        formattedDate =
-                            CMForDateTime.dateFormatForDateMonthYear(
-                                date: '$value');
+                        formattedDate = CMForDateTime.dateFormatForDateMonthYear(date: '$value');
                         // dateController?.text = formattedDate;
                       },
                       minimumYear: minimumYear ?? DateTime.now().year - 123,
@@ -245,46 +240,16 @@ class CDT {
             ),
           ),
         ),
-        Row(
-          children: [
-            Expanded(
-              child: CW.commonOutlineButton(
-                onPressed: () {
-                  Get.back();
-                },
-                height: 40.px,
-                borderRadius: 4.px,
-                borderWidth: 1.px,
-                borderColor: Col.darkGray,
-                child: Text(
-                  C.textCancel,
-                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
-                      color: Col.darkGray, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-            SizedBox(width: 10.px),
-            Expanded(
-              child: CW.commonElevatedButton(
-                borderRadius: 4.px,
-                height: 40.px,
-                onPressed: clickOnSelect ??
-                    () {
-                      dateController?.text = formattedDate;
-                      Get.back();
-                    },
-                progressBarWidth: 20.px,
-                progressBarHeight: 20.px,
-                child: Text(
-                  C.textSelect,
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .labelLarge
-                      ?.copyWith(fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          ],
+        CW.myElevatedButton(
+          borderRadius: 4.px,
+          height: 40.px,
+          onPressed: clickOnSelect ?? () {
+                dateController?.text = formattedDate;
+                Get.back();
+              },
+          progressBarWidth: 20.px,
+          progressBarHeight: 20.px,
+          buttonText: C.textSelect
         ),
         SizedBox(height: 20.px),
       ],
@@ -322,6 +287,7 @@ class CDT {
     }
     await CBS.commonBottomSheet(
       children: [
+        // Center(child: Text('Select Date', style: Theme.of(Get.context!).textTheme.displaySmall)),
         Padding(
           padding: EdgeInsets.only(top: 10.px, bottom: 10.px),
           child: Ink(
@@ -335,8 +301,7 @@ class CDT {
                 CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle:
-                          TextStyle(fontSize: 16.px, color: Colors.black),
+                      dateTimePickerTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                     ),
                   ),
                   child: SizedBox(
@@ -367,42 +332,16 @@ class CDT {
             ),
           ),
         ),
-        Row(
-          children: [
-            Expanded(
-              child: CW.commonOutlineButton(
-                onPressed: () {
-                  Get.back();
-                },
-                height: 40.px,
-                borderRadius: 4.px,
-                borderWidth: 1.px,
-                borderColor: Col.darkGray,
-                child: Text(
-                  C.textCancel,
-                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
-                      color: Col.darkGray, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-            SizedBox(width: 10.px),
-            Expanded(
-              child: CW.commonElevatedButton(
-                borderRadius: 4.px,
-                height: 40.px,
-                onPressed: clickOnSelect ?? () {
-                      dateController?.text = formattedDate ?? dateController.text;
-                      Get.back();
-                    },
-                progressBarWidth: 20.px,
-                progressBarHeight: 20.px,
-                child: Text(
-                  C.textSelect,
-                  style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          ],
+        CW.myElevatedButton(
+          borderRadius: 4.px,
+          height: 40.px,
+          onPressed: clickOnSelect ?? () {
+                dateController?.text = formattedDate ?? dateController.text;
+                Get.back();
+              },
+          progressBarWidth: 20.px,
+          progressBarHeight: 20.px,
+          buttonText: C.textSelect
         ),
         SizedBox(height: 20.px),
       ],

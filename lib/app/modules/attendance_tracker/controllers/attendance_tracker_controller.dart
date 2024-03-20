@@ -20,6 +20,8 @@ import 'package:task/validator/v.dart';
 import '../../../../common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../common/custom_outline_button.dart';
+
 
 class AttendanceTrackerController extends GetxController with GetTickerProviderStateMixin {
   final count = 0.obs;
@@ -58,6 +60,37 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
   final tabBarValue = 'Month'.obs;
 
   final cardColorList = [
+    const Color(0x14E2C68B), // 9% opacity for 0xffE2C68B
+    const Color(0x1467B87E), // 9% opacity for 0xff67B87E
+    const Color(0x14E07474), // 9% opacity for 0xffE07474
+    const Color(0x14D4A389), // 9% opacity for 0xffD4A389
+    const Color(0x14C7EEF4), // 9% opacity for 0xffC7EEF4
+    const Color(0x14D080C9), // 9% opacity for 0xffD080C9
+    const Color(0x14DDE0FB), // 9% opacity for 0xffDDE0FB
+    const Color(0x14E6E6E6), // 9% opacity for 0xffE6E6E6
+    const Color(0x14249CFF), // 9% opacity for 0xff249CFF
+    const Color(0x14BC8264), // 9% opacity for 0xffBC8264
+    const Color(0x14C7B8F4), // 9% opacity for 0xffC7B8F4
+    const Color(0x14EEEED1), // 9% opacity for 0xffEEEED1
+  ];
+
+  final cardTextColorList = [
+    const Color(0xffE2C68B),
+    const Color(0xff67B87E),
+    const Color(0xffE07474),
+    const Color(0xffD4A389),
+    const Color(0xffC7EEF4),
+    const Color(0xffD080C9),
+    const Color(0xffDDE0FB),
+    const Color(0xffE6E6E6),
+    const Color(0xff249CFF),
+    const Color(0xffBC8264),
+    const Color(0xffC7B8F4),
+    const Color(0xffEEEED1),
+  ];
+
+
+  /* final cardColorList = [
     const Color(0xffFFF2D8),
     const Color(0xffF2FFF3),
     const Color(0xffFFD9D9),
@@ -85,7 +118,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
     const Color(0xffFF5700),
     const Color(0xff4C426C),
     const Color(0xff6F7106),
-  ];
+  ];*/
 
   final cardTitleTextList = [
     'Working Days',
@@ -237,7 +270,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
           Center(
             child: Text(
               'Select Month',
-              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!).textTheme.displaySmall,
             ),
           ),
           SizedBox(height: 14.px),
@@ -255,73 +288,45 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                         right: index % 2 == 0 ? C.margin / 2 : C.margin,
                         top: C.margin / 2,
                         bottom: 0.px),
-                    child: Container(
-                      height: 46.px,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.px),
-                        color: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
-                            ? Col.primary.withOpacity(.08)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
-                              ? Col.primary
-                              : Col.darkGray,
-                          width: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
-                              ? 1.5.px
-                              : 1.px,
-                        ),
+                    child: CustomOutlineButton(
+                      onPressed: () async {
+                        monthNameForMonthViewValue.value = monthNameForMonthViewList[index];
+                        monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+                        currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
+                        monthTotalDaysListDataAdd();
+                        await callingGetMonthlyAttendanceDataApi();
+                        Get.back();
+                      },
+                      padding: EdgeInsets.only(left: 14.px, right: 0.px,top: 2.px,bottom: 2.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
                       ),
-                      child: InkWell(
-                        onTap: () async {
-                          monthNameForMonthViewValue.value = monthNameForMonthViewList[index];
-                          monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
-                          currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
-                          monthTotalDaysListDataAdd();
-                          await callingGetMonthlyAttendanceDataApi();
-                          Get.back();
-                          },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.px, horizontal: 10.px),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                monthNameForMonthViewList[index],
-                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              /*Container(
-                                height:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                width:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                padding: EdgeInsets.all(2.px),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: bloodGroupValue.value ==
-                                        bloodGroupList[index]
-                                        ? Col.primary
-                                        : Col.text,
-                                    width: 1.5.px,
-                                  ),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: bloodGroupValue.value ==
-                                          bloodGroupList[index]
-                                          ? Col.primary
-                                          : Colors.transparent),
-                                ),
-                              ),*/
-                            ],
-                          ),
+                      strokeWidth: 1.px,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              monthNameForMonthViewList[index],
+                              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,
+                                  color: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
+                                  ? Col.primary
+                                      : Col.inverseSecondary),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -346,14 +351,13 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
           Center(
             child: Text(
               'Select Year',
-              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!).textTheme.displaySmall,
             ),
           ),
           SizedBox(height: 14.px),
           Wrap(
             children: List.generate(
-              yearForMonthViewList.length,
-                  (index) => Obx(() {
+              yearForMonthViewList.length, (index) => Obx(() {
                 count.value;
                 final cellWidth = MediaQuery.of(Get.context!).size.width / 2;
                 return SizedBox(
@@ -364,73 +368,45 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                         right: index % 2 == 0 ? C.margin / 2 : C.margin,
                         top: C.margin / 2,
                         bottom: 0.px),
-                    child: Container(
-                      height: 46.px,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.px),
-                        color: yearForMonthViewValue.value == yearForMonthViewList[index]
-                            ? Col.primary.withOpacity(.08)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: yearForMonthViewValue.value == yearForMonthViewList[index]
-                              ? Col.primary
-                              : Col.darkGray,
-                          width: yearForMonthViewValue.value == yearForMonthViewList[index]
-                              ? 1.5.px
-                              : 1.px,
-                        ),
+                    child: CustomOutlineButton(
+                      padding: EdgeInsets.only(left: 14.px, right: 0.px,top: 2.px,bottom: 2.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: yearForMonthViewValue.value == yearForMonthViewList[index]
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
                       ),
-                      child: InkWell(
-                        onTap: () async {
-                          yearForMonthViewValue.value = yearForMonthViewList[index];
-                          monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
-                          currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
-                          monthTotalDaysListDataAdd();
-                          await callingGetMonthlyAttendanceDataApi();
-                          Get.back();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.px, horizontal: 10.px),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                yearForMonthViewList[index],
-                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              /*Container(
-                                height:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                width:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                padding: EdgeInsets.all(2.px),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: bloodGroupValue.value ==
-                                        bloodGroupList[index]
-                                        ? Col.primary
-                                        : Col.text,
-                                    width: 1.5.px,
-                                  ),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: bloodGroupValue.value ==
-                                          bloodGroupList[index]
-                                          ? Col.primary
-                                          : Colors.transparent),
-                                ),
-                              ),*/
-                            ],
-                          ),
+                      strokeWidth: 1.px,
+                      onPressed: () async {
+                        yearForMonthViewValue.value = yearForMonthViewList[index];
+                        monthNameIdForMonthView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForMonthViewValue.value);
+                        currentMonth.value = DateTime(int.parse(yearForMonthViewValue.value), int.parse(monthNameIdForMonthView.value));
+                        monthTotalDaysListDataAdd();
+                        await callingGetMonthlyAttendanceDataApi();
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              yearForMonthViewList[index],
+                              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,
+                                  color: yearForMonthViewValue.value == yearForMonthViewList[index]
+                                      ? Col.primary
+                                      : Col.inverseSecondary),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -523,7 +499,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
             children: [
               Text(
                 DateFormat('EEEE, d MMM y').format(dateTime),
-                style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500),
+                style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700,color: Col.inverseSecondary),
               ),
               if (monthlyHistoryList?[index].present == true)
               SizedBox(height: 16.px),
@@ -533,7 +509,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6.px),
                 ),
-                color: Col.primary,
+                color: Col.gCardColor,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
                   child: Row(
@@ -555,11 +531,12 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                   || monthlyHistoryList?[index].punchOutDate != null && monthlyHistoryList![index].punchOutDate!.isNotEmpty && monthlyHistoryList?[index].punchOutTime != null && monthlyHistoryList![index].punchOutTime!.isNotEmpty)
                 Obx(() {
                   count.value;
-                  return Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Col.primary,width: .5.px),
-                        borderRadius: BorderRadius.circular(6.px)
-                    ),
+                  return CustomOutlineButton(
+                    customOutlineForButtonValue: false,
+                    gradient: CW.commonLinearGradientForButtonsView(),
+                    strokeWidth: .2.px,
+                    onPressed: () {},
+                    radius: 6.px,
                     padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
                     child: Column(
                       children: [
@@ -601,7 +578,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                                   length: 62.w,
                                   dashLength: 5.px,
                                   dashThickness: .5.px,
-                                  dashColor: Col.secondary),
+                                  dashColor: Col.primary),
                               CW.commonTextButton(
                                 onPressed: (){
                                   bottomSheetBreakListValue.value = !bottomSheetBreakListValue.value;
@@ -636,7 +613,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                                       children: [
                                         Text(
                                           '${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakTypeName}',
-                                          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                                          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.gTextColor),
                                         ),
                                         Text(
                                           CMForDateTime.calculateTimeForHourAndMin(minute: '${attendanceBreakHistory?[attendanceBreakHistoryIndex].totalBreakTimeMinutes}'),
@@ -647,7 +624,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                                     SizedBox(height: 5.px),
                                     Text(
                                       '${CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime:'${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakStartTime}')} - ${CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime:'${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndDate} ${attendanceBreakHistory?[attendanceBreakHistoryIndex].breakEndTime}')}',
-                                      style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+                                      style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
                                     ),
                                     if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
                                       SizedBox(height: 10.px),
@@ -658,7 +635,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                                             length: 86.w,
                                             dashLength: 5.px,
                                             dashThickness: .5.px,
-                                            dashColor: Col.secondary),
+                                            dashColor: Col.primary),
                                       ),
                                     if(attendanceBreakHistory?.length != attendanceBreakHistoryIndex+1)
                                     SizedBox(height: 10.px),
@@ -709,7 +686,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                   || monthlyHistoryList?[index].holiday == true  && monthlyHistoryList?[index].present == false
                   || monthlyHistoryList?[index].isPunchOutMissing == true  && monthlyHistoryList?[index].present == true
               )
-              CW.commonElevatedButton(
+              CW.myElevatedButton(
                   onPressed: () => clickOnRequestForAttendanceButton(
                       index:index,
                       date:CMForDateTime.dateFormatForDateMonthYear(date: '$dateTime'),
@@ -736,7 +713,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
           isAssetImage: true,
           height: 22.px,
           width: 22.px,
-          color: Col.secondary),
+          color: Col.primary),
     ),
   );
 
@@ -761,11 +738,10 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
            child: Obx((){
              count.value;
              return Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
                children: [
                  Text(
                    'Attendance Request',
-                   style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                   style: Theme.of(Get.context!).textTheme.displaySmall,
                  ),
                  SizedBox(height: 16.px),
                  CW.commonTextField(
@@ -812,9 +788,10 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                      labelText: 'Description',
                      hintText: 'Description',
                      controller: descriptionController,
+                     isSearchLabelText: false,
                      maxLines: 3),
-                 SizedBox(height: 10.px),
-                 CW.commonElevatedButton(
+                 SizedBox(height: 16.px),
+                 CW.myElevatedButton(
                    onPressed: sendRequestButtonValue.value
                        ? () => null
                        : () => clickOnSendRequestButton(index:index),
@@ -923,7 +900,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
         children: [
           Text(
             title,
-            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.inverseSecondary, fontSize: 10.px),
+            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.gTextColor, fontSize: 10.px),
           ),
           SizedBox(height: 2.px),
           Text(
@@ -936,7 +913,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
   Widget commonCardTimeVerticalDividerView() => SizedBox(
         height: 34.px,
         child: VerticalDivider(
-          color: Col.inverseSecondary,
+          color: Col.gBottom,
           thickness: .5.px,
         ),
       );
@@ -945,18 +922,18 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
         children: [
           Text(
             title,
-            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
+            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500,color: Col.gTextColor),
           ),
           if (subTitle != null) SizedBox(height: 2.px),
           if (subTitle != null)
             Text(
               subTitle,
-              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: 11.px, fontWeight: FontWeight.w500),
+              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: 11.px, fontWeight: FontWeight.w500,color: Col.inverseSecondary),
             ),
           SizedBox(height: 2.px),
           Text(
             timeText,
-            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
           ),
         ],
       );
@@ -1020,7 +997,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
           Center(
             child: Text(
               'Select Month',
-              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!).textTheme.displaySmall,
             ),
           ),
           SizedBox(height: 14.px),
@@ -1038,72 +1015,42 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                         right: index % 2 == 0 ? C.margin / 2 : C.margin,
                         top: C.margin / 2,
                         bottom: 0.px),
-                    child: Container(
-                      height: 46.px,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.px),
-                        color: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
-                            ? Col.primary.withOpacity(.08)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
-                              ? Col.primary
-                              : Col.darkGray,
-                          width: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
-                              ? 1.5.px
-                              : 1.px,
-                        ),
+                    child: CustomOutlineButton(
+                      padding: EdgeInsets.only(left: 14.px, right: 0.px,top: 2.px,bottom: 2.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
                       ),
-                      child: InkWell(
-                        onTap: () async {
-                          monthNameForWeekViewValue.value = monthNameForMonthViewList[index];
-                          print('monthNameForWeekViewValue.value::::: ${monthNameForWeekViewValue.value}');
-                          monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
-                          await callingGetWeeklyAttendanceDataApi();
-                          Get.back();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.px, horizontal: 10.px),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                monthNameForMonthViewList[index],
-                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              /*Container(
-                                height:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                width:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                padding: EdgeInsets.all(2.px),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: bloodGroupValue.value ==
-                                        bloodGroupList[index]
-                                        ? Col.primary
-                                        : Col.text,
-                                    width: 1.5.px,
-                                  ),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: bloodGroupValue.value ==
-                                          bloodGroupList[index]
-                                          ? Col.primary
-                                          : Colors.transparent),
-                                ),
-                              ),*/
-                            ],
-                          ),
+                      strokeWidth: 1.px,
+                      onPressed: () async {
+                        monthNameForWeekViewValue.value = monthNameForMonthViewList[index];
+                        print('monthNameForWeekViewValue.value::::: ${monthNameForWeekViewValue.value}');
+                        monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+                        await callingGetWeeklyAttendanceDataApi();
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              monthNameForMonthViewList[index],
+                              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,
+                              color: monthNameForWeekViewValue.value == monthNameForMonthViewList[index]?Col.primary:Col.inverseSecondary),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -1127,7 +1074,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
           Center(
             child: Text(
               'Select Year',
-              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!).textTheme.displaySmall,
             ),
           ),
           SizedBox(height: 14.px),
@@ -1145,71 +1092,42 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                         right: index % 2 == 0 ? C.margin / 2 : C.margin,
                         top: C.margin / 2,
                         bottom: 0.px),
-                    child: Container(
-                      height: 46.px,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.px),
-                        color: yearForWeekViewValue.value == yearForMonthViewList[index]
-                            ? Col.primary.withOpacity(.08)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: yearForWeekViewValue.value == yearForMonthViewList[index]
-                              ? Col.primary
-                              : Col.darkGray,
-                          width: yearForWeekViewValue.value == yearForMonthViewList[index]
-                              ? 1.5.px
-                              : 1.px,
-                        ),
+                    child: CustomOutlineButton(
+                      padding: EdgeInsets.only(left: 14.px, right: 0.px,top: 2.px,bottom: 2.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: yearForWeekViewValue.value == yearForMonthViewList[index]
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
                       ),
-                      child: InkWell(
-                        onTap: () async {
-                          yearForWeekViewValue.value = yearForMonthViewList[index];
-                          monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
-                          await callingGetWeeklyAttendanceDataApi();
-                          Get.back();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.px, horizontal: 10.px),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                yearForMonthViewList[index],
-                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              /*Container(
-                                height:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                width:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                padding: EdgeInsets.all(2.px),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: bloodGroupValue.value ==
-                                        bloodGroupList[index]
-                                        ? Col.primary
-                                        : Col.text,
-                                    width: 1.5.px,
-                                  ),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: bloodGroupValue.value ==
-                                          bloodGroupList[index]
-                                          ? Col.primary
-                                          : Colors.transparent),
-                                ),
-                              ),*/
-                            ],
-                          ),
+                      strokeWidth: 1.px,
+                      onPressed: () async {
+                        yearForWeekViewValue.value = yearForMonthViewList[index];
+                        monthNameIdForWeekView.value = CommonCalendarMethods.getMonth(monthNameValue: monthNameForWeekViewValue.value);
+                        await callingGetWeeklyAttendanceDataApi();
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 6.px, horizontal: 10.px),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              yearForMonthViewList[index],
+                              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,
+                              color: yearForWeekViewValue.value == yearForMonthViewList[index]?Col.primary:Col.inverseSecondary),
+                            ),
+                          ],
                         ),
                       ),
                     ),

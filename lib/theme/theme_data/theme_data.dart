@@ -38,7 +38,6 @@ class AppThemeData {
       primaryColor: Col.primaryColor,
       // scaffoldBackgroundColor: Col.scaffoldBackgroundColor,
       scaffoldBackgroundColor: Colors.transparent,
-
       colorScheme: ColorScheme(
         primary: Col.primary,
         onPrimary: Col.primary,

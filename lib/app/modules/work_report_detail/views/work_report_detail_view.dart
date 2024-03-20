@@ -15,42 +15,55 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-          title: 'Work Report Detail',
-          onBackPressed: () => controller.clickOnBackButton(),
-          isLeading: true),
-      body: Obx(
-        () {
-          controller.count.value;
-          if (AC.isConnect.value) {
-            return ModalProgress(
-              inAsyncCall: false,
-              child: controller.getWorkReportDetailModal.value != null
-                  ? controller.workDetails != null
-                      ? ListView(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.px, vertical: 16.px),
-                          children: [
-                            cardView(),
-                          ],
-                        )
-                      : CW.commonNoDataFoundText()
-                  : CW.commonNoDataFoundText(),
-            );
-          } else {
-            return CW.commonNoNetworkView();
-          }
-        },
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(
+                  () {
+                    controller.count.value;
+                    if (AC.isConnect.value) {
+                      return ModalProgress(
+                        inAsyncCall: false,
+                        child: controller.getWorkReportDetailModal.value != null
+                            ? controller.workDetails != null
+                                ? ListView(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12.px, vertical: 16.px),
+                                    children: [
+                                      cardView(),
+                                    ],
+                                  )
+                                : CW.commonNoDataFoundText()
+                            : CW.commonNoDataFoundText(),
+                      );
+                    } else {
+                      return CW.commonNoNetworkView();
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Work Report Detail',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+  );
+
   Widget cardView() => Container(
         decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            borderRadius: BorderRadius.circular(6.px),
-            boxShadow: [BoxShadow(color: Col.gray, blurRadius: 2.px)]),
+             color: Col.gCardColor,
+             borderRadius: BorderRadius.circular(6.px),
+            ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -68,7 +81,7 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
                 ],
               ),
             ),
-            CW.commonDividerView(color: Col.gray),
+            CW.commonDividerView(),
             SizedBox(height: 6.px),
             Padding(
               padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 12.px),
@@ -89,7 +102,7 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
 
   Widget cardTitleTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge,
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -105,17 +118,14 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
             fontFamily: "KumbhSans",
             fontSize: FontSize(10.px),
             fontWeight: FontWeight.w500,
-            color: Col.secondary),
+            color: Col.inverseSecondary),
       },
     );
   }
 
   Widget cardDateTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelMedium
-            ?.copyWith(fontSize: 10.px),
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px,color: Col.gTextColor),
       );
 
   Widget filesList() {

@@ -14,6 +14,7 @@ import 'package:task/api/api_model/document_modal.dart';
 import 'package:task/api/api_model/education_modal.dart';
 import 'package:task/api/api_model/experience_modal.dart';
 import 'package:task/api/api_model/get_all_leave_modal.dart';
+import 'package:task/api/api_model/get_assign_template_modal.dart';
 import 'package:task/api/api_model/get_break_details_modal.dart';
 import 'package:task/api/api_model/get_department_employee_modal.dart';
 import 'package:task/api/api_model/get_employee_details_modal.dart';
@@ -27,6 +28,7 @@ import 'package:task/api/api_model/get_my_team_member_modal.dart';
 import 'package:task/api/api_model/get_penalty_modal.dart';
 import 'package:task/api/api_model/get_reporting_person_modal.dart';
 import 'package:task/api/api_model/get_task_time_line_modal.dart';
+import 'package:task/api/api_model/get_template_question_modal.dart';
 import 'package:task/api/api_model/get_today_attendance_modal.dart';
 import 'package:task/api/api_model/get_weekly_attendance_data_modal.dart';
 import 'package:task/api/api_model/get_work_report_detail_modal.dart';
@@ -1525,6 +1527,88 @@ class CAI extends GetxController{
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getWorkReportDetailModal = GetWorkReportDetailModal.fromJson(jsonDecode(response.body));
         return getWorkReportDetailModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetAssignTemplateModal?> getAssignTemplateApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetAssignTemplateModal? getAssignTemplateModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getAssignTemplateModal = GetAssignTemplateModal.fromJson(jsonDecode(response.body));
+        return getAssignTemplateModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetTemplateQuestionModal?> getTemplateQuestionApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetTemplateQuestionModal? getTemplateQuestionModal;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getTemplateQuestionModal = GetTemplateQuestionModal.fromJson(jsonDecode(response.body));
+        return getTemplateQuestionModal;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response?> submitTemQuestionApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true,wantShowSuccessResponse: true)) {
+        return response;
       } else {
         return null;
       }

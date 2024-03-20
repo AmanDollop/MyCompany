@@ -8,96 +8,106 @@ import 'package:task/common/common_packages/load_more/lm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
-import 'package:task/theme/constants/constants.dart';
 
 class AllTaskView extends GetView<AllTaskController> {
   const AllTaskView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      controller.count.value;
-      return GestureDetector(
-        onTap: () {
-          CM.unFocusKeyBoard();
-        },
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: CW.commonAppBarView(
-              title: controller.menuName.value,
-              isLeading: true,
-              onBackPressed: () => controller.clickOnBackButton(),
-              actions: [
-                CW.commonIconButton(onPressed: () async {
-                  controller.hideSearchFieldValue.value = !controller.hideSearchFieldValue.value;
-                  controller.taskSearchController.clear();
-                  controller.count.value++;
-                  controller.taskCategoryList.clear();
-                  controller.offset.value = 0;
-                  controller.apiResValue.value= true;
-                  await controller.callingGetTaskDataApi();
-                },
-                    isAssetImage: false,
-                    icon: controller.hideSearchFieldValue.value
-                    ? Icons.search_off
-                    : Icons.search,color: Col.inverseSecondary),
-                SizedBox(width: 10.px)
-              ]
-          ),
-          body: Obx(() {
-            controller.count.value;
-            return AC.isConnect.value
-                ? Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
-              child: Column(
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Obx(() {
+          controller.count.value;
+          return GestureDetector(
+            onTap: () => CM.unFocusKeyBoard(),
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: Column(
                 children: [
-                  AnimatedCrossFade(
-                    firstChild: const SizedBox(),
-                    secondChild: taskSearchTextFieldView(),
-                    crossFadeState: controller.hideSearchFieldValue.value
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 500),
-                    reverseDuration: const Duration(microseconds: 0),
-                  ),
-                  if(controller.hideSearchFieldValue.value)
-                  SizedBox(height: 16.px),
-                  controller.apiResValue.value
-                      ? Expanded(
-                        child: shimmerView(),
-                       )
-                      : Expanded(
-                        child: ModalProgress(
-                      inAsyncCall: controller.apiResValue.value,
-                      child: CW.commonRefreshIndicator(
-                        onRefresh: () => controller.onRefresh(),
-                        child: LM(
-                          noMoreWidget: const SizedBox(),
-                          isLastPage: controller.isLastPage.value,
-                          onLoadMore: () => controller.onLoadMore(),
-                          child: ListView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            children: [
-                              topCardGridView(),
-                              SizedBox(height: 16.px),
-                              taskCardListView(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  appBarView(),
+                  Expanded(
+                    child: Obx(() {
+                      controller.count.value;
+                      return AC.isConnect.value
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 12.px),
+                              child: Column(
+                                children: [
+                                  AnimatedCrossFade(
+                                    firstChild: const SizedBox(),
+                                    secondChild: taskSearchTextFieldView(),
+                                    crossFadeState: controller.hideSearchFieldValue.value
+                                            ? CrossFadeState.showSecond
+                                            : CrossFadeState.showFirst,
+                                    duration: const Duration(milliseconds: 500),
+                                    reverseDuration: const Duration(microseconds: 0),
+                                  ),
+                                  if (controller.hideSearchFieldValue.value)
+                                    SizedBox(height: 16.px),
+                                  controller.apiResValue.value
+                                      ? Expanded(
+                                          child: shimmerView(),
+                                        )
+                                      : Expanded(
+                                          child: ModalProgress(
+                                            inAsyncCall: controller.apiResValue.value,
+                                            child: CW.commonRefreshIndicator(
+                                              onRefresh: () => controller.onRefresh(),
+                                              child: LM(
+                                                noMoreWidget: const SizedBox(),
+                                                isLastPage: controller.isLastPage.value,
+                                                onLoadMore: () => controller.onLoadMore(),
+                                                child: ListView(
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: true,
+                                                  children: [
+                                                    topCardGridView(),
+                                                    SizedBox(height: 10.px),
+                                                    taskCardListView(),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                ],
+                              ),
+                            )
+                          : CW.commonNoNetworkView();
+                    }),
                   ),
                 ],
               ),
-            )
-                : CW.commonNoNetworkView();
-          }),
-          floatingActionButton: addTaskFloatingActionButtonView(),
-        ),
-      );
-    });
+              floatingActionButton: addTaskFloatingActionButtonView(),
+            ),
+          );
+        }),
+      ),
+    );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+        title: controller.menuName.value,
+        onLeadingPressed: () => controller.clickOnBackButton(),
+        padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+        actionValue: true,
+        action: CW.commonIconButton(
+            onPressed: () async {
+              controller.hideSearchFieldValue.value =
+                  !controller.hideSearchFieldValue.value;
+              controller.taskSearchController.clear();
+              controller.count.value++;
+              controller.taskCategoryList.clear();
+              controller.offset.value = 0;
+              controller.apiResValue.value = true;
+              await controller.callingGetTaskDataApi();
+            },
+            isAssetImage: false,
+            icon: controller.hideSearchFieldValue.value
+                ? Icons.search_off
+                : Icons.search,
+            color: Col.inverseSecondary),
+      );
 
   Widget taskSearchTextFieldView() => CW.commonTextField(
         isBorder: true,
@@ -105,59 +115,44 @@ class AllTaskView extends GetView<AllTaskController> {
         hintText: 'Search Task Category',
         controller: controller.taskSearchController,
         onChanged: (value) => controller.taskSearchOnChange(value: value),
+        focusNode: controller.focusNodeTaskSearch,
         suffixIcon: controller.taskSearchController.text.isNotEmpty
-        ? SizedBox(
-      width: 24.px,
-      height: 24.px,
-      child: InkWell(
-        onTap: () async {
-          controller.taskSearchController.clear();
-          controller.count.value++;
-          controller.taskCategoryList.clear();
-          controller.offset.value = 0;
-          controller.apiResValue.value= true;
-          await controller.callingGetTaskDataApi();
-        },
-        child: Center(
-          child: CW.commonNetworkImageView(
-              path: 'assets/icons/cancel_white_icon.png',
-              color: Col.text,
-              isAssetImage: true,
-              width: 12.px,
-              height: 12.px),
-        ),
-      ),
-    )
-        : const SizedBox(),
-        prefixIcon: SizedBox(
-          width: 24.px,
-          height: 24.px,
-          child: Center(
-            child: CW.commonNetworkImageView(
-                path: 'assets/icons/search_icon.png',
-                isAssetImage: true,
+            ? SizedBox(
                 width: 24.px,
-                height: 24.px),
-          ),
-        ),
+                height: 24.px,
+                child: InkWell(
+                  onTap: () async {
+                    controller.taskSearchController.clear();
+                    controller.count.value++;
+                    controller.taskCategoryList.clear();
+                    controller.offset.value = 0;
+                    controller.apiResValue.value = true;
+                    await controller.callingGetTaskDataApi();
+                  },
+                  child: Center(
+                    child: CW.commonNetworkImageView(
+                        path: 'assets/icons/cancel_white_icon.png',
+                        color: Col.primary,
+                        isAssetImage: true,
+                        width: 12.px,
+                        height: 12.px),
+                  ),
+                ),
+              )
+            : const SizedBox(),
+        prefixIconPath: 'assets/icons/search_icon.png',
       );
 
   Widget subTitleTextView({required String text, double? fontSize}) => Text(
         text,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelSmall
-            ?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize,color: Col.inverseSecondary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
 
   Widget cardTitleTextView({required String text, Color? color, double? fontSize}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-            fontSize: fontSize ?? 10.px,
-            fontWeight: FontWeight.w600,
-            color: color),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontSize: fontSize ?? 10.px, fontWeight: FontWeight.w600, color: color),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       );
@@ -167,19 +162,19 @@ class AllTaskView extends GetView<AllTaskController> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.topGridCardColorList.length,
         shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1.2),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1.3),
         itemBuilder: (context, index) {
           controller.topGridCardSubTitleTextList.clear();
-          controller.topGridCardSubTitleTextList.insert(0,
-              controller.getTaskDataModal.value?.totalCompleteTask != null && controller.getTaskDataModal.value!.totalCompleteTask!.isNotEmpty
+          controller.topGridCardSubTitleTextList.insert(
+              0, controller.getTaskDataModal.value?.totalCompleteTask != null && controller.getTaskDataModal.value!.totalCompleteTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalCompleteTask}'
                   : '0');
-          controller.topGridCardSubTitleTextList.insert(1,
-              controller.getTaskDataModal.value?.totalDueTask != null && controller.getTaskDataModal.value!.totalDueTask!.isNotEmpty
+          controller.topGridCardSubTitleTextList.insert(
+              1, controller.getTaskDataModal.value?.totalDueTask != null && controller.getTaskDataModal.value!.totalDueTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalDueTask}'
                   : '0');
-          controller.topGridCardSubTitleTextList.insert(2,
-              controller.getTaskDataModal.value?.totalTodayDueTask != null && controller.getTaskDataModal.value!.totalTodayDueTask!.isNotEmpty
+          controller.topGridCardSubTitleTextList.insert(
+              2, controller.getTaskDataModal.value?.totalTodayDueTask != null && controller.getTaskDataModal.value!.totalTodayDueTask!.isNotEmpty
                   ? '${controller.getTaskDataModal.value?.totalTodayDueTask}'
                   : '0');
           return Card(
@@ -224,14 +219,15 @@ class AllTaskView extends GetView<AllTaskController> {
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         itemBuilder: (context, taskCardListViewIndex) {
-          if(controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty){
+          if (controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty) {
             commonLinearProgressBarValue = double.parse('${controller.taskCategoryList[taskCardListViewIndex].taskPercentage}') / 100;
           }
           return InkWell(
             onTap: () => controller.clickOnTaskCard(taskCardListViewIndex: taskCardListViewIndex),
             borderRadius: BorderRadius.circular(6.px),
             child: Card(
-              color: Col.inverseSecondary,
+              color: Col.gCardColor,
+              elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
@@ -247,13 +243,16 @@ class AllTaskView extends GetView<AllTaskController> {
                     Row(
                       children: [
                         Expanded(
-                          child: CW.commonLinearProgressBar(value: commonLinearProgressBarValue, height: 5.px),),
+                          child: CW.commonLinearProgressBar(
+                              value: commonLinearProgressBarValue,
+                              height: 5.px),
+                        ),
                         SizedBox(width: 10.px),
                         cardTitleTextView(
-                            text: controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null
-                                && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty
-                            ? '${controller.taskCategoryList[taskCardListViewIndex].taskPercentage}%'
-                            : '0%', color: Col.primary,
+                          text: controller.taskCategoryList[taskCardListViewIndex].taskPercentage != null && controller.taskCategoryList[taskCardListViewIndex].taskPercentage!.isNotEmpty
+                              ? '${controller.taskCategoryList[taskCardListViewIndex].taskPercentage}%'
+                              : '0%',
+                          color: Col.primary,
                         )
                       ],
                     ),
@@ -268,6 +267,7 @@ class AllTaskView extends GetView<AllTaskController> {
                           commonCardButtonView(
                             iconPath: 'assets/icons/edit_pen2_icon.png',
                             onTap: () => controller.clickOnAddNewTaskButton(taskCardListViewIndex: taskCardListViewIndex),
+                            iconColor: Col.primary
                           ),
                         SizedBox(width: 10.px),
                         if (controller.taskCategoryList[taskCardListViewIndex].isDeleteAllow ?? false)
@@ -318,28 +318,27 @@ class AllTaskView extends GetView<AllTaskController> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.taskCountList?.length,
         shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.8),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.8,mainAxisSpacing: 8.px,crossAxisSpacing: 8.px),
         itemBuilder: (context, gridViewIndex) {
-          return Card(
-            shape: RoundedRectangleBorder(
+          return Container(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6.px),
+              color: controller.taskCountList?[gridViewIndex].color == '' || controller.taskCountList?[gridViewIndex].color == null && controller.taskCountList![gridViewIndex].color!.isNotEmpty
+                  ? Col.primary.withOpacity(.2)
+                  : CW.apiColorConverterMethod(colorString: controller.taskCountList?[gridViewIndex].color ?? '',colorCodeWithHundredPerValue: false),
             ),
-            color: Col.gray.withOpacity(.2.px),
-            elevation: 0,
-            child: Padding(
-              padding: EdgeInsets.all(6.px),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  cardTitleTextView(
-                      text: '${controller.taskCountList?[gridViewIndex].name}: ${controller.taskCountList?[gridViewIndex].count}',
-                      color: controller.taskCountList?[gridViewIndex].color == '' || controller.taskCountList?[gridViewIndex].color == null && controller.taskCountList![gridViewIndex].color!.isNotEmpty
-                          ? Col.primary
-                          : CW.apiColorConverterMethod(colorString: controller.taskCountList?[gridViewIndex].color ?? ''),
-                  ),
-                ],
-              ),
+            padding: EdgeInsets.symmetric(horizontal: 6.px),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                cardTitleTextView(
+                  text: '${controller.taskCountList?[gridViewIndex].name}: ${controller.taskCountList?[gridViewIndex].count}',
+                  color: controller.taskCountList?[gridViewIndex].color == '' || controller.taskCountList?[gridViewIndex].color == null && controller.taskCountList![gridViewIndex].color!.isNotEmpty
+                      ? Col.primary
+                      : CW.apiColorConverterMethod(colorString: controller.taskCountList?[gridViewIndex].color ?? ''),
+                ),
+              ],
             ),
           );
         },
@@ -372,25 +371,21 @@ class AllTaskView extends GetView<AllTaskController> {
             padding: EdgeInsets.zero,
             itemBuilder: (context, taskCardListViewIndex) {
               return Card(
-                color: Col.inverseSecondary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.px)),
+                color: Col.gCardColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
                 child: Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: 8.px, vertical: 12.px),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CW.commonShimmerViewForImage(
-                          height: 24.px, width: 150.px),
+                      CW.commonShimmerViewForImage(height: 24.px, width: 150.px),
                       SizedBox(height: 10.px),
                       Row(
                         children: [
-                          CW.commonShimmerViewForImage(
-                              height: 2.5.px, width: 280.px),
+                          CW.commonShimmerViewForImage(height: 2.5.px, width: 280.px),
                           SizedBox(width: 10.px),
-                          CW.commonShimmerViewForImage(
-                              height: 10.px, width: 20.px, radius: 2.px)
+                          CW.commonShimmerViewForImage(height: 10.px, width: 20.px, radius: 2.px)
                         ],
                       ),
                       SizedBox(height: 10.px),
@@ -404,8 +399,7 @@ class AllTaskView extends GetView<AllTaskController> {
                             childAspectRatio: 2.8,
                             mainAxisSpacing: 10.px,
                             crossAxisSpacing: 10.px),
-                        itemBuilder: (context, taskCardGridViewIndex) =>
-                            CW.commonShimmerViewForImage(),
+                        itemBuilder: (context, taskCardGridViewIndex) => CW.commonShimmerViewForImage(),
                       ),
                     ],
                   ),
@@ -416,19 +410,6 @@ class AllTaskView extends GetView<AllTaskController> {
         ],
       );
 
-  Widget addTaskFloatingActionButtonView() => Padding(
-        padding: EdgeInsets.only(bottom: 10.px),
-        child: CW.commonOutlineButton(
-            onPressed: () => controller.clickOnAddNewTaskButton(),
-            child: Icon(
-              Icons.add,
-              color: Col.inverseSecondary,
-              size: 22.px,
-            ),
-            height: 50.px,
-            width: 50.px,
-            backgroundColor: Col.primary,
-            borderColor: Colors.transparent,
-            borderRadius: 25.px),
-      );
+  Widget addTaskFloatingActionButtonView() => CW.commonFloatingActionButton(icon: Icons.add, onPressed: () => controller.clickOnAddNewTaskButton());
+
 }

@@ -10,7 +10,7 @@ class SubTaskShimmerView {
     children: [
       if(apiResValueForSubTaskFilter || apiResValue)
       Card(
-        color: Col.inverseSecondary,
+        color: Col.gCardColor,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
         child: Padding(
@@ -33,7 +33,7 @@ class SubTaskShimmerView {
         shrinkWrap: true,
         itemCount: 10,
         itemBuilder: (context, index) => Card(
-          color: Col.inverseSecondary,
+          color: Col.gCardColor,
           margin: EdgeInsets.only(bottom: 10.px, left: 0.px, right: 0.px, top: 0.px),
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),

@@ -32,14 +32,14 @@ class EducationView extends GetView<EducationController> {
                   controller.count.value;
                   return AC.isConnect.value
                       ? ModalProgress(
-                    inAsyncCall: controller.apiResponseValue.value,
-                    isLoader: false,
-                    child: Padding(
-                      padding: EdgeInsets.all(12.px),
-                      child: Column(
-                        children: [
-                          tabBarView(),
-                           Expanded(
+                          inAsyncCall: controller.apiResponseValue.value,
+                          isLoader: false,
+                          child: Padding(
+                            padding: EdgeInsets.all(12.px),
+                            child: Column(
+                              children: [
+                                tabBarView(),
+                                Expanded(
                                   child: Padding(
                                     padding: EdgeInsets.only(top: 16.px),
                                     child: AnimatedCrossFade(
@@ -52,38 +52,40 @@ class EducationView extends GetView<EducationController> {
                                       firstChild: controller.apiResponseValue.value
                                           ? shimmerView()
                                           : controller.educationOrAchievementsModal.value != null
-                                          ? controller.getEducationList.isNotEmpty
-                                          ? educationListView()
-                                          : CW.commonNoDataFoundText(text: 'Education not found!')
-                                          : CW.commonNoDataFoundText(
-                                          text: controller.apiResponseValue.value
-                                              ? ''
-                                              : 'Data not found!'),
+                                              ? controller.getEducationList.isNotEmpty
+                                                  ? educationListView()
+                                                  : CW.commonNoDataFoundText(text: 'Education not found!')
+                                              : CW.commonNoDataFoundText(
+                                                  text: controller.apiResponseValue.value
+                                                      ? ''
+                                                      : 'Data not found!'),
                                       secondChild: controller.apiResponseValue.value
                                           ? shimmerView()
                                           : controller.educationOrAchievementsModal.value != null
-                                          ? controller.getAchievementsList.isNotEmpty
-                                          ? achievementsListView()
-                                          : CW.commonNoDataFoundText(text: 'Achievements not found!')
-                                          : CW.commonNoDataFoundText(
-                                          text: controller.apiResponseValue.value
-                                              ? ''
-                                              : 'Data not found!'),
+                                              ? controller.getAchievementsList.isNotEmpty
+                                                  ? achievementsListView()
+                                                  : CW.commonNoDataFoundText(text: 'Achievements not found!')
+                                              : CW.commonNoDataFoundText(
+                                                  text: controller.apiResponseValue.value
+                                                      ? ''
+                                                      : 'Data not found!'),
                                     ),
                                   ),
                                 ),
-                          // SizedBox(height: 12.px)
-                        ],
-                      ),
-                    ),
-                  )
+                                // SizedBox(height: 12.px)
+                              ],
+                            ),
+                          ),
+                        )
                       : CW.commonNoNetworkView();
                 }),
               ),
             ],
           ),
           floatingActionButton: controller.accessType.value != '1' && controller.isChangeable.value != '1'
-              ? CW.commonFloatingActionButton(icon: Icons.add, onPressed: () => controller.clickOnAddViewButton())
+              ? CW.commonFloatingActionButton(
+                  icon: Icons.add,
+                  onPressed: () => controller.clickOnAddViewButton())
               : const SizedBox(),
         ),
       ),
@@ -91,123 +93,36 @@ class EducationView extends GetView<EducationController> {
   }
 
   Widget appBarView() => CW.myAppBarView(
-    title: controller.profileMenuName.value,
-    onLeadingPressed: () => controller.clickOnBackButton(),
-    padding: EdgeInsets.only(left: 12.px,right: 6.px,top: 12.px,bottom: 6.px),
+        title: controller.profileMenuName.value,
+        onLeadingPressed: () => controller.clickOnBackButton(),
+        padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+      );
+
+  Widget tabBarView() => CW.myCommonTabBarView(
+      tabBarValue: controller.tabBarValue.value,
+      tab1ButtonText: 'Education',
+      tab2ButtonText: 'Achievement',
+      tab1ButtonOnPressed: () => controller.clickOnEducationTab(),
+      tab2ButtonOnPressed: () => controller.clickOnAchievementsTab(),
   );
-
-  Widget tabBarView() => AnimatedContainer(
-        height: 44.px,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 6.px),
-        decoration: BoxDecoration(
-            color: Col.primary, borderRadius: BorderRadius.circular(6.px)),
-        duration: const Duration(milliseconds: 500),
-        child: Row(
-          children: [
-            Expanded(
-              child: educationButtonView(),
-            ),
-            SizedBox(width: 8.px),
-            Expanded(
-              child: achievementButtonView(),
-            ),
-          ],
-        ),
-      );
-
-  Widget achievementButtonView() => CW.commonElevatedButton(
-        onPressed: () => controller.clickOnAchievementsTab(),
-        buttonText: 'Achievement',
-        height: 36.px,
-        borderRadius: 6.px,
-        buttonColor: controller.tabBarValue.value == 'Achievement'
-            ? Col.inverseSecondary
-            : Col.primary,
-        buttonTextColor: controller.tabBarValue.value == 'Achievement'
-            ? Col.primary
-            : Col.inverseSecondary,
-      );
-
-  Widget educationButtonView() => CW.commonElevatedButton(
-        onPressed: () => controller.clickOnEducationTab(),
-        buttonText: 'Education',
-        height: 36.px,
-        borderRadius: 6.px,
-        buttonColor: controller.tabBarValue.value == 'Education'
-            ? Col.inverseSecondary
-            : Col.primary,
-        buttonTextColor: controller.tabBarValue.value == 'Education'
-            ? Col.primary
-            : Col.inverseSecondary,
-      );
 
   ///TODO Education View
 
   Widget educationListView() => ListView.builder(
-          physics: const ScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: controller.getEducationList.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.only(bottom: 12.px),
-              child: backgroundCardView(index: index),
-            );
-          },
-        );
+        physics: const ScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: controller.getEducationList.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 12.px),
+            child: backgroundCardView(index: index),
+          );
+        },
+      );
 
   Widget backgroundCardView({required int index}) => CustomOutlineButton(
-    onPressed: () => controller.clickOnEducationData(index: index),
-    radius: 4.px,
-    gradient: CW.commonLinearGradientForButtonsView(),
-    strokeWidth: 1.px,
-    padding: EdgeInsets.zero,
-    child: Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(14.px),
-      decoration: BoxDecoration(
-        color: Col.gCardColor,
-        borderRadius: BorderRadius.circular(4.px),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // mainAxisSize: MainAxisSize.min,
-        children: [
-          cardTitleTextView(
-              text: controller.getEducationList[index].classAchievement != null && controller.getEducationList[index].classAchievement!.isNotEmpty
-                  ? '${controller.getEducationList[index].classAchievement}'
-                  : 'Data not found!'),
-          SizedBox(height: 2.px),
-          cardSubTitleTextView(
-              text: controller.getEducationList[index].universityLocation != null && controller.getEducationList[index].universityLocation!.isNotEmpty
-                  ? '${controller.getEducationList[index].universityLocation}'
-                  : 'Data not found!'),
-          cardSubTitleTextView(
-              text: controller.getEducationList[index].year != null && controller.getEducationList[index].year!.isNotEmpty
-                  ? '${controller.getEducationList[index].year}'
-                  : 'Data not found!'),
-        ],
-      ),
-    ),
-  );
-
-  ///TODO Achievements View
-
-  Widget achievementsListView() => ListView.builder(
-          physics: const ScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: controller.getAchievementsList.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.only(bottom: 12.px),
-              child: backgroundCardViewForAchievements(index: index),
-            );
-          },
-        );
-
-  Widget backgroundCardViewForAchievements({required int index}) => CustomOutlineButton(
-        onPressed: () => controller.clickOnAchievementsData(index: index),
-        radius: 4.px,
+        onPressed: () => controller.clickOnEducationData(index: index),
+        radius: 10.px,
         gradient: CW.commonLinearGradientForButtonsView(),
         strokeWidth: 1.px,
         padding: EdgeInsets.zero,
@@ -216,7 +131,56 @@ class EducationView extends GetView<EducationController> {
           padding: EdgeInsets.all(14.px),
           decoration: BoxDecoration(
             color: Col.gCardColor,
-            borderRadius: BorderRadius.circular(4.px),
+            borderRadius: BorderRadius.circular(10.px),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisSize: MainAxisSize.min,
+            children: [
+              cardTitleTextView(
+                  text: controller.getEducationList[index].classAchievement != null && controller.getEducationList[index].classAchievement!.isNotEmpty
+                      ? '${controller.getEducationList[index].classAchievement}'
+                      : 'Data not found!'),
+              SizedBox(height: 2.px),
+              cardSubTitleTextView(
+                  text: controller.getEducationList[index].universityLocation != null && controller.getEducationList[index].universityLocation!.isNotEmpty
+                      ? '${controller.getEducationList[index].universityLocation}'
+                      : 'Data not found!'),
+              cardSubTitleTextView(
+                  text: controller.getEducationList[index].year != null && controller.getEducationList[index].year!.isNotEmpty
+                      ? '${controller.getEducationList[index].year}'
+                      : 'Data not found!'),
+            ],
+          ),
+        ),
+      );
+
+  ///TODO Achievements View
+
+  Widget achievementsListView() => ListView.builder(
+        physics: const ScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: controller.getAchievementsList.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 12.px),
+            child: backgroundCardViewForAchievements(index: index),
+          );
+        },
+      );
+
+  Widget backgroundCardViewForAchievements({required int index}) => CustomOutlineButton(
+        onPressed: () => controller.clickOnAchievementsData(index: index),
+        radius: 10.px,
+        gradient: CW.commonLinearGradientForButtonsView(),
+        strokeWidth: 1.px,
+        padding: EdgeInsets.zero,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(14.px),
+          decoration: BoxDecoration(
+            color: Col.gCardColor,
+            borderRadius: BorderRadius.circular(10.px),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,7 +206,7 @@ class EducationView extends GetView<EducationController> {
 
   Widget cardTitleTextView({required String text}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
+        style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: Col.inverseSecondary),
       );
 
   Widget cardSubTitleTextView({required String text}) => Text(

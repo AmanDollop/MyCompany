@@ -57,6 +57,8 @@ abstract class Routes {
   static const ADD_TEMPLATE_QUESTION = _Paths.ADD_TEMPLATE_QUESTION;
   static const WORK_REPORT_DETAIL = _Paths.WORK_REPORT_DETAIL;
   static const HOME_DARK = _Paths.HOME_DARK;
+  static const ADD_WORK_REPORT = _Paths.ADD_WORK_REPORT;
+  static const ASSIGN_TEMPLATE = _Paths.ASSIGN_TEMPLATE;
 }
 
 abstract class _Paths {
@@ -115,4 +117,6 @@ abstract class _Paths {
   static const ADD_TEMPLATE_QUESTION = '/add-template-question';
   static const WORK_REPORT_DETAIL = '/work-report-detail';
   static const HOME_DARK = '/home-dark';
+  static const ADD_WORK_REPORT = '/add-work-report';
+  static const ASSIGN_TEMPLATE = '/assign-template';
 }

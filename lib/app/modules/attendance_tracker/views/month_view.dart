@@ -6,6 +6,7 @@ import 'package:task/app/modules/attendance_tracker/controllers/attendance_track
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 
@@ -42,7 +43,15 @@ class MonthView extends GetView<AttendanceTrackerController> {
                               shrinkWrap: true,
                               physics: const ScrollPhysics(),
                               children: [
-                                circularProgressBarView(),
+                                CustomOutlineButton(
+                                  customOutlineForButtonValue: false,
+                                    onPressed: () {},
+                                    radius: 12.px,
+                                    strokeWidth: .2.px,
+                                    padding: EdgeInsets.all(12.px),
+                                    gradient: CW.commonLinearGradientForButtonsView(),
+                                    child: circularProgressBarView(),
+                                ),
                                 SizedBox(height: 10.px),
                                 cardGridView(),
                                 SizedBox(height: 20.px),
@@ -69,7 +78,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
         child: Container(
           height: 40.px,
           decoration: BoxDecoration(
-              color: Col.gray.withOpacity(.3),
+              color: Col.primary.withOpacity(.2),
               borderRadius: BorderRadius.circular(6.px)),
           child: InkWell(
             onTap: onTap,
@@ -79,7 +88,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   dropDownView,
-                  Icon(Icons.arrow_drop_down, color: Col.darkGray)
+                  Icon(Icons.arrow_drop_down, color: Col.primary)
                 ],
               ),
             ),
@@ -89,9 +98,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Widget monthDropDownView() => Text(
         controller.monthNameForMonthViewValue.value,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
       );
 
   /*Widget monthDropDownView() => DropdownButton<String>(
@@ -121,9 +128,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Widget yearDropDownView() => Text(
         controller.yearForMonthViewValue.value,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
       );
 
   /*Widget yearDropDownView() => DropdownButton<String>(
@@ -169,14 +174,14 @@ class MonthView extends GetView<AttendanceTrackerController> {
       return CircularProgressIndicator(
       strokeWidth: 8.px,
       value: 0,
-      backgroundColor: Col.primary.withOpacity(.2),
+      backgroundColor: Col.text,
       strokeCap: StrokeCap.round,
     );
     }else{
       return CircularProgressIndicator(
         strokeWidth: 8.px,
         value: controller.progressValue.value,
-        backgroundColor: Col.primary.withOpacity(.2),
+        backgroundColor: Col.text,
         strokeCap: StrokeCap.round,
       );
     }
@@ -185,9 +190,22 @@ class MonthView extends GetView<AttendanceTrackerController> {
   Widget circularProgressBarView() {
     return Row(
       children: [
-        SizedBox(
+        Container(
           height: 150.px,
           width: 150.px,
+          margin: EdgeInsets.only(left: 4.px),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Col.primary.withOpacity(.2),
+                  // spreadRadius: 5,
+                  blurRadius: 6,
+                  offset: const Offset(0, 1),
+
+                )
+              ]
+          ),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -204,11 +222,11 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    titleTextView(text: 'Total time', color: Col.secondary),
+                    titleTextView(text: 'Total time'),
                     SizedBox(height: 2.px),
                     subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalMonthlyTime}')),
                     SizedBox(height: 5.px),
-                    titleTextView(text: 'Monthly Hours Spent', color: Col.secondary),
+                    titleTextView(text: 'Monthly Hours Spent', ),
                     SizedBox(height: 2.px),
                     subTitleTextView(text: CMForDateTime.calculateTimeForHourAndMin(minute: '${controller.getMonthlyAttendanceData?.totalSpendMinutes}')),
                   ],
@@ -242,14 +260,14 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Widget titleTextView({required String text, Color? color}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, color: color),
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, color: Col.gTextColor),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
 
   Widget subTitleTextView({required String text, double? fontSize}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize),
+        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: fontSize,color: Col.inverseSecondary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -267,7 +285,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
             crossAxisCount: 3,
             mainAxisSpacing: 4.px,
             crossAxisSpacing: 4.px,
-            childAspectRatio: 1.1),
+            childAspectRatio: 1.3),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) => Card(
@@ -276,25 +294,23 @@ class MonthView extends GetView<AttendanceTrackerController> {
           ),
           color: controller.cardColorList[index],
           child: Padding(
-            padding: EdgeInsets.all(6.px),
+            padding: EdgeInsets.symmetric(vertical: 4.px,horizontal: 8.px),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CW.commonNetworkImageView(
                   path: controller.cardIconsList[index],
+                  color: controller.cardTextColorList[index],
                   isAssetImage: true,
                   height: 20.px,
                   width: 20.px,
                 ),
                 SizedBox(height: 5.px),
-                cardTitleTextView(
-                    text: controller.cardTitleTextList[index],
-                    color: controller.cardTextColorList[index]),
-                SizedBox(height: 2.px),
+                cardTitleTextView(text: controller.cardTitleTextList[index], color: controller.cardTextColorList[index]),
                 subTitleTextView(
                     text: controller.cardSubTitleTextList[index],
-                    fontSize: 14.px)
+                    fontSize: 12.px)
               ],
             ),
           ),
@@ -310,7 +326,7 @@ class MonthView extends GetView<AttendanceTrackerController> {
               ? CW.commonShimmerViewForImage(height: 20.px, width: 40.px)
               : Text(
                   day,
-                  style: Theme.of(Get.context!).textTheme.titleLarge,
+                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.gTextColor),
                 ),
       ],
     );
@@ -389,10 +405,12 @@ class MonthView extends GetView<AttendanceTrackerController> {
                   child: Text(
                     day.toString(),
                     style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: calendarGridColorView(index: index - extra) != const Color(0x00000000)
-                                    ? Col.text
-                                    : Col.gray),
+                            fontWeight:calendarGridColorView(index: index - extra) == const Color(0x00000000)
+                                ? FontWeight.w500
+                                : FontWeight.w800,
+                            color: calendarGridColorView(index: index - extra) == const Color(0x00000000)
+                                    ? Col.gTextColor
+                                    : calendarGridTextColorView(index: index - extra)),
                   ),
                 ),
               ),
@@ -405,19 +423,19 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Color calendarGridColorView({required int index}) {
     if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false && controller.monthlyHistoryList?[index].isPunchOutMissing == false) {
-      return const Color(0xffF2FFF3);
+      return const Color(0x1467B87E);
     } else if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].isPunchOutMissing == true) {
-      return const Color(0xffEEEED1);
+      return const Color(0x14EEEED1);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
-      return const Color(0xffDDE0FB);
+      return const Color(0x14DDE0FB);
     } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
-      return const Color(0xffE6E6E6);
+      return const Color(0x14E6E6E6);
     } else if (controller.monthlyHistoryList?[index].leave ?? false) {
-      return const Color(0xffE0F1FF);
+      return const Color(0x14249CFF);
     } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
-      return const Color(0xffFFE2D3);
+      return const Color(0x14BC8264);
     } else if (controller.monthlyHistoryList?[index].isAbsent ?? false) {
-      return const Color(0xffFFD9D9);
+      return const Color(0x14E07474);
     } else {
       return Colors.transparent;
     }
@@ -425,19 +443,19 @@ class MonthView extends GetView<AttendanceTrackerController> {
 
   Color calendarGridTextColorView({required int index}) {
     if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].attendnacePending == false && controller.monthlyHistoryList?[index].isPunchOutMissing == false) {
-      return const Color(0xff02930D);
+      return const Color(0xff67B87E);
     } else if (controller.monthlyHistoryList?[index].present == true && controller.monthlyHistoryList?[index].isPunchOutMissing == true) {
-      return const Color(0xff6F7106);
+      return const Color(0xffEEEED1);
     } else if (controller.monthlyHistoryList?[index].holiday ?? false) {
-      return const Color(0xff0717AF);
+      return const Color(0xffDDE0FB);
     } else if (controller.monthlyHistoryList?[index].weekOff ?? false) {
-      return const Color(0xff616161);
+      return const Color(0xffE6E6E6);
     } else if (controller.monthlyHistoryList?[index].leave ?? false) {
       return const Color(0xff249CFF);
     } else if (controller.monthlyHistoryList?[index].attendnacePending ?? false) {
-      return const Color(0xffFF5700);
+      return const Color(0xffBC8264);
     } else if (controller.monthlyHistoryList?[index].isAbsent ?? false) {
-      return const Color(0xffCE1212);
+      return const Color(0xffE07474);
     } else {
       return Colors.transparent;
     }

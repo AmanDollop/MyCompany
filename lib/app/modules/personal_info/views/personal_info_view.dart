@@ -144,7 +144,8 @@ class PersonalInfoView extends GetView<PersonalInfoController> {
                 errorImageValue: true,
                 userShortName: controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
                     ? controller.userShortName.value
-                    : '?'
+                    : '?',
+                userShortNameValue: true
               ),
             ),
           ),

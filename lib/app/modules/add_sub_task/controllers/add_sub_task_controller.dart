@@ -17,6 +17,8 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
+import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -25,6 +27,24 @@ class AddSubTaskController extends GetxController {
   final count = 0.obs;
 
   final assignToListViewValue = false.obs;
+
+  /*'template_answer' '0' [
+  {
+    'template_question_id'
+    'template_question_type'
+    'answer'
+  }
+  {
+  'template_question_id'
+  'template_question_type'
+  'answer'
+  }
+  {
+  'template_question_id'
+  'template_question_type'
+  'answer'
+  }
+  ]*/
 
   final pageName = ''.obs;
   final taskCategoryId = ''.obs;
@@ -39,11 +59,22 @@ class AddSubTaskController extends GetxController {
   ];
 
   final subTaskNameController = TextEditingController();
+  FocusNode focusNodeSubTaskName = FocusNode();
+
   final selectPriorityController = TextEditingController();
+  FocusNode focusNodeSelectPriority = FocusNode();
+
   final taskStartDateController = TextEditingController();
+  FocusNode focusNodeTaskStartDate = FocusNode();
+
   final taskDueDateController = TextEditingController();
+  FocusNode focusNodeTaskDueDate = FocusNode();
+
   final dueTimeController = TextEditingController();
+  FocusNode focusNodeDueTime = FocusNode();
+
   final remarkController = TextEditingController();
+  FocusNode focusNodeRemark = FocusNode();
 
   final notCompletedTaskValue = false.obs;
   final repeatTaskValue = false.obs;
@@ -60,7 +91,7 @@ class AddSubTaskController extends GetxController {
 
   Map<String, dynamic> bodyParamsForAddSubTask = {};
 
-  final userDataFromLocalDataBase =''.obs;
+  final userDataFromLocalDataBase = ''.obs;
   UserDetails? userData;
   PersonalInfo? personalInfo;
   JobInfo? jobInfo;
@@ -70,7 +101,6 @@ class AddSubTaskController extends GetxController {
   final userFullName = ''.obs;
   final userShortName = ''.obs;
   final developer = ''.obs;*/
-
 
   late OverlayEntry overlayEntry;
 
@@ -85,7 +115,7 @@ class AddSubTaskController extends GetxController {
     if (pageName.value == 'Update Task') {
       subTaskList = Get.arguments[2];
       setDefaultData();
-    }else{
+    } else {
       setDefaultUserData();
     }
   }
@@ -105,18 +135,23 @@ class AddSubTaskController extends GetxController {
   void setDefaultData() {
     subTaskNameController.text = subTaskList?.taskName ?? '';
     selectPriorityController.text = subTaskList?.taskPriority ?? '';
-    taskStartDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${subTaskList?.taskStartDate}');
-    taskDueDateController.text = CMForDateTime.dateFormatForDateMonthYear(date: '${subTaskList?.taskDueDate}');
-    dueTimeController.text =  CMForDateTime.timeFormatForHourMinuetAmPm(dateAndTime: '${subTaskList?.taskDueDate} ${subTaskList?.taskDueTime}');
+    taskStartDateController.text = CMForDateTime.dateFormatForDateMonthYear(
+        date: '${subTaskList?.taskStartDate}');
+    taskDueDateController.text = CMForDateTime.dateFormatForDateMonthYear(
+        date: '${subTaskList?.taskDueDate}');
+    dueTimeController.text = CMForDateTime.timeFormatForHourMinuetAmPm(
+        dateAndTime: '${subTaskList?.taskDueDate} ${subTaskList?.taskDueTime}');
 
     remarkController.text = subTaskList?.taskNote ?? '';
-    docType.value = CM.getDocumentType(filePath: '${subTaskList?.taskAttachment}');
+    docType.value =
+        CM.getDocumentType(filePath: '${subTaskList?.taskAttachment}');
     docLogo.value = CM.getDocumentTypeLogo(fileType: docType.value);
     if (docType.value == 'Image') {
-      imagePathFoeUpDate.value = '${AU.baseUrlAllApisImage}${subTaskList?.taskAttachment}';
+      imagePathFoeUpDate.value =
+          '${AU.baseUrlAllApisImage}${subTaskList?.taskAttachment}';
     }
 
-   /* userId.value = subTaskList?.assignUserId ?? '';
+    /* userId.value = subTaskList?.assignUserId ?? '';
     userFullName.value = subTaskList?.userName ?? '';
     userShortName.value = subTaskList?.shortName ?? '';
     userPic.value = subTaskList?.userProfile ?? '';
@@ -124,8 +159,8 @@ class AddSubTaskController extends GetxController {
     developer.value = subTaskList?.userDesignation ?? '';*/
 
     selfDataForMyTeamMember = MyTeam(
-      branchId:  '',
-      departmentId:  '',
+      branchId: '',
+      departmentId: '',
       shortName: subTaskList?.shortName ?? '',
       userDesignation: subTaskList?.userDesignation ?? '',
       userFullName: subTaskList?.userName ?? '',
@@ -133,20 +168,24 @@ class AddSubTaskController extends GetxController {
       userProfilePic: subTaskList?.userProfile ?? '',
     );
     print('selfDataForMyTeamMember:: UPDATE:: $selfDataForMyTeamMember');
-    if(selfDataForMyTeamMember != null){
+    if (selfDataForMyTeamMember != null) {
       selectedMyTeamMemberList.insert(0, selfDataForMyTeamMember!);
     }
-
   }
 
   Future<void> setDefaultUserData() async {
-    try{
-      userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key:DataBaseConstant.userDetail,tableName: DataBaseConstant.tableNameForUserDetail);
-      userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
-      personalInfo=userData?.personalInfo;
-      jobInfo=userData?.jobInfo;
+    try {
+      userDataFromLocalDataBase.value = await DataBaseHelper()
+          .getParticularData(
+              key: DataBaseConstant.userDetail,
+              tableName: DataBaseConstant.tableNameForUserDetail);
+      userData =
+          UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
+              .userDetails;
+      personalInfo = userData?.personalInfo;
+      jobInfo = userData?.jobInfo;
 
-     /* userId.value = personalInfo?.userId??'';
+      /* userId.value = personalInfo?.userId??'';
       userFullName.value = personalInfo?.userFullName ?? '';
       userShortName.value = personalInfo?.shortName ?? '';
       userPic.value = personalInfo?.userProfilePic ?? '';
@@ -162,92 +201,106 @@ class AddSubTaskController extends GetxController {
         userProfilePic: personalInfo?.userProfilePic ?? '',
       );
       print('selfDataForMyTeamMember:: ADD:: $selfDataForMyTeamMember');
-      if(selfDataForMyTeamMember != null){
+      if (selfDataForMyTeamMember != null) {
         selectedMyTeamMemberList.insert(0, selfDataForMyTeamMember!);
       }
 
       count.value++;
-    }catch(e){
+    } catch (e) {
       print('error from user data :::: $e');
     }
   }
 
   Future<void> clickOnSelectPriorityTextFormFiled() async {
     await CBS.commonBottomSheet(
-        showDragHandle: false,
-        isDismissible: false,
-        isFullScreen: true,
-        children: [
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 12.px),
-            itemCount: selectPriorityList.length,
-            itemBuilder: (context, index) {
-              return Obx(() {
+      showDragHandle: false,
+      isDismissible: false,
+      isFullScreen: true,
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 12.px),
+          itemCount: selectPriorityList.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: 10.px),
+              child: Obx(() {
                 count.value;
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10.px),
-                  padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
-                  height: 46.px,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.px),
-                    color: selectPriorityController.text == selectPriorityList[index]
-                        ? Col.primary.withOpacity(.08)
-                        : Colors.transparent,
-                    border: Border.all(
-                      color: selectPriorityController.text == selectPriorityList[index]
-                          ? Col.primary
-                          : Col.darkGray,
-                      width: selectPriorityController.text == selectPriorityList[index]
-                          ? 1.5.px
-                          : 1.px,
-                    ),
+                return CustomOutlineButton(
+                  onPressed: () => clickOnSelectPriorityList(index: index),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: selectPriorityController.text ==
+                            selectPriorityList[index]
+                        ? [
+                            Col.primary,
+                            Col.primaryColor,
+                          ]
+                        : [
+                            Col.gray,
+                            Col.gray,
+                          ],
                   ),
-                  child: InkWell(
-                    onTap: () => clickOnSelectPriorityList(index: index),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          selectPriorityList[index],
-                          style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                        ),
-                        Container(
-                          height: selectPriorityController.text == selectPriorityList[index]
-                              ? 18.px
-                              : 16.px,
-                          width: selectPriorityController.text == selectPriorityList[index]
-                              ? 18.px
-                              : 16.px,
-                          padding: EdgeInsets.all(2.px),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color:
-                              selectPriorityController.text == selectPriorityList[index]
+                  strokeWidth: 1.px,
+                  radius: 6.px,
+                  padding:
+                      EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        selectPriorityList[index],
+                        style: Theme.of(Get.context!)
+                            .textTheme
+                            .titleSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: selectPriorityController.text ==
+                                      selectPriorityList[index]
                                   ? Col.primary
-                                  : Col.text,
-                              width: 1.5.px,
+                                  : Col.inverseSecondary,
                             ),
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: selectPriorityController.text == selectPriorityList[index]
-                                    ? Col.primary
-                                    : Colors.transparent),
+                      ),
+                      Container(
+                        height: selectPriorityController.text ==
+                                selectPriorityList[index]
+                            ? 18.px
+                            : 16.px,
+                        width: selectPriorityController.text ==
+                                selectPriorityList[index]
+                            ? 18.px
+                            : 16.px,
+                        padding: EdgeInsets.all(2.px),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selectPriorityController.text ==
+                                    selectPriorityList[index]
+                                ? Col.primary
+                                : Col.inverseSecondary,
+                            width: 1.5.px,
                           ),
                         ),
-                      ],
-                    ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: selectPriorityController.text ==
+                                      selectPriorityList[index]
+                                  ? Col.primary
+                                  : Colors.transparent),
+                        ),
+                      ),
+                    ],
                   ),
                 );
-              });
-            },
-          ),
-        ],
+              }),
+            );
+          },
+        ),
+      ],
     ).whenComplete(
       () => CM.unFocusKeyBoard(),
     );
@@ -263,7 +316,8 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> clickOnTaskStartDateTextFormFiled() async {
-    await CDT.iosPicker1(
+    await CDT
+        .iosPicker1(
       context: Get.context!,
       dateController: taskStartDateController,
       firstDate: taskStartDateController.text.isNotEmpty
@@ -275,13 +329,15 @@ class AddSubTaskController extends GetxController {
       lastDate: taskDueDateController.text.isNotEmpty
           ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text)
           : DateTime.now(),
-    ).whenComplete(() async {
+    )
+        .whenComplete(() async {
       CM.unFocusKeyBoard();
     });
   }
 
   Future<void> clickOnTaskDueDateTextFormFiled() async {
-    await CDT.iosPicker1(
+    await CDT
+        .iosPicker1(
       context: Get.context!,
       dateController: taskDueDateController,
       firstDate: taskStartDateController.text.isNotEmpty
@@ -291,9 +347,12 @@ class AddSubTaskController extends GetxController {
           ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text)
           : DateTime.now(),
       lastDate: taskDueDateController.text.isNotEmpty
-          ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text).add(const Duration(days: 20))
+          ? DateFormat('dd MMM yyyy')
+              .parse(taskDueDateController.text)
+              .add(const Duration(days: 20))
           : DateTime.now().add(const Duration(days: 20)),
-    ).whenComplete(() async {
+    )
+        .whenComplete(() async {
       CM.unFocusKeyBoard();
     });
   }
@@ -321,12 +380,14 @@ class AddSubTaskController extends GetxController {
           ? DateFormat('hh:mm a').parse(dueTimeController.text)
           : DateTime.now(),
       lastDate: dueTimeController.text.isNotEmpty
-          ? DateFormat('hh:mm a').parse(dueTimeController.text).add(const Duration(hours: 12))
+          ? DateFormat('hh:mm a')
+              .parse(dueTimeController.text)
+              .add(const Duration(hours: 12))
           : DateTime.now().add(const Duration(hours: 12)),
-    ).whenComplete(() async {
+    )
+        .whenComplete(() async {
       CM.unFocusKeyBoard();
     });
-
   }
 
   Future<void> clickOnAttachFileButton() async {
@@ -342,7 +403,8 @@ class AddSubTaskController extends GetxController {
       ],
     );
     if (result.value != null) {
-      imageFile.value = await CM.pickFilePickerResultAndConvertFile(result1: result.value);
+      imageFile.value =
+          await CM.pickFilePickerResultAndConvertFile(result1: result.value);
       print('imageFile.value:::: ${imageFile.value}');
       if (result.value?.paths != null && result.value!.paths.isNotEmpty) {
         for (var element in result.value!.paths) {
@@ -357,7 +419,8 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> clickOnAddAndUpdateButton() async {
-    if (key.currentState!.validate() /*&& notCompletedTaskValue.value && repeatTaskValue.value*/) {
+    if (key.currentState!
+        .validate() /*&& notCompletedTaskValue.value && repeatTaskValue.value*/) {
       // Get.back();
       addSubTaskButtonValue.value = true;
       await callingAddSubTaskApi();
@@ -366,31 +429,35 @@ class AddSubTaskController extends GetxController {
 
   Future<void> callingAddSubTaskApi() async {
     try {
-     String userIds;
-     if(selectedMyTeamMemberList.isNotEmpty){
-       userIds = selfDataForMyTeamMember?.userId ?? ',${selectedMyTeamMemberList.map((data) {
-         if(data.userId != null && data.userId!.isNotEmpty){
-           return data.userId;
-         }
-       }).join(',')}';
-     }else{
-       userIds = selfDataForMyTeamMember?.userId ?? '';
-     }
+      String userIds;
+      if (selectedMyTeamMemberList.isNotEmpty) {
+        userIds = selfDataForMyTeamMember?.userId ??
+            ',${selectedMyTeamMemberList.map((data) {
+              if (data.userId != null && data.userId!.isNotEmpty) {
+                return data.userId;
+              }
+            }).join(',')}';
+      } else {
+        userIds = selfDataForMyTeamMember?.userId ?? '';
+      }
 
       bodyParamsForAddSubTask = {
         AK.action: ApiEndPointAction.addTask,
         AK.taskCategoryId: taskCategoryId.value,
         AK.taskId: subTaskList?.taskId ?? '',
         AK.taskPriority: selectPriorityController.text.trim().toString(),
-        AK.taskStartDate: CMForDateTime.dateTimeFormatForApi(dateTime: taskStartDateController.text.trim().toString()),
-        AK.taskDueDate: CMForDateTime.dateTimeFormatForApi(dateTime: taskDueDateController.text.trim().toString()),
+        AK.taskStartDate: CMForDateTime.dateTimeFormatForApi(
+            dateTime: taskStartDateController.text.trim().toString()),
+        AK.taskDueDate: CMForDateTime.dateTimeFormatForApi(
+            dateTime: taskDueDateController.text.trim().toString()),
         AK.taskDueTime: dueTimeController.text.trim().toString(),
         AK.taskName: subTaskNameController.text.trim().toString(),
         AK.taskNote: remarkController.text.trim().toString(),
         AK.taskAssignTo: userIds,
       };
       print('imageFile.value::::: ${imageFile.value}');
-      http.Response? response = await CAI.addSubTaskApi(bodyParams: bodyParamsForAddSubTask, filePath: imageFile.value);
+      http.Response? response = await CAI.addSubTaskApi(
+          bodyParams: bodyParamsForAddSubTask, filePath: imageFile.value);
       if (response != null && response.statusCode == 200) {
         addSubTaskButtonValue.value = false;
         Get.back();
@@ -406,17 +473,16 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> clickOnAssignToAddButton() async {
-    if(assignToListViewValue.value){
+    if (assignToListViewValue.value) {
       selectedMyTeamMemberList.clear();
       assignToListViewValue.value = false;
-    }else{
-      var result  = await Get.toNamed(Routes.MY_TEAM);
-      if(result != null){
+    } else {
+      var result = await Get.toNamed(Routes.MY_TEAM);
+      if (result != null) {
         selectedMyTeamMemberList = result;
         assignToListViewValue.value = true;
       }
     }
     count.value++;
   }
-
 }

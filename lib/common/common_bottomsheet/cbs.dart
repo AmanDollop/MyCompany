@@ -65,8 +65,7 @@ class CBS {
           child: GestureDetector(
             onTap: onTap,
             child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child: SingleChildScrollView(
                 child: Container(
                   color: Colors.transparent,
@@ -81,15 +80,19 @@ class CBS {
                           width: 34.px,
                           height: 34.px,
                           decoration: BoxDecoration(
-                            color: Col.secondary,
+                            // color: Col.inverseSecondary,
                             shape: BoxShape.circle,
+                            gradient: CW.commonLinearGradientForButtonsView()
                           ),
                           child: Center(
                               child: CW.commonNetworkImageView(
                                   path: 'assets/icons/cancel_white_icon.png',
                                   isAssetImage: true,
                                   height: 10.px,
-                                  width: 10.px)),
+                                  width: 10.px,
+                                  color: Col.text
+                              ),
+                          ),
                         ),
                       ),
                       SizedBox(height: 10.px),
@@ -99,17 +102,15 @@ class CBS {
                             topLeft: Radius.circular(cornerRadius ?? 20.px),
                             topRight: Radius.circular(cornerRadius ?? 20.px),
                           ),
-                          color: Col.inverseSecondary,
+                          gradient: CW.commonLinearGradientView()
                         ),
                         child: SingleChildScrollView(
                           child: ClipRRect(
                             borderRadius: showDragHandle
                                 ? BorderRadius.zero
                                 : BorderRadius.only(
-                                    topLeft:
-                                        Radius.circular(cornerRadius ?? 20.px),
-                                    topRight:
-                                        Radius.circular(cornerRadius ?? 20.px),
+                                    topLeft: Radius.circular(cornerRadius ?? 20.px),
+                                    topRight: Radius.circular(cornerRadius ?? 20.px),
                                   ),
                             child: ScrollConfiguration(
                               behavior: ListScrollBehavior(),
@@ -181,7 +182,7 @@ class CBS {
       isDismissible: isDismissible,
       isScrollControlled: isDragOn,
       useSafeArea: useSafeArea,
-      backgroundColor: backGroundColor ?? Colors.white,
+      backgroundColor: backGroundColor ?? Colors.transparent,
       barrierColor: barrierColor,
       elevation: elevation ?? 0.px,
       shape: OutlineInputBorder(
@@ -198,51 +199,84 @@ class CBS {
               return isCloseOnBack;
             },
             child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: ClipRRect(
-                borderRadius: showDragHandle
-                    ? BorderRadius.zero
-                    : BorderRadius.only(
-                        topLeft: Radius.circular(cornerRadius ?? 20.px),
-                        topRight: Radius.circular(cornerRadius ?? 20.px),
-                      ),
-                child: ScrollConfiguration(
-                  behavior: ListScrollBehavior(),
-                  child: Column(
-                    children: [
-                      if (unScrollWidget != null)
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: showDragHandle ? 0.px : C.margin,
-                              left: horizontalPadding ?? C.margin,
-                              right: horizontalPadding ?? C.margin,
-                              bottom: horizontalPadding ?? C.margin / 2),
-                          child: unScrollWidget,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ScrollConfiguration(
+                behavior: ListScrollBehavior(),
+                child: Column(
+
+                  children: [
+                    if (unScrollWidget != null)
+                    InkWell(
+                      onTap: () => Get.back(),
+                      borderRadius: BorderRadius.circular(17.px),
+                      child: Container(
+                        width: 34.px,
+                        height: 34.px,
+                        decoration: BoxDecoration(
+                          // color: Col.inverseSecondary,
+                          shape: BoxShape.circle,
+                            gradient: CW.commonLinearGradientForButtonsView()
                         ),
-                      if (children.isNotEmpty)
-                        Flexible(
-                          child: ListView(
-                            controller: isDragOn ? scrollController : null,
-                            padding: EdgeInsets.only(
-                                top: showDragHandle ? 0.px : C.margin,
-                                left: horizontalPadding ?? C.margin,
-                                right: horizontalPadding ?? C.margin,
-                                bottom: horizontalPadding ?? C.margin / 2),
-                            shrinkWrap: true,
-                            children: children,
+                        child: Center(
+                          child: CW.commonNetworkImageView(
+                              path: 'assets/icons/cancel_white_icon.png',
+                              isAssetImage: true,
+                              height: 10.px,
+                              width: 10.px,
+                              color: Col.text
                           ),
                         ),
-                      list ?? const SizedBox()
-                    ],
-                  ),
+                      ),
+                    ),
+                    if (unScrollWidget != null)
+                    SizedBox(height: 10.px),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            gradient: CW.commonLinearGradientView(),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(cornerRadius ?? 20.px),
+                              topRight: Radius.circular(cornerRadius ?? 20.px),
+                            )
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (unScrollWidget != null)
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: showDragHandle ? 0.px : C.margin,
+                                    left: horizontalPadding ?? C.margin,
+                                    right: horizontalPadding ?? C.margin,
+                                    bottom: horizontalPadding ?? C.margin / 2),
+                                child: unScrollWidget,
+                              ),
+                            if (children.isNotEmpty)
+                              Expanded(
+                                child: ListView(
+                                  controller: isDragOn ? scrollController : null,
+                                  padding: EdgeInsets.only(
+                                      top: showDragHandle ? 0.px : C.margin,
+                                      left: horizontalPadding ?? C.margin,
+                                      right: horizontalPadding ?? C.margin,
+                                      bottom: horizontalPadding ?? C.margin / 2),
+                                  shrinkWrap: true,
+                                  children: children,
+                                ),
+                              ),
+                            list ?? const SizedBox()
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
           ),
           expand: false,
-          initialChildSize: initialChildSize ?? 0.5,
-          minChildSize: minChildSize ?? 0.3,
+          initialChildSize: initialChildSize ?? 0.6,
+          minChildSize: minChildSize ?? 0.6,
           //initial child size must be grate then minimum child size
           maxChildSize: maxChildSize ?? 0.75,
         );
@@ -253,13 +287,13 @@ class CBS {
   static Future<void> commonBottomSheetForImagePicker({
     VoidCallback? clickOnTakePhoto,
     VoidCallback? clickOnChooseFromLibrary,
-    VoidCallback? clickOnRemovePhoto,
+    // VoidCallback? clickOnRemovePhoto,
     VoidCallback? clickOnCancel,
   }) async {
     await CBS.commonBottomSheet(
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 10.px, bottom: 10.px),
+          padding: EdgeInsets.symmetric(vertical: 10.px),
           child: Ink(
             decoration: BoxDecoration(
               color: Col.inverseSecondary,
@@ -268,13 +302,11 @@ class CBS {
             ),
             child: Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.px),
-                  child: Text(
-                    C.textSelectImageTitle,
-                    style: Theme.of(Get.context!).textTheme.displayLarge,
-                  ),
+                Text(
+                  C.textSelectImageTitle,
+                  style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.inverseSecondary),
                 ),
+                SizedBox(height: 20.px),
                 CW.commonDividerView(
                   height: 0.px,
                   wight: .5.px,
@@ -282,8 +314,7 @@ class CBS {
                   leftPadding: 10.px,
                   rightPadding: 10.px,
                 ),
-                CBS().commonView(
-                    onTap: clickOnTakePhoto ?? () {}, title: C.textTakePhoto),
+                CBS().commonView(onTap: clickOnTakePhoto ?? () {}, title: C.textTakePhoto,textColor: Col.inverseSecondary),
                 CW.commonDividerView(
                   height: 0.px,
                   wight: .5.px,
@@ -291,25 +322,21 @@ class CBS {
                   leftPadding: 10.px,
                   rightPadding: 10.px,
                 ),
-                CBS().commonView(
-                    onTap: clickOnChooseFromLibrary ?? () {},
-                    title: C.textChooseFromLibrary),
-                CW.commonDividerView(
-                  height: 0.px,
-                  wight: .5.px,
-                  color: Col.gray,
-                  leftPadding: 10.px,
-                  rightPadding: 10.px,
-                ),
-                CBS().commonView(
-                    onTap: clickOnRemovePhoto ?? () {},
-                    title: C.textRemovePhoto),
-                SizedBox(height: 10.px),
+                CBS().commonView(onTap: clickOnChooseFromLibrary ?? () {}, title: C.textChooseFromLibrary,textColor: Col.inverseSecondary),
+                // CW.commonDividerView(
+                //   height: 0.px,
+                //   wight: .5.px,
+                //   color: Col.gray,
+                //   leftPadding: 10.px,
+                //   rightPadding: 10.px,
+                // ),
+                // CBS().commonView(onTap: clickOnRemovePhoto ?? () {}, title: C.textRemovePhoto,textColor: Col.inverseSecondary),
               ],
             ),
           ),
         ),
-        InkWell(
+        Center(child: CW.myOutlinedButton(onPressed: clickOnCancel ?? () => Get.back(),buttonText:  C.textCancel,radius: 6.px,width: 350.px,height: 40.px)),
+        /*InkWell(
           onTap: clickOnCancel ??
               () {
                 Get.back();
@@ -326,15 +353,12 @@ class CBS {
               child: Center(
                 child: Text(
                   C.textCancel,
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(color: Col.primary),
+                  style: Theme.of(Get.context!).textTheme.displayLarge?.copyWith(color: Col.primary),
                 ),
               ),
             ),
           ),
-        ),
+        ),*/
         SizedBox(height: 20.px)
       ],
       backGroundColor: Colors.transparent,
@@ -350,46 +374,39 @@ class CBS {
         rightPadding: 10.px,
       );
 
-  Widget commonView({required VoidCallback onTap, required String title}) => InkWell(
+  Widget commonView({required VoidCallback onTap, required String title,Color? textColor}) => InkWell(
         onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.px),
-                child: textViewTitle(title: title)),
+            Padding(padding: EdgeInsets.symmetric(vertical: 10.px), child: textViewTitle(title: title,textColor: textColor)),
           ],
         ),
       );
 
-  Widget textViewTitle({required String title}) => Text(
+  Widget textViewTitle({required String title,Color? textColor}) => Text(
         title,
-        style: Theme.of(Get.context!)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600,color:textColor),
       );
 
   ///  Calling Of Country Picker BottomSheet
   static Future<void> commonBottomSheetForCountry({
     required Widget child,
     required TextEditingController searchController,
+    required FocusNode focusNode,
     required ValueChanged<String> onChanged,
     bool isSearchEnable = true,
     Widget? unScrollableWidget,
   }) async {
     await CBS.commonDraggableBottomSheet(
+      showDragHandle: false,
       unScrollWidget: unScrollableWidget ??
           (isSearchEnable
               ? CW.commonTextField(
-                  fillColor: Col.gray.withOpacity(0.3),
+                  focusNode: focusNode,
                   hintText: "Search Country",
                   controller: searchController,
-                  hintStyle: Theme.of(Get.context!).textTheme.bodySmall,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Col.secondary,
-                  ),
+                  prefixIconPath: 'assets/icons/search_icon.png',
                   onChanged: onChanged,
                 )
               : const SizedBox()),
@@ -554,7 +571,7 @@ class BottomSheetForOTP extends GetxController {
                     children: [
                       Text(
                         'OTP Verification',
-                        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.text),
+                        style: Theme.of(Get.context!).textTheme.displaySmall,
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 12.px),
@@ -593,17 +610,11 @@ class BottomSheetForOTP extends GetxController {
                         children: [
                           timer.value
                               ? TextButton(
-                            style: TextButton.styleFrom(
-                                foregroundColor: Theme.of(Get.context!)
-                                    .colorScheme
-                                    .background),
-                            onPressed: () {},
-                            child: Text(
+                              style: TextButton.styleFrom(foregroundColor: Theme.of(Get.context!).colorScheme.background),
+                              onPressed: () {},
+                              child: Text(
                               "Resend OTP",
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.w600),
+                              style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
                             ),
                           )
                               : TextButton(
@@ -613,21 +624,15 @@ class BottomSheetForOTP extends GetxController {
                             },
                             child: Text(
                               "Resend OTP",
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(fontWeight: FontWeight.w600),
+                              style: Theme.of(Get.context!).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
                             ),
                           ),
                           timer.value
                               ? Countdown(
-                            seconds: 30,
-                            build: (_, double time) {
-                              return Text(
-                                " in 00:${time.toInt()}",
-                                style: Theme.of(Get.context!)
-                                    .textTheme
-                                    .titleLarge,
+                              seconds: 30,
+                              build: (_, double time) {
+                              return Text(" in 00:${time.toInt()}",
+                                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                               );
                             },
                             interval: const Duration(milliseconds: 100),
@@ -641,18 +646,13 @@ class BottomSheetForOTP extends GetxController {
                         ],
                       ),
                       SizedBox(height: 12.px),
-                      CW.commonElevatedButton(
+                      CW.myElevatedButton(
                           onPressed: verifyButtonValue.value
                               ? () => null
                               : () async {
                             if (otpController.text.isNotEmpty) {
                               verifyButtonValue.value = true;
-                              await matchOtpApiCalling(
-                                  email: email,
-                                  otp: otpController.text
-                                      .trim()
-                                      .toString(),
-                              );
+                              await matchOtpApiCalling(email: email, otp: otpController.text.trim().toString());
                               verifyButtonValue.value = false;
                               // await BottomSheetForOTP.callingGetShiftDetailApi();
                             }
@@ -884,22 +884,18 @@ class BottomSheetForOTP extends GetxController {
               padding: EdgeInsets.only(bottom: 20.px),
               children: [
                 Center(
-                  child: CW.commonNetworkImageView(
-                      isAssetImage: true,
-                      path:  'assets/images/change_device__request_image.png',
-                      height: 100.px,
-                      width: 100.px),
+                  child: CW.commonNetworkImageView(isAssetImage: true, path:  'assets/images/change_device__request_image.png', height: 100.px, width: 100.px),
                 ),
                 SizedBox(height: 16.px),
                 Text(
                   'Change Device Request',
-                  style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(color: Col.text),
+                  style: Theme.of(Get.context!).textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 12.px),
-                Text(message,style: Theme.of(Get.context!).textTheme.titleMedium),
+                Text(message,style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.inverseSecondary)),
                 SizedBox(height: 24.px),
-                CW.commonElevatedButton(
+                CW.myElevatedButton(
                     onPressed: deviceChangeRequestButtonValue.value
                         ? () => null
                         : () async {

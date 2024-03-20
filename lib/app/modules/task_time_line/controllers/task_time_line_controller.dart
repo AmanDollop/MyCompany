@@ -16,6 +16,7 @@ class TaskTimeLineController extends GetxController {
   final scrollController = ScrollController();
 
   final sendMessageController = TextEditingController();
+  FocusNode focusNodeSendMessage = FocusNode();
 
   final apiResValue = true.obs;
 

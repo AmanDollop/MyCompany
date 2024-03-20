@@ -7,6 +7,7 @@ class CustomOutlineButton extends StatelessWidget {
   final VoidCallback _callback;
   final double _radius;
   final EdgeInsetsGeometry _padding;
+  bool? customOutlineForButtonValue1;
 
   CustomOutlineButton({
     super.key,
@@ -15,19 +16,21 @@ class CustomOutlineButton extends StatelessWidget {
     required Gradient gradient,
     required Widget child,
     EdgeInsetsGeometry? padding,
+    bool customOutlineForButtonValue = true,
     required VoidCallback onPressed,
   })  : _painter = _GradientPainter(strokeWidth: strokeWidth, radius: radius, gradient: gradient),
         _child = child,
         _callback = onPressed,
         _radius = radius,
-        _padding = padding ?? EdgeInsets.all(3.5.px);
+        _padding = padding ?? EdgeInsets.all(3.5.px),
+        customOutlineForButtonValue1 = customOutlineForButtonValue;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       foregroundPainter: _painter,
       painter: _painter,
-      child: OutlinedButton(
+      child: customOutlineForButtonValue1 == true?OutlinedButton(
         style: OutlinedButton.styleFrom(
             foregroundColor: Theme.of(context).colorScheme.onSecondary,
             shape: RoundedRectangleBorder(
@@ -37,6 +40,9 @@ class CustomOutlineButton extends StatelessWidget {
             shadowColor: Colors.transparent,
             padding: _padding),
         onPressed: _callback,
+        child: _child,
+      ):Padding(
+        padding: _padding,
         child: _child,
       ),
     );
@@ -54,8 +60,7 @@ class UnicornOutline extends StatelessWidget {
     required double radius,
     required Gradient gradient,
     required Widget child,
-  })  : _painter = _GradientPainter(
-            strokeWidth: strokeWidth, radius: radius, gradient: gradient),
+  })  : _painter = _GradientPainter(strokeWidth: strokeWidth, radius: radius, gradient: gradient),
         _child = child,
         _radius = radius;
 
@@ -101,14 +106,12 @@ class _GradientPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // create outer rectangle equals size
     Rect outerRect = Offset.zero & size;
-    var outerRRect =
-        RRect.fromRectAndRadius(outerRect, Radius.circular(radius));
+    var outerRRect = RRect.fromRectAndRadius(outerRect, Radius.circular(radius));
 
     // create inner rectangle smaller by strokeWidth
     Rect innerRect = Rect.fromLTWH(strokeWidth, strokeWidth,
         size.width - strokeWidth * 2, size.height - strokeWidth * 2);
-    var innerRRect = RRect.fromRectAndRadius(
-        innerRect, Radius.circular(radius - strokeWidth));
+    var innerRRect = RRect.fromRectAndRadius(innerRect, Radius.circular(radius - strokeWidth));
 
     // apply gradient shader
     _paint.shader = gradient.createShader(outerRect);

@@ -221,7 +221,7 @@ class DepartmentView extends GetView<DepartmentController> {
 
   Widget selectPriorityTextFormFiled() => MyDropdown(
         items: controller.branchList ?? [],
-        nameList: controller.branchNameList ?? [],
+        nameList: controller.branchNameList,
         selectedItem: controller.selectedBranchValue.value,
         hintText: 'Select Branch',
         textEditingController: controller.selectBranchController,

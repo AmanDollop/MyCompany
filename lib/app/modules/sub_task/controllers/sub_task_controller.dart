@@ -13,6 +13,7 @@ import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
@@ -28,6 +29,7 @@ class SubTaskController extends GetxController {
 
   final bottomSheetSelectPriorityValue = false.obs;
   final taskSearchController = TextEditingController();
+  FocusNode focusNodeTaskSearch = FocusNode();
 
   final selectPriorityValue = ''.obs;
   final selectPriorityId = ''.obs;
@@ -47,6 +49,7 @@ class SubTaskController extends GetxController {
   Map<String, dynamic> bodyParamsForDeleteSubTask = {};
 
   final descriptionController = TextEditingController();
+  FocusNode focusNodeDescription = FocusNode();
   final updatePriorityButtonValue = false.obs;
 
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
@@ -129,30 +132,29 @@ class SubTaskController extends GetxController {
       isFullScreen: true,
       onTap: () => CM.unFocusKeyBoard(),
       children: [
-        Text('Edit Status', style: Theme.of(Get.context!).textTheme.titleLarge),
+        Center(child: Text('Edit Status', style: Theme.of(Get.context!).textTheme.displaySmall)),
         SizedBox(height: 20.px),
         Obx(() {
           count.value;
-          return Container(
+          return CustomOutlineButton(
             padding: EdgeInsets.all(10.px),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1.px),
-              borderRadius: BorderRadius.circular(10.px),
-            ),
+            gradient: CW.commonLinearGradientForButtonsView(),
+            radius: 6.px,
+            strokeWidth: 1.px,
+            onPressed: () {},
+            customOutlineForButtonValue: false,
             child: AnimatedCrossFade(
               sizeCurve: Curves.easeInOutCubicEmphasized,
               firstCurve: Curves.easeInOutCubicEmphasized,
               reverseDuration: const Duration(microseconds: 0),
               firstChild: InkWell(
-                onTap: () => bottomSheetSelectPriorityValue.value =
-                    !bottomSheetSelectPriorityValue.value,
+                onTap: () => bottomSheetSelectPriorityValue.value = !bottomSheetSelectPriorityValue.value,
                 child: commonRowForSelectPriorityView(),
               ),
               secondChild: Column(
                 children: [
                   InkWell(
-                    onTap: () => bottomSheetSelectPriorityValue.value =
-                        !bottomSheetSelectPriorityValue.value,
+                    onTap: () => bottomSheetSelectPriorityValue.value = !bottomSheetSelectPriorityValue.value,
                     child: commonRowForSelectPriorityView(),
                   ),
                   SizedBox(height: 10.px),
@@ -173,18 +175,19 @@ class SubTaskController extends GetxController {
             labelText: 'Description',
             hintText: 'Description',
             controller: descriptionController,
+            focusNode: focusNodeDescription,
+            isSearchLabelText: false,
             maxLines: 3),
         SizedBox(height: 10.px),
         Obx(() {
           count.value;
-          return CW.commonElevatedButton(
+          return CW.myElevatedButton(
               onPressed: updatePriorityButtonValue.value
                   ? () => null
                   : () => clickOnPriorityUpdateButton(
                       taskId: taskId,
                       taskStatus: selectPriorityId.value,
-                      description:
-                          descriptionController.text.trim().toString()),
+                      description: descriptionController.text.trim().toString()),
               buttonText: 'Update',
               isLoading: updatePriorityButtonValue.value);
         }),
@@ -209,23 +212,19 @@ class SubTaskController extends GetxController {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              selectPriorityValue.value.isNotEmpty
+            Text(selectPriorityValue.value.isNotEmpty
                   ? selectPriorityValue.value
                   : 'Select Status*',
-              style: selectPriorityValue.value.isNotEmpty
-                  ? Theme.of(Get.context!).textTheme.titleLarge
-                  : Theme.of(Get.context!).textTheme.titleMedium,
+              style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: selectPriorityValue.value.isNotEmpty?Col.inverseSecondary:Col.gTextColor),
             ),
             InkWell(
-              onTap: () => bottomSheetSelectPriorityValue.value =
-                  !bottomSheetSelectPriorityValue.value,
+              onTap: () => bottomSheetSelectPriorityValue.value = !bottomSheetSelectPriorityValue.value,
               child: Icon(
                   bottomSheetSelectPriorityValue.value
                       ? Icons.arrow_drop_up
                       : Icons.arrow_drop_down,
                   size: 22.px,
-                  color: Col.secondary),
+                  color: Col.inverseSecondary),
             )
           ],
         ),
@@ -237,7 +236,7 @@ class SubTaskController extends GetxController {
     if (getSubTaskFilterDataModal.value != null) {
       if (subTaskFilterListForPriority != null && subTaskFilterListForPriority!.isNotEmpty) {
         return Card(
-          color: Col.inverseSecondary,
+          color: Col.gCardColor,
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.px)),
           child: Padding(
@@ -247,8 +246,7 @@ class SubTaskController extends GetxController {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: subTaskFilterListForPriority?.length,
               shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, childAspectRatio: 2.6),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.6),
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () => clickOnPriorityStatusFilterCard(index: index),
@@ -277,13 +275,13 @@ class SubTaskController extends GetxController {
                                 color: selectPriorityValue.value ==
                                         subTaskFilterListForPriority?[index].taskStatusName
                                     ? CW.apiColorConverterMethod(colorString: '${subTaskFilterListForPriority?[index].taskStatusColor}')
-                                    : Col.gray.withOpacity(.5),
+                                    : Col.gTextColor,
                                 shape: BoxShape.circle),
                           ),
                           SizedBox(width: 4.px),
                           const SubTaskView().cardTitleTextView(
                               text: '${subTaskFilterListForPriority?[index].taskStatusName}',
-                              color: Col.secondary),
+                              color: Col.gTextColor),
                         ],
                       ),
                     ),

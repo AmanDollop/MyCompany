@@ -30,8 +30,11 @@ class CircularController extends GetxController {
   String? startDate;
 
   final searchController = TextEditingController();
+  FocusNode focusNodeForSearch = FocusNode();
   final startController = TextEditingController();
+  FocusNode focusNodeForStart = FocusNode();
   final endController = TextEditingController();
+  FocusNode focusNodeForEnd = FocusNode();
 
   final circularDetailModal = Rxn<CircularDetailModal>();
   List<Circular> circularList = [];
@@ -108,6 +111,7 @@ class CircularController extends GetxController {
       await callingCircularDetailApi();
       apiResValue.value = false;
     });
+
   }
 
   void clickOnViewMoreButton({required int index}) {

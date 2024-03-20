@@ -17,10 +17,6 @@ class BankDetailView extends GetView<BankDetailController> {
     return CW.commonScaffoldBackgroundColor(
       child: SafeArea(
         child: Scaffold(
-          // appBar: CW.commonAppBarView(
-          //     title: controller.profileMenuName.value,
-          //     isLeading: true,
-          //     onBackPressed: () => controller.clickOnBackButton()),
           body: Column(
             children: [
               appBarView(),

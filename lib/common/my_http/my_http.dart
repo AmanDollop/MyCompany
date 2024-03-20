@@ -306,7 +306,8 @@ class MyHttp {
           }
           print('token::::token::::: $token');
           print('imageKey::::imageKey::::: $imageKey');
-          print('bodyParams::::bodyParams::::: $bodyParams');
+          print('bodyParams::::keys::::: ${bodyParams.keys}');
+          print('bodyParams::::values::::: ${bodyParams.values}');
           print('images::::images::::: $images');
           bodyParams.forEach((key, value) {
             request.fields[key] = value;

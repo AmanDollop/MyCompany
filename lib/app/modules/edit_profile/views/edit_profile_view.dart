@@ -164,6 +164,7 @@ class EditProfileView extends GetView<EditProfileController> {
                     userShortName: controller.userShortName.value!='null'&&controller.userShortName.value.isNotEmpty
                         ? controller.userShortName.value
                         : '?',
+                      userShortNameValue: true,
                     // userShortNameColor: Col.primary
                   ),
                 ),

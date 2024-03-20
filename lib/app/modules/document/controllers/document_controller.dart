@@ -14,6 +14,7 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:share_plus/share_plus.dart';
@@ -176,38 +177,34 @@ class DocumentController extends GetxController {
   Future<void> clickOnDetailButton({required int index}) async {
     Get.back();
     await CBS.commonBottomSheet(children: [
-      Text('Document Detail', style: Theme.of(Get.context!).textTheme.bodyLarge),
-      SizedBox(height: 24.px),
+      Center(child: Text('Document Detail', style: Theme.of(Get.context!).textTheme.displaySmall)),
+      SizedBox(height: 16.px),
       commonColumn(
           text: 'Name',
-          text1: getDocumentDetails?[index].documentName != null &&
-                  getDocumentDetails![index].documentName!.isNotEmpty
+          text1: getDocumentDetails?[index].documentName != null && getDocumentDetails![index].documentName!.isNotEmpty
               ? '${getDocumentDetails?[index].documentName}'
               : 'Data not found!'),
       SizedBox(height: 14.px),
       commonColumn(
           text: 'Date',
-          text1: getDocumentDetails?[index].createdDate != null &&
-                  getDocumentDetails![index].createdDate!.isNotEmpty
+          text1: getDocumentDetails?[index].createdDate != null && getDocumentDetails![index].createdDate!.isNotEmpty
               ? '${getDocumentDetails?[index].createdDate}'
               : 'Data not found!'),
       SizedBox(height: 14.px),
       commonColumn(
           text: 'Upload By',
-          text1: getDocumentDetails?[index].createdByName != null &&
-                  getDocumentDetails![index].createdByName!.isNotEmpty
+          text1: getDocumentDetails?[index].createdByName != null && getDocumentDetails![index].createdByName!.isNotEmpty
               ? '${getDocumentDetails?[index].createdByName}'
               : 'Data not found!'),
       SizedBox(height: 24.px),
     ]);
   }
 
-  Widget commonColumn({required String text, required String text1}) => Column(
+  Widget commonColumn({required String text, required String text1}) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$text:', style: Theme.of(Get.context!).textTheme.labelMedium),
-          SizedBox(height: 4.px),
-          Text(text1, style: Theme.of(Get.context!).textTheme.titleLarge)
+          Text('$text :  ', style: Theme.of(Get.context!).textTheme.labelMedium),
+          Flexible(child: Text(text1, style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),),)
         ],
       );
 
@@ -244,18 +241,13 @@ class DocumentController extends GetxController {
           borderRadius: BorderRadius.circular(6.px),
           child: Row(
             children: [
-              CW.commonNetworkImageView(
-                  path: imagePath,
-                  isAssetImage: true,
+              GradientImageWidget(
+                  assetPath: imagePath,
                   width: 20.px,
-                  height: 20.px,
-                  color: Col.secondary),
+                  height: 20.px,),
               SizedBox(width: 12.px),
               Text(text,
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w600)),
+                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary)),
             ],
           ),
         ),
@@ -286,6 +278,7 @@ class DocumentController extends GetxController {
 
   Future<void> callingGetDocumentApi() async {
     try {
+      apiResValue.value = true;
       bodyParams = {AK.action: ApiEndPointAction.getDocument};
       documentModal.value = await CAI.getDocumentApi(bodyParams: bodyParams);
       if (documentModal.value != null) {
@@ -301,6 +294,7 @@ class DocumentController extends GetxController {
       apiResValue.value = false;
       CM.error();
     }
+    apiResValue.value = false;
   }
 
   Future download({required String url, required String filename}) async {
@@ -337,6 +331,11 @@ class DocumentController extends GetxController {
   Future<void> clickOnAddViewButton() async {
     await Get.toNamed(Routes.ADD_DOCUMENT);
     onInit();
+  }
+
+  onRefresh() async {
+    getDocumentDetails?.clear();
+    await callingGetDocumentApi();
   }
 
 }

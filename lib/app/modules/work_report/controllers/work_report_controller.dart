@@ -16,7 +16,9 @@ class WorkReportController extends GetxController {
   final apiResValue = true.obs;
 
   final startController = TextEditingController();
+  FocusNode focusNodeStart = FocusNode();
   final endController = TextEditingController();
+  FocusNode focusNodeEnd = FocusNode();
 
   DateTime currentDate = DateTime.now();
   DateTime? newDate;
@@ -143,7 +145,11 @@ class WorkReportController extends GetxController {
   }
 
   Future<void> clickOnAddWorkReportButton() async {
-    await Get.toNamed(Routes.ADD_TEMPLATE_QUESTION);
+    if(getWorkReportModal.value?.isAssign ?? false){
+      await Get.toNamed(Routes.ASSIGN_TEMPLATE);
+    }else{
+      await Get.toNamed(Routes.ADD_WORK_REPORT);
+    }
     clearData();
     callingGetWorkReportApi();
   }

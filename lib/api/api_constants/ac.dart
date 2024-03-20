@@ -196,6 +196,8 @@ class AK {
   static const workReport = "work_report";
   static const workReportDate = "work_report_date";
   static const workReportId = "work_report_id";
+  static const templateId = "template_id";
+  static const templateAnswer = "template_answer";
 
 
 }
@@ -388,6 +390,12 @@ class ApiEndPointAction{
   static  const addWorkReport = 'addWorkReport';
 
   static  const workDetails = 'workDetails';
+
+  static  const getAssignTemplate = 'getAssignTemplate';
+
+  static  const getTemplateQuestion = 'getTemplateQuestion';
+
+  static  const submitWorkReportTemplate = 'submitWorkReportTemplate';
 
 
 }

@@ -15,42 +15,55 @@ class MyTeamView extends GetView<MyTeamController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-        title: 'Assign To',
-        isLeading: true,
-        onBackPressed: () => controller.clickOnBackButton(),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(() {
+                  controller.count.value;
+                  if (AC.isConnect.value) {
+                    return ModalProgress(
+                      inAsyncCall: controller.apiResValue.value,
+                      child: controller.apiResValue.value
+                          ? shimmerView()
+                          : controller.getMyTeamMemberModal.value != null
+                              ? controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty
+                                  ? Stack(
+                                      alignment: Alignment.bottomCenter,
+                                      children: [
+                                        ListView(
+                                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+                                          children: [
+                                            myTeamListView(),
+                                          ],
+                                        ),
+                                        addButtonView()
+                                      ],
+                                    )
+                                  : CW.commonNoDataFoundText()
+                              : CW.commonNoDataFoundText(),
+                    );
+                  } else {
+                    return CW.commonNoNetworkView();
+                  }
+                }),
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Obx(() {
-        controller.count.value;
-        if (AC.isConnect.value) {
-          return ModalProgress(
-            inAsyncCall: controller.apiResValue.value,
-            child: controller.apiResValue.value
-                ? shimmerView()
-                : controller.getMyTeamMemberModal.value != null
-                    ? controller.myTeamMemberList != null && controller.myTeamMemberList!.isNotEmpty
-                        ? Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              ListView(
-                                padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
-                                children: [
-                                  myTeamListView(),
-                                ],
-                              ),
-                              addButtonView()
-                            ],
-                          )
-                        : CW.commonNoDataFoundText()
-                    : CW.commonNoDataFoundText(),
-          );
-        } else {
-          return CW.commonNoNetworkView();
-        }
-      }),
     );
   }
+
+
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Assign To',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+  );
 
   Widget cardTextView({required String text, Color? color, FontWeight? fontWeight}) => Text(
         text,
@@ -106,19 +119,13 @@ class MyTeamView extends GetView<MyTeamController> {
             width: 100.px,
             padding: EdgeInsets.only(left: 3.px),
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 24.px,
-                  color: Col.secondary.withOpacity(.05),
-                )
-              ],
               color: controller.selectedMyTeamMemberList.contains(controller.myTeamMemberList![index])
-                  ? Col.primary.withOpacity(.06)
-                  : Col.inverseSecondary,
+                  ? Col.primary.withOpacity(.2)
+                  : Col.gCardColor,
               border: Border.all(
                   color: controller.selectedMyTeamMemberList.contains(controller.myTeamMemberList![index])
                       ? Col.primary
-                      : Col.inverseSecondary),
+                      : Col.gCardColor),
               borderRadius: BorderRadius.circular(8.px),
             ),
             child: Column(
@@ -153,12 +160,12 @@ class MyTeamView extends GetView<MyTeamController> {
                 cardTextView(
                     text: controller.myTeamMemberList?[index].userFullName != null && controller.myTeamMemberList![index].userFullName!.isNotEmpty
                         ? '${controller.myTeamMemberList?[index].userFullName}'
-                        : '?'),
+                        : '?',color: Col.inverseSecondary),
                 cardTextView(
                     text: controller.myTeamMemberList?[index].userDesignation != null && controller.myTeamMemberList![index].userDesignation!.isNotEmpty
                         ? '${controller.myTeamMemberList?[index].userDesignation}'
                         : '?',
-                    color: Col.darkGray,
+                    color: Col.gTextColor,
                     fontWeight: FontWeight.w500),
               ],
             ),
@@ -171,13 +178,10 @@ class MyTeamView extends GetView<MyTeamController> {
   Widget addButtonView() => Container(
         height: 80.px,
         padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
-        color: Col.inverseSecondary,
+        color: Col.gBottom,
         child: Center(
-          child: CW.commonElevatedButton(
+          child: CW.myElevatedButton(
             onPressed: () => controller.clickOnAddButton(),
-            buttonColor: controller.selectedMyTeamMemberList.isNotEmpty
-                ? Col.primary
-                : Col.primary.withOpacity(.7),
             buttonText: 'Add',
             borderRadius: 10.px,
           ),
@@ -199,27 +203,18 @@ class MyTeamView extends GetView<MyTeamController> {
             height: 132.px,
             padding: EdgeInsets.only(left: 3.px),
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 24.px,
-                  color: Col.secondary.withOpacity(.05),
-                )
-              ],
-              color: Col.inverseSecondary,
+              color: Col.gCardColor,
               borderRadius: BorderRadius.circular(8.px),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CW.commonShimmerViewForImage(
-                    width: 44.px, height: 44.px, radius: 22.px),
+                CW.commonShimmerViewForImage(width: 44.px, height: 44.px, radius: 22.px),
                 SizedBox(height: 6.px),
-                CW.commonShimmerViewForImage(
-                    width: 80.px, height: 14.px, radius: 2.px),
+                CW.commonShimmerViewForImage(width: 80.px, height: 14.px, radius: 2.px),
                 SizedBox(height: 5.px),
-                CW.commonShimmerViewForImage(
-                    width: 60.px, height: 10.px, radius: 2.px),
+                CW.commonShimmerViewForImage(width: 60.px, height: 10.px, radius: 2.px),
               ],
             ),
           );

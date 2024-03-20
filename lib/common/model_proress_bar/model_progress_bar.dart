@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import 'package:task/theme/colors/colors.dart';
+
 ///
 /// Wrap around any widget that makes an async call to show a modal progress
 /// indicator while the async call is in progress.
@@ -55,6 +57,7 @@ class ModalProgress extends StatelessWidget {
       progressIndicator ??= CircularProgressIndicator(
           backgroundColor: const Color(0xff7C7C7C).withOpacity(.5),
           strokeWidth: 3,
+          color: Col.primary,
         );
     if (!inAsyncCall) return child;
 

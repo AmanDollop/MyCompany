@@ -22,18 +22,21 @@ class AllTaskController extends GetxController {
 
   final key = GlobalKey<FormState>();
   final taskSearchController = TextEditingController();
+  FocusNode focusNodeTaskSearch = FocusNode();
+
   final addTaskCategoryController = TextEditingController();
+  FocusNode focusNodeAddTaskCategory = FocusNode();
 
   final topGridCardTextColorList = [
-    const Color(0xff02930D),
-    const Color(0xffE09701),
-    const Color(0xff0717AF),
+    const Color(0xff67B87E),
+    const Color(0xffE2C68B),
+    const Color(0xff249CFF),
   ];
 
   final topGridCardColorList = [
-    const Color(0xffF2FFF3),
-    const Color(0xffFFF2D8),
-    const Color(0xffDDE0FB),
+    const Color(0x1467B87E),
+    const Color(0x14E2C68B),
+    const Color(0x14249CFF),
   ];
 
   final topGridCardTitleTextList = [
@@ -154,14 +157,11 @@ class AllTaskController extends GetxController {
         Obx(() {
           count.value;
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'Add Task Category',
-                style: Theme.of(Get.context!)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(fontWeight: FontWeight.w600, fontSize: 14.px),
+                style: Theme.of(Get.context!).textTheme.displaySmall,
               ),
               SizedBox(height: 14.px),
               Form(
@@ -172,11 +172,12 @@ class AllTaskController extends GetxController {
                   isSearchLabelText: true,
                   hintText: 'Enter Task Category',
                   controller: addTaskCategoryController,
+                  focusNode: focusNodeAddTaskCategory,
                   validator: (value) => V.isValid(value: value, title: 'Please enter task category'),
                 ),
               ),
               SizedBox(height: 14.px),
-              CW.commonElevatedButton(
+              CW.myElevatedButton(
                 onPressed: createTaskButtonValue.value
                     ? () => null
                     : () => taskCardListViewIndex != null
@@ -202,7 +203,6 @@ class AllTaskController extends GetxController {
 
   Future<void> clickOnCreateTaskButton({required String addTaskCategoryControllerValue}) async {
     CM.unFocusKeyBoard();
-    print('addTaskCategoryControllerValue::::: $addTaskCategoryController');
     if (key.currentState!.validate()) {
       createTaskButtonValue.value = true;
       bodyParamsForAddTask.clear();
@@ -217,7 +217,6 @@ class AllTaskController extends GetxController {
 
   Future<void> clickOnUpdateTaskButton({required String taskCategoryId, required String addTaskCategoryControllerValue}) async {
     CM.unFocusKeyBoard();
-    print('taskCategoryId:::::: $taskCategoryId');
     if (key.currentState!.validate()) {
       createTaskButtonValue.value = true;
       bodyParamsForAddTask.clear();
@@ -256,7 +255,6 @@ class AllTaskController extends GetxController {
 
   Future<void> clickOnTaskDeleteButton({required int taskCardListViewIndex}) async {
     CM.unFocusKeyBoard();
-    print('::::  ${taskCategoryList[taskCardListViewIndex].taskCategoryId}');
     CD.commonIosDeleteConfirmationDialog(
       clickOnCancel: () => Get.back(),
       clickOnDelete: () async {

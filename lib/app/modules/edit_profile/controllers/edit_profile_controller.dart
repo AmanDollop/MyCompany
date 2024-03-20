@@ -14,6 +14,7 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/image_picker/ip.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -184,7 +185,6 @@ class EditProfileController extends GetxController {
     CBS.commonBottomSheetForImagePicker(
       clickOnTakePhoto: () => clickOnTakePhoto(),
       clickOnChooseFromLibrary: () => clickOnChooseFromLibrary(),
-      clickOnRemovePhoto: () => clickOnRemovePhoto(),
     );
   }
 
@@ -200,10 +200,6 @@ class EditProfileController extends GetxController {
     image.value = await IP.pickImage(isCropper: true, pickFromGallery: true);
   }
 
-  void clickOnRemovePhoto() {
-    Get.back();
-    image.value = null;
-  }
 
   Future<void> clickOnSaveButton() async {
     if (key.currentState!.validate()) {
@@ -242,10 +238,7 @@ class EditProfileController extends GetxController {
           Center(
             child: Text(
               'Blood Group',
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!).textTheme.displaySmall,
             ),
           ),
           SizedBox(height: 14.px),
@@ -263,69 +256,40 @@ class EditProfileController extends GetxController {
                         right: index % 2 == 0 ? C.margin / 2 : C.margin,
                         top: C.margin / 2,
                         bottom: 0.px),
-                    child: Container(
-                      height: 46.px,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.px),
-                        color: bloodGroupValue.value == bloodGroupList[index]
-                            ? Col.primary.withOpacity(.08)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: bloodGroupValue.value == bloodGroupList[index]
-                              ? Col.primary
-                              : Col.darkGray,
-                          width: bloodGroupValue.value == bloodGroupList[index]
-                              ? 1.5.px
-                              : 1.px,
-                        ),
+                    child: CustomOutlineButton(
+                      padding: EdgeInsets.only(left: 14.px, right: 0.px,top: 2.px,bottom: 2.px),
+                      onPressed: () => clickOnBloodGroup(index: index),
+                      radius: 6.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: bloodGroupValue.value == bloodGroupList[index]
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
                       ),
-                      child: InkWell(
-                        onTap: () => clickOnBloodGroup(index: index),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.px, horizontal: 10.px),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                bloodGroupList[index],
-                                style: Theme.of(Get.context!)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(fontWeight: FontWeight.w500),
-                              ),
-                              /*Container(
-                                height:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                width:
-                                bloodGroupValue.value == bloodGroupList[index]
-                                    ? 18.px
-                                    : 16.px,
-                                padding: EdgeInsets.all(2.px),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: bloodGroupValue.value ==
-                                        bloodGroupList[index]
-                                        ? Col.primary
-                                        : Col.text,
-                                    width: 1.5.px,
-                                  ),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: bloodGroupValue.value ==
-                                          bloodGroupList[index]
-                                          ? Col.primary
-                                          : Colors.transparent),
-                                ),
-                              ),*/
-                            ],
-                          ),
+                      strokeWidth: bloodGroupValue.value == bloodGroupList[index]
+                          ? 1.5.px
+                          : 1.px,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              bloodGroupList[index],
+                              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,
+                                  color: bloodGroupValue.value == bloodGroupList[index]
+                                  ? Col.primary
+                                  : Col.inverseSecondary),
+                            ),
+                          ],
                         ),
                       ),
                     ),

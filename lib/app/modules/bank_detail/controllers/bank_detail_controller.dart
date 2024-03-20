@@ -9,6 +9,8 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:http/http.dart' as http;
+import 'package:task/common/gradient_image_convert.dart';
+import 'package:task/theme/colors/colors.dart';
 
 class BankDetailController extends GetxController with GetTickerProviderStateMixin {
   final apiResValue = true.obs;
@@ -71,7 +73,7 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
     if(accessType.value != '1' && isChangeable.value != '1') {
       CBS.commonBottomSheet(
       children: [
-        Text('Choose Action', style: Theme.of(Get.context!).textTheme.displayLarge),
+        Center(child: Text('Choose Action', style: Theme.of(Get.context!).textTheme.displaySmall)),
         SizedBox(height: 16.px),
         commonRowForBottomSheet(
           imagePath: 'assets/icons/edit_pen_icon.png',
@@ -92,19 +94,15 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
                   children: [
                     RotationTransition(
                       turns: Tween(begin: 0.0, end: 30.0).animate(rotationController),
-                      child: CW.commonNetworkImageView(
-                          path: 'assets/icons/sync_icon.png',
-                          isAssetImage: true,
+                      child: GradientImageWidget(
+                          assetPath: 'assets/icons/sync_icon.png',
                           width: 20.px,
                           height: 20.px),
                     ),
                     SizedBox(width: 12.px),
                     Text(
                       'Set as Primary',
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary),
                     ),
                   ],
                 ),
@@ -169,14 +167,12 @@ class BankDetailController extends GetxController with GetTickerProviderStateMix
           borderRadius: BorderRadius.circular(6.px),
           child: Row(
             children: [
-              CW.commonNetworkImageView(
-                  path: imagePath,
-                  isAssetImage: true,
+              GradientImageWidget(
+                  assetPath: imagePath,
                   width: 20.px,
                   height: 20.px),
               SizedBox(width: 12.px),
-              Text(text,
-                  style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+              Text(text, style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600,color: Col.inverseSecondary)),
             ],
           ),
         ),

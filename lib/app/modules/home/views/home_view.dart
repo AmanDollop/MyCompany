@@ -688,8 +688,7 @@ class HomeView extends GetView<HomeController> {
         ],
       );
 
-  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) =>
-      CW.commonTextButton(
+  Widget viewAllTextButtonView({required VoidCallback onPressedViewAllButton}) => CW.commonTextButton(
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',
@@ -744,8 +743,7 @@ class HomeView extends GetView<HomeController> {
                                       width: 26.px,
                                       height: 26.px,
                                       child: CW.commonCachedNetworkImageView(
-                                        path:
-                                            '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
+                                        path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
                                         imageColor: Col.primary,
                                       ),
                                     ),
@@ -1166,9 +1164,9 @@ class HomeView extends GetView<HomeController> {
             shrinkWrap: true,
             padding: EdgeInsets.all(10.px),
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 6,
+            itemCount: 8,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 4,
               crossAxisSpacing: 10.px,
               mainAxisSpacing: 10.px,
             ),

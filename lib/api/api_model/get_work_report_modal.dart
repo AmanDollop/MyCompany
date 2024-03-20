@@ -1,11 +1,13 @@
 class GetWorkReportModal {
   String? message;
+  bool? isAssign;
   List<WorkReport>? workReport;
 
-  GetWorkReportModal({this.message, this.workReport});
+  GetWorkReportModal({this.message,this.isAssign, this.workReport});
 
   GetWorkReportModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
+    isAssign = json['is_assign'];
     if (json['work_report'] != null) {
       workReport = <WorkReport>[];
       json['work_report'].forEach((v) {
@@ -17,6 +19,7 @@ class GetWorkReportModal {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
+    data['is_assign'] = isAssign;
     if (workReport != null) {
       data['work_report'] = workReport!.map((v) => v.toJson()).toList();
     }

@@ -16,8 +16,12 @@ import '../modules/add_sub_task/bindings/add_sub_task_binding.dart';
 import '../modules/add_sub_task/views/add_sub_task_view.dart';
 import '../modules/add_template_question/bindings/add_template_question_binding.dart';
 import '../modules/add_template_question/views/add_template_question_view.dart';
+import '../modules/add_work_report/bindings/add_work_report_binding.dart';
+import '../modules/add_work_report/views/add_work_report_view.dart';
 import '../modules/all_task/bindings/all_task_binding.dart';
 import '../modules/all_task/views/all_task_view.dart';
+import '../modules/assign_template/bindings/assign_template_binding.dart';
+import '../modules/assign_template/views/assign_template_view.dart';
 import '../modules/attendance_tracker/bindings/attendance_tracker_binding.dart';
 import '../modules/attendance_tracker/views/attendance_tracker_view.dart';
 import '../modules/bank_detail/bindings/bank_detail_binding.dart';
@@ -131,7 +135,6 @@ class AppPages {
       name: _Paths.LOGIN,
       page: () => const LoginView(),
       binding: LoginBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.SIGN_UP,
@@ -142,7 +145,6 @@ class AppPages {
       name: _Paths.SEARCH_COMPANY,
       page: () => const SearchCompanyView(),
       binding: SearchCompanyBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.SELECT_BRANCE,
@@ -168,13 +170,11 @@ class AppPages {
       name: _Paths.NOTIFICATION,
       page: () => const NotificationView(),
       binding: NotificationBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.DRAWER_VIEW,
       page: () => const DrawerViewView(),
       binding: DrawerViewBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
@@ -190,7 +190,6 @@ class AppPages {
       name: _Paths.MY_PROFILE,
       page: () => const MyProfileView(),
       binding: MyProfileBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.SELECT_DEPARTMENT,
@@ -282,7 +281,6 @@ class AppPages {
       page: () => const CircularView(),
       binding: CircularBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.CIRCULAR_DETAIL,
@@ -303,7 +301,6 @@ class AppPages {
       name: _Paths.ATTENDANCE_TRACKER,
       page: () => const AttendanceTrackerView(),
       binding: AttendanceTrackerBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.ALL_TASK,
@@ -339,13 +336,11 @@ class AppPages {
       name: _Paths.UPCOMING_CELEBRATIONS,
       page: () => const UpcomingCelebrationsView(),
       binding: UpcomingCelebrationsBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.DEPARTMENT,
       page: () => const DepartmentView(),
       binding: DepartmentBinding(),
-      transitionDuration: const Duration(microseconds: 0),
     ),
     GetPage(
       name: _Paths.LEAVE,
@@ -396,6 +391,16 @@ class AppPages {
       name: _Paths.HOME_DARK,
       page: () => const HomeDarkView(),
       binding: HomeDarkBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_WORK_REPORT,
+      page: () => const AddWorkReportView(),
+      binding: AddWorkReportBinding(),
+    ),
+    GetPage(
+      name: _Paths.ASSIGN_TEMPLATE,
+      page: () => const AssignTemplateView(),
+      binding: AssignTemplateBinding(),
     ),
   ];
 }
