@@ -20,7 +20,7 @@ class SplashView extends GetView<SplashController> {
               height: 150.px,
               width: 150.px,
               decoration: BoxDecoration(
-                color: Col.primary,
+                gradient: CW.commonLinearGradientForButtonsView(),
                 shape: BoxShape.circle
               ),
               child: Center(

@@ -1593,7 +1593,7 @@ class CAI extends GetxController{
     }
   }
 
-  static Future<http.Response?> submitTemQuestionApi({
+  /*static Future<http.Response?> submitTemQuestionApi({
     required Map<String, dynamic> bodyParams,
   }) async {
     String baseUrl = await baseUrlReturn();
@@ -1606,6 +1606,34 @@ class CAI extends GetxController{
         context: Get.context!,
         token: authorization,
         showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true,wantShowSuccessResponse: true)) {
+        return response;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }*/
+
+  static Future<http.Response?> submitTemQuestionApi({
+    required Map<String, dynamic> bodyParams,
+    Map<String, List<File>>? imageMap,
+  }) async {
+    String baseUrl = await baseUrlReturn();
+
+    String? token = await userToken(stringToken: true);
+
+    http.Response? response = await MyHttp.uploadMultipleImagesWithBody(
+        uri: '$baseUrl${AU.endPointWorkReportControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        imageMap: imageMap,
+        multipartRequestType: 'POST',
+        token: '$token'
+    );
+
     if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true,wantShowSuccessResponse: true)) {
         return response;

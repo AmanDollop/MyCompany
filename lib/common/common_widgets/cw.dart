@@ -950,7 +950,7 @@ class CW {
           child: Focus(
             onFocusChange: (hasFocus) {
               setState(() {
-                // Update label color based on focus
+                print('controller:::  ${controller?.text}');
               });
             },
             child: SizedBox(
@@ -980,9 +980,7 @@ class CW {
                   style: style ?? Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: Col.inverseSecondary),
                   decoration: InputDecoration(
                       labelText: isSearchLabelText ? '' : labelText,
-                      labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
-                                color: focusNode?.hasFocus == true /*|| (controller?.text != null && controller!.text.isNotEmpty)*/ ? Col.primary : Col.gray,
-                              ),
+                      labelStyle: labelStyle ?? Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: focusNode?.hasFocus == true /*|| (controller?.text != null && controller!.text.isNotEmpty)*/ ? Col.primary : Col.gray,),
                       errorStyle: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(color: Col.error),
                       hintText: hintText,
                       fillColor: focusNode?.hasFocus == true
@@ -1011,7 +1009,10 @@ class CW {
                               BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
                       border: OutlineInputBorder(borderSide: isBorder ? BorderSide(color: Col.primary, width: 1.px) : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
                       enabledBorder: OutlineInputBorder(borderSide: isBorder ? BorderSide(color: filled ? initialBorderColor ?? Col.gray : Col.secondary, width: initialBorderWidth ?? 1.px) : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
-                      errorBorder: OutlineInputBorder(borderSide: isBorder ? BorderSide(color: Col.error, width: 1.px) : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius)),
+                      errorBorder:  OutlineInputBorder(borderSide: isBorder
+                           ? BorderSide(color: Col.error, width: 1.px)
+                          : BorderSide.none, borderRadius: BorderRadius.circular(borderRadius ?? C.textFieldRadius),
+                      ),
                       suffixIcon: suffixIcon != null
                           ? Padding(
                               padding: suffixPadding ?? EdgeInsets.zero,

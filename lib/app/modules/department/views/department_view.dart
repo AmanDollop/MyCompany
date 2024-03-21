@@ -17,207 +17,164 @@ class DepartmentView extends GetView<DepartmentController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CM.unFocusKeyBoard();
-        controller.isDropDownOpenValue.value = false;
-      },
-      child: Scaffold(
-        appBar: CW.commonAppBarView(
-          title: 'Your Department',
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton(),
-        ),
-        body: Obx(() {
-          return ModalProgress(
-            inAsyncCall: controller.apiResValue.value,
-            child: controller.apiResValue.value
-                ? shimmerView()
-                : Stack(
-                    children: [
-                      Container(
-                        color: controller.isDropDownOpenValue.value
-                            ? Col.gray.withOpacity(.4)
-                            : Colors.transparent,
-                        child: ListView(
-                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
-                          children: [
-                            CW.commonTextField(
-                              isSearchLabelText: false,
-                              hintText: '',
-                            ),
-                            SizedBox(height: 12.px),
-                            buildFilterChips(),
-                            SizedBox(height: 12.px),
-                            controller.apiResValueForDepartment.value
-                                ? shimmerView()
-                                : controller.getDepartmentEmployeeModal.value != null
-                                ? controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty
-                                    ? GridView.builder(
-                                        shrinkWrap: true,
-                                        padding: EdgeInsets.zero,
-                                        itemCount: controller
-                                            .getDepartmentEmployeeList?.length,
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 10.px,
-                                          mainAxisSpacing: 10.px,
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () =>
-                                                controller.clickOnCards(
-                                                    myTeamCardIndex: index),
-                                            onLongPress: () {
-                                              showOverlay(
-                                                context: context,
-                                                userShortName: controller
-                                                                .getDepartmentEmployeeList?[
-                                                                    index]
-                                                                .shortName !=
-                                                            null &&
-                                                        controller
-                                                            .getDepartmentEmployeeList![
-                                                                index]
-                                                            .shortName!
-                                                            .isNotEmpty
-                                                    ? '${controller.getDepartmentEmployeeList?[index].shortName}'
-                                                    : '?',
-                                                imagePath:
-                                                    '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
-                                              );
-                                            },
-                                            onLongPressCancel: () {
-                                              controller.overlayEntry.remove();
-                                            },
-                                            onLongPressEnd: (details) {
-                                              controller.overlayEntry.remove();
-                                            },
-                                            child: Ink(
-                                              height: 132.px,
-                                              padding: EdgeInsets.only(left: 3.px),
-                                              decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 24.px,
-                                                    color: Col.secondary
-                                                        .withOpacity(.05),
-                                                  )
-                                                ],
-                                                color: Col.inverseSecondary,
-                                                borderRadius:
-                                                    BorderRadius.circular(8.px),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    width: 44.px,
-                                                    height: 44.px,
-                                                    margin: EdgeInsets.zero,
-                                                    decoration: BoxDecoration(
-                                                      color: Col.primary,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Center(
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    22.px),
-                                                        child: CW.commonNetworkImageView(
-                                                            path:
-                                                                '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
-                                                            isAssetImage: false,
-                                                            errorImage:
-                                                                'assets/images/profile.png',
-                                                            fit: BoxFit.fill,
-                                                            width: 40.px,
-                                                            height: 40.px,
-                                                            errorImageValue:
-                                                                true,
-                                                            userShortName: controller
-                                                                            .getDepartmentEmployeeList?[
-                                                                                index]
-                                                                            .shortName !=
-                                                                        null &&
-                                                                    controller
-                                                                        .getDepartmentEmployeeList![
-                                                                            index]
-                                                                        .shortName!
-                                                                        .isNotEmpty
-                                                                ? '${controller.getDepartmentEmployeeList?[index].shortName}'
-                                                                : '?'),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            CM.unFocusKeyBoard();
+            controller.isDropDownOpenValue.value = false;
+          },
+          child: Scaffold(
+            body: Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: Obx(() {
+                    return ModalProgress(
+                      inAsyncCall: controller.apiResValue.value,
+                      child: controller.apiResValue.value
+                          ? shimmerView()
+                          : Stack(
+                              children: [
+                                Container(
+                                  color: controller.isDropDownOpenValue.value
+                                      ? Col.primary.withOpacity(.1)
+                                      : Colors.transparent,
+                                  child: ListView(
+                                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+                                    children: [
+                                      CW.commonTextField(
+                                        isSearchLabelText: false,
+                                        hintText: '',
+                                      ),
+                                      SizedBox(height: 12.px),
+                                      buildFilterChips(),
+                                      SizedBox(height: 12.px),
+                                      controller.apiResValueForDepartment.value
+                                          ? shimmerView()
+                                          : controller.getDepartmentEmployeeModal.value != null
+                                          ? controller.getDepartmentEmployeeList != null && controller.getDepartmentEmployeeList!.isNotEmpty
+                                              ? GridView.builder(
+                                                  shrinkWrap: true,
+                                                  padding: EdgeInsets.zero,
+                                                  itemCount: controller.getDepartmentEmployeeList?.length,
+                                                  gridDelegate:
+                                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 3,
+                                                    crossAxisSpacing: 10.px,
+                                                    mainAxisSpacing: 10.px,
+                                                  ),
+                                                  itemBuilder: (context, index) {
+                                                    return GestureDetector(
+                                                      onTap: () =>
+                                                          controller.clickOnCards(myTeamCardIndex: index),
+                                                      onLongPress: () {
+                                                        showOverlay(
+                                                          context: context,
+                                                          userShortName: controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
+                                                              ? '${controller.getDepartmentEmployeeList?[index].shortName}'
+                                                              : '?',
+                                                          imagePath: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
+                                                        );
+                                                      },
+                                                      onLongPressCancel: () {
+                                                        controller.overlayEntry.remove();
+                                                      },
+                                                      onLongPressEnd: (details) {
+                                                        controller.overlayEntry.remove();
+                                                      },
+                                                      child: Ink(
+                                                        height: 132.px,
+                                                        padding: EdgeInsets.only(left: 3.px),
+                                                        decoration: BoxDecoration(
+                                                          color: Col.gCardColor,
+                                                          borderRadius: BorderRadius.circular(8.px),
+                                                        ),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Container(
+                                                              width: 44.px,
+                                                              height: 44.px,
+                                                              margin: EdgeInsets.zero,
+                                                              decoration: BoxDecoration(
+                                                                gradient: CW.commonLinearGradientForButtonsView(),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                              child: Center(
+                                                                child: ClipRRect(
+                                                                  borderRadius: BorderRadius.circular(22.px),
+                                                                  child: CW.commonNetworkImageView(
+                                                                      path: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
+                                                                      isAssetImage: false,
+                                                                      errorImage: 'assets/images/profile.png',
+                                                                      fit: BoxFit.fill,
+                                                                      width: 40.px,
+                                                                      height: 40.px,
+                                                                      errorImageValue: true,
+                                                                      userShortName: controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
+                                                                          ? '${controller.getDepartmentEmployeeList?[index].shortName}'
+                                                                          : '?'),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 6.px),
+                                                            Flexible(
+                                                              child: cardTextView(
+                                                                  text: controller.getDepartmentEmployeeList?[index].userFullName != null && controller.getDepartmentEmployeeList![index].userFullName!.isNotEmpty
+                                                                      ? '${controller.getDepartmentEmployeeList?[index].userFullName}'
+                                                                      : '?',
+                                                                  maxLines: 2,
+                                                                  fontSize: 10.px,
+                                                                  textAlign: TextAlign.center,
+                                                                  color: Col.inverseSecondary,
+                                                                  fontWeight: FontWeight.w700),
+                                                            ),
+                                                            // SizedBox(height: 2.px),
+                                                            Flexible(
+                                                              child: cardTextView(
+                                                                  text: controller.getDepartmentEmployeeList?[index].userDesignation != null && controller.getDepartmentEmployeeList![index].userDesignation!.isNotEmpty
+                                                                      ? '${controller.getDepartmentEmployeeList?[index].userDesignation}'
+                                                                      : '?',
+                                                                  maxLines: 2,
+                                                                  fontSize: 10.px,
+                                                                  textAlign: TextAlign.center),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 6.px),
-                                                  Flexible(
-                                                    child: cardTextView(
-                                                        text: controller
-                                                                        .getDepartmentEmployeeList?[
-                                                                            index]
-                                                                        .userFullName !=
-                                                                    null &&
-                                                                controller
-                                                                    .getDepartmentEmployeeList![
-                                                                        index]
-                                                                    .userFullName!
-                                                                    .isNotEmpty
-                                                            ? '${controller.getDepartmentEmployeeList?[index].userFullName}'
-                                                            : '?',
-                                                        maxLines: 2,
-                                                        fontSize: 10.px,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                  // SizedBox(height: 2.px),
-                                                  Flexible(
-                                                    child: cardTextView(
-                                                        text: controller
-                                                                        .getDepartmentEmployeeList?[
-                                                                            index]
-                                                                        .userDesignation !=
-                                                                    null &&
-                                                                controller
-                                                                    .getDepartmentEmployeeList![
-                                                                        index]
-                                                                    .userDesignation!
-                                                                    .isNotEmpty
-                                                            ? '${controller.getDepartmentEmployeeList?[index].userDesignation}'
-                                                            : '?',
-                                                        maxLines: 2,
-                                                        fontSize: 10.px,
-                                                        color: Col.darkGray,
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    : CW.commonNoDataFoundText()
-                                : CW.commonNoDataFoundText()
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
-                        child: selectPriorityTextFormFiled(),
-                      )
-                    ],
-                  ),
-          );
-        }),
+                                                    );
+                                                  },
+                                                )
+                                              : CW.commonNoDataFoundText()
+                                          : CW.commonNoDataFoundText()
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+                                  child: selectPriorityTextFormFiled(),
+                                )
+                              ],
+                            ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
+
+
+  Widget appBarView() => CW.myAppBarView(
+      title: 'Your Department',
+      onLeadingPressed: () => controller.clickOnBackButton(),
+      padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+  );
 
   Widget selectPriorityTextFormFiled() => MyDropdown(
         items: controller.branchList ?? [],
@@ -243,16 +200,16 @@ class DepartmentView extends GetView<DepartmentController> {
               style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
                   fontSize: 10.px,
                   color: controller.selectedDepartments.value == department.departmentName
-                      ? Col.inverseSecondary
-                      : Col.primary,
+                      ? Col.gBottom
+                      : Col.gTextColor,
                   fontWeight: FontWeight.w600),
             ),
             selected: controller.selectedDepartments.value == department.departmentName
                 ? true
                 : false,
             onSelected: (bool selected) => controller.clickOnDepartmentListFilter(selected:selected,dId:department.departmentId ?? '',dName: department.departmentName ?? ''),
-            backgroundColor: Col.primary.withOpacity(.2),
-            checkmarkColor: Col.inverseSecondary,
+            backgroundColor: Col.gCardColor,
+            checkmarkColor: Col.gBottom,
             selectedColor: Col.primary,
             elevation: 0,
           );
@@ -261,10 +218,7 @@ class DepartmentView extends GetView<DepartmentController> {
 
   Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight? fontWeight, TextAlign? textAlign}) => Text(
         text,
-        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
-            fontWeight: fontWeight ?? FontWeight.w500,
-            fontSize: fontSize ?? 14.px,
-            color: color),
+        style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: fontWeight ?? FontWeight.w500, fontSize: fontSize ?? 14.px, color: color ?? Col.gTextColor),
         maxLines: maxLines ?? 1,
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign,
@@ -281,14 +235,16 @@ class DepartmentView extends GetView<DepartmentController> {
   }
 
   Widget shimmerView() => ListView(
-    padding:  EdgeInsets.symmetric(horizontal: 12.px,vertical: 16.px),
+    padding:  !controller.apiResValue.value
+        ? EdgeInsets.zero
+        : EdgeInsets.symmetric(horizontal: 12.px,vertical: 16.px),
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
     children: [
       if(controller.apiResValue.value)
       CW.commonShimmerViewForImage(width: double.infinity, height: 44.px, radius: 12.px),
       if(controller.apiResValue.value)
-      SizedBox(height: 6.px),
+      SizedBox(height: 20.px),
       if(controller.apiResValue.value)
       Row(
         children: [
@@ -316,13 +272,7 @@ class DepartmentView extends GetView<DepartmentController> {
                 height: 132.px,
                 padding: EdgeInsets.only(left: 3.px),
                 decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 24.px,
-                      color: Col.secondary.withOpacity(.05),
-                    )
-                  ],
-                  color: Col.inverseSecondary,
+                  color: Col.gCardColor,
                   borderRadius: BorderRadius.circular(8.px),
                 ),
                 child: Column(

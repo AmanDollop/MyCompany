@@ -96,23 +96,47 @@ class AddTemplateQuestionView extends GetView<AddTemplateQuestionController> {
         padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
       );
 
+  Widget commonColumnForQuestionAndAnswer({required String questionText,required Widget answerWidget,bool isQuestionRequired = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(text: TextSpan(
+          text: questionText,
+          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontSize: 12.px,color: Col.inverseSecondary),
+          children: [
+            if(isQuestionRequired)
+            TextSpan(
+              text: '  *', style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700,color: Col.error)
+            ),
+          ],
+         ),
+        ),
+        SizedBox(height: 8.px),
+        answerWidget
+      ],
+    );
+  }
+
+  // 0-Paragraph ,
+  // 1-Editor,
+  // 2-Radio Button,
+  // 3-Checkbox,
+  // 4-Dropdown,
+  // 5-File Upload,
+  // 6-Date,
+  // 7-Time,
+  // 8-Date and Time,
+  // 9-Rating,
+  // 10-Progress Bar,
+  // 11-Topic With Time,
+  // 12-Paragraph With Time,
+  // 13-Text
+
   Widget buildQuestionWidget({required String questionType,required String questionText,required int index}) {
     if(controller.templateQuestionList?[index] != null){
+
       int questionNumber = index+1;
-      // 0-Paragraph ,
-      // 1-Editor,
-      // 2-Radio Button,
-      // 3-Checkbox,
-      // 4-Dropdown,
-      // 5-File Upload,
-      // 6-Date,
-      // 7-Time,
-      // 8-Date and Time,
-      // 9-Rating,
-      // 10-Progress Bar,
-      // 11-Topic With Time,
-      // 12-Paragraph With Time,
-      // 13-Text
+
       bool isQuestionRequiredValue = controller.templateQuestionList?[index].isTemplateQuestionRequired == '0' ? false : true;
 
       TemplateQuestion templateQuestionList = controller.templateQuestionList?[index] ?? TemplateQuestion();
@@ -164,27 +188,6 @@ class AddTemplateQuestionView extends GetView<AddTemplateQuestionController> {
         color: Col.primary,
       );
     }
-  }
-
-  Widget commonColumnForQuestionAndAnswer({required String questionText,required Widget answerWidget,bool isQuestionRequired = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(text: TextSpan(
-          text: questionText,
-          style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontSize: 12.px,color: Col.inverseSecondary),
-          children: [
-            if(isQuestionRequired)
-            TextSpan(
-              text: '  *', style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700,color: Col.error)
-            ),
-          ],
-         ),
-        ),
-        SizedBox(height: 8.px),
-        answerWidget
-      ],
-    );
   }
 
   Widget paragraphWidget({required String questionText,bool isQuestionRequired = false,required int index}) {

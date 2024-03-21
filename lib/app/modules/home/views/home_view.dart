@@ -19,19 +19,19 @@ class HomeView extends GetView<HomeController> {
     return WillPopScope(
       onWillPop: () => controller.willPop(),
       child: CW.commonScaffoldBackgroundColor(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Obx(() {
-            controller.count.value;
-            return NotificationListener(
-              onNotification: (scrollNotification) {
-                /* if (scrollNotification is ScrollEndNotification) {
-                   scrollPositionBottomNavigationValue.value = controller.scrollController.value.position.pixels;
-                     controller.count.value++;
-                }*/
-                return false;
-              },
-              child: SafeArea(
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Obx(() {
+              controller.count.value;
+              return NotificationListener(
+                onNotification: (scrollNotification) {
+                  /* if (scrollNotification is ScrollEndNotification) {
+                     scrollPositionBottomNavigationValue.value = controller.scrollController.value.position.pixels;
+                       controller.count.value++;
+                  }*/
+                  return false;
+                },
                 child: CW.commonRefreshIndicator(
                   onRefresh: () async {
                     controller.apiResValue.value = true;
@@ -128,9 +128,9 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
       ),
     );
@@ -496,7 +496,7 @@ class HomeView extends GetView<HomeController> {
         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
             fontWeight: fontWeight ?? FontWeight.w500,
             fontSize: fontSize ?? 14.px,
-            color: color),
+            color: Col.inverseSecondary),
         maxLines: maxLines ?? 1,
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign,

@@ -14,6 +14,7 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
 import 'package:http/http.dart' as http;
@@ -46,7 +47,10 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   final key = GlobalKey<FormState>();
   final keyForLeaveReason = GlobalKey<FormState>();
   final leaveTypeController = TextEditingController();
+  FocusNode focusNodeLeaveType = FocusNode();
+
   final reasonController = TextEditingController();
+  FocusNode focusNodeReason = FocusNode();
 
   final fullAndHalfDayText = ['Full Day', 'Half Day'];
   final fullAndHalfDayIndexValue = '0'.obs;
@@ -233,13 +237,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                     availableLeave.value == 0.0
                         ? 'Paid leaves not available : ${availableLeave.value}'
                         : 'Available paid leaves : ${availableLeave.value}',
-                    style:
-                        Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
-                              fontSize: 10.px,
-                              // color: availableLeave.value == 0.0
-                              //     ? Col.error
-                              //     : Col.success,
-                            ),
+                    style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px),
                   ),
                 if (availableLeaveValue.value) SizedBox(height: 10.px),
                 fullAndHalfDayView(),
@@ -250,7 +248,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                 SizedBox(height: 10.px),
                 paidAndUnPaidView(),
                 SizedBox(height: 20.px),
-                CW.commonElevatedButton(
+                CW.myElevatedButton(
                     onPressed: addButtonValue.value
                         ? () => null
                         : () => clickOnAddButton(index: index),
@@ -281,17 +279,17 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   Widget leaveTypeTextField({required int index}) => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: leaveTypeController,
+        focusNode: focusNodeLeaveType,
         labelText: 'Leave Type',
         hintText: 'Leave Type',
         keyboardType: TextInputType.name,
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please select leave type'),
+        validator: (value) => V.isValid(value: value, title: 'Please select leave type'),
         onChanged: (value) {
           count.value++;
         },
         readOnly: true,
         onTap: () => clickOnLeaveTypeField(),
-        suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
+        suffixIcon: Icon(Icons.arrow_drop_down, color: Col.inverseSecondary),
       );
 
   Future<void> clickOnLeaveTypeField() async {
@@ -309,36 +307,39 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
               itemBuilder: (context, i) {
                 return Obx(() {
                   count.value;
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10.px),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
-                    height: 46.px,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.px),
-                      color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
-                          ? Col.primary.withOpacity(.08)
-                          : Colors.transparent,
-                      border: Border.all(
-                        color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
-                            ? Col.primary
-                            : Col.darkGray,
-                        width: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
-                            ? 1.5.px
-                            : 1.px,
-                      ),
-                    ),
-                    child: InkWell(
-                      onTap: leaveTypeListClickValue.value
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 10.px),
+                    child: CustomOutlineButton(
+                      onPressed: leaveTypeListClickValue.value
                           ? () => null
                           : () => clickOnLeaveTypeList(i: i),
+                      padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 10.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
+                      ),
+                      strokeWidth:  leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                          ? 1.5.px
+                          : 1.px,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             '${leaveTypeList?[i].leaveTypeName}',
-                            style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color
+                                : leaveTypeController.text == leaveTypeList?[i].leaveTypeName?Col.primary
+                                : Col.inverseSecondary),
                           ),
                           Container(
                             height: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
@@ -439,8 +440,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                   radioButtonLabelTextView(
                       text: fullAndHalfDayText[index],
                       color: fullAndHalfDayText[index] == fullAndHalfDayType.value
-                              ? Col.text
-                              : Col.darkGray)
+                              ? Col.primary
+                              : Col.inverseSecondary)
                 ],
               ),
             );
@@ -479,8 +480,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                   radioButtonLabelTextView(
                       text: firstAndSecondHalfText[index],
                       color: firstAndSecondHalfText[index] == firstAndSecondHalfType.value
-                          ? Col.text
-                          : Col.darkGray)
+                          ? Col.primary
+                          : Col.inverseSecondary)
                 ],
               ),
             );
@@ -521,8 +522,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                   radioButtonLabelTextView(
                       text: paidAndUnPaidText[index],
                       color: paidAndUnPaidText[index] == paidAndUnPaidType.value
-                          ? Col.text
-                          : Col.darkGray)
+                          ? Col.primary
+                          : Col.inverseSecondary)
                 ],
               ),
             );
@@ -597,10 +598,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                     availableLeave.value == 0.0
                         ? 'Paid leaves not available : ${availableLeave.value}'
                         : 'Available paid leaves : ${availableLeave.value}',
-                    style: Theme.of(Get.context!)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontSize: 10.px),
+                    style:  Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px),
                   ),
                 if (availableLeaveValue.value) SizedBox(height: 10.px),
                 fullAndHalfDayView(),
@@ -639,17 +637,17 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
   Widget leaveTypeTextFieldForApplyBulkLeave() => CW.commonTextField(
         fillColor: Colors.transparent,
         controller: leaveTypeController,
+        focusNode: focusNodeLeaveType,
         labelText: 'Leave Type',
         hintText: 'Leave Type',
         keyboardType: TextInputType.name,
-        validator: (value) =>
-            V.isValid(value: value, title: 'Please select leave type'),
+        validator: (value) => V.isValid(value: value, title: 'Please select leave type'),
         onChanged: (value) {
           count.value++;
         },
         readOnly: true,
         onTap: () => clickOnLeaveTypeField(),
-        suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
+        suffixIcon: Icon(Icons.arrow_drop_down, color: Col.inverseSecondary),
       );
 
   Widget paidAndUnPaidViewForApplyBulkLeaves() => commonContainerView(
@@ -687,8 +685,8 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                           ? 'Applicable leaves'
                           : 'All unpaid leaves',
                       color: paidAndUnPaidText[index] == paidAndUnPaidType.value
-                          ? Col.text
-                          : Col.darkGray)
+                          ? Col.primary
+                          : Col.inverseSecondary)
                 ],
               ),
             );

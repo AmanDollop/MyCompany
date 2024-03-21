@@ -14,118 +14,126 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      controller.count.value;
-      return Scaffold(
-        appBar: CW.commonAppBarView(
-          title: 'Leave Detail',
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton(),
-          actions: [
-            if (controller.isUpDate.value)
-              CW.commonIconButton(
-                onPressed: () => controller.clickOnEditButton(),
-                isAssetImage: true,
-                imagePath: 'assets/icons/edit_pen_icon.png',
-                color: Col.inverseSecondary, //assets/icons/delete_icon.png
-              ),
-            if (controller.isDelete.value)
-              CW.commonIconButton(
-                onPressed: () => controller.clickOnDeleteButton(),
-                isAssetImage: true,
-                imagePath: 'assets/icons/delete_icon.png',
-                color: Col.inverseSecondary,
-              ),
-            SizedBox(width: 5.px)
-          ],
-        ),
-        body: Obx(() {
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Obx(() {
           controller.count.value;
-          return AC.isConnect.value
-              ? CW.commonRefreshIndicator(
-                  onRefresh: () => controller.onRefresh(),
-                  child: ModalProgress(
-                    inAsyncCall: controller.apiResValue.value,
-                    child: controller.apiResValue.value
-                        ? shimmerView()
-                        : controller.getLeaveDetailModal.value != null
-                            ? controller.getLeaveDetails != null
-                                ? ListView(
-                                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
-                                    children: [
-                                      commonColumnView(
-                                          text1: 'Leave Type',
-                                          text2: '${controller.getLeaveDetails?.leaveTypeName} (${controller.getLeaveDetails?.isPaidView})'),
-                                      if (controller.getLeaveDetails?.leaveDayTypeView != null && controller.getLeaveDetails!.leaveDayTypeView!.isNotEmpty)
-                                        SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetails?.leaveDayTypeView != null && controller.getLeaveDetails!.leaveDayTypeView!.isNotEmpty)
-                                        commonColumnView(
-                                          text1: 'Leave Day Type',
-                                          text2: controller.getLeaveDetails?.leaveDayTypeSession != 'Full Day' && controller.getLeaveDetails?.leaveDayTypeSession != null && controller.getLeaveDetails!.leaveDayTypeSession!.isNotEmpty
-                                              ? '${controller.getLeaveDetails?.leaveDayTypeView} (${controller.getLeaveDetails?.leaveDayTypeSession})'
-                                              : '${controller.getLeaveDetails?.leaveDayTypeView}',
-                                        ),
-                                      if (controller.getLeaveDetails?.leaveStatus != null && controller.getLeaveDetails!.leaveStatus!.isNotEmpty)
-                                        SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetails?.leaveStatus != null && controller.getLeaveDetails!.leaveStatus!.isNotEmpty)
-                                        commonColumnView(
-                                            text1: 'Leave Status',
-                                            text2: controller.getLeaveDetails?.leaveStatus == '0'
-                                                ? 'Padding'
-                                                : controller.getLeaveDetails?.leaveStatus == '1'
-                                                    ? 'Approved'
-                                                    : 'Rejected',
-                                            color: controller.getLeaveDetails?.leaveStatus == '0'
-                                                ? Col.yellow
-                                                : controller.getLeaveDetails?.leaveStatus == '1'
-                                                    ? Col.success
-                                                    : Col.error,
-                                            containerValue: true),
-                                      if (controller.getLeaveDetails?.leaveStartDate != null && controller.getLeaveDetails!.leaveStartDate!.isNotEmpty)
-                                        SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetails?.leaveStartDate != null && controller.getLeaveDetails!.leaveStartDate!.isNotEmpty)
-                                        commonColumnView(
-                                            text1: 'Date',
-                                            text2: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.getLeaveDetails?.leaveStartDate}')),
-                                      SizedBox(height: 6.px),
-                                      commonColumnView(
-                                          text1: 'Approved by',
-                                          text2: '${controller.getLeaveDetails?.leaveAddedByType}'),
-                                      if (controller.getLeaveDetails?.leaveReason != null && controller.getLeaveDetails!.leaveReason!.isNotEmpty)
-                                        SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetails?.leaveReason != null && controller.getLeaveDetails!.leaveReason!.isNotEmpty)
-                                        commonColumnView(
-                                            text1: 'Reason',
-                                            text2: '${controller.getLeaveDetails?.leaveReason}'),
-                                      if (controller.getLeaveDetails?.leaveAttachment != null && controller.getLeaveDetails!.leaveAttachment!.isNotEmpty)
-                                        SizedBox(height: 6.px),
-                                      if (controller.getLeaveDetails?.leaveAttachment != null && controller.getLeaveDetails!.leaveAttachment!.isNotEmpty)
-                                        commonColumnView(
-                                            text1: 'Attachment',
-                                            text2: '${AU.baseUrlAllApisImage}${controller.getLeaveDetails?.leaveAttachment}',
-                                            attachmentValue: true),
-                                      SizedBox(height: 6.px),
-                                    ],
-                                  )
-                                : CW.commonNoDataFoundText()
-                            : CW.commonNoDataFoundText(),
-                  ),
-                )
-              : CW.commonNoNetworkView();
+          return Scaffold(
+            body: Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: Obx(() {
+                    controller.count.value;
+                    return AC.isConnect.value
+                        ? CW.commonRefreshIndicator(
+                            onRefresh: () => controller.onRefresh(),
+                            child: ModalProgress(
+                              inAsyncCall: controller.apiResValue.value,
+                              child: controller.apiResValue.value
+                                  ? shimmerView()
+                                  : controller.getLeaveDetailModal.value != null
+                                      ? controller.getLeaveDetails != null
+                                          ? ListView(
+                                              padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+                                              children: [
+                                                commonColumnView(
+                                                    text1: 'Leave Type',
+                                                    text2: '${controller.getLeaveDetails?.leaveTypeName} (${controller.getLeaveDetails?.isPaidView})'),
+                                                if (controller.getLeaveDetails?.leaveDayTypeView != null && controller.getLeaveDetails!.leaveDayTypeView!.isNotEmpty)
+                                                  SizedBox(height: 6.px),
+                                                if (controller.getLeaveDetails?.leaveDayTypeView != null && controller.getLeaveDetails!.leaveDayTypeView!.isNotEmpty)
+                                                  commonColumnView(
+                                                    text1: 'Leave Day Type',
+                                                    text2: controller.getLeaveDetails?.leaveDayTypeSession != 'Full Day' && controller.getLeaveDetails?.leaveDayTypeSession != null && controller.getLeaveDetails!.leaveDayTypeSession!.isNotEmpty
+                                                        ? '${controller.getLeaveDetails?.leaveDayTypeView} (${controller.getLeaveDetails?.leaveDayTypeSession})'
+                                                        : '${controller.getLeaveDetails?.leaveDayTypeView}',
+                                                  ),
+                                                if (controller.getLeaveDetails?.leaveStatus != null && controller.getLeaveDetails!.leaveStatus!.isNotEmpty)
+                                                  SizedBox(height: 6.px),
+                                                if (controller.getLeaveDetails?.leaveStatus != null && controller.getLeaveDetails!.leaveStatus!.isNotEmpty)
+                                                  commonColumnView(
+                                                      text1: 'Leave Status',
+                                                      text2: controller.getLeaveDetails?.leaveStatus == '0'
+                                                          ? 'Padding'
+                                                          : controller.getLeaveDetails?.leaveStatus == '1'
+                                                              ? 'Approved'
+                                                              : 'Rejected',
+                                                      color: controller.getLeaveDetails?.leaveStatus == '0'
+                                                          ? Col.yellow
+                                                          : controller.getLeaveDetails?.leaveStatus == '1'
+                                                              ? Col.success
+                                                              : Col.error,
+                                                      containerValue: true),
+                                                if (controller.getLeaveDetails?.leaveStartDate != null && controller.getLeaveDetails!.leaveStartDate!.isNotEmpty)
+                                                  SizedBox(height: 6.px),
+                                                if (controller.getLeaveDetails?.leaveStartDate != null && controller.getLeaveDetails!.leaveStartDate!.isNotEmpty)
+                                                  commonColumnView(
+                                                      text1: 'Date',
+                                                      text2: CMForDateTime.dateFormatForDateMonthYear(date: '${controller.getLeaveDetails?.leaveStartDate}')),
+                                                SizedBox(height: 6.px),
+                                                commonColumnView(
+                                                    text1: 'Approved by',
+                                                    text2: '${controller.getLeaveDetails?.leaveAddedByType}'),
+                                                if (controller.getLeaveDetails?.leaveReason != null && controller.getLeaveDetails!.leaveReason!.isNotEmpty)
+                                                  SizedBox(height: 6.px),
+                                                if (controller.getLeaveDetails?.leaveReason != null && controller.getLeaveDetails!.leaveReason!.isNotEmpty)
+                                                  commonColumnView(
+                                                      text1: 'Reason',
+                                                      text2: '${controller.getLeaveDetails?.leaveReason}'),
+                                                if (controller.getLeaveDetails?.leaveAttachment != null && controller.getLeaveDetails!.leaveAttachment!.isNotEmpty)
+                                                  SizedBox(height: 6.px),
+                                                if (controller.getLeaveDetails?.leaveAttachment != null && controller.getLeaveDetails!.leaveAttachment!.isNotEmpty)
+                                                  commonColumnView(
+                                                      text1: 'Attachment',
+                                                      text2: '${AU.baseUrlAllApisImage}${controller.getLeaveDetails?.leaveAttachment}',
+                                                      attachmentValue: true),
+                                                SizedBox(height: 6.px),
+                                              ],
+                                            )
+                                          : CW.commonNoDataFoundText()
+                                      : CW.commonNoDataFoundText(),
+                            ),
+                          )
+                        : CW.commonNoNetworkView();
+                  }),
+                ),
+              ],
+            ),
+          );
         }),
-      );
-    });
+      ),
+    );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Leave Detail',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+    actionValue: true,
+    action: controller.isUpDate.value
+        ? CW.commonIconButton(
+           onPressed: () => controller.clickOnEditButton(),
+           isAssetImage: true,
+           imagePath: 'assets/icons/edit_pen_icon.png',
+           color: Col.inverseSecondary, //assets/icons/delete_icon.png
+         )
+        : controller.isDelete.value
+        ? CW.commonIconButton(
+           onPressed: () => controller.clickOnDeleteButton(),
+           isAssetImage: true,
+           imagePath: 'assets/icons/delete_icon.png',
+           color: Col.inverseSecondary,
+         )
+        : SizedBox(width: 5.px)
+  );
 
   Widget commonColumnView({required String text1, required String text2, bool attachmentValue = false, bool containerValue = false, Color? color}) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             text1,
-            style: Theme.of(Get.context!)
-                .textTheme
-                .labelMedium
-                ?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
+            style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -136,7 +144,8 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
                   decoration: BoxDecoration(
                       border: Border.all(width: .5.px, color: Col.primary),
                       borderRadius: BorderRadius.circular(4.px),
-                      color: Col.primary.withOpacity(.1)),
+                      color: Col.primary.withOpacity(.1),
+                  ),
                   child: CW.commonNetworkImageView(
                       path: text2,
                       isAssetImage: false,
@@ -154,11 +163,13 @@ class LeaveDetailView extends GetView<LeaveDetailController> {
                             BoxDecoration(color: color, shape: BoxShape.circle),
                       ),
                     if (containerValue) SizedBox(width: 6.px),
-                    Text(
-                      text2,
-                      style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, color: color),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      child: Text(
+                        text2,
+                        style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600, color: color),
+                        maxLines: 10,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),

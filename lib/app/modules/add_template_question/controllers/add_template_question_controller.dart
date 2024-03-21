@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
@@ -90,7 +91,7 @@ class AddTemplateQuestionController extends GetxController {
   final result = Rxn<FilePickerResult>();
   List<File> imageFilePath = [];
   final imageFile = [];
-  final imageFileFormCamera = [];
+  List<File> imageFileFormCamera = [];
   Set<String> existingFilePaths = <String>{};
   final image = Rxn<File?>();
 
@@ -106,7 +107,8 @@ class AddTemplateQuestionController extends GetxController {
 
   final templateId = ''.obs;
 
-  List<LocalDataForLeaveType> localDataList = [];
+  List<LocalDataForQuestionAndAnswer> localDataList = [];
+  List<LocalDataForImages> localDataForImages = [];
 
   Map<String, dynamic> bodyParamsForSubmitTemQuestionApi = {};
 
@@ -261,6 +263,14 @@ class AddTemplateQuestionController extends GetxController {
 
   }
 
+  methodForLocalDataForImages({required String templateQuestionId,required List<File> attachment}){
+    LocalDataForImages localDataForImages = LocalDataForImages(
+      templateQuestionId: templateQuestionId,
+      attachments: attachment
+    );
+    return localDataForImages;
+  }
+
   Future<void> clickOnTakePhoto({required int indexForLocalData}) async {
     Get.back();
     image.value = await IP.pickImage(
@@ -271,7 +281,8 @@ class AddTemplateQuestionController extends GetxController {
       imageFilePath.add(image.value!);
       existingFilePaths.add(image.value!.path);
       attachFileShowAndHiedValue.value = false;
-      localDataList[indexForLocalData].answer = imageFilePath.join('~~~');
+      // localDataForImages[indexForLocalData].attachment = imageFilePath.toList();
+      localDataForImages.add(methodForLocalDataForImages(templateQuestionId: templateQuestionList?[indexForLocalData].templateQuestionId??'', attachment: imageFilePath),);
     }
     print('imageFilePath:::: $imageFilePath');
     count.value++;
@@ -309,9 +320,10 @@ class AddTemplateQuestionController extends GetxController {
           }
           imageFilePath.add(file);
           existingFilePaths.add(file.path);
+          localDataForImages.add(methodForLocalDataForImages(templateQuestionId: templateQuestionList?[indexForLocalData].templateQuestionId??'', attachment: imageFilePath),);
         }
       }
-      localDataList[indexForLocalData].answer = imageFilePath.join('~~~');
+      // localDataForImages[indexForLocalData].attachment = imageFilePath;
       attachFileShowAndHiedValue.value = false;
       count.value++;
     }
@@ -332,7 +344,8 @@ class AddTemplateQuestionController extends GetxController {
     );
     if(image.value != null && image.value?.path != null && image.value!.path.isNotEmpty){
       imageFileFormCamera.add(image.value!);
-      localDataList[indexForLocalData].answer = imageFileFormCamera.join('~~~');
+      // localDataForImages[indexForLocalData].attachment = imageFileFormCamera.toList();
+      localDataForImages.add(methodForLocalDataForImages(templateQuestionId: templateQuestionList?[indexForLocalData].templateQuestionId??'', attachment: imageFileFormCamera),);
     }
     count.value++;
   }
@@ -350,10 +363,12 @@ class AddTemplateQuestionController extends GetxController {
       if(imageFile.isEmpty && imageFilePath.isEmpty){
         attachFileShowAndHiedValue.value = true;
       }
-      localDataList[indexForLocalData].answer = imageFilePath.join('~~~');
+      // localDataForImages[indexForLocalData].attachment = imageFilePath.toList();
+      localDataForImages.remove(methodForLocalDataForImages(templateQuestionId: templateQuestionList?[indexForLocalData].templateQuestionId??'', attachment: imageFilePath),);
     }else{
       imageFileFormCamera.removeAt(i);
-      localDataList[indexForLocalData].answer = imageFileFormCamera.join('~~~');
+      // localDataForImages[indexForLocalData].attachment = imageFileFormCamera.toList();
+      localDataForImages.remove(methodForLocalDataForImages(templateQuestionId: templateQuestionList?[indexForLocalData].templateQuestionId??'', attachment: imageFileFormCamera),);
     }
     count.value++;
   }
@@ -371,10 +386,10 @@ class AddTemplateQuestionController extends GetxController {
        templateQuestionList = getTemplateQuestionModal.value?.templateQuestion;
 
        templateQuestionList?.forEach((element) {
-         LocalDataForLeaveType localData1 = LocalDataForLeaveType(
+         LocalDataForQuestionAndAnswer localData1 = LocalDataForQuestionAndAnswer(
            templateQuestionId: element.templateQuestionId,
            templateQuestionType: element.templateQuestionType,
-           answer: null,
+           answer: '',
          );
          localDataList.add(localData1);
         },
@@ -397,26 +412,40 @@ class AddTemplateQuestionController extends GetxController {
   }
 
   Future<void> callingSubmitTemQuestionApi() async {
-
     try{
-      log('log:::::  ${json.encode(localDataList)}');
-
-      // List<dynamic> localDataForLeaveType = localDataList;
-      // log('log:::::  ${json.encode(localDataForLeaveType)}');
+      log('log:    localDataList::::  ${json.encode(localDataList)}');
 
       bodyParamsForSubmitTemQuestionApi = {
         AK.action: ApiEndPointAction.submitWorkReportTemplate,
         AK.templateId: templateId.value,
         AK.workReportDate: CMForDateTime.dateTimeFormatForApi(dateTime: dateController.text.trim().toString()),
         AK.templateAnswer: json.encode(localDataList),
-        // AK.templateAnswer: json.encode(localDataForLeaveType),
       };
-      http.Response? response = await CAI.submitTemQuestionApi(bodyParams: bodyParamsForSubmitTemQuestionApi);
+
+      Map<String, List<File>>? imageMap = {};
+
+      for (LocalDataForImages data in localDataForImages) {
+
+        String? templateQuestionId = data.templateQuestionId;
+
+        String key = 'attachment_$templateQuestionId[]';
+
+        List<File> attachmentsList = data.attachments ?? [];
+
+        imageMap[key] = attachmentsList;
+
+        log('bodyParams $bodyParamsForSubmitTemQuestionApi');
+        log('imageMap $imageMap');
+
+      }
+
+      http.Response? response = await CAI.submitTemQuestionApi(bodyParams: bodyParamsForSubmitTemQuestionApi, imageMap: imageMap);
       if(response != null && response.statusCode == 200){
-        // Get.back();
+        Get.back();
       }else{
         CM.error();
       }
+
     }catch(e){
       CM.error();
       print('callingAddWorkReportApi ::::  error::::  $e');
@@ -425,17 +454,60 @@ class AddTemplateQuestionController extends GetxController {
     submitButtonValue.value = false;
   }
 
+ /* Future<void> callingSubmitTemQuestionApi() async {
+    try{
+
+      bodyParamsForSubmitTemQuestionApi = {
+        AK.action: ApiEndPointAction.submitWorkReportTemplate,
+        AK.templateId: templateId.value,
+        AK.workReportDate: CMForDateTime.dateTimeFormatForApi(dateTime: dateController.text.trim().toString()),
+        AK.templateAnswer: json.encode(localDataList),
+      };
+
+      Map<String, List<File>>? m = {};
+
+      for (LocalDataForImages data in localDataForImages) {
+
+        String? templateQuestionId = data.templateQuestionId;
+
+        String key = 'Q_$templateQuestionId';
+
+        List<File> attachmentsList = data.attachments ?? [];
+
+        m[key] = attachmentsList;
+
+        print('attachmentsList::::  ${attachmentsList}');
+
+        log('bodyParams $bodyParamsForSubmitTemQuestionApi');
+        log('imageMap $m');
+
+      }
+
+     http.Response? re = await uploadFilesToApi(bodyParams: bodyParamsForSubmitTemQuestionApi, imageMap: m,);
+      if(re != null){
+        Map<String, dynamic> responseMap = jsonDecode(re.body);
+        print('resS:::::  ${responseMap[AK.message]}');
+      }
+
+    }catch(e){
+      CM.error();
+      print('callingAddWorkReportApi ::::  error::::  $e');
+      submitButtonValue.value = false;
+    }
+    submitButtonValue.value = false;
+  }*/
+
 }
 
 
 
-class LocalDataForLeaveType {
+class LocalDataForQuestionAndAnswer {
   String? templateQuestionId;
   String? templateQuestionType;
   String? answer;
   // bool? isQuestionRequired;
 
-  LocalDataForLeaveType({
+  LocalDataForQuestionAndAnswer({
     this.templateQuestionId,
     this.templateQuestionType,
     this.answer,
@@ -451,12 +523,76 @@ class LocalDataForLeaveType {
     return data;
   }
 
-  factory LocalDataForLeaveType.fromJson(Map<String, dynamic> json) {
-    return LocalDataForLeaveType(
+  factory LocalDataForQuestionAndAnswer.fromJson(Map<String, dynamic> json) {
+    return LocalDataForQuestionAndAnswer(
       templateQuestionId: json['template_question_id'],
       templateQuestionType: json['template_question_type'],
       answer: json['answer'],
       // isQuestionRequired: json['isQuestionRequired'],
+    );
+  }
+}
+
+/*class LocalDataForImages {
+  String? templateQuestionId;
+  File? attachments;
+
+  LocalDataForImages({
+    this.templateQuestionId,
+    this.attachments,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['template_question_id'] = templateQuestionId;
+    data['answer'] = attachments;
+    return data;
+  }
+
+  factory LocalDataForImages.fromJson(Map<String, dynamic> json) {
+    return LocalDataForImages(
+      templateQuestionId: json['template_question_id'],
+      attachments: json['answer'] != null ? File(json['answer']) : null,
+    );
+  }
+}*/
+
+class LocalDataForImages {
+  String? templateQuestionId;
+  List<File>? attachments;
+
+  LocalDataForImages({
+    this.templateQuestionId,
+    this.attachments,
+  });
+
+  /*Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['template_question_id'] = templateQuestionId;
+    data['answer'] = attachments;
+    // data['isQuestionRequired'] = isQuestionRequired;
+    return data;
+  }
+
+  factory LocalDataForImages.fromJson(Map<String, dynamic> json) {
+    return LocalDataForImages(
+      templateQuestionId: json['template_question_id'],
+      attachments: json['answer'],
+      // isQuestionRequired: json['isQuestionRequired'],
+    );
+  }*/
+
+Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['template_question_id'] = templateQuestionId;
+    data['attachments'] = attachments?.map((file) => file.path).toList();
+    return data;
+  }
+
+  factory LocalDataForImages.fromJson(Map<String, dynamic> json) {
+    return LocalDataForImages(
+      templateQuestionId: json['template_question_id'],
+      attachments: (json['attachments'] as List<dynamic>?)?.map((path) => File(path as String)).toList(),
     );
   }
 }

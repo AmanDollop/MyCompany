@@ -60,18 +60,18 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
   final tabBarValue = 'Month'.obs;
 
   final cardColorList = [
-    const Color(0x14E2C68B), // 9% opacity for 0xffE2C68B
-    const Color(0x1467B87E), // 9% opacity for 0xff67B87E
-    const Color(0x14E07474), // 9% opacity for 0xffE07474
-    const Color(0x14D4A389), // 9% opacity for 0xffD4A389
-    const Color(0x14C7EEF4), // 9% opacity for 0xffC7EEF4
-    const Color(0x14D080C9), // 9% opacity for 0xffD080C9
-    const Color(0x14DDE0FB), // 9% opacity for 0xffDDE0FB
-    const Color(0x14E6E6E6), // 9% opacity for 0xffE6E6E6
-    const Color(0x14249CFF), // 9% opacity for 0xff249CFF
-    const Color(0x14BC8264), // 9% opacity for 0xffBC8264
-    const Color(0x14C7B8F4), // 9% opacity for 0xffC7B8F4
-    const Color(0x14EEEED1), // 9% opacity for 0xffEEEED1
+    const Color(0x14E2C68B), // 9% opacity for 0xffE2C68B working days
+    const Color(0x1467B87E), // 9% opacity for 0xff67B87E present
+    const Color(0x14E07474), // 9% opacity for 0xffE07474 absent days
+    const Color(0x14D4A389), // 9% opacity for 0xffD4A389 late in
+    const Color(0x14C7EEF4), // 9% opacity for 0xffC7EEF4 early out
+    const Color(0x14D080C9), // 9% opacity for 0xffD080C9 extra days
+    const Color(0x14DDE0FB), // 9% opacity for 0xffDDE0FB holidays
+    const Color(0x14E6E6E6), // 9% opacity for 0xffE6E6E6 week off
+    const Color(0x14249CFF), // 9% opacity for 0xff249CFF leaves
+    const Color(0x14BC8264), // 9% opacity for 0xffBC8264 pending attendance
+    const Color(0x14C7B8F4), // 9% opacity for 0xffC7B8F4 rejected attendance
+    const Color(0x14EEEED1), // 9% opacity for 0xffEEEED1 punch out missing
   ];
 
   final cardTextColorList = [
@@ -88,37 +88,6 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
     const Color(0xffC7B8F4),
     const Color(0xffEEEED1),
   ];
-
-
-  /* final cardColorList = [
-    const Color(0xffFFF2D8),
-    const Color(0xffF2FFF3),
-    const Color(0xffFFD9D9),
-    const Color(0xffFFE9DD),
-    const Color(0xffC7EEF4),
-    const Color(0xffFFE9FD),
-    const Color(0xffDDE0FB),
-    const Color(0xffE6E6E6),
-    const Color(0xffE0F1FF),
-    const Color(0xffFFE2D3),
-    const Color(0xffE4E1ED),
-    const Color(0xffEEEED1),
-  ];
-
-  final cardTextColorList = [
-    const Color(0xffE09701),
-    const Color(0xff02930D),
-    const Color(0xffCE1212),
-    const Color(0xffAA3B00),
-    const Color(0xff006E80),
-    const Color(0xffCC08BA),
-    const Color(0xff0717AF),
-    const Color(0xff616161),
-    const Color(0xff249CFF),
-    const Color(0xffFF5700),
-    const Color(0xff4C426C),
-    const Color(0xff6F7106),
-  ];*/
 
   final cardTitleTextList = [
     'Working Days',
@@ -323,7 +292,7 @@ class AttendanceTrackerController extends GetxController with GetTickerProviderS
                               monthNameForMonthViewList[index],
                               style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,
                                   color: monthNameForMonthViewValue.value == monthNameForMonthViewList[index]
-                                  ? Col.primary
+                                       ? Col.primary
                                       : Col.inverseSecondary),
                             ),
                           ],

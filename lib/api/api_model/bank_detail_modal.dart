@@ -18,8 +18,7 @@ class BankDetailModal {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['message'] = message;
     if (getBankDetails != null) {
-      data['getBankDetails'] =
-          getBankDetails!.map((v) => v.toJson()).toList();
+      data['getBankDetails'] = getBankDetails!.map((v) => v.toJson()).toList();
     }
     return data;
   }

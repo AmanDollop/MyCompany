@@ -112,6 +112,7 @@ class AddSubTaskController extends GetxController {
     super.onInit();
     pageName.value = Get.arguments[0];
     taskCategoryId.value = Get.arguments[1];
+    print('taskCategoryId.value::: ${taskCategoryId.value}');
     if (pageName.value == 'Update Task') {
       subTaskList = Get.arguments[2];
       setDefaultData();
@@ -419,8 +420,7 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> clickOnAddAndUpdateButton() async {
-    if (key.currentState!
-        .validate() /*&& notCompletedTaskValue.value && repeatTaskValue.value*/) {
+    if (key.currentState!.validate() /*&& notCompletedTaskValue.value && repeatTaskValue.value*/) {
       // Get.back();
       addSubTaskButtonValue.value = true;
       await callingAddSubTaskApi();
@@ -431,31 +431,28 @@ class AddSubTaskController extends GetxController {
     try {
       String userIds;
       if (selectedMyTeamMemberList.isNotEmpty) {
-        userIds = selfDataForMyTeamMember?.userId ??
-            ',${selectedMyTeamMemberList.map((data) {
+        userIds = selectedMyTeamMemberList.map((data) {
               if (data.userId != null && data.userId!.isNotEmpty) {
                 return data.userId;
               }
-            }).join(',')}';
+            }).join(',');
       } else {
         userIds = selfDataForMyTeamMember?.userId ?? '';
       }
+
 
       bodyParamsForAddSubTask = {
         AK.action: ApiEndPointAction.addTask,
         AK.taskCategoryId: taskCategoryId.value,
         AK.taskId: subTaskList?.taskId ?? '',
         AK.taskPriority: selectPriorityController.text.trim().toString(),
-        AK.taskStartDate: CMForDateTime.dateTimeFormatForApi(
-            dateTime: taskStartDateController.text.trim().toString()),
-        AK.taskDueDate: CMForDateTime.dateTimeFormatForApi(
-            dateTime: taskDueDateController.text.trim().toString()),
+        AK.taskStartDate: CMForDateTime.dateTimeFormatForApi(dateTime: taskStartDateController.text.trim().toString()),
+        AK.taskDueDate: CMForDateTime.dateTimeFormatForApi(dateTime: taskDueDateController.text.trim().toString()),
         AK.taskDueTime: dueTimeController.text.trim().toString(),
         AK.taskName: subTaskNameController.text.trim().toString(),
         AK.taskNote: remarkController.text.trim().toString(),
         AK.taskAssignTo: userIds,
       };
-      print('imageFile.value::::: ${imageFile.value}');
       http.Response? response = await CAI.addSubTaskApi(
           bodyParams: bodyParamsForAddSubTask, filePath: imageFile.value);
       if (response != null && response.statusCode == 200) {
@@ -478,6 +475,7 @@ class AddSubTaskController extends GetxController {
       assignToListViewValue.value = false;
     } else {
       var result = await Get.toNamed(Routes.MY_TEAM);
+      print('result::::  $result');
       if (result != null) {
         selectedMyTeamMemberList = result;
         assignToListViewValue.value = true;

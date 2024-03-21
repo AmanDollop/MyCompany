@@ -13,68 +13,79 @@ class HolidayView extends GetView<HolidayController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      controller.count.value;
-      return Scaffold(
-        appBar: CW.commonAppBarView(
-            title: controller.menuName.value,
-            isLeading: true,
-            onBackPressed: () => controller.clickOnBackButton(),
-            actions: [
-              SizedBox(
-                width: 120.px,
-                child: commonDropDownView(
-                  onTap: () => controller.clickOnYear(),
-                  dropDownView: yearDropDownView(),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Obx(() {
+          controller.count.value;
+          return Scaffold(
+            body: Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: AC.isConnect.value
+                      ? controller.apiResValue.value
+                          ? shimmerView()
+                          : ModalProgress(
+                              inAsyncCall: controller.apiResValue.value,
+                              child: Obx(() {
+                                controller.count.value;
+                                if (controller.getHolidayModal.value != null) {
+                                  return CW.commonRefreshIndicator(
+                                    onRefresh: () => controller.onRefresh(),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10.px),
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 16.px),
+                                          Expanded(
+                                            child: controller.holidayList != null &&
+                                                    controller.holidayList!.isNotEmpty
+                                                ? ListView.builder(
+                                                    padding: EdgeInsets.zero,
+                                                    itemCount: controller.holidayList?.length,
+                                                    // Number of items in the list
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                      return cardView(index: index);
+                                                    },
+                                                  )
+                                                : controller.apiResValue.value
+                                                    ? const SizedBox()
+                                                    : CW.commonNoDataFoundText(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return controller.apiResValue.value
+                                      ? const SizedBox()
+                                      : CW.commonNoDataFoundText();
+                                }
+                              }),
+                            )
+                      : CW.commonNoNetworkView(),
                 ),
-              ),
-            ]),
-        body: AC.isConnect.value
-            ? controller.apiResValue.value
-                ? shimmerView()
-                : ModalProgress(
-                    inAsyncCall: controller.apiResValue.value,
-                    child: Obx(() {
-                      controller.count.value;
-                      if (controller.getHolidayModal.value != null) {
-                        return CW.commonRefreshIndicator(
-                          onRefresh: () => controller.onRefresh(),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10.px),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 16.px),
-                                Expanded(
-                                  child: controller.holidayList != null &&
-                                          controller.holidayList!.isNotEmpty
-                                      ? ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          itemCount: controller.holidayList?.length,
-                                          // Number of items in the list
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return cardView(index: index);
-                                          },
-                                        )
-                                      : controller.apiResValue.value
-                                          ? const SizedBox()
-                                          : CW.commonNoDataFoundText(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        return controller.apiResValue.value
-                            ? const SizedBox()
-                            : CW.commonNoDataFoundText();
-                      }
-                    }),
-                  )
-            : CW.commonNoNetworkView(),
-      );
-    });
+              ],
+            ),
+          );
+        }),
+      ),
+    );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+      title: controller.menuName.value,
+      onLeadingPressed: () => controller.clickOnBackButton(),
+      padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+      actionValue: true,
+      action: SizedBox(
+        width: 120.px,
+        child: commonDropDownView(
+          onTap: () => controller.clickOnYear(),
+          dropDownView: yearDropDownView(),
+        ),
+      ),
+  );
 
   Widget commonDropDownView({required Widget dropDownView, required GestureTapCallback onTap}) => Container(
         height: 40.px,
@@ -135,14 +146,8 @@ class HolidayView extends GetView<HolidayController> {
         margin: EdgeInsets.only(bottom: 12.px),
         padding: EdgeInsets.zero,
         decoration: BoxDecoration(
-          color: Col.inverseSecondary,
+          color: Col.gCardColor,
           borderRadius: BorderRadius.circular(6.px),
-          boxShadow: [
-            BoxShadow(
-              color: Col.gray,
-              blurRadius: .4,
-            )
-          ],
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +195,7 @@ class HolidayView extends GetView<HolidayController> {
         style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
-            color: controller.isAfterDate.value ? Col.gray : Col.text),
+            color: controller.isAfterDate.value ? Col.gray : Col.inverseSecondary),
       );
 
   Widget dateTextView({required String text}) => Text(
@@ -198,7 +203,7 @@ class HolidayView extends GetView<HolidayController> {
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
             fontWeight: FontWeight.w500,
             fontSize: 10.px,
-            color: controller.isAfterDate.value ? Col.gray : Col.text),
+            color: controller.isAfterDate.value ? Col.gray : Col.gTextColor),
       );
 
   Widget holidayDetailView({required int index}) => Expanded(
@@ -234,7 +239,7 @@ class HolidayView extends GetView<HolidayController> {
             margin: EdgeInsets.only(bottom: 12.px),
             padding: EdgeInsets.zero,
             decoration: BoxDecoration(
-              color: Col.inverseSecondary,
+              color: Col.gCardColor,
               borderRadius: BorderRadius.circular(6.px),
               boxShadow: [
                 BoxShadow(

@@ -198,6 +198,7 @@ class AK {
   static const workReportId = "work_report_id";
   static const templateId = "template_id";
   static const templateAnswer = "template_answer";
+  static const attachment = "attachment";
 
 
 }

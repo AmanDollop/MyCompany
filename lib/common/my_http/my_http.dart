@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class MyHttp {
           Map<String, String>? token,
       required BuildContext context,bool showSnackBar = true}) async {
     if (kDebugMode) print("CALLING:: $url");
-    if (kDebugMode) print("BODYPARAMS:: $bodyParams");
+    if (kDebugMode) log("Log:::   BODYPARAMS:: $bodyParams");
     if (await CM.internetConnectionCheckerMethod()) {
       try {
         http.Response? response = await http.post(Uri.parse(url), body: bodyParams, headers: token,);
@@ -52,7 +53,7 @@ class MyHttp {
         if(showSnackBar) {
           Map<String,dynamic> mapRes = {};
           mapRes = jsonDecode(response.body);
-          print('mapRes:::  ${mapRes}');
+          print('mapRes:::  $mapRes');
           CM.showSnackBar(message: mapRes['message']);
         }
         print('response.statusCode::::  ${response.statusCode}');
@@ -156,8 +157,7 @@ class MyHttp {
     }
   }
 
-  static http.MultipartFile getUserProfileImageFile(
-      {File? image, required String userProfileImageKey}) {
+  static http.MultipartFile getUserProfileImageFile({File? image, required String userProfileImageKey}) {
     return http.MultipartFile.fromBytes(
       userProfileImageKey,
       image!.readAsBytesSync(),
@@ -278,11 +278,11 @@ class MyHttp {
   }
 
   static Future<http.Response?> uploadMultipleImagesWithBody(
-      {required List<File> images,
-      Map<String, File>? imageMap,
+      {List<File>? images,
+       Map<String, List<File>>? imageMap,
       required String uri,
       String? token,
-      required String imageKey,
+      String? imageKey,
       required String multipartRequestType, // POST or GET
       required Map<String, dynamic> bodyParams,
       required BuildContext context}) async {
@@ -295,25 +295,35 @@ class MyHttp {
           if(imageMap!=null)
             {
               imageMap.forEach((key, value) {
-                request.files.add(getUserProfileImageFile(image: value, userProfileImageKey: key));
+                value.forEach((element) {
+                  request.files.add(getUserProfileImageFile(userProfileImageKey: key,image: element));
+                });
               });
+            }else{
+            if(images != null && images.isNotEmpty){
+              for (int i = 0; i < images.length; i++) {
+                var stream = http.ByteStream(images[i].openRead());
+                var length = await images[i].length();
+                var multipartFile = http.MultipartFile(imageKey ??'', stream, length, filename: images[i].path);
+                request.files.add(multipartFile);
+              }
             }
-          for (int i = 0; i < images.length; i++) {
-            var stream = http.ByteStream(images[i].openRead());
-            var length = await images[i].length();
-            var multipartFile = http.MultipartFile(imageKey, stream, length, filename: images[i].path);
-            request.files.add(multipartFile);
           }
+
           print('token::::token::::: $token');
-          print('imageKey::::imageKey::::: $imageKey');
           print('bodyParams::::keys::::: ${bodyParams.keys}');
           print('bodyParams::::values::::: ${bodyParams.values}');
-          print('images::::images::::: $images');
+
+
           bodyParams.forEach((key, value) {
             request.fields[key] = value;
           });
           request.headers['Authorization'] = token ?? '';
           var response = await request.send();
+
+          print('check response:::   ${response.request}');
+          print('check response:::   ${response.reasonPhrase}');
+
           res = await http.Response.fromStream(response);
           if (kDebugMode) print("res.body:: ${res.body}");
           // ignore: unnecessary_null_comparison
@@ -363,6 +373,8 @@ class MyHttp {
       return null;
     }
   }
+
+
 }
 
 /*  static Future<http.Response?> uploadMultipleImage(

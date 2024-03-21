@@ -14,62 +14,74 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-        title: 'Upcoming Celebration',
-        isLeading: true,
-        onBackPressed: () => controller.clickOnBackButton(),
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(() {
+                  return ModalProgress(
+                    inAsyncCall: controller.apiResValue.value,
+                    child: AC.isConnect.value
+                        ? controller.getUpcomingCelebrationModal.value != null
+                        ? ListView(
+                            shrinkWrap: true,
+                            children: [
+                              // Padding(
+                              //   padding: EdgeInsets.only(left: 12.px,right: 12.px, top: 16.px),
+                              //   child: Row(
+                              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //     children: [
+                              //       Text(
+                              //         'All',
+                              //         style: Theme.of(Get.context!)
+                              //             .textTheme
+                              //             .bodyLarge
+                              //             ?.copyWith(fontWeight: FontWeight.w500),
+                              //       ),
+                              //       Container(
+                              //         height: 30.px,
+                              //         width: 30.px,
+                              //         decoration: BoxDecoration(
+                              //             color: Col.primary.withOpacity(.1),
+                              //             borderRadius: BorderRadius.circular(6.px)),
+                              //         child: Center(
+                              //           child: CW.commonNetworkImageView(
+                              //               path: 'assets/icons/filter_icon.png',
+                              //               isAssetImage: true,
+                              //               width: 12.px,
+                              //               height: 12.px),
+                              //         ),
+                              //       )
+                              //     ],
+                              //   ),
+                              // ),
+                              SizedBox(height: 16.px),
+                              upcomingCelebrationsView(),
+                              SizedBox(height: 50.px),
+                            ],
+                          )
+                        : controller.apiResValue.value
+                            ? const SizedBox()
+                            : CW.commonNoDataFoundText()
+                        : CW.commonNoNetworkView(),
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Obx(() {
-        return ModalProgress(
-          inAsyncCall: controller.apiResValue.value,
-          child: AC.isConnect.value
-              ? controller.getUpcomingCelebrationModal.value != null
-              ? ListView(
-                  shrinkWrap: true,
-                  children: [
-                    // Padding(
-                    //   padding: EdgeInsets.only(left: 12.px,right: 12.px, top: 16.px),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Text(
-                    //         'All',
-                    //         style: Theme.of(Get.context!)
-                    //             .textTheme
-                    //             .bodyLarge
-                    //             ?.copyWith(fontWeight: FontWeight.w500),
-                    //       ),
-                    //       Container(
-                    //         height: 30.px,
-                    //         width: 30.px,
-                    //         decoration: BoxDecoration(
-                    //             color: Col.primary.withOpacity(.1),
-                    //             borderRadius: BorderRadius.circular(6.px)),
-                    //         child: Center(
-                    //           child: CW.commonNetworkImageView(
-                    //               path: 'assets/icons/filter_icon.png',
-                    //               isAssetImage: true,
-                    //               width: 12.px,
-                    //               height: 12.px),
-                    //         ),
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    SizedBox(height: 16.px),
-                    upcomingCelebrationsView(),
-                    SizedBox(height: 50.px),
-                  ],
-                )
-              : controller.apiResValue.value
-                  ? const SizedBox()
-                  : CW.commonNoDataFoundText()
-              : CW.commonNoNetworkView(),
-        );
-      }),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Upcoming Celebration',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+  );
 
   Widget upcomingCelebrationsView() {
     if (controller.upcomingCelebrationList.isNotEmpty) {
@@ -101,9 +113,10 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
                 alignment: Alignment.center,
                 children: [
                   CW.commonNetworkImageView(
-                    path: controller.upcomingCelebrationList[index].celebrationType == 'Birthday'
+                    /*path: controller.upcomingCelebrationList[index].celebrationType == 'Birthday'
                         ? 'assets/images/birthday_background_image.png'
-                        : 'assets/images/work_anniversary_background_image.png',
+                        : 'assets/images/work_anniversary_background_image.png',*/
+                    path: 'assets/images/upcoming_celebrations.png',
                     isAssetImage: true,
                     fit: BoxFit.fill,
                   ),
@@ -148,7 +161,7 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
                             fontWeight: FontWeight.w700,
                             maxLines: 2,
                             textAlign: TextAlign.center,
-                            fontSize: 10.px),
+                            fontSize: 12.px),
                         SizedBox(height: 2.px),
                         cardTextView(
                             text: controller.upcomingCelebrationList[index].userDesignation != null && controller.upcomingCelebrationList[index].userDesignation!.isNotEmpty
@@ -174,7 +187,7 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
                             fontWeight: FontWeight.w500,
                             maxLines: 1,
                             textAlign: TextAlign.center,
-                            fontSize: 8.px),
+                            fontSize: 10.px),
                         SizedBox(height: 6.px),
                         cardTextView(
                             text: controller.upcomingCelebrationList[index].celebrationDate != null && controller.upcomingCelebrationList[index].celebrationDate!.isNotEmpty
@@ -205,7 +218,7 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
         style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(
             fontWeight: fontWeight ?? FontWeight.w500,
             fontSize: fontSize ?? 14.px,
-            color: color),
+            color: color??Col.gTextColor),
         maxLines: maxLines ?? 1,
         overflow: TextOverflow.ellipsis,
         textAlign: textAlign,

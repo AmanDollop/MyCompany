@@ -8,6 +8,7 @@ import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/gradient_image_convert.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
@@ -21,92 +22,104 @@ class AddLeaveView extends GetView<AddLeaveController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => CM.unFocusKeyBoard(),
-      child: Scaffold(
-        appBar: CW.commonAppBarView(
-          title: controller.pageName.value,
-          isLeading: true,
-          onBackPressed: () => controller.clickOnBackButton(),
-        ),
-        body: Obx(() {
-          controller.count.value;
-          if (AC.isConnect.value) {
-            controller.allMonthsSameValue.value = checkIfAllMonthsSame(dates: controller.formattedDateListForApi);
-            if(controller.dateAddForLeaveList.isEmpty /*controller.dateAddForLeaveList.length <= 1*/){
-              controller.applyBulkLeaveValue.value = false;
-              controller.applyBulkLeaveButtonHideAndShowValue.value = false;
-            }
-            return ModalProgress(
-              isLoader: true,
-              inAsyncCall: controller.apiResValue.value,
-              child: controller.apiResValue.value
-                  ? const SizedBox()
-                  : controller.getLeaveDateCalenderModal.value != null
-                  ? controller.leaveDateCalenderList != null && controller.leaveDateCalenderList!.isNotEmpty
-                  ? Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                         ListView(
-                          padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 16.px, top: controller.applyBulkLeaveValue.value ? 20.px : 8.px),
-                          children: [
-                            SizedBox(
-                              height: 50.h,
-                              child: PageView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                controller: controller.pageController,
-                                itemCount: controller.leaveDateCalenderList?.length,
-                                itemBuilder: (context, pageViewIndex) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    calendarBuildHeader(pageViewIndex: pageViewIndex),
-                                    SizedBox(height: controller.applyBulkLeaveValue.value ? 20.px : 10.px),
-                                    getDayNames(),
-                                    SizedBox(height: 10.px),
-                                    calendarGridView(pageViewIndex:pageViewIndex),
-                                  ],
-                                );
-                              },),
-                            ),
-                            SizedBox(height: 20.px),
-                            if (controller.dateAddForLeaveList.isNotEmpty)
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () => CM.unFocusKeyBoard(),
+          child: Scaffold(
+            body: Column(
+              children: [
+                appBarView(),
+                Expanded(
+                  child: Obx(() {
+                    controller.count.value;
+                    if (AC.isConnect.value) {
+                      controller.allMonthsSameValue.value = checkIfAllMonthsSame(dates: controller.formattedDateListForApi);
+                      if(controller.dateAddForLeaveList.isEmpty /*controller.dateAddForLeaveList.length <= 1*/){
+                        controller.applyBulkLeaveValue.value = false;
+                        controller.applyBulkLeaveButtonHideAndShowValue.value = false;
+                      }
+                      return ModalProgress(
+                        isLoader: true,
+                        inAsyncCall: controller.apiResValue.value,
+                        child: controller.apiResValue.value
+                            ? const SizedBox()
+                            : controller.getLeaveDateCalenderModal.value != null
+                            ? controller.leaveDateCalenderList != null && controller.leaveDateCalenderList!.isNotEmpty
+                            ? Stack(
+                                alignment: Alignment.bottomCenter,
                                 children: [
-                                  leaveDateGridView(),
-                                  if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
-                                    SizedBox(height: 6.px),
-                                  if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
-                                    applyBulkLeaveView(),
-                                  if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
-                                    SizedBox(height: 14.px),
-                                  Form(
-                                    key: controller.keyForLeaveReason,
-                                    child: reasonTextFormFiled(),
+                                   ListView(
+                                    padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 16.px, top: controller.applyBulkLeaveValue.value ? 20.px : 8.px),
+                                    children: [
+                                      SizedBox(
+                                        height: 50.h,
+                                        child: PageView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          controller: controller.pageController,
+                                          itemCount: controller.leaveDateCalenderList?.length,
+                                          itemBuilder: (context, pageViewIndex) {
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              calendarBuildHeader(pageViewIndex: pageViewIndex),
+                                              SizedBox(height: controller.applyBulkLeaveValue.value ? 20.px : 10.px),
+                                              getDayNames(),
+                                              SizedBox(height: 10.px),
+                                              calendarGridView(pageViewIndex:pageViewIndex),
+                                            ],
+                                          );
+                                        },),
+                                      ),
+                                      SizedBox(height: 20.px),
+                                      if (controller.dateAddForLeaveList.isNotEmpty)
+                                      Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            leaveDateGridView(),
+                                            if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
+                                              SizedBox(height: 6.px),
+                                            if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
+                                              applyBulkLeaveView(),
+                                            if (controller.dateAddForLeaveList.length > 1 && controller.allMonthsSameValue.value)
+                                              SizedBox(height: 14.px),
+                                            Form(
+                                              key: controller.keyForLeaveReason,
+                                              child: reasonTextFormFiled(),
+                                            ),
+                                            SizedBox(height: 10.px),
+                                            attachFile(),
+                                            SizedBox(height: 80.px),
+                                          ],
+                                        )
+                                    ],
                                   ),
-                                  SizedBox(height: 10.px),
-                                  attachFile(),
-                                  SizedBox(height: 80.px),
+                                  // if (controller.dateAddForLeaveList.isNotEmpty)
+                                  applyLeaveButtonView()
                                 ],
                               )
-                          ],
-                        ),
-                        // if (controller.dateAddForLeaveList.isNotEmpty)
-                        applyLeaveButtonView()
-                      ],
-                    )
-                  : CW.commonNoDataFoundText()
-                  : CW.commonNoDataFoundText(),
-            );
-          }
-          else {
-            return CW.commonNoNetworkView();
-          }
-        }),
+                            : CW.commonNoDataFoundText()
+                            : CW.commonNoDataFoundText(),
+                      );
+                    }
+                    else {
+                      return CW.commonNoNetworkView();
+                    }
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: controller.pageName.value,
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+  );
 
   Widget calendarBuildHeader({required int pageViewIndex}) {
     return Row(
@@ -115,20 +128,20 @@ class AddLeaveView extends GetView<AddLeaveController> {
         if (!controller.applyBulkLeaveValue.value)
           controller.currentMonth.value.month != DateTime.parse('${controller.getLeaveDateCalenderModal.value?.isBeforeDate}').month
               ? IconButton(
-                  icon: Icon(Icons.keyboard_arrow_left, color: Col.secondary, size: 28.px),
+                  icon: Icon(Icons.keyboard_arrow_left, color: Col.inverseSecondary, size: 28.px),
                   onPressed: () => controller.clickOnReverseIconButton(),
                 )
               : SizedBox(width: 50.px),
         SizedBox(width: 10.px),
         Text(
           CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}'),
-          style: Theme.of(Get.context!).textTheme.displayLarge,
+          style: Theme.of(Get.context!).textTheme.displaySmall,
         ),
         SizedBox(width: 10.px),
         if (!controller.applyBulkLeaveValue.value)
             controller.currentMonth.value.month != DateTime.parse('${controller.getLeaveDateCalenderModal.value?.isAfterDate}').month
               ? IconButton(
-                  icon: Icon(Icons.keyboard_arrow_right, color: Col.secondary, size: 28.px),
+                  icon: Icon(Icons.keyboard_arrow_right, color: Col.inverseSecondary, size: 28.px),
                   onPressed: () => controller.clickOnForwardIconButton(),
                 )
               : SizedBox(width: 50.px),
@@ -143,7 +156,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
         for (var day in controller.days)
           Text(
             day,
-            style: Theme.of(Get.context!).textTheme.titleLarge,
+            style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 14.px),
           ),
       ],
     );
@@ -276,13 +289,17 @@ class AddLeaveView extends GetView<AddLeaveController> {
                 controller.count.value++;
               },
               borderRadius: BorderRadius.circular(20.px),
-              child: Card(
+              child: Container(
                 margin: EdgeInsets.zero,
-                elevation: 0,
-                color: controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
-                    ? Col.primary
-                    : calendarGridColorView(calendarIndex: calendarIndex - extra),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.px)),
+                decoration: controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
+                    ? BoxDecoration(
+                  gradient: CW.commonLinearGradientForButtonsView(),
+                  shape: BoxShape.circle
+                )
+                    : BoxDecoration(
+                  color: calendarGridCardColorView(calendarIndex: calendarIndex - extra),
+                  shape: BoxShape.circle,
+                ),
                 child: SizedBox(
                   height: 30.px,
                   width: 30.px,
@@ -294,7 +311,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
                       style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 10.px,
-                          color: controller.isAfterAndBeforeCalenderDateValue.value &&
+                          color: /*controller.isAfterAndBeforeCalenderDateValue.value &&
                               controller.monthDatesList?[calendarIndex - extra].weekOff == false &&
                               controller.monthDatesList?[calendarIndex - extra].isLeave == false &&
                               controller.monthDatesList?[calendarIndex - extra].isPresent == false &&
@@ -302,7 +319,9 @@ class AddLeaveView extends GetView<AddLeaveController> {
                               ? Col.darkGray.withOpacity(.4)
                               : controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
                               ? Col.inverseSecondary
-                              : Col.text),
+                              : Col.inverseSecondary*/controller.dateAddForLeaveList.contains('$day ${CMForDateTime.dateFormatForMonthYear(date: '${controller.currentMonth.value}')}')
+                              ? Col.gBottom
+                              : calendarGridTextColorView(calendarIndex: calendarIndex - extra),),
                     ),
                   ),
                 ),
@@ -316,17 +335,31 @@ class AddLeaveView extends GetView<AddLeaveController> {
     }
   }
 
-  Color calendarGridColorView({required int calendarIndex}) {
+  Color calendarGridCardColorView({required int calendarIndex}) {
     if (controller.monthDatesList?[calendarIndex].isPresent == true || (controller.monthDatesList?[calendarIndex].isPresent == true && controller.monthDatesList?[calendarIndex].holiday == true)) {
-      return const Color(0xffF2FFF3);
+      return const Color(0x1467B87E);
+    } else if (controller.monthDatesList?[calendarIndex].holiday ?? false) {
+      return const Color(0x14DDE0FB);
+    } else if (controller.monthDatesList?[calendarIndex].weekOff ?? false) {
+      return const Color(0x14E6E6E6);
+    } else if (controller.monthDatesList?[calendarIndex].isLeave ?? false) {
+      return const Color(0x14249CFF);
+    } else {
+      return Colors.transparent;
+    }
+  }
+
+  Color calendarGridTextColorView({required int calendarIndex}) {
+    if (controller.monthDatesList?[calendarIndex].isPresent == true || (controller.monthDatesList?[calendarIndex].isPresent == true && controller.monthDatesList?[calendarIndex].holiday == true)) {
+      return const Color(0xff67B87E);
     } else if (controller.monthDatesList?[calendarIndex].holiday ?? false) {
       return const Color(0xffDDE0FB);
     } else if (controller.monthDatesList?[calendarIndex].weekOff ?? false) {
       return const Color(0xffE6E6E6);
     } else if (controller.monthDatesList?[calendarIndex].isLeave ?? false) {
-      return const Color(0xffE0F1FF);
+      return const Color(0xff249CFF);
     } else {
-      return Colors.transparent;
+      return Col.inverseSecondary;
     }
   }
 
@@ -357,7 +390,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
         return Container(
           margin: EdgeInsets.only(bottom: 10.px),
           decoration: BoxDecoration(
-            color: Col.primary.withOpacity(.1),
+            color: Col.gCardColor,
             borderRadius: BorderRadius.circular(6.px),
           ),
           child: Padding(
@@ -369,12 +402,8 @@ class AddLeaveView extends GetView<AddLeaveController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      CMForDateTime.formatDate(
-                          controller.localData[index].date ?? ''),
-                      style: Theme.of(Get.context!)
-                          .textTheme
-                          .labelSmall
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      CMForDateTime.formatDate(controller.localData[index].date ?? ''),
+                      style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     addAndMinusButtonView(index: index),
                   ],
@@ -391,12 +420,7 @@ class AddLeaveView extends GetView<AddLeaveController> {
                           Flexible(
                             child: Text(
                               '${controller.localData[index].leaveType}',
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .labelSmall
-                                  ?.copyWith(
-                                      fontSize: 10.px,
-                                      fontWeight: FontWeight.w500),
+                              style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -404,17 +428,10 @@ class AddLeaveView extends GetView<AddLeaveController> {
                           SizedBox(width: 6.px),
                           Text(
                             '(${controller.localData[index].paidAndUnPaid})',
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(
+                            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
                                     fontSize: 10.px,
                                     fontWeight: FontWeight.w500,
-                                    color: controller.localData[index]
-                                                .paidAndUnPaid ==
-                                            'Paid'
-                                        ? Col.success
-                                        : Col.error),
+                                    color: controller.localData[index].paidAndUnPaid == 'Paid' ? Col.success : Col.error),
                           ),
                         ],
                       ),
@@ -425,28 +442,15 @@ class AddLeaveView extends GetView<AddLeaveController> {
                         children: [
                           Text(
                             '${controller.localData[index].fullAndHalfDay}',
-                            style: Theme.of(Get.context!)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(
-                                    fontSize: 10.px,
-                                    fontWeight: FontWeight.w500),
+                            style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(width: 6.px),
-                          if (controller.localData[index].firstAndSecondHalf !=
-                                  null &&
-                              controller.localData[index].firstAndSecondHalf!
-                                  .isNotEmpty)
+                          if (controller.localData[index].firstAndSecondHalf != null && controller.localData[index].firstAndSecondHalf!.isNotEmpty)
                             Text(
                               '(${controller.localData[index].firstAndSecondHalf})',
-                              style: Theme.of(Get.context!)
-                                  .textTheme
-                                  .labelSmall
-                                  ?.copyWith(
-                                      fontSize: 10.px,
-                                      fontWeight: FontWeight.w500),
+                              style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500),
                             ),
                         ],
                       ),
@@ -479,11 +483,10 @@ class AddLeaveView extends GetView<AddLeaveController> {
     );
   }
 
-  Widget commonImageForAddAndMinus({required String path}) => CW.commonNetworkImageView(
-        path: path,
+  Widget commonImageForAddAndMinus({required String path}) => GradientImageWidget(
+        assetPath: path,
         height: 20.px,
         width: 20.px,
-        isAssetImage: true,
       );
 
   Widget applyBulkLeaveView() {
@@ -537,10 +540,13 @@ class AddLeaveView extends GetView<AddLeaveController> {
   }
 
   Widget reasonTextFormFiled() => CW.commonTextFieldForMultiline(
-        labelText: 'Leave Reason',
         hintText: 'Leave Reason',
+        isSearchLabelText: false,
         controller: controller.reasonController,
-        maxLines: 3,
+        focusNode: controller.focusNodeReason,
+        minLines: 3,
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
         validator: (value) => V.isValid(value: value, title: 'Please enter leave reason'),
       );
 
@@ -576,18 +582,14 @@ class AddLeaveView extends GetView<AddLeaveController> {
   Widget attachmentRowTextView() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CW.commonNetworkImageView(
-              path: 'assets/icons/attach_file_icon.png',
-              isAssetImage: true,
+          GradientImageWidget(
+              assetPath: 'assets/icons/attach_file_icon.png',
               width: 20.px,
               height: 20.px),
           SizedBox(width: 5.px),
           Text(
             'Attachment',
-            style: Theme.of(Get.context!)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Col.primary, fontWeight: FontWeight.w600),
+            style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(color: Col.primary, fontWeight: FontWeight.w600),
           )
         ],
       );
@@ -627,9 +629,9 @@ class AddLeaveView extends GetView<AddLeaveController> {
     return Container(
       height: 80.px,
       padding: EdgeInsets.only(left: 12.px, right: 12.px, bottom: 24.px, top: 10.px),
-      color: Col.inverseSecondary,
+      color: Col.gBottom,
       child: Center(
-        child: CW.commonElevatedButton(
+        child: CW.myElevatedButton(
             onPressed: v != null && v.isNotEmpty
                 ?  controller.applyLeaveButtonValue.value
                 ? () => null
