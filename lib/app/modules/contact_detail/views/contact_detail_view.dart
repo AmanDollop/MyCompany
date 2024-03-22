@@ -273,6 +273,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         onChanged: (value) {
           controller.count.value++;
         },
+        isSearchLabelText: false,
         suffixIcon: SizedBox(
           width: 40.px,
           child: Center(
@@ -288,21 +289,18 @@ class ContactDetailView extends GetView<ContactDetailController> {
         ),
       );
 
-  Widget checkBoxForPermanentAddressView() => SizedBox(
-    width: 24.px,
-    height: 24.px,
-    child: CW.commonCheckBoxView(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
-      changeValue: controller.permanentAddressCheckBoxValue.value,
-      onChanged: (value) {
-        controller.permanentAddressCheckBoxValue.value = value ?? false;
-        if(controller.permanentAddressCheckBoxValue.value){
-          controller.permanentAddressController.text = controller.currentAddressController.text;
-        }else{
-          controller.permanentAddressController.clear();
-        }
-      },
-    ),
+  Widget checkBoxForPermanentAddressView() => CW.myCheckBoxView(
+    width: 18.px,
+    height: 18.px,
+    checkBoxValue: controller.permanentAddressCheckBoxValue.value,
+    onPressed: () {
+      controller.permanentAddressCheckBoxValue.value = !controller.permanentAddressCheckBoxValue.value;
+      if(controller.permanentAddressCheckBoxValue.value){
+        controller.permanentAddressController.text = controller.currentAddressController.text;
+      }else{
+        controller.permanentAddressController.clear();
+      }
+    },
   );
 
   Widget permanentAddressTextView() => Text('Permanent address same as above',style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500,color: Col.inverseSecondary));
@@ -313,24 +311,25 @@ class ContactDetailView extends GetView<ContactDetailController> {
         focusNode: controller.focusNodeForPermanentAddress,
         labelText: 'Permanent Address',
         hintText: 'Permanent Address',
+        isSearchLabelText: false,
         prefixIconPath: 'assets/icons/location_icon.png',
         validator: (value) => V.isValid(value: value, title: 'Please enter permanent address'),
         onChanged: (value) {
           controller.count.value++;
         },
         suffixIcon: SizedBox(
-      width: 40.px,
-      child: Center(
-        child: InkWell(
-          onTap: controller.isUseMyLocationButtonClickedForPermanentAddress.value
-              ? () => null
-              : () => controller.clickOnMyLocationPermanentAddressIconButton(),
-          child: controller.isUseMyLocationButtonClickedForPermanentAddress.value
-              ? SizedBox(width: 16.px,height: 16.px,child: Center(child: CW.commonProgressBarView(color: Col.primary),),)
-              : locationIconView(),
-        ),
-      ),
-    ),
+         width: 40.px,
+         child: Center(
+           child: InkWell(
+             onTap: controller.isUseMyLocationButtonClickedForPermanentAddress.value
+                 ? () => null
+                 : () => controller.clickOnMyLocationPermanentAddressIconButton(),
+             child: controller.isUseMyLocationButtonClickedForPermanentAddress.value
+                 ? SizedBox(width: 16.px,height: 16.px,child: Center(child: CW.commonProgressBarView(color: Col.primary),),)
+                 : locationIconView(),
+           ),
+         ),
+       ),
       );
 
   Widget commonRowForContactDetailView({required String imagePath, required String title, required String subTitle}) {

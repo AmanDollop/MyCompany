@@ -73,7 +73,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
         bottomNavigationBar: scrollPositionBottomNavigationValue.value <= 100
             ? Container(
                 decoration: BoxDecoration(
-                  color: Col.gTop,
+                  color: Col.gCardColor,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(24.px),
                       topRight: Radius.circular(24.px)),

@@ -43,6 +43,7 @@ class BankDetailView extends GetView<BankDetailController> {
                                     padding: EdgeInsets.only(bottom: index==controller.getBankList!.length-1?60.px :10.px),
                                     child: CustomOutlineButton(
                                       strokeWidth: 1.px,
+                                      customOutlineForButtonValue: false,
                                       gradient: CW.commonLinearGradientForButtonsView(),
                                       radius: 8.px,
                                       onPressed: () {},
@@ -125,51 +126,49 @@ class BankDetailView extends GetView<BankDetailController> {
                                                       children: [
                                                         commonRowForDetailView(
                                                             text1: 'Account Holder Name',
-                                                            text2: controller.getBankList?[index].accountHoldersName != null &&
-                                                                    controller.getBankList![index].accountHoldersName!.isNotEmpty
+                                                            text2: controller.getBankList?[index].accountHoldersName != null && controller.getBankList![index].accountHoldersName!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].accountHoldersName}'
                                                                 : 'Data not found!'),
                                                         SizedBox(height: 5.px),
                                                         commonRowForDetailView(
                                                             text1: 'Account Number',
-                                                            text2: controller.getBankList?[index].accountNo != null &&
-                                                                    controller.getBankList![index].accountNo!.isNotEmpty
+                                                            text2: controller.getBankList?[index].accountNo != null && controller.getBankList![index].accountNo!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].accountNo}'
                                                                 : 'Data not found!'),
                                                         SizedBox(height: 5.px),
                                                         commonRowForDetailView(
+                                                            text1: 'Account Type',
+                                                            text2: controller.getBankList?[index].accountType != null && controller.getBankList![index].accountType!.isNotEmpty
+                                                                ? '${controller.getBankList?[index].accountType}'
+                                                                : 'Data not found!'),
+                                                        SizedBox(height: 5.px),
+                                                        commonRowForDetailView(
                                                             text1: 'IFSC Code',
-                                                            text2: controller.getBankList?[index].ifscCode != null &&
-                                                                    controller.getBankList![index].ifscCode!.isNotEmpty
+                                                            text2: controller.getBankList?[index].ifscCode != null && controller.getBankList![index].ifscCode!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].ifscCode}'
                                                                 : 'Data not found!'),
                                                         SizedBox(height: 5.px),
                                                         commonRowForDetailView(
-                                                            text1:
-                                                                'Customer ID / CRN / No',
-                                                            text2: controller.getBankList?[index].crnNo != null &&
-                                                                    controller.getBankList![index].crnNo!.isNotEmpty
+                                                            text1: 'Customer ID / CRN / No',
+                                                            text2: controller.getBankList?[index].crnNo != null && controller.getBankList![index].crnNo!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].crnNo}'
                                                                 : 'Data not found!'),
                                                         SizedBox(height: 5.px),
                                                         commonRowForDetailView(
                                                             text1: 'ESIC No',
-                                                            text2: controller.getBankList?[index].esicNo != null &&
-                                                                controller.getBankList![index].esicNo!.isNotEmpty
+                                                            text2: controller.getBankList?[index].esicNo != null && controller.getBankList![index].esicNo!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].esicNo}'
                                                                 : 'Data not found!'),
                                                         SizedBox(height: 5.px),
                                                         commonRowForDetailView(
                                                             text1: 'PAN Card No',
-                                                            text2: controller.getBankList?[index].panCardNo != null &&
-                                                                    controller.getBankList![index].panCardNo!.isNotEmpty
+                                                            text2: controller.getBankList?[index].panCardNo != null && controller.getBankList![index].panCardNo!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].panCardNo}'
                                                                 : 'Data not found!'),
                                                         SizedBox(height: 5.px),
                                                         commonRowForDetailView(
                                                             text1: 'PF/UAN No',
-                                                            text2: controller.getBankList?[index].pfNo != null &&
-                                                                    controller.getBankList![index].pfNo!.isNotEmpty
+                                                            text2: controller.getBankList?[index].pfNo != null && controller.getBankList![index].pfNo!.isNotEmpty
                                                                 ? '${controller.getBankList?[index].pfNo}'
                                                                 : 'Data not found!'),
                                                       ],
@@ -180,8 +179,7 @@ class BankDetailView extends GetView<BankDetailController> {
                                               crossFadeState: controller.downAndUpValue[index] != index.toString()
                                                       ? CrossFadeState.showFirst
                                                       : CrossFadeState.showSecond,
-                                              duration:
-                                                  const Duration(milliseconds: 500),
+                                              duration: const Duration(milliseconds: 500),
                                               secondCurve: Curves.easeInOutSine,
                                             ),
                                           ],

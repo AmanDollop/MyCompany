@@ -197,6 +197,8 @@ class UpcomingCelebrationsView extends GetView<UpcomingCelebrationsController> {
                             maxLines: 2,
                             textAlign: TextAlign.center,
                             fontSize: 10.px),
+                        SizedBox(height: 8.px),
+                        CW.myElevatedButton(onPressed: () {},buttonText: 'Send wishes',height: 30.px,borderRadius: 15.px,buttonTextFontSize: 12.px)
                       ],
                     ),
                   )

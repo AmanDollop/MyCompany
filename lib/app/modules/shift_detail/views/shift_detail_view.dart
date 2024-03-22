@@ -486,15 +486,10 @@ class ShiftDetailView extends GetView<ShiftDetailController> {
         ],
       );
 
-  Widget timeTextView({required String text, Color? textColor}) => Flexible(
-        child: Text(
-          text,
-          style: Theme.of(Get.context!)
-              .textTheme
-              .titleLarge
-              ?.copyWith(fontWeight: FontWeight.w600, color: textColor),
-        ),
-      );
+  Widget timeTextView({required String text, Color? textColor}) => Text(
+    text,
+    style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: textColor),
+  );
 
   Widget breakShiftTextView({required String breakText, required String breakTimeText}) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

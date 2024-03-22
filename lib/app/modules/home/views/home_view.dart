@@ -189,16 +189,7 @@ class HomeView extends GetView<HomeController> {
                           height: 104.px,
                           width: 104.px,
                           decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                stops: const [0.0, 0.8],
-                                tileMode: TileMode.decal,
-                                colors: [
-                                  Col.primary,
-                                  Col.primaryColor,
-                                ],
-                              ),
+                              gradient: CW.commonLinearGradientForButtonsView(),
                               shape: BoxShape.circle),
                           // child: circularProgressIndicatorTextView(),
                           child: Center(
@@ -261,10 +252,10 @@ class HomeView extends GetView<HomeController> {
                                           height: 24.px,
                                           width: 24.px,
                                           decoration: BoxDecoration(
-                                              color: Col.primary,
+                                              gradient: CW.commonLinearGradientForButtonsView(),
                                               shape: BoxShape.circle),
                                           child: Icon(Icons.play_arrow,
-                                              color: Col.inverseSecondary,
+                                              color: Col.gBottom,
                                               size: 16.px),
                                         ),
                                         cardTextView(
@@ -279,12 +270,7 @@ class HomeView extends GetView<HomeController> {
                                     ? () => null
                                     : () => controller.clickOnTakeBreakButton(),
                                 buttonText: 'Take a Break',
-                                // width: 150.px,
                                 height: 38.px,
-                                /*borderRadius: 20.px,
-                                buttonColor: !controller.checkInValue.value
-                                    ? Col.primary.withOpacity(.5)
-                                    : Col.primary*/
                               ),
                   ],
                 ),
@@ -372,9 +358,7 @@ class HomeView extends GetView<HomeController> {
     if (controller.checkInValue.value && controller.checkOutValue.value) {
       return GestureDetector(
         onHorizontalDragStart: (details) {
-          CM.showSnackBar(
-              message:
-                  'You have already performed punch in and punch out this day.');
+          CM.showSnackBar(message: 'You have already performed punch in and punch out this day.');
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 500),
@@ -645,7 +629,7 @@ class HomeView extends GetView<HomeController> {
                                   textAlign: TextAlign.center,
                                   fontSize: 10.px,color: Col.inverseSecondary),
                               SizedBox(height: 8.px),
-                              CW.myElevatedButton(onPressed: () {},buttonText: 'Send wishes',height: 30.px,)
+                              CW.myElevatedButton(onPressed: () {},buttonText: 'Send wishes',height: 30.px,borderRadius: 15.px,buttonTextFontSize: 12.px)
                             ],
                           ),
                         )
@@ -692,10 +676,7 @@ class HomeView extends GetView<HomeController> {
         onPressed: onPressedViewAllButton,
         child: Text(
           'View All',
-          style: Theme.of(Get.context!)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: Col.primary, fontWeight: FontWeight.w700),
+          style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(color: Col.primary, fontWeight: FontWeight.w700),
         ),
       );
 
@@ -744,7 +725,6 @@ class HomeView extends GetView<HomeController> {
                                       height: 26.px,
                                       child: CW.commonCachedNetworkImageView(
                                         path: '${AU.baseUrlForSearchCompanyImage}${controller.isHeadingMenuList[index].menuImage}',
-                                        imageColor: Col.primary,
                                       ),
                                     ),
                         ),
@@ -782,8 +762,7 @@ class HomeView extends GetView<HomeController> {
     return commonCard(
       titleText: 'Your Department',
       viewAllButtonValue: true,
-      onPressedViewAllButton: () =>
-          controller.clickOnYourDepartmentViewAllButton(),
+      onPressedViewAllButton: () => controller.clickOnYourDepartmentViewAllButton(),
       listWidget: GridView.builder(
         padding: EdgeInsets.only(right: 10.px, bottom: 10.px, left: 10.px),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -839,26 +818,20 @@ class HomeView extends GetView<HomeController> {
                     height: 40.px,
                     margin: EdgeInsets.zero,
                     decoration: BoxDecoration(
-                      color: Col.primary,
+                      gradient: CW.commonLinearGradientForButtonsView(),
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(27.px),
                         child: CW.commonNetworkImageView(
-                            path:
-                                '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
+                            path: '${AU.baseUrlAllApisImage}${controller.getDepartmentEmployeeList?[index].userProfilePic}',
                             isAssetImage: false,
                             errorImage: 'assets/images/profile.png',
                             width: 40.px,
                             height: 40.px,
                             errorImageValue: true,
-                            userShortName: controller
-                                            .getDepartmentEmployeeList?[index]
-                                            .shortName !=
-                                        null &&
-                                    controller.getDepartmentEmployeeList![index]
-                                        .shortName!.isNotEmpty
+                            userShortName: controller.getDepartmentEmployeeList?[index].shortName != null && controller.getDepartmentEmployeeList![index].shortName!.isNotEmpty
                                 ? '${controller.getDepartmentEmployeeList?[index].shortName}'
                                 : '?'),
                       ),
@@ -866,11 +839,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   SizedBox(height: 6.px),
                   cardTextView(
-                      text: controller.getDepartmentEmployeeList?[index]
-                                      .userFullName !=
-                                  null &&
-                              controller.getDepartmentEmployeeList![index]
-                                  .userFullName!.isNotEmpty
+                      text: controller.getDepartmentEmployeeList?[index].userFullName != null && controller.getDepartmentEmployeeList![index].userFullName!.isNotEmpty
                           ? '${controller.getDepartmentEmployeeList?[index].userFullName}'
                           : '?',
                       fontWeight: FontWeight.w700,
@@ -879,11 +848,7 @@ class HomeView extends GetView<HomeController> {
                       color: Col.inverseSecondary,
                       textAlign: TextAlign.center),
                   cardTextView(
-                      text: controller.getDepartmentEmployeeList?[index]
-                                      .userDesignation !=
-                                  null &&
-                              controller.getDepartmentEmployeeList![index]
-                                  .userDesignation!.isNotEmpty
+                      text: controller.getDepartmentEmployeeList?[index].userDesignation != null && controller.getDepartmentEmployeeList![index].userDesignation!.isNotEmpty
                           ? '${controller.getDepartmentEmployeeList?[index].userDesignation}'
                           : '?',
                       maxLines: 2,

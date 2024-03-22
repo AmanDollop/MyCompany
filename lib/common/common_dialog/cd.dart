@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:task/common/common_packages/scroll_behavior/scroll_behavior.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -31,8 +33,7 @@ class CD {
           child: CupertinoAlertDialog(
             title: Text(
               title,
-              style:
-                  titleStyle ?? Theme.of(Get.context!).textTheme.displayLarge,
+              style: titleStyle ?? Theme.of(Get.context!).textTheme.displayLarge,
             ),
             content: content != null
                 ? Text(
@@ -49,10 +50,7 @@ class CD {
                   child: Text(
                     leftButtonTitle,
                     style: leftTitleStyle ??
-                        Theme.of(Get.context!)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(color: Col.primary),
+                        Theme.of(Get.context!).textTheme.labelLarge?.copyWith(color: Col.gBottom),
                   ),
                 ),
               if (rightButtonTitle != null)
@@ -62,10 +60,7 @@ class CD {
                   child: Text(
                     rightButtonTitle,
                     style: rightTitleStyle ??
-                        Theme.of(Get.context!)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(color: Col.primary),
+                        Theme.of(Get.context!).textTheme.labelLarge?.copyWith(color: Col.gBottom),
                   ),
                 ),
             ],
@@ -98,7 +93,7 @@ class CD {
       bool isDismiss = true}) async {
     await CD.commonIosAlertDialogBox(
         title: C.textDeleteDialogTitle,
-        content: '${C.textDeleteDialogContent}',
+        content: C.textDeleteDialogContent,
         clickOnLeftButton: clickOnCancel,
         clickOnRightButton: clickOnDelete,
         leftButtonTitle: C.textCancel,
@@ -424,6 +419,80 @@ class CD {
           ),
         );
       },
+    );
+  }
+}
+class ExitConfirmationDialog extends StatelessWidget {
+  const ExitConfirmationDialog({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.px),
+      ),
+      contentPadding: EdgeInsets.zero,
+      actionsPadding: EdgeInsets.zero,
+      titlePadding: EdgeInsets.zero,
+      iconPadding: EdgeInsets.zero,
+      content: Container(
+        decoration: BoxDecoration(
+          gradient: CW.commonLinearGradientView(),
+          borderRadius: BorderRadius.circular(10.px),
+          boxShadow: [
+            BoxShadow(
+              color: Col.primary.withOpacity(.6),
+              blurRadius: 6.px,
+              spreadRadius: 2.px
+            )
+          ]
+        ),
+        padding: EdgeInsets.all(12.px),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // SizedBox(height: 6.px),
+            Text(
+              C.textExitDialogTitle,
+              style: Theme.of(Get.context!).textTheme.displaySmall,
+            ),
+            SizedBox(height: 5.px),
+            Text(
+              C.textExitDialogContent,
+              style: Theme.of(Get.context!).textTheme.labelLarge,
+            ),
+            SizedBox(height: 20.px),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: CW.myOutlinedButton(
+                    height: 30.px,
+                    radius: 4.px,
+                    onPressed: () {
+                      Get.back();
+                    },
+                    buttonText: C.textCancel,
+                    buttonTextFontSize: 12.px
+                  ),
+                ),
+                SizedBox(width: 10.px),
+                Expanded(
+                  child: CW.myElevatedButton(
+                    height: 30.px,
+                    borderRadius: 4.px,
+                    onPressed: () {
+                      exit(0);
+                    },
+                    buttonText: C.textExit,
+                    buttonTextFontSize: 12.px
+                  ),
+                ),
+              ],
+            ),
+            // SizedBox(height: 6.px),
+          ],
+        ),
+      ),
     );
   }
 }

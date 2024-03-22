@@ -55,7 +55,124 @@ class MyDropdown<T> extends StatelessWidget {
               ),
               // onTap: onTapForTextFiled,
             ),
-            AnimatedCrossFade(
+            // if(isOpen)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              constraints: BoxConstraints(maxHeight: isOpen ? 150 : 0),
+              curve: Curves.fastOutSlowIn,
+              margin: EdgeInsets.only(top: 10.px),
+              // constraints: BoxConstraints(maxHeight: 150.px),
+              decoration: BoxDecoration(
+                // border: Border.all(color: Col.primary, width: .5.px),
+                color: Col.gCardColor,
+                borderRadius: BorderRadius.circular(12.px),
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: nameList.length,
+                padding: EdgeInsets.symmetric(vertical: 8.px, horizontal: 4.px),
+                itemBuilder: (context, index) {
+                  // if(selectedItem == nameList[index]){
+                  //   String valueToMove = nameList.removeAt(index);
+                  //   nameList.insert(0, valueToMove);
+                  // }
+                  return GestureDetector(
+                    onTap: () {
+                      // Call onChanged callback and pass the selected item
+                      clickOnListOfDropDown(items[index]);
+                    },
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: index == nameList.length - 1 ? 0.px : 6.px),
+                      padding: EdgeInsets.all(selectedItem == nameList[index] ? 10.px : 6.px),
+                      decoration: BoxDecoration(
+                          color: selectedItem == nameList[index]
+                              ? Col.primary.withOpacity(.1)
+                              : null,
+                          borderRadius: BorderRadius.circular(4.px)),
+                      child: Row(
+                        children: [
+                          if (selectedItem == nameList[index])
+                            Icon(Icons.check, color: Col.primary, size: 16.px),
+                          SizedBox(width: 6.px),
+                          Flexible(
+                            child: Text(
+                              nameList[index],
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: selectedItem == nameList[index] ? Col.primary : Col.gTextColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+             /* AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.fastOutSlowIn,
+              switchOutCurve: Curves.fastOutSlowIn,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SizeTransition(
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                );
+              },
+              child: isOpen
+                  ? Container(
+                key: UniqueKey(), // Ensure that Flutter treats the container as a new widget when it changes
+                margin: EdgeInsets.only(top: 10.px),
+                decoration: BoxDecoration(
+                  color: Col.gCardColor,
+                  borderRadius: BorderRadius.circular(12.px),
+                ),
+                constraints: BoxConstraints(maxHeight: 150.px),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: nameList.length,
+                  padding: EdgeInsets.symmetric(vertical: 8.px, horizontal: 4.px),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        clickOnListOfDropDown(items[index]);
+                      },
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(bottom: index == nameList.length - 1 ? 0.px : 6.px),
+                        padding: EdgeInsets.all(selectedItem == nameList[index] ? 10.px : 6.px),
+                        decoration: BoxDecoration(
+                          color: selectedItem == nameList[index] ? Col.primary.withOpacity(.1) : null,
+                          borderRadius: BorderRadius.circular(4.px),
+                        ),
+                        child: Row(
+                          children: [
+                            if (selectedItem == nameList[index])
+                              Icon(Icons.check, color: Col.primary, size: 16.px),
+                            SizedBox(width: 6.px),
+                            Flexible(
+                              child: Text(
+                                nameList[index],
+                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: selectedItem == nameList[index] ? Col.primary : Col.gTextColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+                  : SizedBox(),
+            ),*/
+             /*  AnimatedCrossFade(
                 firstChild: Container(
                   margin: EdgeInsets.only(top: 10.px),
                   decoration: BoxDecoration(
@@ -108,11 +225,12 @@ class MyDropdown<T> extends StatelessWidget {
                   ),
                 ),
                 secondChild: const SizedBox(),
+                firstCurve: Curves.fastOutSlowIn,
                 crossFadeState: isOpen?CrossFadeState.showFirst:CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 100),
                 reverseDuration: const Duration(microseconds: 1),
-            ),
-            // Visibility(
+            ),*/
+             // Visibility(
             //   visible: isOpen,
             //   child: Container(
             //     margin: EdgeInsets.only(top: 10.px),

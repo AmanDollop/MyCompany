@@ -91,8 +91,15 @@ class HolidayView extends GetView<HolidayController> {
         height: 40.px,
         margin: EdgeInsets.only(right: 12.px),
         decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            borderRadius: BorderRadius.circular(6.px)),
+         color: Col.gCardColor,
+         borderRadius: BorderRadius.circular(6.px),
+         boxShadow: [
+          BoxShadow(
+              color: Col.primary.withOpacity(.2),
+              blurRadius: 4
+          )
+         ]
+        ),
         child: InkWell(
           onTap: onTap,
           child: Padding(
@@ -103,7 +110,7 @@ class HolidayView extends GetView<HolidayController> {
                 Expanded(
                   child: dropDownView,
                 ),
-                Icon(Icons.arrow_drop_down, color: Col.darkGray)
+                Icon(Icons.arrow_drop_down, color: Col.gTextColor)
               ],
             ),
           ),
@@ -112,7 +119,7 @@ class HolidayView extends GetView<HolidayController> {
 
   Widget yearDropDownView() => Text(
         controller.yearForMonthViewValue.value,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+        style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
       );
@@ -182,28 +189,28 @@ class HolidayView extends GetView<HolidayController> {
             monthNameTextView(
                 text: controller.holidayList?[index].holidayStartDate != null && controller.holidayList![index].holidayStartDate!.isNotEmpty
                     ? CMForDateTime.formatWithLeadingZeros(DateTime.parse('${controller.holidayList?[index].holidayStartDate}').day)
-                    : '?'),
-            dateTextView(text: '${controller.monthNameForCalender[index]}'),
+                    : '?',fontSize: 18.px,color: controller.isAfterDate.value ? Col.gray : Col.gBottom),
+            dateTextView(text: '${controller.monthNameForCalender[index]}',color: controller.isAfterDate.value ? Col.gray : Col.gBottom),
           ],
         ),
       ),
     );
   }
 
-  Widget monthNameTextView({required String text, double? fontSize}) => Text(
+  Widget monthNameTextView({required String text, double? fontSize,Color? color}) => Text(
         text,
         style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
-            color: controller.isAfterDate.value ? Col.gray : Col.inverseSecondary),
+            color: color),
       );
 
-  Widget dateTextView({required String text}) => Text(
+  Widget dateTextView({required String text,Color? color}) => Text(
         text,
         style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             fontSize: 10.px,
-            color: controller.isAfterDate.value ? Col.gray : Col.gTextColor),
+            color: color),
       );
 
   Widget holidayDetailView({required int index}) => Expanded(
@@ -217,13 +224,13 @@ class HolidayView extends GetView<HolidayController> {
                   text: controller.holidayList?[index].holidayName != null && controller.holidayList![index].holidayName!.isNotEmpty
                       ? '${controller.holidayList?[index].holidayName}'
                       : 'Not found!',
-                  fontSize: 12.px),
+                  fontSize: 12.px,color: controller.isAfterDate.value ? Col.gray : Col.inverseSecondary),
               // SizedBox(height: 5.px),
               dateTextView(
                   text: controller.holidayList?[index].holidayStartDate != null && controller.holidayList![index].holidayStartDate!.isNotEmpty
                       ? CMForDateTime.getDayNameFromDate(
                           dateString: '${controller.holidayList?[index].holidayStartDate}')
-                      : 'Not found!'),
+                      : 'Not found!',color: controller.isAfterDate.value ? Col.gray : Col.inverseSecondary),
             ],
           ),
         ),

@@ -97,6 +97,7 @@ class CW {
       bool isContentSizeButton = true,
       Widget? child,
       String? buttonText,
+      double? buttonTextFontSize,
       bool isLoading = false}) {
     return Container(
       height: height ?? 46.px,
@@ -125,14 +126,13 @@ class CW {
                 child: SizedBox(
                   height: progressBarHeight ?? 24.px,
                   width: progressBarWidth ?? 24.px,
-                  child: CW.commonProgressBarView(
-                      color: Col.gBottom, backgroundColor: Col.gray),
+                  child: CW.commonProgressBarView(color: Col.gBottom, backgroundColor: Col.gray),
                 ),
               )
             : child ??
                 Text(
                   buttonText ?? '',
-                  style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: 14.px, color: buttonTextColor ?? Col.text),
+                  style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: buttonTextFontSize ?? 14.px, color: buttonTextColor ?? Col.text),
                 ),
       ),
     );
@@ -153,6 +153,7 @@ class CW {
       String? buttonText,
       bool isLoading = false,
       Color? buttonTextColor,
+        double? buttonTextFontSize,
       LinearGradient? linearGradient}) {
     return wantFixedSize
         ? SizedBox(
@@ -177,10 +178,7 @@ class CW {
                   : child ??
                       Text(
                         buttonText ?? '',
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .displaySmall
-                            ?.copyWith(fontSize: 14.px, color: buttonTextColor),
+                        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize: buttonTextFontSize ?? 14.px, color: buttonTextColor),
                       ),
             ),
           )
@@ -206,10 +204,7 @@ class CW {
                   : child ??
                       Text(
                         buttonText ?? '',
-                        style: Theme.of(Get.context!)
-                            .textTheme
-                            .displaySmall
-                            ?.copyWith(fontSize: 14.px, color: buttonTextColor),
+                        style: Theme.of(Get.context!).textTheme.displaySmall?.copyWith(fontSize:buttonTextFontSize ?? 14.px, color: buttonTextColor),
                       ),
             ),
           );
@@ -246,6 +241,37 @@ class CW {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  static Widget myCheckBoxView({double? height,double? width,required VoidCallback onPressed,required bool checkBoxValue}){
+    return SizedBox(
+      height: height ?? 16.px,
+      width: width ?? 16.px,
+      child: CustomOutlineButton(
+        gradient: CW.commonLinearGradientForButtonsView(),
+        strokeWidth: 1.px,
+        radius: 4.px,
+        onPressed: onPressed,
+        padding: EdgeInsets.zero,
+        child:checkBoxValue
+            ? Center(
+              child: Container(
+                width: width ?? 16.px,
+                height: height ?? 16.px,
+                decoration: BoxDecoration(
+                    gradient: CW.commonLinearGradientForButtonsView(),
+                    borderRadius: BorderRadius.circular(4.px)
+               ),
+               child: Icon(
+                 Icons.check,
+                 color: Col.gBottom,
+                 size: 16.px,
+               ),
+          ),
+        )
+            : const SizedBox(),
       ),
     );
   }
@@ -1817,8 +1843,7 @@ class CW {
                   width: width,
                   color: color,
                   fit: fit,
-                  loadingBuilder: loadingBuilder ??
-                      (context, child, loadingProgress) {
+                  loadingBuilder: loadingBuilder ?? (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return CW.commonShimmerViewForImage(
                             height: height,
@@ -1842,7 +1867,7 @@ class CW {
                         child: Center(
                           child: Text(
                             userShortName ?? "",
-                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.inverseSecondary, fontSize: userShortNameValue ? 30.px : 14.px),
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color: userShortNameColor ?? Col.gBottom, fontSize: userShortNameValue ? 30.px : 14.px),
                           ),
                         ),
                       );

@@ -12,88 +12,100 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CW.commonAppBarView(
-          title: 'Leave Balance',
-          onBackPressed: () => controller.clickOnBackButton(),
-          isLeading: true,
-          actions: [
-            SizedBox(
-              width: 120.px,
-              child: commonDropDownView(
-                onTap: () => controller.clickOnYear(),
-                dropDownView: yearDropDownView(),
-              ),
-            ),
-          ],
-      ),
-      body: Obx(() {
-        if (AC.isConnect.value) {
-          return CW.commonRefreshIndicator(
-            onRefresh: () => controller.onRefresh(),
-            child: ModalProgress(
-              inAsyncCall: controller.apiResValue.value,
-              child: controller.apiResValue.value
-                  ? shimmerView()
-                  : controller.getLeaveTypeBalanceCountModal.value != null
-                      ? ListView(
-                          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
-                          children: [
-                            if (controller.getLeaveTypeBalanceCountModal.value?.isTotalLeave != null && controller.getLeaveTypeBalanceCountModal.value!.isTotalLeave!.isNotEmpty ||
-                                controller.getLeaveTypeBalanceCountModal.value?.isUsedLeave != null && controller.getLeaveTypeBalanceCountModal.value!.isUsedLeave!.isNotEmpty)
-                              Column(
-                                children: [
-                                  Stack(
-                                    alignment: Alignment.center,
+    return CW.commonScaffoldBackgroundColor(
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              appBarView(),
+              Expanded(
+                child: Obx(() {
+                  if (AC.isConnect.value) {
+                    return CW.commonRefreshIndicator(
+                      onRefresh: () => controller.onRefresh(),
+                      child: ModalProgress(
+                        inAsyncCall: controller.apiResValue.value,
+                        child: controller.apiResValue.value
+                            ? shimmerView()
+                            : controller.getLeaveTypeBalanceCountModal.value != null
+                                ? ListView(
+                                    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
                                     children: [
-                                      totalLeaveCircularProgressBarView(),
-                                      totalLeaveCircularProgressBarTextView()
+                                      if (controller.getLeaveTypeBalanceCountModal.value?.isTotalLeave != null && controller.getLeaveTypeBalanceCountModal.value!.isTotalLeave!.isNotEmpty ||
+                                          controller.getLeaveTypeBalanceCountModal.value?.isUsedLeave != null && controller.getLeaveTypeBalanceCountModal.value!.isUsedLeave!.isNotEmpty)
+                                           Column(
+                                          children: [
+                                            Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                totalLeaveCircularProgressBarView(),
+                                                totalLeaveCircularProgressBarTextView()
+                                              ],
+                                            ),
+                                            SizedBox(height: 16.px),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                commonRowForTotalAndUsedLeaveTextView(text: 'Total Leave', containerColor: Col.primary),
+                                                commonRowForTotalAndUsedLeaveTextView(text: 'Used Leave', containerColor: Col.primary.withOpacity(.2),),
+                                              ],
+                                            ),
+                                            SizedBox(height: 16.px),
+                                          ],
+                                        ),
+                                          controller.leaveBalanceCountList != null && controller.leaveBalanceCountList!.isNotEmpty
+                                          ? ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              padding: EdgeInsets.zero,
+                                              itemCount: controller.leaveBalanceCountList?.length,
+                                              itemBuilder: (context, index) {
+                                                return commonCardView(index: index);
+                                              },
+                                            )
+                                          : CW.commonNoDataFoundText(),
                                     ],
-                                  ),
-                                  SizedBox(height: 16.px),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      commonRowForTotalAndUsedLeaveTextView(
-                                          text: 'Total Leave',
-                                          containerColor: Col.primary),
-                                      commonRowForTotalAndUsedLeaveTextView(
-                                          text: 'Used Leave',
-                                          containerColor: Col.primary.withOpacity(.2),),
-                                    ],
-                                  ),
-                                  SizedBox(height: 16.px),
-                                ],
-                              ),
-                                controller.leaveBalanceCountList != null && controller.leaveBalanceCountList!.isNotEmpty
-                                ? ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    padding: EdgeInsets.zero,
-                                    itemCount: controller.leaveBalanceCountList?.length,
-                                    itemBuilder: (context, index) {
-                                      return commonCardView(index: index);
-                                    },
                                   )
                                 : CW.commonNoDataFoundText(),
-                          ],
-                        )
-                      : CW.commonNoDataFoundText(),
-            ),
-          );
-        } else {
-          return CW.commonNoNetworkView();
-        }
-      }),
+                      ),
+                    );
+                  } else {
+                    return CW.commonNoNetworkView();
+                  }
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+
+  Widget appBarView() => CW.myAppBarView(
+    title: 'Leave Balance',
+    onLeadingPressed: () => controller.clickOnBackButton(),
+    padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+    actionValue: true,
+    action: SizedBox(
+      width: 120.px,
+      child: commonDropDownView(
+        onTap: () => controller.clickOnYear(),
+        dropDownView: yearDropDownView(),
+      ),
+    )
+  );
 
   Widget commonDropDownView({required Widget dropDownView, required GestureTapCallback onTap}) => Container(
         height: 40.px,
         margin: EdgeInsets.only(right: 12.px),
         decoration: BoxDecoration(
-            color: Col.inverseSecondary,
+            color: Col.gCardColor,
+            boxShadow: [
+              BoxShadow(
+                color: Col.primary.withOpacity(.2),
+                blurRadius: 4.px
+              )
+            ],
             borderRadius: BorderRadius.circular(6.px),
         ),
         child: InkWell(
@@ -106,7 +118,7 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
                 Expanded(
                   child: dropDownView,
                 ),
-                Icon(Icons.arrow_drop_down, color: Col.darkGray)
+                Icon(Icons.arrow_drop_down, color: Col.gTextColor)
               ],
             ),
           ),
@@ -115,38 +127,51 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
 
   Widget yearDropDownView() => Text(
         controller.yearForMonthViewValue.value,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
+        style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
       );
 
-  Widget totalLeaveCircularProgressBarView() => SizedBox(
-        height: 130.px,
-        width: 130.px,
-        child: CW.commonProgressBarView(
-            value: 0,
-            backgroundColor: Col.primary.withOpacity(.2),
-            color: Col.primary,
-            strokeWidth: 8.px),
-      );
+  Widget totalLeaveCircularProgressBarView() => Container(
+    width: 150.px,
+    height: 150.px,
+    decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Col.primary.withOpacity(.2),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
 
-  Widget totalLeaveCircularProgressBarTextView() => Container(
+          )
+        ]
+    ),
+    child: Center(
+      child: SizedBox(
+            height: 130.px,
+            width: 130.px,
+            child: CW.commonProgressBarView(
+                value: .5,
+                backgroundColor: Col.text,
+                color: Col.primary,
+                strokeWidth: 8.px),
+          ),
+    ),
+  );
+
+  Widget totalLeaveCircularProgressBarTextView() => SizedBox(
         height: 120.px,
         width: 120.px,
-        decoration: BoxDecoration(
-          color: Col.inverseSecondary,
-          shape: BoxShape.circle,
-        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               '00',
-              style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(color: Col.primary, fontWeight: FontWeight.w600),
+              style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(color: Col.inverseSecondary, fontWeight: FontWeight.w600),
             ),
             Text(
               'Leave summary',
-              style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(color: Col.primary, fontWeight: FontWeight.w500),
+              style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -162,7 +187,7 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
           SizedBox(width: 8.px),
           Text(
             text,
-            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w500),
+            style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w500),
           ),
         ],
       );
@@ -170,20 +195,11 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
   Widget commonCardView({required int index}) => Container(
         margin: EdgeInsets.only(bottom: 12.px),
         decoration: BoxDecoration(
-          color: Col.inverseSecondary,
+          color: Col.gCardColor,
           borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(10.px),
             bottomLeft: Radius.circular(10.px),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Col.primary.withOpacity(.1),
-              // blurRadius: 1,
-              spreadRadius: 2,
-              blurRadius: 4,
-              // offset: const Offset(0, 3),
-            )
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +216,7 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
                 controller.leaveBalanceCountList?[index].leaveTypeName != null && controller.leaveBalanceCountList![index].leaveTypeName!.isNotEmpty
                     ? '${controller.leaveBalanceCountList?[index].leaveTypeName}'
                     : '?',
-                style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             Padding(
@@ -239,12 +255,12 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
         children: [
           Text(
             text1,
-            style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           SizedBox(height: 5.px),
           Text(
             text2,
-            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500, fontSize: 10.px),
+            style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500, fontSize: 10.px,color: Col.gTextColor),
           ),
         ],
       );
@@ -275,7 +291,7 @@ class LeaveBalanceView extends GetView<LeaveBalanceController> {
               return Container(
                 margin: EdgeInsets.only(bottom: 12.px),
                 decoration: BoxDecoration(
-                  color: Col.inverseSecondary,
+                  color: Col.gCardColor,
                   borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(10.px),
                     bottomLeft: Radius.circular(10.px),

@@ -27,7 +27,9 @@ class AssignTemplateView extends GetView<AssignTemplateController> {
                   if (AC.isConnect.value) {
                     return ModalProgress(
                         inAsyncCall: false,
-                        child: Padding(
+                        child: controller.apiResValue.value
+                            ? shimmerView()
+                            : Padding(
                           padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
                           child: controller.getAssignTemplateModal.value != null
                               ? Column(
@@ -137,8 +139,7 @@ class AssignTemplateView extends GetView<AssignTemplateController> {
   Widget appBarView() => CW.myAppBarView(
         title: 'Assign Template',
         onLeadingPressed: () => controller.clickOnBackButton(),
-        padding:
-            EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
+        padding: EdgeInsets.only(left: 12.px, right: 6.px, top: 12.px, bottom: 6.px),
       );
 
   Widget dateTextFormFiled({required BuildContext context}) =>
@@ -164,4 +165,59 @@ class AssignTemplateView extends GetView<AssignTemplateController> {
         readOnly: true,
         onTap: () => controller.clickOnDateTextFormFiled(context: context),
       );
+
+  Widget shimmerView() => Padding(
+    padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 16.px),
+    child: Column(
+      children: [
+         CW.commonShimmerViewForImage(height: 40.px, width: double.infinity,radius: 4.px),
+        SizedBox(height: 14.px),
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 8.px, horizontal: 12.px),
+                margin: EdgeInsets.only(bottom: 10.px),
+                decoration: BoxDecoration(
+                  color: Col.gCardColor,
+                  borderRadius: BorderRadius.circular(6.px),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: CW.commonShimmerViewForImage(height: 20.px,radius: 2.px,width: double.infinity),
+                        ),
+                        SizedBox(width: 10.px),
+                        CW.commonShimmerViewForImage(height: 20.px, width: 20.px,radius: 4.px),
+                      ],
+                    ),
+                      SizedBox(height: 4.px),
+                      CW.commonShimmerViewForImage(height: 10.px,radius: 2.px,width: double.infinity),
+                      SizedBox(height: 4.px),
+                      CW.commonShimmerViewForImage(height: 10.px,radius: 2.px,width: double.infinity),
+                      Container(
+                        padding: EdgeInsets.all(6.px),
+                        margin: EdgeInsets.only(top: 4.px),
+                        decoration: BoxDecoration(
+                            color: Col.primary.withOpacity(.2),
+                            borderRadius: BorderRadius.circular(4.px)
+                        ),
+                        child: CW.commonShimmerViewForImage(height: 10.px, width: 40.px,radius: 2.px),
+                      )
+                  ],
+                ),
+              );
+            },
+          ),
+        )
+      ],
+    ),
+  );
 }

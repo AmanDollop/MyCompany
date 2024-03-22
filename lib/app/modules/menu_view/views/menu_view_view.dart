@@ -77,6 +77,7 @@ class MenuViewView extends GetView<MenuViewController> {
         isSearchLabelText: true,
         hintText: 'Search Menus',
         controller: controller.searchController,
+        focusNode: controller.focusNodeSearch,
         onChanged: (value) => controller.searchOnChange(value: value),
         suffixIcon: controller.searchController.text.isNotEmpty
             ? SizedBox(
@@ -90,7 +91,7 @@ class MenuViewView extends GetView<MenuViewController> {
                   child: Center(
                     child: CW.commonNetworkImageView(
                         path: 'assets/icons/cancel_white_icon.png',
-                        color: Col.text,
+                        color: Col.inverseSecondary,
                         isAssetImage: true,
                         width: 12.px,
                         height: 12.px),
@@ -98,17 +99,7 @@ class MenuViewView extends GetView<MenuViewController> {
                 ),
               )
             : const SizedBox(),
-        prefixIcon: SizedBox(
-          width: 24.px,
-          height: 24.px,
-          child: Center(
-            child: CW.commonNetworkImageView(
-                path: 'assets/icons/search_icon.png',
-                isAssetImage: true,
-                width: 24.px,
-                height: 24.px),
-          ),
-        ),
+        prefixIconPath: 'assets/icons/search_icon.png',
       );
 
   Widget cardTextView({required String text}) => Text(
@@ -150,7 +141,6 @@ class MenuViewView extends GetView<MenuViewController> {
                       width: 26.px,
                       height: 26.px,
                       child: CW.commonCachedNetworkImageView(
-                        imageColor: Col.primary,
                         path: controller.searchController.text.isNotEmpty
                             ? '${AU.baseUrlForSearchCompanyImage}${controller.getMenuListForSearch[index].menuImage}'
                             : '${AU.baseUrlForSearchCompanyImage}${controller.getMenuList[index].menuImage}',

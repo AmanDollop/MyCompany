@@ -193,8 +193,16 @@ class LeaveView extends GetView<LeaveController> {
         height: 40.px,
         margin: EdgeInsets.only(right: 12.px),
         decoration: BoxDecoration(
-            color: Col.inverseSecondary,
-            borderRadius: BorderRadius.circular(6.px)),
+            color: Col.gCardColor,
+            borderRadius: BorderRadius.circular(6.px),
+          boxShadow: [
+            BoxShadow(
+              color: Col.primary.withOpacity(.2),
+              // spreadRadius: 4
+              blurRadius: 4
+            )
+          ]
+        ),
         child: InkWell(
           onTap: onTap,
           child: Padding(
@@ -205,7 +213,7 @@ class LeaveView extends GetView<LeaveController> {
                 Expanded(
                   child: dropDownView,
                 ),
-                Icon(Icons.arrow_drop_down, color: Col.darkGray)
+                Icon(Icons.arrow_drop_down, color: Col.gTextColor)
               ],
             ),
           ),
@@ -214,9 +222,7 @@ class LeaveView extends GetView<LeaveController> {
 
   Widget yearDropDownView() => Text(
         controller.yearForMonthViewValue.value,
-        style: Theme.of(Get.context!).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600,),
       );
 
   Widget commonRowForCardView({required String text1, required String text2}) {

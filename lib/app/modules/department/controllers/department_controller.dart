@@ -47,6 +47,7 @@ class DepartmentController extends GetxController {
   final List<String> departmentNameList = [];
   final departmentId = ''.obs;
   final selectedDepartments = ''.obs;
+  final selectedDepartmentsValue = false.obs;
 
 
   @override
@@ -189,16 +190,16 @@ class DepartmentController extends GetxController {
     apiResValue.value = false;
   }
 
-  Future<void> clickOnDepartmentListFilter({required bool selected, required String dId, required String dName}) async {
-    if (selected) {
+  Future<void> clickOnDepartmentListFilter({/*required bool selected, */required String dId, required String dName}) async {
+    // if (selected) {
       apiResValueForDepartment.value = true;
       selectedDepartments.value = dName;
       await callingGetDepartmentEmployeeApi(dId: dId);
       apiResValueForDepartment.value = false;
       print('1111111111111111111111');
-    } else {
+    // } else {
       // selectedDepartments.value = dName;
-    }
+    // }
     count.value++;
   }
 

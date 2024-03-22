@@ -256,6 +256,8 @@ class ApiEndPointAction{
 
   static const addEducation = 'addEducation';
 
+  static const getUserNotification = 'getUserNotificationn';
+
   static const addExperience = 'addExperience';
 
   static const updateSocialInfo = 'updateSocialInfo';

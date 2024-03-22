@@ -172,28 +172,6 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
         onTap: () => controller.clickOnDueTimeTextFormFiled(),
       );
 
-  Widget commonCheckBoxView({required String text, required bool value, required ValueChanged<bool?>? onChanged}) => Container(
-        padding: EdgeInsets.only(
-            left: 20.px, top: 12.px, bottom: 12.px, right: 12.px),
-        decoration: BoxDecoration(
-            border: Border.all(color: Col.gray),
-            borderRadius: BorderRadius.circular(10.px)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text, style: Theme.of(Get.context!).textTheme.labelSmall),
-            SizedBox(
-              height: 24.px,
-              width: 24.px,
-              child: CW.commonCheckBoxView(
-                changeValue: value,
-                onChanged: onChanged,
-              ),
-            )
-          ],
-        ),
-      );
-
   Widget assignView({required BuildContext context}) => Container(
         // height: 100.px,
         width: double.infinity,
@@ -429,10 +407,9 @@ class AddSubTaskView extends GetView<AddSubTaskController> {
                 height: 30.px,
                 width: 30.px,
                 decoration: BoxDecoration(
-                    color: Col.primary,
+                    gradient: CW.commonLinearGradientForButtonsView(),
                     borderRadius: BorderRadius.circular(6.px)),
-                child:
-                    Icon(Icons.close, color: Col.inverseSecondary, size: 20.px),
+                child: Icon(Icons.close, color: Col.inverseSecondary, size: 20.px),
               ),
             )
         ],

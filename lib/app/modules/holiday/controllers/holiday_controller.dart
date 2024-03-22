@@ -105,7 +105,7 @@ class HolidayController extends GetxController {
           monthNameForCalender.add(monthName(monthId: '${DateTime.parse('${element.holidayStartDate}').month}'));
           for (String month in monthNameForCalender) {
             if (!monthNameAndColors.containsKey(month)) {
-              monthNameAndColors[month] = getRandomColorForCards().withOpacity(.4);
+              monthNameAndColors[month] = getRandomColorForCards().withOpacity(.8);
             }
           }
         });

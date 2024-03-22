@@ -14,6 +14,7 @@ class MenuViewController extends GetxController {
   final count = 0.obs;
 
   final searchController = TextEditingController();
+  FocusNode focusNodeSearch = FocusNode();
 
   final apiResValue = true.obs;
   final hideSearchFieldValue = false.obs;

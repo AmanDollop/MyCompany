@@ -4,6 +4,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
 import '../controllers/login_controller.dart';
@@ -40,18 +41,20 @@ class LoginView extends GetView<LoginController> {
                     SizedBox(height: 14.px),
                     Row(
                       children: [
-                        SizedBox(
-                          width: 24.px,
-                          height: 24.px,
-                          child: CW.commonCheckBoxView(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.px)),
-                            changeValue: controller.termsCheckBoxValue.value,
-                            onChanged: (value) {
-                              controller.termsCheckBoxValue.value = value ?? false;
-                            },
-                          ),
-                        ),
+                        CW.myCheckBoxView(onPressed: () {
+                          controller.termsCheckBoxValue.value = !controller.termsCheckBoxValue.value;
+                        }, checkBoxValue: controller.termsCheckBoxValue.value,),
+                        // SizedBox(
+                        //   width: 24.px,
+                        //   height: 24.px,
+                        //   child: CW.commonCheckBoxView(
+                        //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.px)),
+                        //     changeValue: controller.termsCheckBoxValue.value,
+                        //     onChanged: (value) {
+                        //       controller.termsCheckBoxValue.value = value ?? false;
+                        //     },
+                        //   ),
+                        // ),
                         SizedBox(width: 5.px),
                         Flexible(
                           child: RichText(

@@ -7,6 +7,7 @@ import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_leave_type_balance_count_modal.dart';
 import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_methods/cm.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/theme/constants/constants.dart';
 
@@ -62,7 +63,7 @@ class LeaveBalanceController extends GetxController {
           Center(
             child: Text(
               'Select Year',
-              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(Get.context!).textTheme.displaySmall,
             ),
           ),
           SizedBox(height: 14.px),
@@ -80,37 +81,37 @@ class LeaveBalanceController extends GetxController {
                         right: index % 2 == 0 ? C.margin / 2 : C.margin,
                         top: C.margin / 2,
                         bottom: 0.px),
-                    child: Container(
-                      height: 46.px,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.px),
-                        color: yearForMonthViewValue.value == yearForMonthViewList[index]
-                            ? Col.primary.withOpacity(.08)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: yearForMonthViewValue.value == yearForMonthViewList[index]
-                              ? Col.primary
-                              : Col.darkGray,
-                          width: yearForMonthViewValue.value == yearForMonthViewList[index]
-                              ? 1.5.px
-                              : 1.px,
-                        ),
+                    child: CustomOutlineButton(
+                      onPressed: () => clickOnYearValue(index: index),
+                      padding: EdgeInsets.only(left: 14.px, right: 0.px,top: 2.px,bottom: 2.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: yearForMonthViewValue.value == yearForMonthViewList[index]
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
                       ),
-                      child: InkWell(
-                        onTap: () => clickOnYearValue(index: index),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.px, horizontal: 10.px),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                yearForMonthViewList[index],
-                                style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
+                      strokeWidth: 1.px,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              yearForMonthViewList[index],
+                              style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500,color: yearForMonthViewValue.value == yearForMonthViewList[index]
+                                  ? Col.primary
+                                  : Col.inverseSecondary),
+                            ),
+                          ],
                         ),
                       ),
                     ),

@@ -505,28 +505,28 @@ class AddLeaveView extends GetView<AddLeaveController> {
       children: [
        controller.applyBulkLeaveButtonHideAndShowValue.value
            ? Container(
-         width: 16.px,
-         height: 16.px,
-         decoration: BoxDecoration(
-           border: Border.all(
-             color: Col.gray,
-             width: 1.px,
-           ),
-           borderRadius: BorderRadius.circular(4.px)
-         ),
-       )
+              width: 16.px,
+              height: 16.px,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Col.gray,
+                  width: 1.px,
+                ),
+                borderRadius: BorderRadius.circular(4.px)
+              ),
+            )
            : SizedBox(
-          height: 16.px,
-          width: 16.px,
-          child: CW.commonCheckBoxView(
-            changeValue: controller.applyBulkLeaveValue.value,
-            onChanged: (value) async {
-              if(!controller.applyBulkLeaveValue.value){
-                await controller.openBottomSheetForApplyBulkLeaves();
-              }else{
+             height: 16.px,
+             width: 16.px,
+             child: CW.myCheckBoxView(
+               checkBoxValue: controller.applyBulkLeaveValue.value,
+               onPressed: () async {
+                 if(!controller.applyBulkLeaveValue.value){
+                   await controller.openBottomSheetForApplyBulkLeaves();
+                 }else{
 
-              }
-              controller.count.value++;
+                 }
+                 controller.count.value++;
             },
           ),
         ),

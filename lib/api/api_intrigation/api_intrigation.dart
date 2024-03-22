@@ -25,6 +25,7 @@ import 'package:task/api/api_model/get_leave_type_balance_modal.dart';
 import 'package:task/api/api_model/get_leave_type_modal.dart';
 import 'package:task/api/api_model/get_monthly_attendance_data_modal.dart';
 import 'package:task/api/api_model/get_my_team_member_modal.dart';
+import 'package:task/api/api_model/get_notification_modal.dart';
 import 'package:task/api/api_model/get_penalty_modal.dart';
 import 'package:task/api/api_model/get_reporting_person_modal.dart';
 import 'package:task/api/api_model/get_task_time_line_modal.dart';
@@ -383,6 +384,34 @@ class CAI extends GetxController{
        if (response != null) {
       if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
         getUserData = UserDataModal.fromJson(jsonDecode(response.body));
+        return getUserData;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static Future<GetNotificationModal?> getNotificationApi({
+    required Map<String, dynamic> bodyParams,
+  }) async {
+
+    String baseUrl = await baseUrlReturn();
+
+    GetNotificationModal? getUserData;
+
+    Map<String, String> authorization = await userToken();
+
+    http.Response? response = await MyHttp.postMethod(
+        url: '$baseUrl${AU.endPointUserControllerApi}',
+        bodyParams: bodyParams,
+        context: Get.context!,
+        token: authorization,
+        showSnackBar: false);
+    if (response != null) {
+      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true)) {
+        getUserData = GetNotificationModal.fromJson(jsonDecode(response.body));
         return getUserData;
       } else {
         return null;
@@ -1592,30 +1621,6 @@ class CAI extends GetxController{
       return null;
     }
   }
-
-  /*static Future<http.Response?> submitTemQuestionApi({
-    required Map<String, dynamic> bodyParams,
-  }) async {
-    String baseUrl = await baseUrlReturn();
-
-    Map<String, String> authorization = await userToken();
-
-    http.Response? response = await MyHttp.postMethod(
-        url: '$baseUrl${AU.endPointWorkReportControllerApi}',
-        bodyParams: bodyParams,
-        context: Get.context!,
-        token: authorization,
-        showSnackBar: false);
-    if (response != null) {
-      if (await CM.checkResponse(response: response, wantInternetFailResponse: true, wantShowFailResponse: true,wantShowSuccessResponse: true)) {
-        return response;
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }*/
 
   static Future<http.Response?> submitTemQuestionApi({
     required Map<String, dynamic> bodyParams,

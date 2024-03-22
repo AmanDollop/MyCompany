@@ -191,6 +191,27 @@ class DepartmentView extends GetView<DepartmentController> {
       );
 
   Widget buildFilterChips() => Wrap(
+    spacing: 10.px,
+    runSpacing: 10.px,
+    children: controller.departmentList!.map((department) {
+      return CustomFilterChip(
+        label: department.departmentName ?? '',
+        selected: controller.selectedDepartments.value == department.departmentName
+            ? true
+            : false,
+        onTap: () => controller.clickOnDepartmentListFilter(
+            // selected: controller.selectedDepartmentsValue.value,
+            dId: department.departmentId ?? '',
+            dName: department.departmentName ?? '',
+         ),
+        selectedGradient: CW.commonLinearGradientForButtonsView(),
+        unselectedBorderColor: Colors.grey, // Customize the border color for unselected state
+      );
+    }).toList(),
+  );
+
+
+  /*Widget buildFilterChips() => Wrap(
         spacing: 8.px,
         runSpacing: 0.px,
         children: controller.departmentList!.map((department) {
@@ -211,10 +232,10 @@ class DepartmentView extends GetView<DepartmentController> {
             backgroundColor: Col.gCardColor,
             checkmarkColor: Col.gBottom,
             selectedColor: Col.primary,
-            elevation: 0,
+            // elevation: 0,
           );
         }).toList(),
-      );
+      );*/
 
   Widget cardTextView({required String text, double? fontSize, Color? color, int? maxLines, FontWeight? fontWeight, TextAlign? textAlign}) => Text(
         text,
@@ -293,4 +314,72 @@ class DepartmentView extends GetView<DepartmentController> {
   );
 
 }
+class CustomFilterChip extends StatefulWidget {
+  final String label;
+  final bool selected;
+  final Gradient selectedGradient;
+  final Color unselectedBorderColor;
+  final GestureTapCallback onTap;
 
+  const CustomFilterChip({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.selectedGradient,
+    required this.unselectedBorderColor,
+    required this.onTap,
+  });
+
+  @override
+  _CustomFilterChipState createState() => _CustomFilterChipState();
+}
+
+class _CustomFilterChipState extends State<CustomFilterChip> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink(
+      decoration: widget.selected
+          ? BoxDecoration(
+            gradient: widget.selectedGradient,
+            borderRadius: BorderRadius.circular(4.px),
+          )
+          : BoxDecoration(
+           color: Col.gCardColor,
+           borderRadius: BorderRadius.circular(4.px),
+      ),
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(4.px),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.px, horizontal: 12.px),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.check,color: widget.selected
+                  ? Col.gBottom
+                  : Colors.transparent,size: widget.selected?14.px:0.px,fill: 0,grade: 0,weight: 1),
+              if(widget.selected)
+              SizedBox(width: 5.px),
+              Text(
+                widget.label,
+                style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(
+                  color: widget.selected
+                      ? Col.gBottom
+                      : Col.gTextColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10.px
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

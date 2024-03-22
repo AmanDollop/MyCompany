@@ -196,16 +196,26 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         1000; // Multiply by 1000 to convert to meters
   }
 
-  willPop() {
+  willPop() async {
     if(scrollController.value.position.pixels == 0.0){
-      CD.commonIosExitAppDialog(
-        clickOnCancel: () {
-          Get.back();
-        },
-        clickOnExit: () {
-          exit(0);
-        },
+      // CD.commonIosExitAppDialog(
+      //   clickOnCancel: () {
+      //     Get.back();
+      //   },
+      //   clickOnExit: () {
+      //     exit(0);
+      //   },
+      // );
+      bool exitConfirmed = await showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder: (BuildContext context) => const ExitConfirmationDialog(),
       );
+
+      if (exitConfirmed == true) {
+        // Handle exit logic here
+        // For example, call SystemNavigator.pop();
+      }
     }else{
       scrollController.value.position.jumpTo(0.0);
     }
@@ -737,16 +747,17 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     if (getBreakDetailsModal.value != null) {
       if (getBreakDetailsList != null && getBreakDetailsList!.isNotEmpty) {
         breakTypeIdCheckBoxValue.value = '';
-        await showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return WillPopScope(
-                onWillPop: () async {
-                  return false;
-                },
-                child: const BreakDialog(),
-              );
-            });
+        // await showDialog(
+        //     context: Get.context!,
+        //     builder: (context) {
+        //       return WillPopScope(
+        //         onWillPop: () async {
+        //           return false;
+        //         },
+        //         child: const BreakDialog(),
+        //       );
+        //     });
+        const BreakDialog().openBreakBottomSheet();
       } else {
         CM.showSnackBar(message: 'Break not found!');
       }

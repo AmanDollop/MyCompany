@@ -101,8 +101,7 @@ class AddDocumentView extends GetView<AddDocumentController> {
           child: SizedBox(
             width: double.infinity,
             height: 100.px,
-            child: controller.result.value?.paths != null &&
-                    controller.result.value!.paths.isNotEmpty
+            child: controller.result.value?.paths != null && controller.result.value!.paths.isNotEmpty
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -129,15 +128,18 @@ class AddDocumentView extends GetView<AddDocumentController> {
                               ),
                       ),
                       InkWell(
+                        borderRadius: BorderRadius.circular(6.px),
                         onTap: () => controller.clickOnRemoveFileButton(),
                         child: Ink(
                           height: 30.px,
                           width: 30.px,
                           decoration: BoxDecoration(
-                              color: Col.primary,
-                              borderRadius: BorderRadius.circular(6.px)),
+                              gradient: CW.commonLinearGradientForButtonsView(),
+                              borderRadius: BorderRadius.circular(6.px),
+                          ),
                           child: Icon(Icons.close,
-                              color: Col.inverseSecondary, size: 20.px),
+                              color: Col.gBottom, size: 20.px
+                          ),
                         ),
                       )
                     ],
