@@ -4,6 +4,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
+import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_packages/load_more/lm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -87,10 +88,12 @@ class WorkReportView extends GetView<WorkReportController> {
                                                           SizedBox(height: 8.px),
                                                           Text(
                                                             controller.workReportList[index].workReport != null && controller.workReportList[index].workReport!.isNotEmpty
-                                                                ? '${controller.workReportList[index].workReport}'
+                                                                ? CM.removeHtmlTags(htmlString: '${controller.workReportList[index].workReport}')
                                                                 : 'Data not found!',
-                                                            style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500, fontSize: 10.px,color: Col.gTextColor),
-                                                            maxLines: 1,
+                                                            style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w500, fontSize: controller.workReportList[index].workReportType == '1'
+                                                                ? 12.px
+                                                                : 10.px,color: Col.gTextColor),
+                                                            maxLines: 2,
                                                             overflow: TextOverflow.ellipsis,
                                                           ),
                                                           if(controller.workReportList[index].workReportDate != null && controller.workReportList[index].workReportDate!.isNotEmpty)

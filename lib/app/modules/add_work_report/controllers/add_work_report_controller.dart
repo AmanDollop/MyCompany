@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -157,24 +158,25 @@ class AddWorkReportController extends GetxController {
   Future<void> clickOnAddButton() async {
     if(key.currentState!.validate()){
       if(editorText.value.isNotEmpty) {
-        await callingAddWorkReportApi(editorText: editorText.value);
+        print('editorText.value::: ${editorText.value}');
+        await callingAddWorkReportApi();
       }else{
         CM.showSnackBar(message: 'Enter work report');
       }
     }
   }
 
-  Future<void> callingAddWorkReportApi({required String editorText}) async {
+  Future<void> callingAddWorkReportApi() async {
     try{
       addButtonValue.value = true;
       bodyParamsForAddWorkReportApi = {
         AK.action: ApiEndPointAction.addWorkReport,
-        AK.workReport: CM.removeHtmlTags(editorText),
+        AK.workReport: editorText.value,
         AK.workReportDate: CMForDateTime.dateTimeFormatForApi(dateTime: dateController.text.trim().toString()),
       };
       http.Response? response = await CAI.addWorkReportApi(bodyParams: bodyParamsForAddWorkReportApi, filePath: imageFilePath);
       if(response != null && response.statusCode == 200){
-        Get.back();
+        // Get.back();
       }else{
         CM.error();
       }

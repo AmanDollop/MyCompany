@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_intrigation/api_intrigation.dart';
 import 'package:task/api/api_model/get_work_report_detail_modal.dart';
+import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/theme/colors/colors.dart';
@@ -16,12 +20,78 @@ class WorkReportDetailController extends GetxController {
   final workReportId = ''.obs;
 
   final getWorkReportDetailModal = Rxn<GetWorkReportDetailModal>();
-  WorkDetails? workDetails;
+  WorkReportDetail? workDetails;
+  List<WorkReportQueAns>? workReportQueAns;
   Map<String, dynamic> bodyParamsForGetWorkReportDetailApi = {};
 
   final docType = ''.obs;
 
+
+
+  final QuillEditorController quillEditorController = QuillEditorController();
+  final hasFocus = false.obs;
+  final customToolBarList = [
+    ToolBarStyle.bold,
+    ToolBarStyle.italic,
+    ToolBarStyle.align,
+    ToolBarStyle.color,
+    ToolBarStyle.background,
+    ToolBarStyle.listBullet,
+    ToolBarStyle.listOrdered,
+    ToolBarStyle.clean,
+    // ToolBarStyle.addTable,
+    // ToolBarStyle.editTable,
+  ];
+  final editorText = ''.obs;
+
+  final dateForWorkReportController = TextEditingController();
+  FocusNode focusNodeDateForWorkReport = FocusNode();
+
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
+
+
+  final key = GlobalKey<FormState>();
+  final descriptionController = TextEditingController();
+  FocusNode focusNodeParagraph = FocusNode();
+
+  final radioIndexValue = '-1'.obs;
+
+  List<String> checkBoxType = [];
+
+  final dropDownController = TextEditingController();
+  final selectedDropDownValue = ''.obs;
+
+
+  List<String> selectedItems = [];
+
+  final dateController = TextEditingController();
+  FocusNode focusNodeDate = FocusNode();
+
+  final timeController = TextEditingController();
+  FocusNode focusNodeTime = FocusNode();
+
+  String dateAndTimeBothValueAdd = '';
+  final dateForDateAndTimeController = TextEditingController();
+  FocusNode focusNodeDateForDateAndTime = FocusNode();
+  final timeForDateAndTimeController = TextEditingController();
+  FocusNode focusNodeTimeForDateAndTime = FocusNode();
+
+  final progress = 0.obs;
+
+  String topicAndTimeBothValueAdd = '';
+  final topicWithTimeForTopicController = TextEditingController();
+  FocusNode focusNodeTopicWithTimeForTopic = FocusNode();
+  final timeForTopicController = TextEditingController();
+  FocusNode focusNodeTimeForTopic = FocusNode();
+
+  String paragraphAndTimeBothValueAdd = '';
+  final descriptionWithTimeForParagraphController = TextEditingController();
+  FocusNode focusNodeParagraphWithTimeForParagraph = FocusNode();
+  final timeForParagraphController = TextEditingController();
+  FocusNode focusNodeTimeForParagraph = FocusNode();
+
+  final textController = TextEditingController();
+  FocusNode focusNodeText = FocusNode();
 
   @override
   Future<void> onInit() async {
@@ -49,14 +119,20 @@ class WorkReportDetailController extends GetxController {
   Future<void> callingWorkReportDetailApi() async {
     try {
       bodyParamsForGetWorkReportDetailApi = {
-        AK.action: ApiEndPointAction.workDetails,
+        AK.action: ApiEndPointAction.workReportDetail,
         AK.workReportId: workReportId.value,
       };
-      getWorkReportDetailModal.value = await CAI.getWorkReportDetailApi(
-          bodyParams: bodyParamsForGetWorkReportDetailApi);
+      getWorkReportDetailModal.value = await CAI.getWorkReportDetailApi(bodyParams: bodyParamsForGetWorkReportDetailApi);
       if (getWorkReportDetailModal.value != null) {
-        workDetails = getWorkReportDetailModal.value?.workDetails;
-        print('workDetails:::::: ${workDetails?.workReport}');
+        workDetails = getWorkReportDetailModal.value?.workReportDetail;
+
+        if(workDetails?.workReportType == '0'){
+          if(workDetails?.createdDate != null && workDetails!.createdDate!.isNotEmpty) {
+            dateForWorkReportController.text = CMForDateTime.dateFormatForDateMonthYear(date: workDetails?.createdDate ?? '');
+          }
+        }
+        workReportQueAns = workDetails?.workReportQueAns ?? [];
+        log('workDetails:::::: ${workReportQueAns}');
       }
     } catch (e) {
       print('callingWorkReportDetailApi:::: error:::::  $e');
@@ -66,10 +142,9 @@ class WorkReportDetailController extends GetxController {
     apiResValue.value = false;
   }
 
-  Future<void> clickOnImageView({required int index}) async {
+  Future<void> clickOnImageViewForWorkReport({required int index}) async {
     if (workDetails?.workReportFile?[index] != null && workDetails!.workReportFile![index].isNotEmpty) {
-      String docTypeValue =
-          CM.getDocumentType(filePath: '${workDetails?.workReportFile?[index]}');
+      String docTypeValue = CM.getDocumentType(filePath: '${workDetails?.workReportFile?[index]}');
       if (docTypeValue == 'Image') {
         await showGeneralDialog(
           context: Get.context!,

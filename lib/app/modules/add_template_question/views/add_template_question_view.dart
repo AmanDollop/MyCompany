@@ -265,37 +265,29 @@ class AddTemplateQuestionView extends GetView<AddTemplateQuestionController> {
                     backgroundColor: Col.gCardColor,
                     inputAction: InputAction.newline,
                     loadingBuilder: (context) {
-
+                      controller.quillEditorController.onEditorLoaded(() {
+                        if(controller.localDataList[index].answer != null && controller.localDataList[index].answer!.isNotEmpty){
+                          controller.quillEditorController.setText('${controller.localDataList[index].answer}');
+                        }
+                        debugPrint('Editor has been loaded::::::  ${controller.localDataList[index].answer}');
+                      });
                       return Container(
                         height: 150.px,
                         color: Col.gCardColor,
                         child: Center(
                           child: Text('Loading...',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Col.primary)),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Col.primary),
+                          ),
                         ),
                       );
                     },
                     onTextChanged: (text) {
                       debugPrint('1111:::::widget text change $text');
-
                       if(text.isNotEmpty) {
                         controller.localDataList[index].answer = text;
                       }
                       print('controller.localDataList:::: ${controller.localDataList[index].answer}');
                     },
-                   /* onEditingComplete: (s) => debugPrint('1111:::::Editing completed $s'),
-                    onFocusChanged: (focus) {
-                      debugPrint('1111:::::has focus $focus');
-                      controller.hasFocus.value = focus;
-                    },
-                    onEditorCreated: () async {
-                      debugPrint('Editor has been loaded');
-                      // await controller.quillEditorController.setText('Testing text on load on editor created method');
-                    },
-                    onEditorResized: (height) =>
-                        debugPrint('1111:::::Editor resized $height'),
-                    onSelectionChanged: (sel) => debugPrint(
-                        '1111:::::index ${sel.index}, range ${sel.length}'),*/
                   ),
                 ],
               ),
@@ -913,7 +905,6 @@ class AddTemplateQuestionView extends GetView<AddTemplateQuestionController> {
       ),
     ),
   );
-
 
 }
 

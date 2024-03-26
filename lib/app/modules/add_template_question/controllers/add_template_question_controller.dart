@@ -45,12 +45,6 @@ class AddTemplateQuestionController extends GetxController {
   final radioIndexValue = '-1'.obs;
   final radioType = ''.obs;
 
-  final checkBoxText = [
-    'User experience and User interface designer1.',
-    'User experience and User interface designer2.',
-    'User experience and User interface designer4.',
-  ];
-  final checkBoxIndexValue = '-1'.obs;
   List<String> checkBoxType = [];
 
   final isDropDownOpenValue = false.obs;

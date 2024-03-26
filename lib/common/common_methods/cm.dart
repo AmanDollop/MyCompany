@@ -115,7 +115,7 @@ class CM {
     return assetImagePath.contains('assets/');
   }
 
-  static String removeHtmlTags(String htmlString) {
+  static String removeHtmlTags({required String htmlString}) {
     return htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
   }
 

@@ -643,8 +643,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) =>
-      Column(
+  Widget commonCard({required Widget listWidget, required String titleText, bool viewAllButtonValue = false, VoidCallback? onPressedViewAllButton}) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(

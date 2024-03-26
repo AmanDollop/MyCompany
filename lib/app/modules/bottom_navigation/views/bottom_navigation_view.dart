@@ -105,8 +105,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
                       GButton(
                         icon: selectedBottomNavigationIndex.value == 1
                             ? selectedCommonButtonView(
-                                imagePath:
-                                    'assets/bottom_bar_icons/dark_utilities_icon.png',
+                                imagePath: 'assets/bottom_bar_icons/dark_utilities_icon.png',
                                 title: 'Utilities')
                             : unSelectedCommonButtonView(
                                 imagePath:
@@ -159,7 +158,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
                 imagePath,
                 width: 20.px,
                 height: 20.px,
-                color: Col.gBottom,
+                // color: Col.gBottom,
               ),
               SizedBox(width: 14.px),
               selectedTitleTextView(title: title,),

@@ -234,10 +234,7 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
         messageDetail.userName != null && messageDetail.userName!.isNotEmpty
             ? '${messageDetail.userName}'
             : 'Not found!',
-        style: Theme.of(Get.context!)
-            .textTheme
-            .labelMedium
-            ?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500,color: Col.inverseSecondary),
+        style: Theme.of(Get.context!).textTheme.labelMedium?.copyWith(fontSize: 10.px, fontWeight: FontWeight.w500,color: Col.primary),
       );
 
   Widget commonTextForStatusMessageView({required int index, int? maxLine, required TimeLine messageDetail}) => Text(
@@ -267,9 +264,9 @@ class TaskTimeLineView extends GetView<TaskTimeLineController> {
             : '?',
         style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
             fontSize: 8.px,
-            color: messageDetail.isSender == false ? Col.error : Col.gTextColor,
+            color: /*messageDetail.isSender == false ? Col.error : Col.gTextColor*/Col.gTextColor,
             fontWeight: FontWeight.w500),
-        textAlign: TextAlign.end,
+            textAlign: TextAlign.end,
       );
 
   Widget sendMessageContainerView() => Container(

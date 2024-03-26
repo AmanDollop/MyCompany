@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:task/app/app_controller/ac.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/model_proress_bar/model_progress_bar.dart';
@@ -24,7 +25,8 @@ class NotificationView extends GetView<NotificationController> {
                 return Expanded(
                   child: CW.commonRefreshIndicator(
                     onRefresh: () => controller.onRefresh(),
-                    child: ModalProgress(
+                    child: AC.isConnect.value
+                           ? ModalProgress(
                       inAsyncCall: controller.apiResValue.value,
                       child: controller.apiResValue.value
                           ? shimmerView()
@@ -110,7 +112,8 @@ class NotificationView extends GetView<NotificationController> {
                                     )
                                   : CW.commonNoDataFoundText()
                               : CW.commonNoDataFoundText(),
-                    ),
+                    )
+                           : CW.commonNoNetworkView(),
                   ),
                 );
               }),

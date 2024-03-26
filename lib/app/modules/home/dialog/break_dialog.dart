@@ -19,8 +19,7 @@ class BreakDialog extends GetView<HomeController> {
       controller.breakDialogConfirmButtonValue.value = false;
       return Dialog(
         elevation: 0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
         backgroundColor: Col.inverseSecondary,
         child: SizedBox(
           height: 300.px,
@@ -149,7 +148,7 @@ class BreakDialog extends GetView<HomeController> {
         Obx(() {
           controller.count.value;
           return SizedBox(
-            height: 300.px,
+            height: 350.px,
             child: Padding(
               padding: EdgeInsets.only(bottom: 12.px, top: 6.px),
               child: Column(
@@ -170,11 +169,12 @@ class BreakDialog extends GetView<HomeController> {
                     child: ListView.builder(
                       padding: EdgeInsets.symmetric(horizontal: 12.px),
                       itemCount: controller.getBreakDetailsList?.length,
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: const ScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         return Obx(() {
                           controller.count.value;
+                          // print('index == controller.getBreakDetailsList!.length-1::::  ${index == controller.getBreakDetailsList!.length-1}');
                           return Padding(
                             padding: EdgeInsets.only(bottom: 20.px),
                             child: Row(

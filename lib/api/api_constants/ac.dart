@@ -392,7 +392,7 @@ class ApiEndPointAction{
 
   static  const addWorkReport = 'addWorkReport';
 
-  static  const workDetails = 'workDetails';
+  static  const workReportDetail = 'workReportDetail';
 
   static  const getAssignTemplate = 'getAssignTemplate';
 

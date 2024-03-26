@@ -3,7 +3,7 @@ class GetWorkReportModal {
   bool? isAssign;
   List<WorkReport>? workReport;
 
-  GetWorkReportModal({this.message,this.isAssign, this.workReport});
+  GetWorkReportModal({this.message, this.isAssign, this.workReport});
 
   GetWorkReportModal.fromJson(Map<String, dynamic> json) {
     message = json['message'];
@@ -32,21 +32,21 @@ class WorkReport {
   String? workReportDate;
   String? workReportType;
   String? workReport;
-  List<String>? workReportFile;
+  String? createdDate;
 
   WorkReport(
-      {this.workReportDate,
-        this.workReportId,
+      {this.workReportId,
+        this.workReportDate,
         this.workReportType,
         this.workReport,
-        this.workReportFile});
+        this.createdDate});
 
   WorkReport.fromJson(Map<String, dynamic> json) {
     workReportId = json['work_report_id'];
     workReportDate = json['work_report_date'];
     workReportType = json['work_report_type'];
     workReport = json['work_report'];
-    workReportFile = json['work_report_file'].cast<String>();
+    createdDate = json['created_date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -55,7 +55,7 @@ class WorkReport {
     data['work_report_date'] = workReportDate;
     data['work_report_type'] = workReportType;
     data['work_report'] = workReport;
-    data['work_report_file'] = workReportFile;
+    data['created_date'] = createdDate;
     return data;
   }
 }
