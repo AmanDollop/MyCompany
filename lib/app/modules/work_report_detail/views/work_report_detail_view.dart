@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -7,7 +6,6 @@ import 'package:task/api/api_constants/ac.dart';
 import 'package:task/api/api_model/get_work_report_detail_modal.dart';
 import 'package:task/app/app_controller/ac.dart';
 import 'package:task/app/modules/add_template_question/views/add_template_question_view.dart';
-import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/custom_outline_button.dart';
@@ -45,6 +43,7 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
                                       dateTextFormFiledForWorkReport(),
                                       SizedBox(height: 10.px),
                                       editorView(index: 0),
+                                      if(controller.workDetails?.workReportFile != null && controller.workDetails!.workReportFile!.isNotEmpty)
                                       cardView(),
                                     ],
                                   )
@@ -67,8 +66,12 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
                                       );
                                     }
                                  )
-                                : controller.apiResValue.value?const SizedBox():CW.commonNoDataFoundText()
-                            : controller.apiResValue.value?const SizedBox():CW.commonNoDataFoundText(),
+                                : controller.apiResValue.value
+                            ? const SizedBox()
+                            : CW.commonNoDataFoundText()
+                            : controller.apiResValue.value
+                            ? const SizedBox()
+                            : CW.commonNoDataFoundText(),
                       );
                     } else {
                       return CW.commonNoNetworkView();
@@ -330,9 +333,9 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
           /// Todo pending
           if(controller.workReportQueAns?[index].templateAnswer != null && controller.workReportQueAns![index].templateAnswer!.isNotEmpty){
             if(controller.workReportQueAns?[index].templateAnswer?.length == 1){
-              return  filesListForSingle(questionText: questionText, index: index);
+              return  filesListForSingle(questionText: 'Q.$questionNumber - $questionText',isQuestionRequired : isQuestionRequiredValue, index: index);
             }else{
-              return filesListForMultiple(questionText: questionText, index: index);
+              return filesListForMultiple(questionText: 'Q.$questionNumber - $questionText',isQuestionRequired : isQuestionRequiredValue, index: index);
             }
           }else{
             return const SizedBox();
@@ -517,7 +520,6 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
       if(controller.workReportQueAns?[index].templateAnswer != null && controller.workReportQueAns![index].templateAnswer!.isNotEmpty) {
         controller.dropDownController.text = controller.workReportQueAns?[index].templateAnswer?[0] ??'?';
       }
-      print('controller.dropDownController.text::: ${controller.dropDownController.text}');
       return commonColumnForQuestionAndAnswer(
         questionText: questionText,
         isQuestionRequired: isQuestionRequired,
@@ -525,7 +527,7 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
           items: workReportQueAns.templateAnswer ?? [],
           nameList: workReportQueAns.templateAnswer ?? [],
           selectedItem: controller.selectedDropDownValue.value,
-          hintText: 'Select Itemssss',
+          hintText: 'Select Item',
           textEditingController: controller.dropDownController,
           isOpenValue: false,
           onTapForTextFiled: () {},
@@ -813,4 +815,5 @@ class WorkReportDetailView extends GetView<WorkReportDetailController> {
       ),
     );
   }
+
 }

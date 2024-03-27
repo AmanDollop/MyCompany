@@ -794,15 +794,21 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  void clickOnMyTeamCards({required int myTeamCardIndex}) {}
+  void clickOnMyTeamCards({required int myTeamCardIndex}) {
+    Get.toNamed(Routes.OTHER_USER_PROFILE,arguments: [myTeamMemberList?[myTeamCardIndex].userId ?? '']);
+  }
 
   void clickOnYourDepartmentViewAllButton() {
     Get.toNamed(Routes.DEPARTMENT);
   }
 
-  void clickOnReportingPersonCard({required int reportingPersonIndex}) {}
+  void clickOnReportingPersonCard({required int reportingPersonIndex}) {
+    Get.toNamed(Routes.OTHER_USER_PROFILE,arguments: [myReportingTeamList?[reportingPersonIndex].userId ?? '']);
+  }
 
-  void clickOnYourDepartmentCards({required int yourDepartmentCardIndex}) {}
+  void clickOnYourDepartmentCards({required int yourDepartmentCardIndex}) {
+    Get.toNamed(Routes.OTHER_USER_PROFILE,arguments: [getDepartmentEmployeeList?[yourDepartmentCardIndex].userId ?? '']);
+  }
 
   void clickOnGalleryViewAllButton() {}
 

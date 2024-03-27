@@ -712,17 +712,10 @@ class BottomSheetForOTP extends GetxController {
       if (userDataModal.value != null) {
         userData = userDataModal.value?.userDetails;
 
-        userDataFromLocalDataBase.value = await DataBaseHelper()
-            .getParticularData(
-                key: DataBaseConstant.userDetail,
-                tableName: DataBaseConstant.tableNameForUserDetail);
-        userData =
-            UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
-                .userDetails;
+        userDataFromLocalDataBase.value = await DataBaseHelper().getParticularData(key: DataBaseConstant.userDetail, tableName: DataBaseConstant.tableNameForUserDetail);
+        userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
         userDataModal.value?.userDetails?.token = userData?.token;
-        await DataBaseHelper().upDateDataBase(data: {
-          DataBaseConstant.userDetail: json.encode(userDataModal.value)
-        }, tableName: DataBaseConstant.tableNameForUserDetail);
+        await DataBaseHelper().upDateDataBase(data: {DataBaseConstant.userDetail: json.encode(userDataModal.value)}, tableName: DataBaseConstant.tableNameForUserDetail);
       }
     } catch (e) {
       CM.error();

@@ -66,8 +66,7 @@ class DepartmentView extends GetView<DepartmentController> {
                                                   ),
                                                   itemBuilder: (context, index) {
                                                     return GestureDetector(
-                                                      onTap: () =>
-                                                          controller.clickOnCards(myTeamCardIndex: index),
+                                                      onTap: () => controller.clickOnCards(myTeamCardIndex: index),
                                                       onLongPress: () {
                                                         showOverlay(
                                                           context: context,
@@ -265,15 +264,15 @@ class DepartmentView extends GetView<DepartmentController> {
       if(controller.apiResValue.value)
       CW.commonShimmerViewForImage(width: double.infinity, height: 44.px, radius: 12.px),
       if(controller.apiResValue.value)
-      SizedBox(height: 20.px),
+      SizedBox(height: 10.px),
       if(controller.apiResValue.value)
       Row(
         children: [
-          Expanded(child: CW.commonShimmerViewForImage(width: double.infinity, height: 14.px, radius: 2.px)),
+          Expanded(child: CW.commonShimmerViewForImage(width: double.infinity, height: 25.px, radius: 2.px)),
           SizedBox(width: 6.px),
-          Expanded(child: CW.commonShimmerViewForImage(width: double.infinity, height: 14.px, radius: 2.px)),
+          Expanded(child: CW.commonShimmerViewForImage(width: double.infinity, height: 25.px, radius: 2.px)),
           SizedBox(width: 6.px),
-          Expanded(child: CW.commonShimmerViewForImage(width: double.infinity, height: 14.px, radius: 2.px)),
+          Expanded(child: CW.commonShimmerViewForImage(width: double.infinity, height: 25.px, radius: 2.px)),
         ],
       ),
       if(controller.apiResValue.value)

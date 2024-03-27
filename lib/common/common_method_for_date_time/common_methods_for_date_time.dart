@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 
 class CMForDateTime {
 
+  static String dateFormatForDateMonthYearHourMinSec({required String dateAndTime}) {
+    return DateFormat('dd MMM yyyy h:mm a').format(DateTime.parse(dateAndTime)); ///Todo Output: 27 Mar 2024 1:45 PM
+  }
+
   static String dateFormatForDateMonthYear({required String date}) {
     return DateFormat('dd MMM yyyy').format(DateTime.parse(date)); ///Todo output => 03 Feb 2002
   }

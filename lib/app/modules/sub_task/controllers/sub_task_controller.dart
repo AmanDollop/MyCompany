@@ -42,9 +42,13 @@ class SubTaskController extends GetxController {
   Map<String, dynamic> bodyParamsForGetSubTaskFilter = {};
 
   final getSubTaskDataModal = Rxn<SubTaskDataModal>();
-  List<TaskDetails>? subTaskList;
+  List<TaskDetails> subTaskList = [];
   List selectedStatusFilterIds = [];
   Map<String, dynamic> bodyParamsForGetSubTask = {};
+
+  final isLastPage = false.obs;
+  String limit = '10';
+  final offset = 0.obs;
 
   Map<String, dynamic> bodyParamsForDeleteSubTask = {};
 
@@ -95,6 +99,10 @@ class SubTaskController extends GetxController {
   }
 
   Future<void> subTaskSearchOnChange({required String value}) async {
+    subTaskList.clear();
+    offset.value = 0;
+    isLastPage.value = false;
+    await callingGetSubTaskApi();
     count.value++;
   }
 
@@ -109,11 +117,17 @@ class SubTaskController extends GetxController {
         if (e.isSelected) e.taskActualStatus
     ];
 
+    subTaskList.clear();
+    offset.value = 0;
+    isLastPage.value = false;
     bodyParamsForGetSubTask.clear();
     bodyParamsForGetSubTask = {
       AK.action: ApiEndPointAction.getTask,
       AK.taskCategoryId: taskCategoryId.value,
       AK.statusFilter: selectedStatusFilterIds.join(','),
+      AK.searchFilter: taskSearchController.text.trim().toString(),
+      AK.limit: limit.toString(),
+      AK.offset: offset.toString(),
     };
     await callingGetSubTaskApi(filterValue: true);
     count.value++;
@@ -300,10 +314,8 @@ class SubTaskController extends GetxController {
   }
 
   void clickOnPriorityStatusFilterCard({required int index}) {
-    selectPriorityId.value =
-        subTaskFilterListForPriority?[index].taskActualStatus ?? '';
-    selectPriorityValue.value =
-        subTaskFilterListForPriority?[index].taskStatusName ?? '';
+    selectPriorityId.value = subTaskFilterListForPriority?[index].taskActualStatus ?? '';
+    selectPriorityValue.value = subTaskFilterListForPriority?[index].taskStatusName ?? '';
     count.value++;
   }
 
@@ -323,18 +335,14 @@ class SubTaskController extends GetxController {
 
   Future<void> clickOnSubTaskEditButton({required int index}) async {
     CM.unFocusKeyBoard();
-    if (subTaskList?[index] != null) {
-      await Get.toNamed(Routes.ADD_SUB_TASK, arguments: [
-        'Update Task',
-        taskCategoryId.value,
-        subTaskList?[index]
-      ]);
-      apiResValue.value = true;
-      onInit();
-    } else {
-      CM.showSnackBar(message: 'Something went wrong!');
+    await Get.toNamed(Routes.ADD_SUB_TASK, arguments: [
+      'Update Task',
+      taskCategoryId.value,
+      subTaskList[index]
+    ]);
+    apiResValue.value = true;
+    onInit();
     }
-  }
 
   void clickOnDeleteSubTaskButton({required int index}) {
     CM.unFocusKeyBoard();
@@ -345,7 +353,7 @@ class SubTaskController extends GetxController {
         bodyParamsForDeleteSubTask = {
           AK.action: ApiEndPointAction.deleteTask,
           AK.taskCategoryId: taskCategoryId.value,
-          AK.taskId: subTaskList?[index].taskId ?? ''
+          AK.taskId: subTaskList[index].taskId ?? ''
         };
         await callingTaskApi();
         Get.back();
@@ -354,12 +362,8 @@ class SubTaskController extends GetxController {
   }
 
   void clickOnTimeLineButton({required int index}) {
-    if (subTaskList?[index] != null) {
-      Get.toNamed(Routes.TASK_TIME_LINE, arguments: [subTaskList?[index]]);
-    } else {
-      CM.error();
+     Get.toNamed(Routes.TASK_TIME_LINE, arguments: [subTaskList[index]]);
     }
-  }
 
   Future<void> callingGetSubTaskFilterApi({bool forPriorityValue = false}) async {
     try {
@@ -371,13 +375,11 @@ class SubTaskController extends GetxController {
           AK.action: ApiEndPointAction.getTaskStatus,
         };
       }
-      getSubTaskFilterDataModal.value = await CAI.getSubTaskFilterDataApi(
-          bodyParams: bodyParamsForGetSubTaskFilter);
+      getSubTaskFilterDataModal.value = await CAI.getSubTaskFilterDataApi(bodyParams: bodyParamsForGetSubTaskFilter);
       if (getSubTaskFilterDataModal.value != null) {
         if (forPriorityValue) {
           subTaskFilterListForPriority?.clear();
-          subTaskFilterListForPriority =
-              getSubTaskFilterDataModal.value?.taskStatus;
+          subTaskFilterListForPriority = getSubTaskFilterDataModal.value?.taskStatus;
         } else {
           subTaskFilterList = getSubTaskFilterDataModal.value?.taskStatus;
           subTaskFilterList?.forEach((element) {
@@ -406,18 +408,26 @@ class SubTaskController extends GetxController {
     try {
       apiResValueForSubTask.value = true;
       getSubTaskDataModal.value = null;
-      subTaskList?.clear();
+      subTaskList.clear();
       if (!filterValue) {
         bodyParamsForGetSubTask = {
           AK.action: ApiEndPointAction.getTask,
           AK.taskCategoryId: taskCategoryId.value,
+          AK.searchFilter: taskSearchController.text.trim().toString(),
+          AK.limit: limit.toString(),
+          AK.offset: offset.toString()
         };
       }
-      getSubTaskDataModal.value =
-          await CAI.getSubTaskDataApi(bodyParams: bodyParamsForGetSubTask);
+      getSubTaskDataModal.value = await CAI.getSubTaskDataApi(bodyParams: bodyParamsForGetSubTask);
+
       if (getSubTaskDataModal.value != null) {
-        subTaskList = getSubTaskDataModal.value?.taskDetails;
-        print('subTaskList:::::: ${subTaskList?.length}');
+        if (getSubTaskDataModal.value?.taskDetails != null && getSubTaskDataModal.value!.taskDetails!.isNotEmpty) {
+          subTaskList.addAll(getSubTaskDataModal.value?.taskDetails ?? []);
+        } else {
+          isLastPage.value = true;
+        }
+
+        print('subTaskList:::::: ${subTaskList.length}');
       }
     } catch (e) {
       print('get sub task api error::::  $e');
@@ -429,10 +439,12 @@ class SubTaskController extends GetxController {
 
   Future<void> callingTaskApi() async {
     try {
-      http.Response? response =
-          await CAI.addTaskApi(bodyParams: bodyParamsForDeleteSubTask);
+      http.Response? response = await CAI.addTaskApi(bodyParams: bodyParamsForDeleteSubTask);
       if (response != null && response.statusCode == 200) {
         apiResValueForSubTask.value = true;
+        subTaskList.clear();
+        offset.value = 0;
+        isLastPage.value = false;
         await callingGetSubTaskApi();
         updatePriorityButtonValue.value = false;
       } else {
@@ -455,7 +467,7 @@ class SubTaskController extends GetxController {
   }
 
   Future<void> clickOnTaskAttachmentButton({required int index}) async {
-    String attachmentType = CM.getDocumentType(filePath: '${subTaskList?[index].taskAttachment}');
+    String attachmentType = CM.getDocumentType(filePath: '${subTaskList[index].taskAttachment}');
     print(':::::: $attachmentType');
 
     if (attachmentType == 'PDF') {
@@ -465,7 +477,7 @@ class SubTaskController extends GetxController {
           child: InteractiveViewer(
             child: SafeArea(
               child: SfPdfViewer.network(
-                '${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}',
+                '${AU.baseUrlAllApisImage}${subTaskList[index].taskAttachment}',
               ),
             ),
           ),
@@ -482,7 +494,7 @@ class SubTaskController extends GetxController {
                 child: SafeArea(
                   child: commonContainerForImage(
                     networkImage:
-                        '${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}',
+                        '${AU.baseUrlAllApisImage}${subTaskList[index].taskAttachment}',
                   ),
                 ),
               ),
@@ -492,11 +504,11 @@ class SubTaskController extends GetxController {
       );
     } else {
       if (!await launcher.launchUrl(
-        '${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}',
+        '${AU.baseUrlAllApisImage}${subTaskList[index].taskAttachment}',
         const LaunchOptions(mode: PreferredLaunchMode.inAppBrowserView),
       )) {
         throw Exception(
-            'Could not launch ${AU.baseUrlAllApisImage}${subTaskList?[index].taskAttachment}');
+            'Could not launch ${AU.baseUrlAllApisImage}${subTaskList[index].taskAttachment}');
       }
     }
   }
@@ -522,6 +534,18 @@ class SubTaskController extends GetxController {
         ),
       ),
     );
+  }
+
+  Future<void> onLoadMore() async {
+    CM.unFocusKeyBoard();
+    offset.value = offset.value + 1;
+    try {
+      if (int.parse(limit) <= subTaskList.length) {
+        await callingGetSubTaskApi();
+      }
+    } catch (e) {
+      CM.error();
+    }
   }
 
 }

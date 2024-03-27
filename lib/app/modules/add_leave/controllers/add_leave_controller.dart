@@ -354,7 +354,7 @@ class AddLeaveController extends GetxController with GetTickerProviderStateMixin
                               border: Border.all(
                                 color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                                     ? Col.primary
-                                    : Col.text,
+                                    : Col.inverseSecondary,
                                 width: 1.5.px,
                               ),
                             ),

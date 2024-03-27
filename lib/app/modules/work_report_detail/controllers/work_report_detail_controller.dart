@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
@@ -26,8 +25,6 @@ class WorkReportDetailController extends GetxController {
 
   final docType = ''.obs;
 
-
-
   final QuillEditorController quillEditorController = QuillEditorController();
   final hasFocus = false.obs;
   final customToolBarList = [
@@ -49,7 +46,6 @@ class WorkReportDetailController extends GetxController {
 
   final UrlLauncherPlatform launcher = UrlLauncherPlatform.instance;
 
-
   final key = GlobalKey<FormState>();
   final descriptionController = TextEditingController();
   FocusNode focusNodeParagraph = FocusNode();
@@ -60,7 +56,6 @@ class WorkReportDetailController extends GetxController {
 
   final dropDownController = TextEditingController();
   final selectedDropDownValue = ''.obs;
-
 
   List<String> selectedItems = [];
 

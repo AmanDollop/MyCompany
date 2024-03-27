@@ -318,13 +318,13 @@ class AllTaskView extends GetView<AllTaskController> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.taskCountList?.length,
         shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 2.8,mainAxisSpacing: 8.px,crossAxisSpacing: 8.px),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 3.2,mainAxisSpacing: 8.px,crossAxisSpacing: 8.px),
         itemBuilder: (context, gridViewIndex) {
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6.px),
               color: controller.taskCountList?[gridViewIndex].color == '' || controller.taskCountList?[gridViewIndex].color == null && controller.taskCountList![gridViewIndex].color!.isNotEmpty
-                  ? Col.primary.withOpacity(.2)
+                  ? Col.primaryWithOpacity
                   : CW.apiColorConverterMethod(colorString: controller.taskCountList?[gridViewIndex].color ?? '',colorCodeWithHundredPerValue: false),
             ),
             padding: EdgeInsets.symmetric(horizontal: 6.px),

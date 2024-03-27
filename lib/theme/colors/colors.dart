@@ -16,7 +16,8 @@ class Col {
   static Color gTextColor = const Color(0xffD7D7D7);
 
 
-  static Color primary = const Color(0xcc75EEC3);
+  static Color primary = const Color(0xff75EEC3);
+  static Color primaryWithOpacity = const Color(0x1475EEC3);
   // static Color primary = const Color(0xff75EEC3);
 
   static Color primaryColor = const Color(0xff6AE8F7);

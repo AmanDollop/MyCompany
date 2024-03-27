@@ -8,6 +8,7 @@ import 'package:task/api/api_model/company_details_modal.dart';
 import 'package:task/api/api_model/department_modal.dart';
 import 'package:task/api/api_model/get_department_employee_modal.dart';
 import 'package:task/api/api_model/user_data_modal.dart';
+import 'package:task/app/routes/app_pages.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -78,7 +79,9 @@ class DepartmentController extends GetxController {
     Get.back();
   }
 
-  void clickOnCards({required int myTeamCardIndex}) {}
+  void clickOnCards({required int myTeamCardIndex}) {
+    Get.toNamed(Routes.OTHER_USER_PROFILE,arguments: [getDepartmentEmployeeList?[myTeamCardIndex].userId ?? '']);
+  }
 
   Future<void> getUserDataFromLocalDataBase() async {
     try {

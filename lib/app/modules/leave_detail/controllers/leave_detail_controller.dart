@@ -13,6 +13,7 @@ import 'package:task/common/common_dialog/cd.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
 import 'package:task/common/common_widgets/cw.dart';
+import 'package:task/common/custom_outline_button.dart';
 import 'package:task/theme/colors/colors.dart';
 import 'package:task/validator/v.dart';
 
@@ -25,6 +26,8 @@ class LeaveDetailController extends GetxController {
 
   final key = GlobalKey<FormState>();
   final leaveTypeController = TextEditingController();
+  FocusNode focusNodeLeaveType = FocusNode();
+
 
   final getLeaveTypeBalanceModal = Rxn<GetLeaveTypeBalanceModal>();
   final availableLeave = 0.obs;
@@ -119,16 +122,13 @@ class LeaveDetailController extends GetxController {
                     availableLeave.value == 0
                         ? 'Paid leaves not available : ${availableLeave.value}'
                         : 'Available paid leaves : ${availableLeave.value}',
-                    style:
-                    Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
-                      fontSize: 10.px,
-                    ),
+                   style: Theme.of(Get.context!).textTheme.labelLarge?.copyWith(fontSize: 10.px),
                   ),
                 if (availableLeaveValue.value)
                 SizedBox(height: 10.px),
                 paidAndUnPaidView(),
                 SizedBox(height: 20.px),
-                CW.commonElevatedButton(
+                CW.myElevatedButton(
                     onPressed: updateButtonValue.value
                         ? () => null
                         : () => clickOnUpdateButton(),
@@ -153,6 +153,7 @@ class LeaveDetailController extends GetxController {
   Widget leaveTypeTextField() => CW.commonTextField(
     fillColor: Colors.transparent,
     controller: leaveTypeController,
+    focusNode: focusNodeLeaveType,
     labelText: 'Leave Type',
     hintText: 'Leave Type',
     keyboardType: TextInputType.name,
@@ -162,7 +163,7 @@ class LeaveDetailController extends GetxController {
     },
     onTap: () => clickOnLeaveTypeField(),
     readOnly: true,
-    suffixIcon: Icon(Icons.arrow_drop_down, color: Col.secondary),
+    suffixIcon: Icon(Icons.arrow_drop_down, color: Col.inverseSecondary),
   );
 
   Future<void> clickOnLeaveTypeField() async {
@@ -180,39 +181,40 @@ class LeaveDetailController extends GetxController {
               itemBuilder: (context, i) {
                 return Obx(() {
                   count.value;
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10.px),
-                    padding:
-                    EdgeInsets.symmetric(vertical: 6.px, horizontal: 10.px),
-                    height: 46.px,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.px),
-                      color: leaveTypeController.text ==
-                          leaveTypeList?[i].leaveTypeName
-                          ? Col.primary.withOpacity(.08)
-                          : Colors.transparent,
-                      border: Border.all(
-                        color: leaveTypeController.text ==
-                            leaveTypeList?[i].leaveTypeName
-                            ? Col.primary
-                            : Col.darkGray,
-                        width: leaveTypeController.text ==
-                            leaveTypeList?[i].leaveTypeName
-                            ? 1.5.px
-                            : 1.px,
-                      ),
-                    ),
-                    child: InkWell(
-                      onTap: leaveTypeListClickValue.value
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 10.px),
+                    child: CustomOutlineButton(
+                      onPressed: leaveTypeListClickValue.value
                           ? () => null
                           : () => clickOnLeaveTypeList(i: i),
+                      padding: EdgeInsets.symmetric(vertical: 16.px, horizontal: 10.px),
+                      radius: 10.px,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                            ? [
+                          Col.primary,
+                          Col.primaryColor,
+                        ]
+                            : [
+                          Col.gray,
+                          Col.gray,
+                        ],
+                      ),
+                      strokeWidth:  leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                          ? 1.5.px
+                          : 1.px,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             '${leaveTypeList?[i].leaveTypeName}',
-                            style: Theme.of(Get.context!).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                            style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(color
+                                : leaveTypeController.text == leaveTypeList?[i].leaveTypeName
+                                ? Col.primary
+                                : Col.inverseSecondary),
                           ),
                           Container(
                             height: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
@@ -227,7 +229,7 @@ class LeaveDetailController extends GetxController {
                               border: Border.all(
                                 color: leaveTypeController.text == leaveTypeList?[i].leaveTypeName
                                     ? Col.primary
-                                    : Col.text,
+                                    : Col.inverseSecondary,
                                 width: 1.5.px,
                               ),
                             ),
@@ -240,7 +242,7 @@ class LeaveDetailController extends GetxController {
                             ),
                           ),
                         ],
-                      ),
+                      )
                     ),
                   );
                 });
@@ -285,7 +287,7 @@ class LeaveDetailController extends GetxController {
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: 16.px),
       itemBuilder: (context, index) {
-        if (availableLeave.value == 0) {
+        if (availableLeave.value == 0.0) {
           paidAndUnPaidType.value = 'UnPaid';
           paidAndUnPaidIndexValue.value = '1';
         }
@@ -296,7 +298,7 @@ class LeaveDetailController extends GetxController {
               CustomRadio(
                 onChanged: (value) {
                   CM.unFocusKeyBoard();
-                  if (value != null && availableLeave.value != 0) {
+                  if (value != null && availableLeave.value != 0.0) {
                     paidAndUnPaidIndexValue.value = value;
                     paidAndUnPaidType.value = paidAndUnPaidText[index];
                     count.value++;
@@ -310,8 +312,8 @@ class LeaveDetailController extends GetxController {
               radioButtonLabelTextView(
                   text: paidAndUnPaidText[index],
                   color: paidAndUnPaidText[index] == paidAndUnPaidType.value
-                      ? Col.text
-                      : Col.darkGray)
+                      ? Col.primary
+                      : Col.inverseSecondary)
             ],
           ),
         );

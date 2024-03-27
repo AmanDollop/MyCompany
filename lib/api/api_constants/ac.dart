@@ -26,6 +26,8 @@ class AK {
 
   static const userId = "user_id";
 
+  static const otherUserId = "other_user_id";
+
   static const userPassword = "user_password";
 
   static const companyId = "company_id";
@@ -79,6 +81,8 @@ class AK {
   static const currentAddress="current_address";
 
   static const permanentAddress="permanent_address";
+
+  static const userNotificationId = "user_notification_id";
 
   static const accountHoldersName="account_holders_name";
   static const bankName="bank_name";
@@ -153,6 +157,7 @@ class AK {
   static const taskCategoryName = "task_category_name";
   static const taskCategoryId = "task_category_id";
   static const statusFilter = "status_filter";
+  static const searchFilter = "search_filter";
   static const taskId = "task_id";
   static const taskStatus = "task_status";
   static const taskTimelineStatus = "task_timeline_status";
@@ -256,7 +261,9 @@ class ApiEndPointAction{
 
   static const addEducation = 'addEducation';
 
-  static const getUserNotification = 'getUserNotificationn';
+  static const getUserNotification = 'getUserNotification';
+
+  static const deleteUserNotification = 'deleteUserNotification';
 
   static const addExperience = 'addExperience';
 
@@ -325,6 +332,8 @@ class ApiEndPointAction{
   static const getCompanyDetail = 'getCompanyDetail';
 
   static const getUserDetails = 'getUserDetails';
+
+  static const getOtherUserProfile = 'getOtherUserProfile';
 
   static const getShiftDetail = 'getShiftDetail';
 

@@ -104,12 +104,12 @@ class AllTaskController extends GetxController {
   }
 
   Future<void> taskSearchOnChange({required String value}) async {
-    count.value++;
     taskCategoryList.clear();
     offset.value = 0;
     apiResValue.value= true;
     isLastPage.value = false;
     await callingGetTaskDataApi();
+    count.value++;
   }
 
   Future<void> callingGetTaskDataApi() async {

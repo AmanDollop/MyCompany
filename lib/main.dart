@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -82,7 +83,17 @@ Future<void> _backgroundNotificationHandler(RemoteMessage message) async {
 }
 
 //FOR HANDLE CLICK ON NOTIFICATION
-void onSelectNotification(NotificationResponse? notificationResponse) async {
-  print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION:::::::::::::${notificationResponse?.payload}");
-  Get.toNamed(Routes.MY_PROFILE);
+void onSelectNotification( {NotificationResponse? notificationResponse,required RemoteMessage message}) async {
+  // print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION:::::::::::::${notificationResponse?.payload}");
+  // print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::MESSAGE:::::::${message.data}");
+  // print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::MESSAGE[title]:::::::${message.data["title"]}");
+  // print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::MESSAGE[body]:::::::${message.data["body"]}");
+  // print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::MESSAGE[click_action]:::::::${message.data["click_action"]}");
+  print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::MESSAGE[click_json]:::::::${message.data["click_json"]}");
+  Map<String, dynamic> parsedJson = jsonDecode(message.data["click_json"]);
+  print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::parsedJson   task_category_id:::::::${parsedJson['task_category_id']}");
+  print("CLICK ON NOTIFICATION ON SELECT NOTIFICATION::::::parsedJson    ['task_category_name']:::::::${parsedJson['task_category_name']}");
+  if(message.data["click_action"] == 'task'){
+    Get.toNamed(Routes.SUB_TASK,arguments: [parsedJson['task_category_id'], parsedJson['task_category_name']]);
+  }
 }

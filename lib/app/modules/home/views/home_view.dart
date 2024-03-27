@@ -776,8 +776,7 @@ class HomeView extends GetView<HomeController> {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => controller.clickOnYourDepartmentCards(
-                yourDepartmentCardIndex: index),
+            onTap: () => controller.clickOnYourDepartmentCards(yourDepartmentCardIndex: index),
             onLongPress: () {
               // Show overlay entry
               showOverlay(
@@ -899,7 +898,7 @@ class HomeView extends GetView<HomeController> {
             onLongPressEnd: (details) {
               controller.overlayEntry.remove();
             },
-            child: Ink(
+            child: Container(
               height: 132.px,
               padding: EdgeInsets.only(left: 10.px),
               decoration: BoxDecoration(
@@ -985,8 +984,7 @@ class HomeView extends GetView<HomeController> {
             childAspectRatio: 2.2),
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => controller.clickOnReportingPersonCard(
-                reportingPersonIndex: index),
+            onTap: () => controller.clickOnReportingPersonCard(reportingPersonIndex: index),
             onLongPress: () {
               // Show overlay entry
               showOverlay(
@@ -1154,10 +1152,12 @@ class HomeView extends GetView<HomeController> {
             },
           ),
         ),
+
         commonCard(
             titleText: 'Upcoming Celebration',
             listWidget: SizedBox(height: 4.px),
             viewAllButtonValue: true),
+
         commonCard(
           titleText: 'My Team',
           viewAllButtonValue: true,
@@ -1174,8 +1174,6 @@ class HomeView extends GetView<HomeController> {
                 childAspectRatio: 2.4),
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: () => controller.clickOnReportingPersonCard(
-                    reportingPersonIndex: index),
                 borderRadius: BorderRadius.circular(8.px),
                 child: Ink(
                   height: 132.px,

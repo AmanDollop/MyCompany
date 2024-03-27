@@ -86,6 +86,7 @@ class AddDocumentView extends GetView<AddDocumentController> {
       hintText: 'Remark',
       controller: controller.remarkController,
       focusNode: controller.focusNodeForRemark,
+      isSearchLabelText: false,
       maxLines: 3);
 
   Widget attachFile() {

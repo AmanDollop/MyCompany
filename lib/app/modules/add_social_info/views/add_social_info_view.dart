@@ -111,8 +111,8 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     labelText: 'Facebook',
     hintText: 'Facebook',
     focusNode: controller.focusNodeForFacebook,
-    prefixIconPath: 'assets/images/facebook_light_image.png',
-    // prefixIcon: commonIconImageForTextField(imagePath: controller.facebookController.text.isNotEmpty?'assets/images/facebook_dark_image.png':'assets/images/facebook_light_image.png'),
+    // prefixIconPath: 'assets/images/facebook_light_image.png',
+    prefixIcon: commonIconImageForTextField(imagePath: controller.facebookController.text.isNotEmpty?'assets/images/facebook_dark_image.png':'assets/images/facebook_light_image.png'),
     onChanged: (value) {
       controller.count.value++;
     },
@@ -133,8 +133,8 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     labelText: 'Instagram',
     hintText: 'Instagram',
     focusNode: controller.focusNodeForInstagram,
-    prefixIconPath: 'assets/images/instagram_light_image.png',
-    // prefixIcon: commonIconImageForTextField(imagePath: controller.instagramController.text.isNotEmpty?'assets/images/instagram_dark_image.png':'assets/images/instagram_light_image.png'),
+    // prefixIconPath: 'assets/images/instagram_light_image.png',
+    prefixIcon: commonIconImageForTextField(imagePath: controller.instagramController.text.isNotEmpty?'assets/images/instagram_dark_image.png':'assets/images/instagram_light_image.png'),
     onChanged: (value) {
       controller.count.value++;
     },
@@ -155,8 +155,8 @@ class AddSocialInfoView extends GetView<AddSocialInfoController> {
     labelText: 'Linkedin',
     hintText: 'Linkedin',
     focusNode: controller.focusNodeForLinkedin,
-    prefixIconPath: 'assets/images/linkdin_light_image.png',
-    // prefixIcon: commonIconImageForTextField(imagePath: controller.linkedinController.text.isNotEmpty?'assets/images/linkdin_dark_image.png':'assets/images/linkdin_light_image.png'),
+    // prefixIconPath: 'assets/images/linkdin_light_image.png',
+    prefixIcon: commonIconImageForTextField(imagePath: controller.linkedinController.text.isNotEmpty?'assets/images/linkdin_dark_image.png':'assets/images/linkdin_light_image.png'),
     onChanged: (value) {
       controller.count.value++;
     },

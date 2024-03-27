@@ -74,6 +74,8 @@ import '../modules/my_team/bindings/my_team_binding.dart';
 import '../modules/my_team/views/my_team_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
+import '../modules/other_user_profile/bindings/other_user_profile_binding.dart';
+import '../modules/other_user_profile/views/other_user_profile_view.dart';
 import '../modules/otp_verification/bindings/otp_verification_binding.dart';
 import '../modules/otp_verification/views/otp_verification_view.dart';
 import '../modules/penalty/bindings/penalty_binding.dart';
@@ -401,6 +403,11 @@ class AppPages {
       name: _Paths.ASSIGN_TEMPLATE,
       page: () => const AssignTemplateView(),
       binding: AssignTemplateBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTHER_USER_PROFILE,
+      page: () => const OtherUserProfileView(),
+      binding: OtherUserProfileBinding(),
     ),
   ];
 }

@@ -59,6 +59,7 @@ abstract class Routes {
   static const HOME_DARK = _Paths.HOME_DARK;
   static const ADD_WORK_REPORT = _Paths.ADD_WORK_REPORT;
   static const ASSIGN_TEMPLATE = _Paths.ASSIGN_TEMPLATE;
+  static const OTHER_USER_PROFILE = _Paths.OTHER_USER_PROFILE;
 }
 
 abstract class _Paths {
@@ -119,4 +120,5 @@ abstract class _Paths {
   static const HOME_DARK = '/home-dark';
   static const ADD_WORK_REPORT = '/add-work-report';
   static const ASSIGN_TEMPLATE = '/assign-template';
+  static const OTHER_USER_PROFILE = '/other-user-profile';
 }

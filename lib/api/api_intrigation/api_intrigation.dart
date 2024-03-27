@@ -460,8 +460,7 @@ class CAI extends GetxController{
 
     Map<String, String> authorization = await userToken();
 
-    http.Response? response = await MyHttp.postMethod(
-        url: '$baseUrl${AU.endPointUserControllerApi}',
+    http.Response? response = await MyHttp.postMethod(url: '$baseUrl${AU.endPointUserControllerApi}',
       bodyParams: bodyParams,
       context: Get.context!,
       token: authorization

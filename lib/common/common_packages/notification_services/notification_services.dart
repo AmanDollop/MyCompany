@@ -72,25 +72,30 @@ class NS {
   Future<void> initNotification() async {
     InitializationSettings initializationSettings = InitializationSettings(android: androidInitializationSettings, iOS: iosInitializationSettings);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onSelectNotification, onDidReceiveBackgroundNotificationResponse: onSelectNotification);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     await initFirebaseNotification();
   }
 
   Future<void> initFirebaseNotification() async {
+    InitializationSettings initializationSettings = InitializationSettings(android: androidInitializationSettings, iOS: iosInitializationSettings);
+
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    FirebaseMessaging.onMessage.listen((message) {
+    FirebaseMessaging.onMessage.listen((message) async {
       if (kDebugMode) {
         print("NOTIFICATION TITLE:::::::${message.notification?.title}");
         print("NOTIFICATION BODY::::::::${message.notification?.body}");
         print("NOTIFICATION DATA::::::::${message.data}");
       }
+
       showNotification(remoteMessage: message);
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (details) => onSelectNotification(message:message), onDidReceiveBackgroundNotificationResponse: (details) => onSelectNotification(message: message),);
+
     });
 
     /*   FirebaseMessaging.onMessageOpenedApp.listen((notificationResponse) {
@@ -167,5 +172,5 @@ class NS {
       );
     }
   }
-  
+
 }

@@ -91,7 +91,7 @@ class MenuViewView extends GetView<MenuViewController> {
                   child: Center(
                     child: CW.commonNetworkImageView(
                         path: 'assets/icons/cancel_white_icon.png',
-                        color: Col.inverseSecondary,
+                        color: Col.primary,
                         isAssetImage: true,
                         width: 12.px,
                         height: 12.px),

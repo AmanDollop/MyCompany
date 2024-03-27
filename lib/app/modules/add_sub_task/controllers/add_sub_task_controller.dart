@@ -17,7 +17,6 @@ import 'package:task/common/common_bottomsheet/cbs.dart';
 import 'package:task/common/common_method_for_date_time/common_methods_for_date_time.dart';
 import 'package:task/common/common_methods/cm.dart';
 import 'package:http/http.dart' as http;
-import 'package:task/common/common_widgets/cw.dart';
 import 'package:task/common/custom_outline_button.dart';
 import 'package:task/data_base/data_base_constant/data_base_constant.dart';
 import 'package:task/data_base/data_base_helper/data_base_helper.dart';
@@ -27,24 +26,6 @@ class AddSubTaskController extends GetxController {
   final count = 0.obs;
 
   final assignToListViewValue = false.obs;
-
-  /*'template_answer' '0' [
-  {
-    'template_question_id'
-    'template_question_type'
-    'answer'
-  }
-  {
-  'template_question_id'
-  'template_question_type'
-  'answer'
-  }
-  {
-  'template_question_id'
-  'template_question_type'
-  'answer'
-  }
-  ]*/
 
   final pageName = ''.obs;
   final taskCategoryId = ''.obs;
@@ -95,12 +76,6 @@ class AddSubTaskController extends GetxController {
   UserDetails? userData;
   PersonalInfo? personalInfo;
   JobInfo? jobInfo;
-
-  /*final userId = ''.obs;
-  final userPic = ''.obs;
-  final userFullName = ''.obs;
-  final userShortName = ''.obs;
-  final developer = ''.obs;*/
 
   late OverlayEntry overlayEntry;
 
@@ -180,9 +155,7 @@ class AddSubTaskController extends GetxController {
           .getParticularData(
               key: DataBaseConstant.userDetail,
               tableName: DataBaseConstant.tableNameForUserDetail);
-      userData =
-          UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value))
-              .userDetails;
+      userData = UserDataModal.fromJson(jsonDecode(userDataFromLocalDataBase.value)).userDetails;
       personalInfo = userData?.personalInfo;
       jobInfo = userData?.jobInfo;
 
@@ -317,8 +290,7 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> clickOnTaskStartDateTextFormFiled() async {
-    await CDT
-        .iosPicker1(
+    await CDT.iosPicker1(
       context: Get.context!,
       dateController: taskStartDateController,
       firstDate: taskStartDateController.text.isNotEmpty
@@ -329,7 +301,7 @@ class AddSubTaskController extends GetxController {
           : DateTime.now(),
       lastDate: taskDueDateController.text.isNotEmpty
           ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text)
-          : DateTime.now(),
+          : DateTime.now().add(const Duration(days: 365)),
     )
         .whenComplete(() async {
       CM.unFocusKeyBoard();
@@ -337,8 +309,7 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> clickOnTaskDueDateTextFormFiled() async {
-    await CDT
-        .iosPicker1(
+    await CDT.iosPicker1(
       context: Get.context!,
       dateController: taskDueDateController,
       firstDate: taskStartDateController.text.isNotEmpty
@@ -348,9 +319,7 @@ class AddSubTaskController extends GetxController {
           ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text)
           : DateTime.now(),
       lastDate: taskDueDateController.text.isNotEmpty
-          ? DateFormat('dd MMM yyyy')
-              .parse(taskDueDateController.text)
-              .add(const Duration(days: 20))
+          ? DateFormat('dd MMM yyyy').parse(taskDueDateController.text).add(const Duration(days: 20))
           : DateTime.now().add(const Duration(days: 20)),
     )
         .whenComplete(() async {
@@ -381,9 +350,7 @@ class AddSubTaskController extends GetxController {
           ? DateFormat('hh:mm a').parse(dueTimeController.text)
           : DateTime.now(),
       lastDate: dueTimeController.text.isNotEmpty
-          ? DateFormat('hh:mm a')
-              .parse(dueTimeController.text)
-              .add(const Duration(hours: 12))
+          ? DateFormat('hh:mm a').parse(dueTimeController.text).add(const Duration(hours: 12))
           : DateTime.now().add(const Duration(hours: 12)),
     )
         .whenComplete(() async {
@@ -428,6 +395,7 @@ class AddSubTaskController extends GetxController {
   }
 
   Future<void> callingAddSubTaskApi() async {
+    print('subTaskList?.assignUserId:::: ${subTaskList?.assignUserId}');
     try {
       String userIds;
       if (selectedMyTeamMemberList.isNotEmpty) {
@@ -437,7 +405,11 @@ class AddSubTaskController extends GetxController {
               }
             }).join(',');
       } else {
-        userIds = selfDataForMyTeamMember?.userId ?? '';
+        if(pageName.value == 'Update Task'){
+          userIds = subTaskList?.assignUserId ?? '';
+        }else{
+          userIds = selfDataForMyTeamMember?.userId ?? '';
+        }
       }
 
 
@@ -451,7 +423,7 @@ class AddSubTaskController extends GetxController {
         AK.taskDueTime: dueTimeController.text.trim().toString(),
         AK.taskName: subTaskNameController.text.trim().toString(),
         AK.taskNote: remarkController.text.trim().toString(),
-        AK.taskAssignTo: userIds,
+        AK.taskAssignTo:  userIds,
       };
       http.Response? response = await CAI.addSubTaskApi(
           bodyParams: bodyParamsForAddSubTask, filePath: imageFile.value);
